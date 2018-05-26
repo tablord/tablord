@@ -1,0 +1,109 @@
+<head>
+  <HTA:APPLICATION
+    APPLICATIONNAME="Operating System Version par exemple"
+    SCROLL="yes"
+    SINGLEINSTANCE="yes">
+  <style type="text/css">
+    .CODE {
+      font:fixed;      
+      background-color: f2f9a8;
+      border:solid yellow 1px;
+    }
+    .CODE,p {
+      margin: 0px;
+      padding: 0px;
+    }
+    .INFO, 
+    .DEBUG {
+      background-color: b6fff7;
+      border:solid blue 1px;
+    }
+    .ERROR {
+      background-color: ff4d4d;
+      border:solid red 1px;
+    }
+    .SUCCESS {
+      background-color: 8dff60;
+      border:solid green 1px;
+    }
+    .OLD {
+      background-color: b7b7b7;
+      color: 828282;
+      border:solid green 1px;
+    }
+  </style>
+</head>
+
+<script language="JScript">
+  // edi related functions ////////////////////////////////////////////
+
+  var geval = eval;
+
+  function htmlToStr(html) {
+    return html.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+
+  function removeTagsAndErrors(html) {
+    return html.replace(/<p class\="ERROR">.+?<\/p>/g,"")
+               .replace(/<.+?>/g,"")
+               .replace(/&nbsp;/," ")
+  }
+
+  function editorKeyPress(event) {
+    var element = event.srcElement;
+    window.document.getElementById('debug').innerHTML = (event.ctrlKey?"ctrl":"") + "["+event.keyCode+"]" + element.id;
+    window.document.getElementById(element.id.replace(/code/,"out")).children[0].className = 'OLD';
+    if (event.keyCode==10) {
+      window.document.getElementById('debug').innerHTML += 'execCode';
+      execCode(event.srcElement); //only IE
+    }
+  }
+
+  function execCode(element) {
+    var out = window.document.getElementById(element.id.replace(/code/,"out"));
+    var code = 'with (v) {'+removeTagsAndErrors(element.innerHTML)+'};';
+    element.attachEvent("onkeypress",editorKeyPress);
+    try {
+      out.innerHTML = '<div class="SUCCESS">'+geval(code)+'</div>';
+    }
+    catch (e) {
+      out.innerHTML = '<div class="ERROR">'+e.name+':'+e.message+'<br>'+htmlToStr(code)+'</div>';
+    }
+  }
+
+  // jcalc library /////////////////////////////////////////////////////
+  function V(name,value) {
+    this.name =name;
+    this.value=value;
+  }
+
+  V.prototype.valueOf = function () {
+    return this.value;
+  }
+
+  V.prototype.toString = function() {
+    return this.name+":"+this.value;
+  }
+  
+
+  function v(name,value) {
+    if (value) {
+      return v[name] = new V(name,value);
+    }
+    else {
+      return v[name];
+    }
+  }
+
+  
+</script>
+
+<body designMode="on">
+  <div id="code001" class="CODE" onclick="execCode(this);" contentEditable>3+5</div>
+  <div id="out001" class="OUTPUT"><div class="OLD">no output</div></div>
+  <div id="code002" class="CODE" onclick="execCode(this);" contentEditable>v("toto",3)</div>
+  <div id="out002" class="OUTPUT"><div class="OLD">no output</div></div>
+  <div id="code003" class="CODE" onclick="execCode(this);" contentEditable>v("toto")</div>
+  <div id="out003" class="OUTPUT"><div class="OLD">no output</div></div>
+  <div id="debug" class="DEBUG">debug</div>
+</body>
