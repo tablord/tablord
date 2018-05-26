@@ -13,6 +13,10 @@
       margin: 0px;
       padding: 0px;
     }
+    .TEST {
+      border:solid blue 3px;
+      color: blue;
+    }
     .INFO, 
     .DEBUG {
       background-color: b6fff7;
@@ -35,6 +39,11 @@
 </head>
 
 <script language="JScript">
+  // global variables /////////////////////////////////////////////////
+
+  var jc = {debug:{}
+           };
+
   // edi related functions ////////////////////////////////////////////
 
   var geval = eval;
@@ -51,27 +60,64 @@
 
   function editorKeyPress(event) {
     var element = event.srcElement;
-    window.document.getElementById('debug').innerHTML = (event.ctrlKey?"ctrl":"") + "["+event.keyCode+"]" + element.id;
     window.document.getElementById(element.id.replace(/code/,"out")).children[0].className = 'OLD';
+    var tests = window.document.getElementById(element.id.replace(/code/,"test")).children;
+    for (var i = 0;i<tests.length;i++) {
+      tests[i].className = 'INFO';
+    };
     if (event.keyCode==10) {
-      window.document.getElementById('debug').innerHTML += 'execCode';
       execCode(event.srcElement); //only IE
     }
   }
 
   function execCode(element) {
     var out = window.document.getElementById(element.id.replace(/code/,"out"));
+    try {
+      var tests = window.document.getElementById(element.id.replace(/code/,"test")).children;
+    }
+    catch (e) {
+      var tests = [];
+    }
     var code = 'with (v) {'+removeTagsAndErrors(element.innerHTML)+'};';
     element.attachEvent("onkeypress",editorKeyPress);
     try {
-      out.innerHTML = '<div class="SUCCESS">'+geval(code)+'</div>';
+      var res = geval(code);
+      out.innerHTML = '<div class="SUCCESS">'+res+'</div>';
+      for (var i = 0;i<tests.length;i++) {
+        var div = tests[i];
+        if (div.innerHTML == res) {
+          div.className = 'SUCCESS';
+        }
+        else {
+          div.className = 'ERROR';
+        }
+      }
     }
     catch (e) {
       out.innerHTML = '<div class="ERROR">'+e.name+':'+e.message+'<br>'+htmlToStr(code)+'</div>';
     }
   }
 
+  function debug(/*messages*/) {
+    var n ='';
+    for (var i = 0;i<arguments.length;i++) {
+      n += '<DIV>'+arguments[i]+'</DIV>';
+    };
+    jc.debug.insertAdjacentHTML('beforeend',n);
+
+  };
+
+
+  window.attachEvent('onload',function () {
+    jc.debug = window.document.getElementById('debug');
+    jc.debug.innerHTML = '<DIV>debug</DIV>';
+
+  });  
+  
+
   // jcalc library /////////////////////////////////////////////////////
+
+
   function V(name,value) {
     this.name =name;
     this.value=value;
@@ -101,9 +147,15 @@
 <body designMode="on">
   <div id="code001" class="CODE" onclick="execCode(this);" contentEditable>3+5</div>
   <div id="out001" class="OUTPUT"><div class="OLD">no output</div></div>
+  <div id="test001" class="TEST">test
+    <div class="INFO" float="left">8</div>
+    <div class="INFO" float="left">9</div>
+  </div>
   <div id="code002" class="CODE" onclick="execCode(this);" contentEditable>v("toto",3)</div>
   <div id="out002" class="OUTPUT"><div class="OLD">no output</div></div>
   <div id="code003" class="CODE" onclick="execCode(this);" contentEditable>v("toto")</div>
   <div id="out003" class="OUTPUT"><div class="OLD">no output</div></div>
-  <div id="debug" class="DEBUG">debug</div>
+  <div id="debug" class="DEBUG">
+    <div>debug</div>
+  </div>
 </body>
