@@ -1,0 +1,46 @@
+h1 {
+  font-family: Arial;
+  font-size: 12pt;
+  margin-bottom: 0px;
+}
+.CODE {
+  font:fixed;      
+  background-color: f2f9a8;
+  border:solid yellow 1px;
+}
+.OUTPUT,
+.CODE,
+p {
+  margin: 0px;
+  padding: 0px;
+}
+.TEST {
+  border:solid blue 3px;
+  color: blue;
+}
+.INFO, 
+.DEBUG {
+  background-color: b6fff7;
+  border:solid blue 1px;
+}
+.ERROR {
+  background-color: ff4d4d;
+  border:solid red 1px;
+}
+.INSPECT {
+  padding: 0px;
+  margin: 0px;
+  color: green;
+  background-color: 8dff60;
+  border:solid green 1px;
+}
+
+.SUCCESS {
+  background-color: 8dff60;
+  border:solid green 1px;
+}
+.OLD {
+  background-color: b7b7b7;
+  color: 828282;
+  border:solid green 1px;
+}

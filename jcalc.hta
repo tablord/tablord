@@ -3,242 +3,55 @@
     APPLICATIONNAME="Operating System Version par exemple"
     SCROLL="yes"
     SINGLEINSTANCE="yes">
-  <style type="text/css">
-    h1 {
-      font-family: Arial;
-      font-size: 12pt;
-      margin-bottom: 0px;
-    }
-    .CODE {
-      font:fixed;      
-      background-color: f2f9a8;
-      border:solid yellow 1px;
-    }
-    .CODE,p {
-      margin: 0px;
-      padding: 0px;
-    }
-    .TEST {
-      border:solid blue 3px;
-      color: blue;
-    }
-    .INFO, 
-    .DEBUG {
-      background-color: b6fff7;
-      border:solid blue 1px;
-    }
-    .ERROR {
-      background-color: ff4d4d;
-      border:solid red 1px;
-    }
-    .SUCCESS {
-      background-color: 8dff60;
-      border:solid green 1px;
-    }
-    .OLD {
-      background-color: b7b7b7;
-      color: 828282;
-      border:solid green 1px;
-    }
-  </style>
+  <link rel="stylesheet" href="jcalc.css" type="text/css" src="jcalc.css"/>
 </head>
 
 <script src="jquery.js"></script>
-
-<script language="JScript">
-  // global variables /////////////////////////////////////////////////
-
-  var jc = {debug:{},
-            codeElementBeingExecuted:undefined,
-            currentElement:undefined
-           };
-
-  // edi related functions ////////////////////////////////////////////
-
-  var geval = eval;
-
-  function a(message) {
-    window.alert(message);
-  }
-
-  function htmlToStr(html) {
-    return html.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-  }
-
-  function removeTagsAndErrors(html) {
-    return html.replace(/<p class\="ERROR">.+?<\/p>/g,"")
-               .replace(/<.+?>/g,"")
-               .replace(/&nbsp;/," ")
-  }
-
-  function testElements(element) {
-    // returns a pseudo array of Elements containing the test values.
-    // if no tests returns []
-
-    var testElements = window.document.getElementById(element.id.replace(/code/,"test"));
-    return testElements?testElements.children:[];
-  }
-
-  function editorKeyPress(event) {
-    var element = event.srcElement;
-    window.document.getElementById(element.id.replace(/code/,"out")).children[0].className = 'OLD';
-    var tests = testElements(element);
-    for (var i = 0;i<tests.length;i++) {
-      tests[i].className = 'INFO';
-    };
-    if (event.keyCode==10) {
-      
-      execCode(event.srcElement); //only IE
-    }
-  }
-
-  function codeClick(element) {
-    jc.currentElement = element;
-    execCode(element);
-  }
-
-  function execCode(element) {
-    jc.codeElementBeingExecuted = element; 
-    var out = window.document.getElementById(element.id.replace(/code/,"out"));
-    tests = testElements(element);
-    var code = 'with (v) {'+removeTagsAndErrors(element.innerHTML)+'};';
-    element.attachEvent("onkeypress",editorKeyPress);
-    try {
-      var res = geval(code);
-      if (res == undefined) {
-        out.innerHTML = '<div class="ERROR">undefined</div>';
-      }
-      else if (res.error) {
-        out.innerHTML = '<div class="ERROR">'+res.error+'</div>';
-      }
-      else {
-        out.innerHTML = '<div class="SUCCESS">'+res.valueOf()+'</div>';
-      }
-      for (var i = 0;i<tests.length;i++) {
-        var div = tests[i];
-        if (div.innerHTML == res) {
-          div.className = 'SUCCESS';
-        }
-        else {
-          div.className = 'ERROR';
-        }
-      }
-    }
-    catch (e) {
-      out.innerHTML = '<div class="ERROR">'+e.name+': '+e.message+'<br>'+htmlToStr(code)+'</div>';
-    }
-    jc.codeElementBeingExecuted = undefined;
-  }
-
-  function execAll() {
-    $('.CODE').each(function(i,e) {execCode(e);});
-  }
-
-  function debug(/*messages*/) {
-    var n ='';
-    for (var i = 0;i<arguments.length;i++) {
-      n += '<DIV>'+arguments[i]+'</DIV>';
-    };
-    jc.debug.insertAdjacentHTML('beforeend',n);
-
-  };
-
-
-  window.attachEvent('onload',function () {
-    jc.debug = window.document.getElementById('debug');
-    jc.debug.innerHTML = '<DIV>debug</DIV>';
-
-  });  
-  
-
-  // jcalc library /////////////////////////////////////////////////////
-
-
-  function V(name,value) {
-    this.name =name;
-    this.value=value;
-  }
-
-  V.prototype.valueOf = function () {
-    if (this.func) {
-      try {
-        this.value = this.func();
-        this.error = undefined;
-        return this.value;
-      }
-      catch (e) {
-        this.value = undefined;
-        this.error = "in "+this.name+', '+e.message;
-        throw new Error(this.error);
-      }
-    }
-    if (!this.value) {
-      this.error = "Error in "+this.name+'> value is undefined';
-      throw new Error(this.error);
-    }
-    return this.value;
-  }
-
-  V.prototype.toString = function() {
-    return this.name+":"+this.value?this.value:this.error;
-  }
-  
-
-  function v(name,value) {
-    if (value != undefined) {
-      return v[name] = new V(name,value);
-    }
-    else {
-      return v[name];
-    }
-  }
-
-  function c(name,jcFunc) {
-    var nv = v(name, 0);
-    if (typeof jcFunc == "string") {
-      if (jcFunc.search(/return/)) {
-        jcFunc = 'return '+jcFunc;
-      }
-      nv.func = Function('',"with (v) {"+jcFunc+"}");
-    }
-    else if (typeof jcFunc == "function") {
-      nv.func = jcFunc;
-    }
-    else {
-      nv.error = 'jcFunc argument must either be a function() or a string representing the code of an expression like A+3 or return A+3'; 
-      throw new Error(this.error);
-    }
-    return nv;
-    
-  }
-
-
-  
-</script>
+<script src="jcalc.js"></script>
+<script src="jcalcEdi.js"></script>
 
 <body designMode="on">
   <nav id="mainToolBar">
     <input id="autoRun" type="checkbox" onclick="if (this.checked) {execAll()};">AutoRun</input>
   </nav>
   <h1>basics</h1>
-  <div id="code001" class="CODE" onclick="codeClick(this);" contentEditable>3+5</div>
-  <div id="out001" class="OUTPUT"><div class="OLD">no output</div></div>
-  <div id="test001" class="TEST"><div class="INFO" >8</div></div>
+  <div id="localToolBar"><button>new</button></div>
+  <div id="code0001" class="CODE" onclick="codeClick(this);" contentEditable>3+5</div>
+  <div id="out0001" class="OUTPUT"><div class="OLD">no output</div></div>
+  <div id="test0001" class="TEST"><div class="INFO" >8</div></div>
   <h1>jCalc lib</h1>
-  <div id="code002" class="CODE" onclick="codeClick(this);" contentEditable>c("myCalc","toto+5")<p>v("toto",3)<p>myCalc</div>
-  <div id="out002" class="OUTPUT"><div class="OLD">no output</div></div>
-  <div id="test002" class="TEST"><div class="INFO" >8</div></div>
-  <div id="code003" class="CODE" onclick="codeClick(this);" contentEditable>v("toto",3)</div>
-  <div id="out003" class="OUTPUT"><div class="OLD">no output</div></div>
-  <div id="code004" class="CODE" onclick="codeClick(this);" contentEditable>v("toto")</div>
-  <div id="out004" class="OUTPUT"><div class="OLD">no output</div></div>
+  <div id="code0102" class="CODE" onclick="codeClick(this);" contentEditable>c("myCalc","toto+5")<p>v("toto",3)<p>myCalc</div>
+  <div id="out0102" class="OUTPUT"><div class="OLD">no output</div></div>
+  <div id="test0102" class="TEST"><div class="INFO" >8</div></div>
+  <div id="code0103" class="CODE" onclick="codeClick(this);" contentEditable>v("toto",3)</div>
+  <div id="out0103" class="OUTPUT"><div class="OLD">no output</div></div>
+  <div id="code0104" class="CODE" onclick="codeClick(this);" contentEditable>v("toto")</div>
+  <div id="out0104" class="OUTPUT"><div class="OLD">no output</div></div>
+  <div id="code0105" class="CODE" onclick="codeClick(this);" contentEditable>
+    table("myTable")<p>
+      .add({_id:"car",vMax:250,aMax:2})<p>
+      .add({_id:"bus",vMax:150,aMax:0.5});
+  </div>
+  <div id="out0105" class="OUTPUT"><div class="OLD">no output</div></div>
   <h1>JQuery</h1>
-  <div id="code005" class="CODE" onclick="codeClick(this);" contentEditable>$('.DEBUG')</div>
-  <div id="out005" class="OUTPUT"><div class="OLD">no output</div></div>
-  <div id="test005" class="TEST"><div class="INFO" >[jQuery of 1 elements]</div></div>
+  <div id="code0201" class="CODE" onclick="codeClick(this);" contentEditable>$('.DEBUG')</div>
+  <div id="out0201" class="OUTPUT"><div class="OLD">no output</div></div>
+  <div id="test0201" class="TEST"><div class="INFO" >[jQuery of 1 elements]</div></div>
 
   <h1>debug</h1>
   <div id="debug" class="DEBUG">
     <div>debug</div>
   </div>
+  <div id="test">
+    <div id="test 1">test 1
+      <p id="p1_1">§ 1.1</p>
+      <p id="p1_2">§ 1.2</p>
+    </div>
+    <div id="test 2">test 2
+      <p id="p2_1">§ 2.1</p>
+      <p id="p2_2">§ 2.2</p>
+    </div>
+  </div>
+
+
 </body>
