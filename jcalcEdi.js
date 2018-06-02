@@ -18,7 +18,7 @@
   }
 
   function removeErrors(html) {
-    return html.replace(/<span class\="ERROR">(.+?)<\/span>/g,"$1")
+    return html.replace(/<SPAN class\=ERROR>(.+?)<\/SPAN>/g,"$1")
   }
                
   function removeTags(html) {
@@ -55,6 +55,11 @@
   }
 
   function execCode(element) {
+    if (jc.codeElementBeingExecuted) {
+      a("reentré!!!");
+      return;
+    }
+
     jc.codeElementBeingExecuted = element; 
     var out = window.document.getElementById(element.id.replace(/code/,"out"));
     tests = testElements(element);
@@ -85,7 +90,7 @@
     catch (e) {
       out.innerHTML = '<div class="ERROR">'+e.name+': '+e.message+'</div>';
       fault = e.message.match(/« (.+?) »/)[1];   //a="\u00AB\u00BB"
-a(fault);
+
       if (fault) {
         element.innerHTML = element.innerHTML.replace(new RegExp(fault,'g'),'<span class="ERROR">'+fault+'</span>');
       }
