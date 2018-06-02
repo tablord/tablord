@@ -37,7 +37,9 @@ p {
   background-color: 8dff60;
   border:solid green 1px;
 }
-
+.TEXT {
+  color: black;
+}
 .SUCCESS {
   background-color: 8dff60;
   border:solid green 1px;

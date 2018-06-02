@@ -8,6 +8,7 @@
 
   // jcalc library /////////////////////////////////////////////////////
     
+  
   // calcul ///////////////////
   function V(name,value) {
     this._name =name;
@@ -125,29 +126,75 @@
     return 'table '+this._name+' of '+this._length+' rows';
   }
 
-  Table.prototype.view = function() {
-    var h = '<div class="SUCCESS">'+this._name+'<table border="1px"><thead><tr>';  // TODO modify to style
-    for (var col in this._cols) {
+  Table.prototype.span = function(options) {
+    options = options || {};
+    options.cols = options.cols || this._cols;
+    options.rows = options.rows || range(0,this._length-1);
+    var h = '<table border="1px"><thead><tr>';  // TODO modify to style
+    for (var col in options.cols) {
       h += '<th>'+col+'</th>';
     }
     h += '</tr></thead><tbody>';    
-    for (var i=0; i<this._length;i++) {
+    for (var i in options.rows) {
       h += '<tr>';
-      for (var col in this._cols) {
+      for (var col in options.cols) {
         h += (col=="_id")?'<th>'+this[i][col]+'</th>':'<td>'+this[i][col]+'</td>';
       }
       h += '</tr>';
     }
-    h += '</tbody></table></div>';
-    
+    h += '</tbody></table>';
     return h;
+  }
+
+  Table.prototype.view = function(options) {
+    return '<div class="SUCCESS">'+this._name+this.span(options)+'</div>';
   }
 
   function table(name) {
     return v[name] = new Table(name);
   }
 
+  // html ///////////////////////////////////////////////
 
+  function HTML() {
+    this._html = '';
+    this._tagsEnd = [];
+  }
+
+  HTML.prototype.p = function (/*elements*/) {
+    this._html += '<p>';
+    if (arguments.length == 0) {
+      this._tagsEnd.push('</p>');
+      return this;
+    }
+    for (var i=0;i<arguments.length;i++) {
+      var e = arguments[i];
+      if (e.span) {
+        this._html += e.span();
+      }
+      else if (e.view) {
+        this._html  += e.view();
+      }
+      else {
+        this._html  += e;
+      }
+    }  
+    this._html += '</p>';
+    return this;
+  }
+
+  HTML.prototype.end = function() {
+    this._html += this._tagsEnd.pop();
+    return this;
+  }  
+
+  HTML.prototype.view = function() {
+    return '<div class="TEXT">'+this._html+this._tagsEnd.join('')+'</div>'
+  }
+
+  function h() {
+    return new HTML();
+  }
   // object viewers /////////////////////////////////////
 
   function view(obj) {
@@ -162,4 +209,10 @@
     
   // helpers /////////////////////////////////////////////
 
-
+  function range(min,max) {    //TODO devrait être un itérateur, mais n'existe pas encore dans cette version
+    var a = [];
+    for (var i = min; i <= max; i++) {
+      a.push(i);
+    }
+    return a;
+  }

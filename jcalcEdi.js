@@ -17,10 +17,13 @@
     return html.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/,"<br>");
   }
 
-  function removeTagsAndErrors(html) {
-    return html.replace(/<p class\="ERROR">.+?<\/p>/g,"")
-               .replace(/<.+?>/g,"")
-               .replace(/&nbsp;/," ")
+  function removeErrors(html) {
+    return html.replace(/<span class\="ERROR">(.+?)<\/span>/g,"$1")
+  }
+               
+  function removeTags(html) {
+    return html.replace(/<.+?>/g,"")
+               .replace(/&nbsp;/g," ")
   }
 
   function testElements(element) {
@@ -38,9 +41,7 @@
     for (var i = 0;i<tests.length;i++) {
       tests[i].className = 'INFO';
     };
-
     if (event.keyCode==10) {
-      
       execCode(element); //only IE
     }
   }
@@ -57,7 +58,8 @@
     jc.codeElementBeingExecuted = element; 
     var out = window.document.getElementById(element.id.replace(/code/,"out"));
     tests = testElements(element);
-    var code = 'with (v) {'+removeTagsAndErrors(element.innerHTML)+'};';
+    element.innerHTML = removeErrors(element.innerHTML);
+    var code = 'with (v) {'+removeTags(element.innerHTML)+'};';
     element.attachEvent("onkeypress",editorKeyPress);
     try {
       var res = geval(code);
@@ -81,7 +83,12 @@
       }
     }
     catch (e) {
-      out.innerHTML = '<div class="ERROR">'+e.name+': '+e.message+'<br>'+htmlToStr(code)+'</div>';
+      out.innerHTML = '<div class="ERROR">'+e.name+': '+e.message+'</div>';
+      fault = e.message.match(/« (.+?) »/)[1];   //a="\u00AB\u00BB"
+a(fault);
+      if (fault) {
+        element.innerHTML = element.innerHTML.replace(new RegExp(fault,'g'),'<span class="ERROR">'+fault+'</span>');
+      }
     }
     jc.codeElementBeingExecuted = undefined;
   }
