@@ -56,7 +56,7 @@
       if (jcFunc.search(/return/)) {
         jcFunc = 'return '+jcFunc;
       }
-      return new Function('',"with (v) {"+jcFunc+"}");
+      return new Function('',"with (this,this._row,v) {"+jcFunc+"}");
     }
     else if (typeof jcFunc == "function") {
       return jcFunc;
@@ -67,6 +67,19 @@
     }
   }
 
+  JcFunc.prototype.isJcFunc = function(){
+    return true;
+  }
+
+  JcFunc.prototype._ = function(row,col) {  //TODO first implementation: only absolute row / col; to be completed
+    if (!this._table) {
+      throw new Error('_(row,col) can only be used inside a cell of a table');
+    }
+    row = row || this._table[this._row];
+    col = col || this._col;
+    return this._table[row][col];
+  }
+
   function f(jcFunc) {
     return new JcFunc(jcFunc);
   }
@@ -75,7 +88,13 @@
 
   function Row(obj) {
     for (var k in obj) {
-      this[k] = obj[k];
+      var c = obj[k];
+a(""+c+" >"+c.isJcFunc)
+      if (c.isJcFunc) {
+        c._row = this;
+        c._col = k;
+      }
+      this[k] = c;
     }
   }
 
@@ -101,7 +120,7 @@
 
   Table.prototype.updateCols = function(withRow) {
     for (var col in withRow) {
-      if (withRow.hasOwnProperty(col) && (this._cols[col]==undefined)) {
+      if ((col != "_table") && withRow.hasOwnProperty(col) && (this._cols[col]==undefined)) {
         this._cols[col] = 1;
       }
     }
@@ -117,6 +136,7 @@
       }
       this[row._id] = row;
     }
+    row._table = this;
     this[this._length++] = row;
     this.updateCols(row);
     return this;
@@ -138,7 +158,12 @@
     for (var i in options.rows) {
       h += '<tr>';
       for (var col in options.cols) {
-        h += (col=="_id")?'<th>'+this[i][col]+'</th>':'<td>'+this[i][col]+'</td>';
+        var cell = this[i][col];
+        if (cell.isJcFunc) {
+a(i,col);
+          cell = cell();
+        }
+        h += (col=="_id")?'<th>'+cell+'</th>':'<td>'+cell+'</td>';
       }
       h += '</tr>';
     }
