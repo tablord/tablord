@@ -64,8 +64,8 @@
       if (res == undefined) {
         out.innerHTML = '<div class="ERROR">undefined</div>';
       }
-      else if (res.error) {
-        out.innerHTML = '<div class="ERROR">'+res.error+'</div>';
+      else if (res._error) {
+        out.innerHTML = '<div class="ERROR">'+res._error+'</div>';
       }
       else {
         out.innerHTML = view(res);

@@ -3,11 +3,14 @@ h1 {
   font-size: 12pt;
   margin-bottom: 0px;
 }
+
 .CODE {
-  font:fixed;      
+  font-family: courier;
+  font-size: 14px;      
   background-color: f2f9a8;
   border:solid yellow 1px;
 }
+
 .OUTPUT,
 .CODE,
 p {

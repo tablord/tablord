@@ -10,60 +10,64 @@
     
   // calcul ///////////////////
   function V(name,value) {
-    this.name =name;
-    this.value=value;
+    this._name =name;
+    this._value=value;
   }
 
   V.prototype.valueOf = function () {
-    if (this.func) {
+    if (this._func) {
       try {
-        this.value = this.func();
-        this.error = undefined;
-        return this.value;
+        this._value = this._func();
+        this._error = undefined;
+        return this._value;
       }
       catch (e) {
-        this.value = undefined;
-        this.error = "in "+this.name+', '+e.message;
-        throw new Error(this.error);
+        this._value = undefined;
+        this._error = "in "+this._name+', '+e.message;
+        throw new Error(this._error);
       }
     }
-    if (!this.value) {
-      this.error = "Error in "+this.name+'> value is undefined';
-      throw new Error(this.error);
+    if (!this._value) {
+      this._error = "Error in "+this._name+'> _value is undefined';
+      throw new Error(this._error);
     }
-    return this.value;
+    return this._value;
   }
 
   V.prototype.toString = function() {
-    return this.name+":"+this.value?this.value:this.error;
+    return this._name+":"+this._value?this._value:this._error;
   }
-  
 
   function v(name,value) {
+    if (typeof value == "function") {
+      var nv = new V(name,0);
+      nv._func = value;
+      return v[name] = nv;
+    }
     if (value != undefined) {
       return v[name] = new V(name,value);
     }
-    else {
-      return v[name];
-    }
+    return v[name];
   }
 
-  function c(name,jcFunc) {
-    var nv = v(name, 0);
+  function JcFunc (jcFunc) {
     if (typeof jcFunc == "string") {
       if (jcFunc.search(/return/)) {
         jcFunc = 'return '+jcFunc;
       }
-      nv.func = Function('',"with (v) {"+jcFunc+"}");
+      return new Function('',"with (v) {"+jcFunc+"}");
     }
     else if (typeof jcFunc == "function") {
-      nv.func = jcFunc;
+      return jcFunc;
     }
     else {
-      nv.error = 'jcFunc argument must either be a function() or a string representing the code of an expression like A+3 or return A+3'; 
-      throw new Error(this.error);
+      this._error = 'jcFunc argument must either be a function() or a string representing the code of an expression like A+3 or return A+3'; 
+      throw new Error(this._error);
     }
-    return nv;
+  }
+
+  function f(jcFunc) {
+    return new JcFunc(jcFunc);
   }
 
   // table //////////////////////////////////////////////
@@ -122,11 +126,11 @@
   }
 
   Table.prototype.view = function() {
-    var h = '<table border="1px"><hr>';
+    var h = '<div class="SUCCESS">'+this._name+'<table border="1px"><thead><tr>';  // TODO modify to style
     for (var col in this._cols) {
       h += '<th>'+col+'</th>';
     }
-    h += '</hr>';    
+    h += '</tr></thead><tbody>';    
     for (var i=0; i<this._length;i++) {
       h += '<tr>';
       for (var col in this._cols) {
@@ -134,7 +138,7 @@
       }
       h += '</tr>';
     }
-    h += '</table>';
+    h += '</tbody></table></div>';
     
     return h;
   }
@@ -157,14 +161,5 @@
   }
     
   // helpers /////////////////////////////////////////////
-  function existsIn(element,array){
-    // returns true if element is in array
-    for (var i =0;i<array.length;i++) {
-      if (array[i] == element) {
-        return true;
-      }
-    }
-    return false;
-  }
 
 
