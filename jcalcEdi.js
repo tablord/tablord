@@ -89,13 +89,15 @@
     }
     catch (e) {
       out.innerHTML = '<div class="ERROR">'+e.name+': '+e.message+'</div>';
-      fault = e.message.match(/« (.+?) »/)[1];   //a="\u00AB\u00BB"
-
-      if (fault) {
+      try {
+        fault = e.message.match(/« (.+?) »/)[1];
         element.innerHTML = element.innerHTML.replace(new RegExp(fault,'g'),'<span class="ERROR">'+fault+'</span>');
       }
+      catch (e) {}
     }
-    jc.codeElementBeingExecuted = undefined;
+    finally {
+      jc.codeElementBeingExecuted = undefined;
+    }
   }
 
   function execAll() {

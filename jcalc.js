@@ -56,10 +56,10 @@
       if (jcFunc.search(/return/)) {
         jcFunc = 'return '+jcFunc;
       }
-      return new Function('',"with (this,this._row,v) {"+jcFunc+"}");
+      this._func = new Function('table','row','col',"with (v){with(row) {"+jcFunc+"}}");
     }
     else if (typeof jcFunc == "function") {
-      return jcFunc;
+      this._func = jcFunc;
     }
     else {
       this._error = 'jcFunc argument must either be a function() or a string representing the code of an expression like A+3 or return A+3'; 
@@ -67,8 +67,13 @@
     }
   }
 
-  JcFunc.prototype.isJcFunc = function(){
+  JcFunc.prototype.isJcFunc = function() {
     return true;
+  }
+
+  JcFunc.prototype.valueOf = function() {
+    
+    return this._func(undefined,this._row,this._col);
   }
 
   JcFunc.prototype._ = function(row,col) {  //TODO first implementation: only absolute row / col; to be completed
@@ -89,8 +94,7 @@
   function Row(obj) {
     for (var k in obj) {
       var c = obj[k];
-a(""+c+" >"+c.isJcFunc)
-      if (c.isJcFunc) {
+      if (c.constructor == JcFunc) {
         c._row = this;
         c._col = k;
       }
@@ -159,10 +163,6 @@ a(""+c+" >"+c.isJcFunc)
       h += '<tr>';
       for (var col in options.cols) {
         var cell = this[i][col];
-        if (cell.isJcFunc) {
-a(i,col);
-          cell = cell();
-        }
         h += (col=="_id")?'<th>'+cell+'</th>':'<td>'+cell+'</td>';
       }
       h += '</tr>';
@@ -229,7 +229,12 @@ a(i,col);
     else if (obj.outerHTML) { // an Element
       return 'view of Element<br><code class="INSPECT">'+htmlToStr(obj.outerHTML)+'</code>';
     }
-    return '<div class="SUCCESS">'+obj+'</div>';  // valueOf or toString if nothing better
+    if (obj.valueOf) {
+      return '<div class="SUCCESS">'+obj.valueOf()+'</div>';
+    }
+    else {
+      return '<div class="SUCCESS">'+obj+'</div>';
+    }
   }
     
   // helpers /////////////////////////////////////////////
