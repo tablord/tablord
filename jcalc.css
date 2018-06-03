@@ -1,7 +1,47 @@
 h1 {
   font-family: Arial;
+  font-size: 18pt;
+  margin-bottom: 0px;
+}
+h2 {
+  font-family: Arial;
+  font-size: 14pt;
+  margin-bottom: 0px;
+}
+h3 {
+  font-family: Arial;
   font-size: 12pt;
   margin-bottom: 0px;
+}
+h4 {
+  font-family: Arial;
+  font-size: 10pt;
+  margin-bottom: 0px;
+}
+h5 {
+  font-family: Arial;
+  font-size: 10pt;
+  margin-bottom: 0px;
+}
+h6 {
+  font-family: Arial;
+  font-size: 10pt;
+  margin-bottom: 0px;
+}
+h7 {
+  font-family: Arial;
+  font-size: 10pt;
+  margin-bottom: 0px;
+}
+dt {
+  font-weight: bold;
+}
+
+th {
+  text-align: left;
+}
+td {
+  text-align: right;
 }
 
 .CODE {

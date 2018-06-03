@@ -34,13 +34,19 @@
   </div>
   <div id="out0105" class="OUTPUT"><div class="OLD">no output</div></div>
   <div id="code0106" class="CODE" onclick="codeClick(this);" contentEditable>
-    h()<p>
+    html()<p>
     &nbsp;&nbsp;.p("first § where we show that toto=",toto)<p>
     &nbsp;&nbsp;.p("second § where we show myTable",myTable.span({cols:{_id:1,amount:1}}))<p>
     &nbsp;&nbsp;.ul()<p>
     &nbsp;&nbsp;&nbsp;&nbsp;.li('list 1 the full table',myTable)<p>
     &nbsp;&nbsp;&nbsp;&nbsp;.li('list 2 a row',myTable.orange)<p>
-    &nbsp;&nbsp;.end()
+    &nbsp;&nbsp;&nbsp;&nbsp;.li('list 3 a row as a list',myTable.orange.list())<p>
+    &nbsp;&nbsp;.end()<p>
+    &nbsp;&nbsp;.h('Titre 1').indent()<p>
+    &nbsp;&nbsp;&nbsp;&nbsp;.h('Sous-Titre 1')<p>
+    &nbsp;&nbsp;&nbsp;&nbsp;.h('Sous-Titre 2')<p>
+    &nbsp;&nbsp;.indent(-1)<p>
+    &nbsp;&nbsp;.h('Titre 2')
   </div>
   <div id="out0106" class="OUTPUT"><div class="OLD">no output</div></div>
   <h1>JQuery</h1>

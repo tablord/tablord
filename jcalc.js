@@ -4,7 +4,8 @@
             codeElementBeingExecuted:undefined,
             currentElement:undefined,
             localToolBar:undefined,
-            stack:[]
+            stack:[],
+            htmlIndent:1
            };
 
   // jcalc library /////////////////////////////////////////////////////
@@ -104,15 +105,21 @@
     return "[Row]";
   }
 
+  Row.prototype.eachCol = function(f) {
+    for (var col in this) {
+      if (this.hasOwnProperty(col) && (col != '_table')) {
+        f(col,this[col]);
+      }
+    }
+  }
+
   Row.prototype.span = function (options) {
     options = options || {};
     if (!options.cols) {
       options.cols = {};
-      for (var col in this) {
-        if (this.hasOwnProperty(col) && (col != '_table')) {
-          options.cols[col]=1;
-        }
-      }
+      this.eachCol(function (col) {
+        options.cols[col]=1;
+      });
     }
     var h = '<table border="1px"><thead><tr>';  // TODO modify to style
     for (var col in options.cols) {
@@ -126,6 +133,12 @@
     }
     h += '</tr></tbody></table>';
     return h;
+  }
+
+  Row.prototype.list = function() {
+    var h = '<table>';
+    this.eachCol(function (col,val) {h += '<tr><th>'+col+'</th><td>'+val+'</td></tr>'});
+    return h+'</table>';
   }
 
   Row.prototype.isRow = function() {
@@ -201,6 +214,8 @@
     return v[name] = new Table(name);
   }
 
+
+
   // html ///////////////////////////////////////////////
 
   function HTML() {
@@ -218,6 +233,15 @@
   }
   HTML.prototype.li = function (/*elements*/) {
     this.tag('li',arguments);
+    return this;
+  }
+  HTML.prototype.h = function (/*elements*/) {
+    this.tag('H'+jc.htmlIndent,arguments);
+    return this;
+  }
+  HTML.prototype.indent = function(levels) {
+    levels = levels || 1;
+    jc.htmlIndent += levels;
     return this;
   }
 
@@ -253,7 +277,7 @@
     return '<div class="TEXT">'+this._html+this._tagsEnd.join('')+'</div>'
   }
 
-  function h() {
+  function html() {
     return new HTML();
   }
   // object viewers /////////////////////////////////////
