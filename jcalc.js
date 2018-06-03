@@ -3,7 +3,8 @@
   var jc = {debug:{},
             codeElementBeingExecuted:undefined,
             currentElement:undefined,
-            localToolBar:undefined
+            localToolBar:undefined,
+            stack:[]
            };
 
   // jcalc library /////////////////////////////////////////////////////
@@ -16,18 +17,6 @@
   }
 
   V.prototype.valueOf = function () {
-    if (this._func) {
-      try {
-        this._value = this._func();
-        this._error = undefined;
-        return this._value;
-      }
-      catch (e) {
-        this._value = undefined;
-        this._error = "in "+this._name+', '+e.message;
-        throw new Error(this._error);
-      }
-    }
     if (!this._value) {
       this._error = "Error in "+this._name+'> _value is undefined';
       throw new Error(this._error);
@@ -36,16 +25,15 @@
   }
 
   V.prototype.toString = function() {
-    return this._name+":"+this._value?this._value:this._error;
+    return 'v('+this._name+'):'+(this._value?this._value:this._error);
   }
 
   function v(name,value) {
-    if (typeof value == "function") {
-      var nv = new V(name,0);
-      nv._func = value;
-      return v[name] = nv;
-    }
-    if (value != undefined) {
+    if (value) {
+      if (value.isJcFunc) {
+        value._name = name;
+        return v[name] = value;
+      }
       return v[name] = new V(name,value);
     }
     return v[name];
@@ -56,7 +44,7 @@
       if (jcFunc.search(/return/)) {
         jcFunc = 'return '+jcFunc;
       }
-      this._func = new Function('table','row','col',"with (v){with(row) {"+jcFunc+"}}");
+      this._func = new Function('table','row','col',"row = row ||{};with (v){with(row) {"+jcFunc+"}}");
     }
     else if (typeof jcFunc == "function") {
       this._func = jcFunc;
@@ -72,10 +60,16 @@
   }
 
   JcFunc.prototype.valueOf = function() {
-    
     return this._func(undefined,this._row,this._col);
   }
 
+  JcFunc.prototype.toString = function() {
+    var n = '';
+    if (this._name) {n = this._name};
+    if (this._row) {n += ': '+this._row._table._name+'['+this._row._id+']['+this._col+']'};
+    return n+this._func.toString();
+  }
+    
   JcFunc.prototype._ = function(row,col) {  //TODO first implementation: only absolute row / col; to be completed
     if (!this._table) {
       throw new Error('_(row,col) can only be used inside a cell of a table');
