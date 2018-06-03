@@ -100,6 +100,30 @@
     return "[Row]";
   }
 
+  Row.prototype.span = function (options) {
+    options = options || {};
+    if (!options.cols) {
+      options.cols = {};
+      for (var col in this) {
+        if (this.hasOwnProperty(col) && (col != '_table')) {
+          options.cols[col]=1;
+        }
+      }
+    }
+    var h = '<table border="1px"><thead><tr>';  // TODO modify to style
+    for (var col in options.cols) {
+      h += '<th>'+col+'</th>';
+    }
+    h += '</tr></thead><tbody>';    
+    h += '<tr>';
+    for (var col in options.cols) {
+      var cell = this[col];
+      h += (col=="_id")?'<th>'+cell+'</th>':'<td>'+cell+'</td>';
+    }
+    h += '</tr></tbody></table>';
+    return h;
+  }
+
   Row.prototype.isRow = function() {
     return true;
   }
@@ -181,13 +205,27 @@
   }
 
   HTML.prototype.p = function (/*elements*/) {
-    this._html += '<p>';
-    if (arguments.length == 0) {
-      this._tagsEnd.push('</p>');
+    this.tag('p',arguments);
+    return this;
+  }
+  HTML.prototype.ul = function (/*elements*/) {
+    this.tag('ul',arguments);
+    return this;
+  }
+  HTML.prototype.li = function (/*elements*/) {
+    this.tag('li',arguments);
+    return this;
+  }
+
+  HTML.prototype.tag = function(tagName,elements) {
+    this._html += '<'+tagName+'>';
+    var tagEnd = '</'+tagName+'>';
+    if (elements.length == 0) {
+      this._tagsEnd.push(tagEnd);
       return this;
     }
-    for (var i=0;i<arguments.length;i++) {
-      var e = arguments[i];
+    for (var i=0;i<elements.length;i++) {
+      var e = elements[i];
       if (e.span) {
         this._html += e.span();
       }
@@ -198,7 +236,7 @@
         this._html  += e;
       }
     }  
-    this._html += '</p>';
+    this._html += tagEnd;
     return this;
   }
 
@@ -206,7 +244,7 @@
     this._html += this._tagsEnd.pop();
     return this;
   }  
-
+    
   HTML.prototype.view = function() {
     return '<div class="TEXT">'+this._html+this._tagsEnd.join('')+'</div>'
   }

@@ -36,7 +36,11 @@
   <div id="code0106" class="CODE" onclick="codeClick(this);" contentEditable>
     h()<p>
     &nbsp;&nbsp;.p("first § where we show that toto=",toto)<p>
-    &nbsp;&nbsp;.p("second § where we show myTable",myTable.view({cols:{_id:1,amount:1}}));
+    &nbsp;&nbsp;.p("second § where we show myTable",myTable.span({cols:{_id:1,amount:1}}))<p>
+    &nbsp;&nbsp;.ul()<p>
+    &nbsp;&nbsp;&nbsp;&nbsp;.li('list 1 the full table',myTable)<p>
+    &nbsp;&nbsp;&nbsp;&nbsp;.li('list 2 a row',myTable.orange)<p>
+    &nbsp;&nbsp;.end()
   </div>
   <div id="out0106" class="OUTPUT"><div class="OLD">no output</div></div>
   <h1>JQuery</h1>
