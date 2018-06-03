@@ -63,7 +63,6 @@
     jc.codeElementBeingExecuted = element; 
     var out = window.document.getElementById(element.id.replace(/code/,"out"));
     tests = testElements(element);
-    element.innerHTML = removeErrors(element.innerHTML);
     var code = 'with (v) {'+removeTags(element.innerHTML)+'};';
     element.attachEvent("onkeypress",editorKeyPress);
     try {
@@ -88,12 +87,15 @@
       }
     }
     catch (e) {
-      out.innerHTML = '<div class="ERROR">'+e.name+': '+e.message+'</div>';
+      var code = '';
       try {
         fault = e.message.match(/« (.+?) »/)[1];
-        element.innerHTML = element.innerHTML.replace(new RegExp(fault,'g'),'<span class="ERROR">'+fault+'</span>');
+        code = '<DIV class=CODE>'+element.innerHTML.replace(new RegExp(fault,'g'),'<span class="ERROR">'+fault+'</span>')+'</DIV>';
       }
       catch (e) {}
+      finally {
+        out.innerHTML = '<div class="ERROR">'+e.name+': '+e.message+code+'</div>';
+      }
     }
     finally {
       jc.codeElementBeingExecuted = undefined;

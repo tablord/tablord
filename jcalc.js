@@ -44,7 +44,7 @@
       if (jcFunc.search(/return/)) {
         jcFunc = 'return '+jcFunc;
       }
-      this._func = new Function('table','row','col',"row = row ||{};with (v){with(row) {"+jcFunc+"}}");
+      this._func = new Function('row','col','with (v){with(row) {'+jcFunc+'}}');
     }
     else if (typeof jcFunc == "function") {
       this._func = jcFunc;
@@ -59,8 +59,12 @@
     return true;
   }
 
+  JcFunc.prototype.span = function() {
+    return '<SPAN class=SUCCESS>'+this.valueOf()+'</SPAN>';
+  }
+
   JcFunc.prototype.valueOf = function() {
-    return this._func(undefined,this._row,this._col);
+    return this._func(this._row || {},this._col);
   }
 
   JcFunc.prototype.toString = function() {
