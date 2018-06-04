@@ -88,14 +88,12 @@
     }
     catch (e) {
       var code = '';
-      try {
-        fault = e.message.match(/« (.+?) »/)[1];
+      var faults = e.message.match(/« (.+?) »/);
+      if (faults != null) {
+        var fault = faults[1];
         code = '<DIV class=CODE>'+element.innerHTML.replace(new RegExp(fault,'g'),'<span class="ERROR">'+fault+'</span>')+'</DIV>';
       }
-      catch (e) {}
-      finally {
-        out.innerHTML = '<div class="ERROR">'+e.name+': '+e.message+code+'</div>';
-      }
+      out.innerHTML = '<div class="ERROR">'+e.name+': '+e.message+code+'</div>';
     }
     finally {
       jc.codeElementBeingExecuted = undefined;

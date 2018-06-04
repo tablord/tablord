@@ -8,6 +8,7 @@
 
 <script src="jquery.js"></script>
 <script src="jcalc.js"></script>
+<script src="axe.js"></script>
 <script src="jcalcEdi.js"></script>
 
 <body designMode="on">
@@ -53,6 +54,16 @@
   <div id="code0201" class="CODE" onclick="codeClick(this);" contentEditable>$('#code0104')[0]</div>
   <div id="out0201" class="OUTPUT"><div class="OLD">no output</div></div>
   <div id="test0201" class="TEST"><div class="INFO" >[jQuery of 1 elements]</div></div>
+  <h1>Axe</h1>
+  <div id="code0301" class="CODE" onclick="codeClick(this);" contentEditable>
+    axe('lift')<p>
+    .accelerate({t:5,a:1})<p>
+    .accelerate({t:10,a:-1})<p>
+    .accelerate({t:15,a:0})<p>
+    .sample(5,15,1)
+  </div>
+  <div id="out0301" class="OUTPUT"><div class="OLD">no output</div></div>
+  
 
   <h1>debug</h1>
   <div id="debug" class="DEBUG">
