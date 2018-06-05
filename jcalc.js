@@ -223,6 +223,11 @@
     this._tagsEnd = [];
   }
 
+  HTML.prototype.htmlCode = function (html) {
+    this._html += html;
+    return this;
+  }
+
   HTML.prototype.p = function (/*elements*/) {
     this.tag('p',arguments);
     return this;

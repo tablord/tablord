@@ -2,7 +2,7 @@
 
 function Axe (name) {
   this._name = name;
-  this.functions = [{f:Axe.prototype.faccelerate,init:{t:0,p:0,v:0,a:0,j:0}}];
+  this.functions = [{f:Axe.prototype.faccelerate,init:{t:0,p:0,v:0,a:0}}];
 }
 
 
@@ -50,14 +50,82 @@ Axe.prototype.accelerate = function(init){
   return this;
 }
 
+
+Axe.prototype.move = function(init){
+  var a1 = init.a1 || init.a;
+  var a2 = init.a2 || -init.a;
+  var a3 = init.a3 || a2;
+
+
+  var v3 = init.v3 || 0;
+  var v2 = init.v2 || v3;
+  var v1 = init.v1;
+  var v  = init.v || 0;   //*************************work around: a corriger le recalcul pour avoir le v du précédent
+
+  var d  = init.d;
+  
+  do {
+    v2 = ((v1/v2)>1)?v2:v1; //if abs(v2) > abs(v1) v2 is limited to v1
+    var t  = init.t;
+    var t1 = (v1-v)/a1;
+    var t2 = (v2-v1)/a2;
+    var t3 = (v3-v2)/a3;
+
+    var df = init.df || (init.tf)?init.tf*v2 + t3*(v2+v3)/2 : 0;
+    var tf = init.tf || (v2 != 0)?(df-(v2+v3)/2/a3)/v2 : 0;
+    var ts = tf-t3;
+
+    var d1 = (v+v1)/2*t1;
+    var d2 = (v1+v2)/2*t2;
+    var d3 = (v2+v3)/2*t3;
+    var dc = d-d1-d2-df;
+    var tc = dc / v1;
+    if (tc < 0) {
+      v1 = 0.9*v1; // ***** dirty and stupid
+    }
+//a(inspect({t:t,t1:t1,tc:tc,t2:t2,t3:t3,tf:tf,ts:ts,a1:a1,a2:a2,a3:a3,v:v,v1:v1,v2:v2,v3:v3,d:d,d1:d1,d2:d2,d3:d3,dc:dc,df:df}))
+  }
+  while (tc < 0);
+  this.insertFunction(Axe.prototype.faccelerate,{t:t,a:a1,comment:inspect({t1:t1,tc:tc,t2:t2,t3:t3,tf:tf,ts:ts,a:init.a,a1:a1,a2:a2,a3:a3,v:v,v1:v1,v2:v2,v3:v3,d:d,d1:d1,d2:d2,d3:d3,dc:dc,df:df})});
+  this.insertFunction(Axe.prototype.faccelerate,{t:t+t1,a:0});
+  this.insertFunction(Axe.prototype.faccelerate,{t:t+t1+tc,a:a2});
+  this.insertFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2,a:0});
+  this.insertFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2+ts,a:a3});
+  this.insertFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2+ts+t3,a:0});
+
+  return this;
+}
+
+
+Axe.prototype.move.help = function() {
+  var h ="   |<-------------- tt ----------------->|       \n"+
+         "   |<--t1-->|<----- tc ------->|<t2>|    |       \n"+
+         "   |        +------------------+ v1 |    |       \n"+
+         "   |       /                    \   |<tf>|       \n"+
+         "   |      /                      \a2|    |       \n"+
+         "   |  a1 /                        \ |ts|t|       \n"+
+         "   |    /          dc              \|  |3|       \n"+
+         "   |   /                            +--+ v2      \n"+
+         "   |  /d1                        d2 |   \|       \n"+
+         "   | /                              |    + v3    \n"+
+         "   |+ v                             |(df)|       \n"+
+         "   +---------------------------------------------\n"
+  return '<pre>'+htmlToStr(h)+'</pre>';
+}
+      
+     
+
+
 Axe.prototype.sample = function(start,end,step) {
 // return a Table with all values form start to end, step by step
 
-  var samples = table('axe');  ///////////////////////////////////////////********************************************
+  var samples = table();
   var i = 0;
   for (var t = start; t <= end; t += step) {
     while ((i < this.functions.length) && (this.functions[i].init.t <= t)) i++;
-    i--;
+    if (i>0) {
+      i--;
+    }
     samples.add(this.functions[i].f(this.functions[i].init,t));
   }
   return samples;
@@ -81,7 +149,7 @@ Axe.prototype.span = function() {
     f = this.functions[i];
     h += '<tr><td>'+f.f.toString()+'</td>';
     for (var col in cols) {  
-      h += '<td>'+f.init[col]+'</td>';
+      h += '<td>'+((f.init[col]!==undefined)?f.init[col]:'--')+'</td>';
     }
     h += '</tr>';
   }

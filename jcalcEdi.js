@@ -8,13 +8,13 @@
   }
 
   function inspect(obj) {
-    var a = [];
-    for (var k in obj) { a.push(k)};
-    return a;
+    var r = '';
+    for (var k in obj) { r += k+':'+obj[k]+'  ' };
+    return r;
   }
 
   function htmlToStr(html) {
-    return html.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/,"<br>");
+    return html.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\\/,'\\\\').replace(/\n/,"<br>");
   }
 
   function removeErrors(html) {
@@ -24,6 +24,9 @@
   function removeTags(html) {
     return html.replace(/<.+?>/g,"")
                .replace(/&nbsp;/g," ")
+               .replace(/&lt;/g,"<")
+               .replace(/&gt;/g,">")
+               .replace(/&amp;/g,"&")
   }
 
   function testElements(element) {
