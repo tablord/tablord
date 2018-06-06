@@ -20,22 +20,22 @@
   <h1>basics</h1>
   <div id="localToolBar"><button>new</button></div>
   <div id="code0001" class="CODE" onclick="codeClick(this);" contentEditable>3+5</div>
-  <div id="out0001" class="OUTPUT"><div class="OLD">no output</div></div>
+  <div id="out0001" class="OUTPUT" onclick="outClick(this)"><div class="OLD">no output</div></div>
   <div id="test0001" class="TEST"><div class="INFO" >8</div></div>
   <h1>jCalc lib</h1>
   <div id="code0102" class="CODE" onclick="codeClick(this);" contentEditable>v("myCalc",f("toto+5"))<p>v("toto",3)<p>myCalc</div>
-  <div id="out0102" class="OUTPUT"><div class="OLD">no output</div></div>
+  <div id="out0102" class="OUTPUT" onclick="outClick(this)"><div class="OLD">no output</div></div>
   <div id="test0102" class="TEST"><div class="INFO" >8</div></div>
   <div id="code0103" class="CODE" onclick="codeClick(this);" contentEditable>v("toto",3)</div>
-  <div id="out0103" class="OUTPUT"><div class="OLD">no output</div></div>
+  <div id="out0103" class="OUTPUT" onclick="outClick(this)"><div class="OLD">no output</div></div>
   <div id="code0104" class="CODE" onclick="codeClick(this);" contentEditable>v("toto")</div>
-  <div id="out0104" class="OUTPUT"><div class="OLD">no output</div></div>
+  <div id="out0104" class="OUTPUT" onclick="outClick(this)"><div class="OLD">no output</div></div>
   <div id="code0105" class="CODE" onclick="codeClick(this);" contentEditable>
     table("myTable")<p>
     &nbsp;&nbsp;.add({_id:"apple" ,quantity:250,price:0.5,amount:f("quantity*price")})<p>
     &nbsp;&nbsp;.add({_id:"orange",quantity:100,price:0.7,amount:f("quantity*price")});
   </div>
-  <div id="out0105" class="OUTPUT"><div class="OLD">no output</div></div>
+  <div id="out0105" class="OUTPUT" onclick="outClick(this)"><div class="OLD">no output</div></div>
   <div id="code0106" class="CODE" onclick="codeClick(this);" contentEditable>
     html()<p>
     &nbsp;&nbsp;.p("first § where we show that toto=",toto)<p>
@@ -51,10 +51,10 @@
     &nbsp;&nbsp;.indent(-1)<p>
     &nbsp;&nbsp;.h('Titre 2')
   </div>
-  <div id="out0106" class="OUTPUT"><div class="OLD">no output</div></div>
+  <div id="out0106" class="OUTPUT" onclick="outClick(this)"><div class="OLD">no output</div></div>
   <h1>JQuery</h1>
   <div id="code0201" class="CODE" onclick="codeClick(this);" contentEditable>$('#code0104')[0]</div>
-  <div id="out0201" class="OUTPUT"><div class="OLD">no output</div></div>
+  <div id="out0201" class="OUTPUT" onclick="outClick(this)"><div class="OLD">no output</div></div>
   <div id="test0201" class="TEST"><div class="INFO" >[jQuery of 1 elements]</div></div>
   <h1>Axe</h1>
   <div id="code0301" class="CODE" onclick="codeClick(this);" contentEditable>
@@ -64,7 +64,12 @@
     .accelerate({t:15,a:0})<p>
     .move({t:20,a:1,d:40,v1:5})
   </div>
-  <div id="out0301" class="OUTPUT"><div class="OLD">no output</div></div>
+  <div id="out0301" class="OUTPUT" onclick="outClick(this)"><div class="OLD">no output</div></div>
+  <div id="code0302" class="CODE" onclick="codeClick(this);" contentEditable>
+    lift<p>
+    .accelerate({t:33,a:1})<p>
+  </div>
+  <div id="out0302" class="OUTPUT" onclick="outClick(this)"><div class="OLD">no output</div></div>
   
 
   <h1>debug</h1>

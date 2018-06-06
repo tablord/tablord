@@ -44,17 +44,17 @@
     for (var i = 0;i<tests.length;i++) {
       tests[i].className = 'INFO';
     };
-    if (event.keyCode==10) {
-      execCode(element); //only IE
-    }
   }
 
   function codeClick(element) {
     jc.currentElement = element;
     var localToolBar = $('#localToolBar')[0];
     localToolBar.parentNode.insertBefore(localToolBar,element);
+  }
 
-    execCode(element);
+  function outClick(out) {
+    code = window.document.getElementById(out.id.replace(/out/,"code"))
+    execCode(code);
   }
 
   function execCode(element) {

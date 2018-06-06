@@ -5,33 +5,17 @@ function Axe (name) {
   this.functions = [{f:Axe.prototype.faccelerate,init:{t:0,p:0,v:0,a:0}}];
 }
 
+Axe.prototype.appendFunction = function (f,init) {
+  var last = this.functions.length-1;
+  if (init.t < this.functions[last].t) {
+    throw new Error("Axe.appendFunction: can't append a function with time "+init.t+" since last function starts at "+this.functions[last].t);
+  }
+  var res = this.functions[last].f(this.functions[last].init,init.t); // calculate the next last point of previous function
+  init.p = res.p;
+  init.v = res.v;
+  this.functions.push({f:f,init:init});
+} 
 
-Axe.prototype.insertFunction = function (f,init) {
-  var t = init.t || this.functions[this.functions.length-1].t;  //insertion time is either specitied in init or just replaces the last function
-                                                                //that is usually acceleration {a:0}
-  for (var i=this.functions.length-1;i>=0;i--) {
-    if (t > this.functions[i].init.t) {
-      this.functions.splice(i+1,0,{f:f,init:init});
-      break;
-    }
-    if (t = this.functions[i].init.t) {
-      this.functions.splice(i+1,1,{f:f,init:init}); // replaces
-      break;
-    }
-  }
-  if ((i == 0) && (t < this.functions[i].init.t)) {
-    this.functions.splice(0,0,{f:f,init:init});
-  }
-  // recalculate the init value from that point
-  for (i=i;i<this.functions.length-1;i++) {
-    var tEnd = (this.functions[i].init.t+this.functions[i].init.dt) || this.functions[i+1].init.t; // end time is either specified or if not is the next function start
-    var res = this.functions[i].f(this.functions[i].init,tEnd);
-    var next = this.functions[i+1].init;
-    next.t = res.t;
-    next.p = res.p;
-    next.v = res.v;
-  }
-}
 
 Axe.prototype.faccelerate = function (init,t) {
   //returns {t:t,p:xxx,v:xxx,a:init.a,j:xxxx} for a given t
@@ -46,7 +30,7 @@ Axe.prototype.faccelerate.toString = function(){
 }
 
 Axe.prototype.accelerate = function(init){
-  this.insertFunction(Axe.prototype.faccelerate,init);
+  this.appendFunction(Axe.prototype.faccelerate,init);
   return this;
 }
 
@@ -86,12 +70,12 @@ Axe.prototype.move = function(init){
 //a(inspect({t:t,t1:t1,tc:tc,t2:t2,t3:t3,tf:tf,ts:ts,a1:a1,a2:a2,a3:a3,v:v,v1:v1,v2:v2,v3:v3,d:d,d1:d1,d2:d2,d3:d3,dc:dc,df:df}))
   }
   while (tc < 0);
-  this.insertFunction(Axe.prototype.faccelerate,{t:t,a:a1,comment:inspect({t1:t1,tc:tc,t2:t2,t3:t3,tf:tf,ts:ts,a:init.a,a1:a1,a2:a2,a3:a3,v:v,v1:v1,v2:v2,v3:v3,d:d,d1:d1,d2:d2,d3:d3,dc:dc,df:df})});
-  this.insertFunction(Axe.prototype.faccelerate,{t:t+t1,a:0});
-  this.insertFunction(Axe.prototype.faccelerate,{t:t+t1+tc,a:a2});
-  this.insertFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2,a:0});
-  this.insertFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2+ts,a:a3});
-  this.insertFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2+ts+t3,a:0});
+  this.appendFunction(Axe.prototype.faccelerate,{t:t,a:a1,comment:inspect({t1:t1,tc:tc,t2:t2,t3:t3,tf:tf,ts:ts,a:init.a,a1:a1,a2:a2,a3:a3,v:v,v1:v1,v2:v2,v3:v3,d:d,d1:d1,d2:d2,d3:d3,dc:dc,df:df})});
+  this.appendFunction(Axe.prototype.faccelerate,{t:t+t1,a:0});
+  this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc,a:a2});
+  this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2,a:0});
+  this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2+ts,a:a3});
+  this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2+ts+t3,a:0});
 
   return this;
 }
