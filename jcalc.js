@@ -13,12 +13,29 @@
   
   // calcul ///////////////////
   function V(name,value) {
-    this._name =name;
+    this.setName(name);
     this._value=value;
   }
 
+  V.prototype.setName = function(name) {
+    this._name =name;
+    var lu = name.match(/(^.+)\$(.+)/)
+    if (lu != null) {
+      this._label = lu[1];
+      this._unit  = lu[2];
+    }
+  }
+
+  V.prototype.label = function() {
+    return '<var>'+(this._label || this._name)+'</var>';
+  }
+
+  V.prototype.unit = function() {
+    return this._unit?'<span class=UNIT>'+this._unit+'</span>':'';
+  }
+ 
   V.prototype.valueOf = function () {
-    if (!this._value) {
+    if (this._value == undefined) {
       this._error = "Error in "+this._name+'> _value is undefined';
       throw new Error(this._error);
     }
@@ -26,19 +43,26 @@
   }
 
   V.prototype.toString = function() {
-    return 'v('+this._name+'):'+(this._value?this._value:this._error);
+    return 'v('+this._name+'):'+this.valueOf();
+  }
+
+  V.prototype.span = function() {
+    return this.label()+'= <span class=VALUE>'+this.valueOf()+'</span>'+this.unit();
   }
 
   function v(name,value) {
-    if (value) {
+    if (value != undefined) {
       if (value.isJcFunc) {
-        value._name = name;
+        value.setName(name);
         return v[name] = value;
       }
       return v[name] = new V(name,value);
     }
     return v[name];
   }
+
+
+  /////////////////////////////////////////////////////////////////////////
 
   function JcFunc (jcFunc) {
     if (typeof jcFunc == "string") {
@@ -56,13 +80,15 @@
     }
   }
 
+
   JcFunc.prototype.isJcFunc = function() {
     return true;
   }
-
-  JcFunc.prototype.span = function() {
-    return '<SPAN class=SUCCESS>'+this.valueOf()+'</SPAN>';
-  }
+  
+  JcFunc.prototype.label = V.prototype.label;
+  JcFunc.prototype.unit  = V.prototype.unit;
+  JcFunc.prototype.setName = V.prototype.setName;
+  JcFunc.prototype.span = V.prototype.span;
 
   JcFunc.prototype.valueOf = function() {
     return this._func(this._row || {},this._col);
@@ -182,7 +208,7 @@
   }
   
   Table.prototype.toString = function() {
-    return 'table '+this._name+' of '+this._length+' rows';
+    return '[table '+this._name+' of '+this._length+' rows]';
   }
 
   Table.prototype.span = function(options) {
@@ -207,7 +233,7 @@
   }
 
   Table.prototype.view = function(options) {
-    return '<div class="SUCCESS">'+this._name+this.span(options)+'</div>';
+    return '<div><var>'+this._name+'</var>'+this.span(options)+'</div>';
   }
 
   function table(name) {
@@ -288,14 +314,17 @@
   // object viewers /////////////////////////////////////
 
   function view(obj) {
-    if (obj.view) {      // this objet has a viewer: just use it
+    if (obj.span) {
+      return obj.span();
+    }
+    if (obj.view) {      
       return obj.view();
     }
-    else if (obj.outerHTML) { // an Element
+    if (obj.outerHTML) { // an Element
       return 'view of Element<br><code class="INSPECT">'+htmlToStr(obj.outerHTML)+'</code>';
     }
     if (obj.valueOf) {
-      return '<div class="SUCCESS">'+obj.valueOf()+'</div>';
+      return obj.valueOf();
     }
     else {
       return '<div class="SUCCESS">'+obj+'</div>';

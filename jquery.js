@@ -46,10 +46,18 @@ JQuery.prototype.toString = function () {
 }
 
 
+
 function $(sel,context) {
   return new JQuery().add(sel,context);
 }
   
+// Events ////////////////////////
+JQuery.prototype.bind = function(type,data,f) {
+  for (var i=0; i<this.length; i++) {
+    this[i].attachEvent("on"+type,f);
+  }
+  return this;
+}
 
 // addition to jQuery  ///////////
 

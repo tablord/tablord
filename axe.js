@@ -5,6 +5,10 @@ function Axe (name) {
   this.functions = [{f:Axe.prototype.faccelerate,init:{t:0,p:0,v:0,a:0}}];
 }
 
+Axe.prototype.toString = function() {
+  return '[Axe'+this._name+' with '+this.functions.length+' functions]';
+}
+
 Axe.prototype.appendFunction = function (f,init) {
   var last = this.functions.length-1;
   if (init.t < this.functions[last].t) {
@@ -118,7 +122,7 @@ Axe.prototype.sample = function(start,end,step) {
 Axe.prototype.span = function() {
   var cols = {t:1,p:1,v:1,a:1,j:1};
   for (var i in this.functions) {
-    f = this.functions[i];
+    var f = this.functions[i];
     for (var c in f.init) {
       cols[c]=1;
     }
@@ -130,7 +134,7 @@ Axe.prototype.span = function() {
   }
   h += '</tr></thead><tbody>';    
   for (var i in this.functions) {
-    f = this.functions[i];
+    var f = this.functions[i];
     h += '<tr><td>'+f.f.toString()+'</td>';
     for (var col in cols) {  
       h += '<td>'+((f.init[col]!==undefined)?f.init[col]:'--')+'</td>';

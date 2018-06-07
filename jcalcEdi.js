@@ -44,6 +44,9 @@
     for (var i = 0;i<tests.length;i++) {
       tests[i].className = 'INFO';
     };
+    if (event.keyCode==10) {  //only IE
+      execCode(element); 
+    }
   }
 
   function codeClick(element) {
@@ -67,7 +70,6 @@
     var out = window.document.getElementById(element.id.replace(/code/,"out"));
     tests = testElements(element);
     var code = 'with (v) {'+removeTags(element.innerHTML)+'};';
-    element.attachEvent("onkeypress",editorKeyPress);
     try {
       var res = geval(code);
       if (res == undefined) {
@@ -77,7 +79,7 @@
         out.innerHTML = '<div class="ERROR">'+res._error+'</div>';
       }
       else {
-        out.innerHTML = view(res);
+        out.innerHTML = '<div class="SUCCESS">'+view(res)+'</div>';
       }
       for (var i = 0;i<tests.length;i++) {
         var div = tests[i];
@@ -121,6 +123,6 @@
     jc.debug = window.document.getElementById('debug');
     jc.debug.innerHTML = '<DIV>debug</DIV>';
     jc.localToolBar = window.document.getElementById('localToolBar');
-
+    $('.CODE').bind("keypress",undefined,editorKeyPress);
   });  
   
