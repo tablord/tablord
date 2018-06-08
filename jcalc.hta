@@ -14,11 +14,11 @@
 <script src="jcalcEdi.js"></script>
 
 <body designMode="on">
+  <div id="localToolBar" hidden="true"><span id=codeId>codeid</span><button>new</button><button onclick="showOutputHtml(this);">show output html</button></div>
   <nav id="mainToolBar">
     <input id="autoRun" type="checkbox" onclick="if (this.checked) {execAll()};">AutoRun</input>
   </nav>
   <h1>basics</h1>
-  <div id="localToolBar"><button>new</button></div>
   <div id="code0001" class="CODE" onclick="codeClick(this);" contentEditable>3+5</div>
   <div id="out0001" class="OUTPUT" onclick="outClick(this)"><div class="OLD">no output</div></div>
   <div id="test0001" class="TEST"><div class="INFO" >8</div></div>

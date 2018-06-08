@@ -53,6 +53,8 @@
     jc.currentElement = element;
     var localToolBar = $('#localToolBar')[0];
     localToolBar.parentNode.insertBefore(localToolBar,element);
+    localToolBar.hidden = false;
+    window.document.getElementById('codeId').innerHTML = element.id;
   }
 
   function outClick(out) {
@@ -108,6 +110,21 @@
   function execAll() {
     $('.CODE').each(function(i,e) {execCode(e);});
   }
+
+  function showOutputHtml(checkBox) {
+    var outHtmlId = jc.currentElement.id.replace(/code/,"html");
+    var outHtml = window.document.getElementById(outHtmlId);
+    if (!checkBox.checked && outHtml) {
+      outHtml.outerHTML = '';
+    }
+    var out = window.document.getElementById(jc.currentElement.id.replace(/code/,"out"));
+    if (outHtml == undefined) {
+      out.insertAdjacentHTML('afterend','<DIV id='+outHtmlId+' class=DEBUG>html</DIV>');
+      var outHtml = window.document.getElementById(outHtmlId);
+    }
+    outHtml.innerHTML = htmlToStr(out.innerHTML);
+  }
+
 
   function debug(/*messages*/) {
     var n ='';
