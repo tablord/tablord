@@ -13,15 +13,16 @@
     return r;
   }
 
-  function htmlToStr(html) {
-    return html.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\\/,'\\\\').replace(/\n/,"<br>");
+  jc.toHtml = function(htmlCode) {
+    // transform htmlCode in such a manner that the code can be visualised in a <code>...
+    return htmlCode.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\\/,'\\\\').replace(/\n/,"<br>");
   }
 
-  function removeErrors(html) {
+  jc.removeErrors = function(html) {
     return html.replace(/<SPAN class\=ERROR>(.+?)<\/SPAN>/g,"$1")
   }
                
-  function removeTags(html) {
+  jc.removeTags = function(html) {
     return html.replace(/<.+?>/g,"")
                .replace(/&nbsp;/g," ")
                .replace(/&lt;/g,"<")
@@ -29,7 +30,7 @@
                .replace(/&amp;/g,"&")
   }
 
-  function testElements(element) {
+  jc.testElements = function(element) {
     // returns a pseudo array of Elements containing the test values.
     // if no tests returns []
 
@@ -37,7 +38,7 @@
     return testElements?testElements.children:[];
   }
 
-  function editorKeyPress(event) {
+  jc.editorKeyPress = function(event) {
     var element = event.srcElement;
     window.document.getElementById(element.id.replace(/code/,"out")).children[0].className = 'OLD';
     var tests = testElements(element);
@@ -45,11 +46,11 @@
       tests[i].className = 'INFO';
     };
     if (event.keyCode==10) {  //only IE
-      execCode(element); 
+      jc.execCode(element); 
     }
   }
 
-  function codeClick(element) {
+  jc.codeClick = function(element) {
     jc.currentElement = element;
     var localToolBar = $('#localToolBar')[0];
     localToolBar.parentNode.insertBefore(localToolBar,element);
@@ -57,12 +58,12 @@
     window.document.getElementById('codeId').innerHTML = element.id;
   }
 
-  function outClick(out) {
+  jc.outClick = function(out) {
     code = window.document.getElementById(out.id.replace(/out/,"code"))
-    execCode(code);
+    jc.execCode(code);
   }
 
-  function execCode(element) {
+  jc.execCode = function(element) {
     if (jc.codeElementBeingExecuted) {
       a("reentré!!!");
       return;
@@ -70,8 +71,8 @@
 
     jc.codeElementBeingExecuted = element; 
     var out = window.document.getElementById(element.id.replace(/code/,"out"));
-    tests = testElements(element);
-    var code = 'with (v) {'+removeTags(element.innerHTML)+'};';
+    tests = jc.testElements(element);
+    var code = 'with (v) {'+jc.removeTags(element.innerHTML)+'};';
     try {
       var res = geval(code);
       if (res == undefined) {
@@ -107,11 +108,11 @@
     }
   }
 
-  function execAll() {
-    $('.CODE').each(function(i,e) {execCode(e);});
+  jc.execAll = function() {
+    $('.CODE').each(function(i,e) {jc.execCode(e);});
   }
 
-  function showOutputHtml(checkBox) {
+  jc.showOutputHtml = function(checkBox) {
     var outHtmlId = jc.currentElement.id.replace(/code/,"html");
     var outHtml = window.document.getElementById(outHtmlId);
     if (!checkBox.checked && outHtml) {
@@ -122,11 +123,11 @@
       out.insertAdjacentHTML('afterend','<DIV id='+outHtmlId+' class=DEBUG>html</DIV>');
       var outHtml = window.document.getElementById(outHtmlId);
     }
-    outHtml.innerHTML = htmlToStr(out.innerHTML);
+    outHtml.innerHTML = jc.toHtml(out.innerHTML);
   }
 
 
-  function debug(/*messages*/) {
+  jc.debug = function(/*messages*/) {
     var n ='';
     for (var i = 0;i<arguments.length;i++) {
       n += '<DIV>'+arguments[i]+'</DIV>';
@@ -140,6 +141,6 @@
     jc.debug = window.document.getElementById('debug');
     jc.debug.innerHTML = '<DIV>debug</DIV>';
     jc.localToolBar = window.document.getElementById('localToolBar');
-    $('.CODE').bind("keypress",undefined,editorKeyPress);
+    $('.CODE').bind("keypress",undefined,jc.editorKeyPress);
   });  
   

@@ -321,7 +321,7 @@
       return obj.view();
     }
     if (obj.outerHTML) { // an Element
-      return 'view of Element<br><code class="INSPECT">'+htmlToStr(obj.outerHTML)+'</code>';
+      return 'DOM Element<span class="INSPECT">'+jc.toHtml(obj.outerHTML)+'</span>';
     }
     if (obj.valueOf) {
       return obj.valueOf();

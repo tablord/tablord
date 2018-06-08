@@ -78,6 +78,8 @@ p {
   color: green;
   background-color: 8dff60;
   border:solid green 1px;
+  font-family: courier;
+  font-size: 14px;      
 }
 .TEXT {
   color: black;

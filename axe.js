@@ -98,7 +98,7 @@ Axe.prototype.move.help = function() {
          "   | /                              |    + v3    \n"+
          "   |+ v                             |(df)|       \n"+
          "   +---------------------------------------------\n"
-  return '<pre>'+htmlToStr(h)+'</pre>';
+  return '<pre>'+toHtml(h)+'</pre>';
 }
       
      
