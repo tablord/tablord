@@ -15,10 +15,14 @@
 <script src="jcalcEdi.js"></script>
 
 <body designMode="on">
-  <div id="localToolBar" hidden="true"><span id=codeId>codeid</span><button>new</button><button onclick="jc.showOutputHtml(this);">show output html</button></div>
-  <nav id="mainToolBar">
-    <input id="autoRun" type="checkbox" onclick="if (this.checked) {jc.execAll()};">AutoRun</input>
-  </nav>
+  <div id="localToolBar" hidden="true">
+    <span id=codeId>codeid</span>
+    <button>new</button>
+    <button onclick="jc.showOutputHtml(this);">show output html</button>
+    <button onclick="jc.toggleAutoExec();">autoexec</button>
+    <button onclick="jc.execAutoExec();">run</button>
+    <button onclick="jc.execAll();">run all</button>
+  </div>
   <h1>basics</h1>
   <div id="code0001" class="CODE" onclick="jc.codeClick(this);" contentEditable>3+5</div>
   <div id="out0001" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
@@ -29,7 +33,7 @@
   <div id="test0102" class="TEST"><div class="INFO" >8</div></div>
   <div id="code0103" class="CODE" onclick="jc.codeClick(this);" contentEditable>v("hauteur$mm",3)</div>
   <div id="out0103" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
-  <div id="code0104" class="CODE" onclick="jc.codeClick(this);" contentEditable>v("hauteur$mm")</div>
+  <div id="code0104" class="CODE AUTOEXEC" onclick="jc.codeClick(this);" contentEditable>v("hauteur$mm")</div>
   <div id="out0104" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
   <div id="code0105" class="CODE" onclick="jc.codeClick(this);" contentEditable>
     table("myTable")<p>
@@ -87,7 +91,7 @@
   <div id="out0401" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
   <div id="code0402" class="CODE" onclick="jc.codeClick(this);" contentEditable>
     html()<p>
-    .p(myStateMachine.runOnce().view())<p>
+    .p(myStateMachine.runOnce().view({log:true}))<p>
     .p(runCount)
   </div>
   <div id="out0402" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>

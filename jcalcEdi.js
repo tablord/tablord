@@ -46,7 +46,10 @@
       tests[i].className = 'INFO';
     };
     if (event.keyCode==10) {  //only IE
-      jc.execCode(element); 
+      var prevAutoExec = (element.className.search("AUTOEXEC") != -1);
+      $(element).toggleClass("AUTOEXEC",true);
+      jc.execAutoExec(); 
+      $(element).toggleClass("AUTOEXEC",prevAutoExec);
     }
   }
 
@@ -112,6 +115,14 @@
     $('.CODE').each(function(i,e) {jc.execCode(e);});
   }
 
+  jc.execAutoExec = function() {
+    $('.CODE').each(function(i,e) {
+      if ($(e).hasClass('AUTOEXEC') || (e==jc.currentElement)) {
+        jc.execCode(e);
+      }
+    })
+  }
+
   jc.showOutputHtml = function(checkBox) {
     var outHtmlId = jc.currentElement.id.replace(/code/,"html");
     var outHtml = window.document.getElementById(outHtmlId);
@@ -124,6 +135,10 @@
       var outHtml = window.document.getElementById(outHtmlId);
     }
     outHtml.innerHTML = jc.toHtml(out.innerHTML);
+  }
+
+  jc.toggleAutoExec = function() {
+    $(jc.currentElement).toggleClass("AUTOEXEC");
   }
 
 

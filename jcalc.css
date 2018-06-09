@@ -51,6 +51,10 @@ td {
   border:solid yellow 1px;
 }
 
+.AUTOEXEC {
+  background-color: ffb848;
+}
+
 .OUTPUT,
 .CODE,
 p {

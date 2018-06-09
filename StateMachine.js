@@ -12,12 +12,13 @@ StateMachine.prototype.state = function(name) {
   return this[this.length++] = s;
 }
 
-StateMachine.prototype.span = function(withLog) {
+StateMachine.prototype.span = function(options) {
+  options = options ||{};
   var h = '<DIV class=STATEMACHINE>'+this._name;
   for (var i=0; i<this.length; i++) {
     h += this[i].span();
   }
-  if (withLog) {
+  if (options.withLog) {
     h += 'Log<TABLE>';
     for (var i=0; i<this.log.length; i++) {
       h += '<TR><TD>'+this.log[i].time+'</TD><TD>'+this.log[i].transition.span()+'</TD></TR>';
