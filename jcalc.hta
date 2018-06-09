@@ -11,6 +11,7 @@
 <script src="jquery.js"></script>
 <script src="jcalc.js"></script>
 <script src="axe.js"></script>
+<script src="stateMachine.js"></script>
 <script src="jcalcEdi.js"></script>
 
 <body designMode="on">
@@ -67,26 +68,29 @@
   <div id="out0301" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
   <div id="code0302" class="CODE" onclick="jc.codeClick(this);" contentEditable>
     lift<p>
-    .accelerate({t:33,a:1})<p>
+    .accelerate({t:33,a:0})<p>
   </div>
   <div id="out0302" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
-  
 
-  <h1>debug</h1>
-  <div id="debug" class="DEBUG">
-    <div>debug</div>
+  <h1>StateMachine</h1>
+  <div id="code0401" class="CODE" onclick="jc.codeClick(this);" contentEditable>
+    v('runCount',0);
+    stateMachine('myStateMachine')<p>
+    .state('state1').initial()<p>
+    &nbsp;&nbsp;.run('v("runCount",runCount+1)')<p>
+    &nbsp;&nbsp;.transition('state2','runCount == 10')<p>
+    .state('state2')<p>
+    &nbsp;&nbsp;.run('v("runCount",runCount-1)')<p>
+    &nbsp;&nbsp;.transition('state1','runCount == 0')<p>
+    .end().view();
   </div>
-  <div id="test">
-    <div id="test 1">test 1
-      <p id="p1_1">§ 1.1</p>
-      <p id="p1_2">§ 1.2</p>
-    </div>
-    <div id="test 2">test 2
-      <p id="p2_1">§ 2.1</p>
-      <p id="p2_2">§ 2.2</p>
-    </div>
+  <div id="out0401" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
+  <div id="code0402" class="CODE" onclick="jc.codeClick(this);" contentEditable>
+    html()<p>
+    .p(myStateMachine.runOnce().view())<p>
+    .p(runCount)
   </div>
-
+  <div id="out0402" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
 
 </body>
 </html>

@@ -9,7 +9,7 @@
 
   function inspect(obj) {
     var r = '';
-    for (var k in obj) { r += k+':'+obj[k]+'  ' };
+    for (var k in obj) { r += k+':'+obj[k]+'<br>' };
     return r;
   }
 
@@ -41,7 +41,7 @@
   jc.editorKeyPress = function(event) {
     var element = event.srcElement;
     window.document.getElementById(element.id.replace(/code/,"out")).children[0].className = 'OLD';
-    var tests = testElements(element);
+    var tests = jc.testElements(element);
     for (var i = 0;i<tests.length;i++) {
       tests[i].className = 'INFO';
     };
@@ -139,7 +139,6 @@
 
   window.attachEvent('onload',function () {
     jc.debug = window.document.getElementById('debug');
-    jc.debug.innerHTML = '<DIV>debug</DIV>';
     jc.localToolBar = window.document.getElementById('localToolBar');
     $('.CODE').bind("keypress",undefined,jc.editorKeyPress);
   });  

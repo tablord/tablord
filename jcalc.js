@@ -49,6 +49,9 @@
   V.prototype.span = function() {
     return this.label()+'= <span class=VALUE>'+this.valueOf()+'</span>'+this.unit();
   }
+  V.prototype.view = function() {
+    return '<DIV>'+this.span()+'</DIV>';
+  }
 
   function v(name,value) {
     if (value != undefined) {
