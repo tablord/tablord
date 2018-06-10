@@ -7,12 +7,29 @@
     window.alert(message);
   }
 
-  function inspect(obj) {
-    var r = '';
-    for (var k in obj) { r += k+':'+obj[k]+'<br>' };
+  // Inspector ////////////////////////////////////////////////////////
+  jc.Inspector = function(obj) {
+    this.obj = obj;
+  }
+  
+
+  jc.Inspector.prototype.toString = function (){
+    var r = this.obj+'\n';
+    for (var k in this.obj) { r += k+':  '+this.obj[k]+'\n' };
     return r;
   }
 
+  jc.Inspector.prototype.span = function (){
+    var r = '<h3>'+this.obj+'</h3><table>';
+    for (var k in this.obj) { r += '<tr><th valign="top">'+k+'</th><td valign="top" style="text-align:left;">'+jc.toHtml(''+this.obj[k])+'</td></tr>' };
+    return r+'</table>';
+  }
+
+  function inspect(obj){
+    return new jc.Inspector(obj);
+  }
+
+  // helpers ///////////////////////////////////////////////////////////
   jc.toHtml = function(htmlCode) {
     // transform htmlCode in such a manner that the code can be visualised in a <code>...
     return htmlCode.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\\/,'\\\\').replace(/\n/,"<br>");

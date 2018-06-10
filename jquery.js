@@ -8,6 +8,34 @@ JQuery.prototype.isJQuery = function () {
   return true;
 }
 
+JQuery.prototype.addClass = function(className,context) {
+  for (var i = 0; i< context.children.length; i++) {
+    if ((context.children[i].className || '').search(className) != -1) {
+      this[this.length++] = context.children[i];
+    }
+    this.addClass(className,context.children[i]);
+  }
+}
+
+JQuery.prototype.addId = function(id,context) {
+  for (var i = 0; i< context.children.length; i++) {
+    if (context.children[i].id == id) {
+      this[this.length++] = context.children[i];
+      return; //only one id
+    }
+    this.addId(id,context.children[i]);
+  }
+}
+
+JQuery.prototype.addTag = function(tag,context) {
+  for (var i = 0; i< context.children.length; i++) {
+    if (context.children[i].tagName==tag) {
+      this[this.length++] = context.children[i];
+    }
+    this.addTag(tag,context.children[i]);
+  }
+}
+
 JQuery.prototype.add =function (sel,context) {
   if (sel == undefined) {
     return window.document.documentElement;
@@ -19,21 +47,14 @@ JQuery.prototype.add =function (sel,context) {
   else {
     if (sel.search(/^\./)==0) {
       var className = sel.slice(1);
-      for (var i = 0; i< c.children.length; i++) {
-        if ((c.children[i].className || '').search(className) != -1) {
-          this[this.length++] = c.children[i];
-        }
-        this.add(sel,c.children[i]);
-      }
+      this.addClass(className,c);
     }
-    if (sel.search(/^\#/)==0) {
+    else if (sel.search(/^\#/)==0) {
       var id = sel.slice(1);
-      for (var i = 0; i< c.children.length; i++) {
-        if (c.children[i].id==id) {
-          this[this.length++] = c.children[i];
-        }
-        this.add(sel,c.children[i]);
-      }
+      this.addId(id,c);
+    }
+    else { //un Tag
+      this.addTag(sel,c);
     }
   } 
   return this; 
@@ -90,8 +111,8 @@ JQuery.prototype.bind = function(type,data,f) {
 JQuery.prototype.view = function () {
   var s = [];
   for (var i=0; i < this.length; i++) {
-    s.push(htmlToStr(this[i].outerHTML));
+    s.push(jc.toHtml(this[i].outerHTML));
   }
-  return 'view of '+this.toString()+'<br><code class="INSPECT">'+s.join('<br>')+'</code>';
+  return this.toString()+'<br><code class="INSPECTHTML">'+s.join('<br>')+'</code>';
 }  
   

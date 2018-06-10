@@ -54,7 +54,7 @@
   }
 
   V.prototype.toString = function() {
-    return 'v('+this._name+'):'+this.valueOf();
+    return '[object V('+this._name+'):'+this.valueOf()+']';
   }
 
   V.prototype.span = function() {
@@ -110,7 +110,7 @@
   }
 
   Row.prototype.toString = function() {
-    return "[Row]";
+    return "[object Row]";
   }
 
   Row.prototype.eachCol = function(fct) {
@@ -191,7 +191,7 @@
   }
   
   Table.prototype.toString = function() {
-    return '[table '+this._name+' of '+this._length+' rows]';
+    return '[object Table('+this._name+') of '+this._length+' rows]';
   }
 
   Table.prototype.span = function(options) {
@@ -304,7 +304,7 @@
       return obj.view();
     }
     if (obj.outerHTML) { // an Element
-      return 'DOM Element<span class="INSPECT">'+jc.toHtml(obj.outerHTML)+'</span>';
+      return 'DOM Element<span class="INSPECTHTML">'+jc.toHtml(obj.outerHTML)+'</span>';
     }
     if (obj.valueOf) {
       return obj.valueOf();
