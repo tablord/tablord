@@ -68,8 +68,7 @@
 
   jc.execCode = function(element) {
     if (jc.codeElementBeingExecuted) {
-      a("reentré!!!");
-      return;
+      throw new Error("re-entry in jc.execCode");
     }
 
     jc.codeElementBeingExecuted = element; 

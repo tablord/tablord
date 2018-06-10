@@ -19,7 +19,7 @@ Simulation.prototype.runSteps = function(nbSteps) {
 
 Simulation.prototype.runWhile = function(jcFunc) {
   var jcCond = f(jcFunc);
-  while (jcCond.valueOf()){ 
+  while (jcCond()==true){ 
     this.runSteps();
   } 
   return this;
@@ -87,13 +87,13 @@ StateMachine.prototype.runOnce = function(time) {
   var where = 'runOnce';
   try {
     where='runOnce/runF';
-    this.currentState.runF.valueOf();
+    this.currentState.runF();
     for (var i = 0; i<this.currentState.length; i++) {
-      if (this.currentState[i].condF.valueOf() == true) {
-        if (this.currentState.exitF) {where='runOnce/exitF';this.currentState.exitF.valueOf()};
+      if (this.currentState[i].condF() == true) {
+        if (this.currentState.exitF) {where='runOnce/exitF';this.currentState.exitF()};
         var trans = this.currentState[i];
         this.currentState = this.currentState[i].next;
-        if (this.currentState.entryF) {where='runOnce/entryF';this.currentState.entryF.valueOf()};
+        if (this.currentState.entryF) {where='runOnce/entryF';this.currentState.entryF()};
         this.log.push({transition:trans,time:time});
         break;
       }

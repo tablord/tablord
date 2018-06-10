@@ -6,7 +6,7 @@
             localToolBar:undefined,
             stack:[],
             htmlIndent:1,
-            simulation:undefined; // will be set by StateMachine.js
+            simulation:undefined // will be set by StateMachine.js
            };
 
   // jcalc library /////////////////////////////////////////////////////
@@ -15,10 +15,17 @@
   // calcul ///////////////////
   function V(name,value) {
     this.setName(name);
-    this._value=value;
+    if (typeof value == "function") {
+      this._func =value;
+    }
+    else {
+      this._value=value;
+    }
   }
 
   V.prototype.setName = function(name) {
+    if (name == undefined) return;
+
     this._name =name;
     var lu = name.match(/(^.+)\$(.+)/)
     if (lu != null) {
@@ -36,6 +43,9 @@
   }
  
   V.prototype.valueOf = function () {
+    if (this._func) {
+      return this._func(this._row,this._col);
+    }
     if (this._value == undefined) {
       this._error = "Error in "+this._name+'> _value is undefined';
       throw new Error(this._error);
@@ -57,10 +67,6 @@
 
   function v(name,value) {
     if (value != undefined) {
-      if (value.isJcFunc) {
-        value.setName(name);
-        return v[name] = value;
-      }
       return v[name] = new V(name,value);
     }
     return v[name];
@@ -69,13 +75,13 @@
 
   /////////////////////////////////////////////////////////////////////////
 
-  function JcFunc (jcFunc) {
+  function f(jcFunc) {
     if (typeof jcFunc == "string") {
       try {
-        if (jcFunc.search(/return/)) {
+        if (jcFunc.search(/return/)== -1) {
           jcFunc = 'return '+jcFunc;
         }
-        this._func = new Function('row','col','with (v){with(row) {'+jcFunc+'}}');
+        return new Function('row','col','with (v){with(row||{}) {'+jcFunc+'}}');
       }
       catch (e) {
         e.message = 'Error while compiling jcFunc\n'+jcFunc+'\n'+e.message;
@@ -83,46 +89,10 @@
       }
     }
     else if (typeof jcFunc == "function") {
-      this._func = jcFunc;
+      return jcFunc;
     }
-    else {
-      this._error = 'jcFunc argument must either be a function() or a string representing the code of an expression like A+3 or return A+3'; 
-      throw new Error(this._error);
-    }
-  }
-
-
-  JcFunc.prototype.isJcFunc = function() {
-    return true;
-  }
-  
-  JcFunc.prototype.label = V.prototype.label;
-  JcFunc.prototype.unit  = V.prototype.unit;
-  JcFunc.prototype.setName = V.prototype.setName;
-  JcFunc.prototype.span = V.prototype.span;
-
-  JcFunc.prototype.valueOf = function() {
-    return this._func(this._row || {},this._col);
-  }
-
-  JcFunc.prototype.toString = function() {
-    var n = '';
-    if (this._name) {n = this._name};
-    if (this._row) {n += ': '+this._row._table._name+'['+this._row._id+']['+this._col+']'};
-    return n+this._func.toString();
-  }
-    
-  JcFunc.prototype._ = function(row,col) {  //TODO first implementation: only absolute row / col; to be completed
-    if (!this._table) {
-      throw new Error('_(row,col) can only be used inside a cell of a table');
-    }
-    row = row || this._table[this._row];
-    col = col || this._col;
-    return this._table[row][col];
-  }
-
-  function f(jcFunc) {
-    return new JcFunc(jcFunc);
+    this._error = 'jcFunc argument must either be a function() or a string representing the code of an expression like A+3 or return A+3'; 
+    throw new Error(this._error);
   }
 
   // table //////////////////////////////////////////////
@@ -130,8 +100,9 @@
   function Row(obj) {
     for (var k in obj) {
       var c = obj[k];
-      if (c.constructor == JcFunc) {
-        c._row = this;
+      if (typeof c == "function") {
+        c = new V(undefined,c);  //convert the function into a V
+        c._row = this;       //and assign the _row,_col 
         c._col = k;
       }
       this[k] = c;
@@ -142,10 +113,10 @@
     return "[Row]";
   }
 
-  Row.prototype.eachCol = function(f) {
+  Row.prototype.eachCol = function(fct) {
     for (var col in this) {
       if (this.hasOwnProperty(col) && (col != '_table')) {
-        f(col,this[col]);
+        fct(col,this[col]);
       }
     }
   }
@@ -182,6 +153,7 @@
     return true;
   }
 
+// Table //////////////////////////////////////////////////////////////
 
   function Table(name) {
     this._name = name;
