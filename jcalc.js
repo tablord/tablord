@@ -5,7 +5,8 @@
             currentElement:undefined,
             localToolBar:undefined,
             stack:[],
-            htmlIndent:1
+            htmlIndent:1,
+            simulation:undefined; // will be set by StateMachine.js
            };
 
   // jcalc library /////////////////////////////////////////////////////
@@ -49,6 +50,7 @@
   V.prototype.span = function() {
     return this.label()+'= <span class=VALUE>'+this.valueOf()+'</span>'+this.unit();
   }
+
   V.prototype.view = function() {
     return '<DIV>'+this.span()+'</DIV>';
   }
@@ -69,10 +71,16 @@
 
   function JcFunc (jcFunc) {
     if (typeof jcFunc == "string") {
-      if (jcFunc.search(/return/)) {
-        jcFunc = 'return '+jcFunc;
+      try {
+        if (jcFunc.search(/return/)) {
+          jcFunc = 'return '+jcFunc;
+        }
+        this._func = new Function('row','col','with (v){with(row) {'+jcFunc+'}}');
       }
-      this._func = new Function('row','col','with (v){with(row) {'+jcFunc+'}}');
+      catch (e) {
+        e.message = 'Error while compiling jcFunc\n'+jcFunc+'\n'+e.message;
+        throw e;
+      }
     }
     else if (typeof jcFunc == "function") {
       this._func = jcFunc;

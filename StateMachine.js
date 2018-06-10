@@ -1,9 +1,62 @@
-function StateMachine(name) {
+function Simulation(name) {
   this._name = name;
+  this.length = 0;
+  this.step$s = 0.1;
+  this.time$s = -this.step$s;
+  this.timeDecimals = 3;
+}
+
+Simulation.prototype.runSteps = function(nbSteps) {
+  nbSteps = nbSteps || 1;
+  for (var s= 1; s <= nbSteps; s++) {
+    this.time$s += this.step$s;
+    for (var i=0; i< this.length; i++) {
+      this[i].runOnce(this.time$s);
+    }
+  }
+  return this;
+}
+
+Simulation.prototype.runWhile = function(jcFunc) {
+  var jcCond = f(jcFunc);
+  while (jcCond.valueOf()){ 
+    this.runSteps();
+  } 
+  return this;
+}
+
+Simulation.prototype.time = function(time$s) {
+  this.time$s = time$s - this.step$s;
+  return this;
+}
+
+Simulation.prototype.step = function(step$s) {
+  this.time$s += this.step$s - step$s;
+  this.step$s = step$s;
+  return this;
+}
+
+Simulation.prototype.toString = function(options) {
+  options = options || {};
+  return '[Simulation "'+this._name+'" time: '+this.time$s.toFixed(options.timeDecimals || this.timeDecimals)+']';
+}
+
+function simulation(name) {
+  return v[name] = new Simulation(name);
+}
+
+jc.simulation = simulation('_simulation');
+
+// StateMachine ///////////////////////////////////////////////////////////////
+
+function StateMachine(name,simulation) {
+  this._name = name;
+  this.simulation = simulation || jc.simulation;
   this.length = 0;  //number of states
   this.currentState = undefined;
   this.log = [];
-  this.time = 0;
+  this.simulation[this.simulation.length++] = this;
+  this.timeDecimals = this.simulation.timeDecimals;
 }
 
 StateMachine.prototype.state = function(name) {
@@ -18,10 +71,10 @@ StateMachine.prototype.span = function(options) {
   for (var i=0; i<this.length; i++) {
     h += this[i].span();
   }
-  if (options.withLog) {
+  if (options.log) {
     h += 'Log<TABLE>';
     for (var i=0; i<this.log.length; i++) {
-      h += '<TR><TD>'+this.log[i].time+'</TD><TD>'+this.log[i].transition.span()+'</TD></TR>';
+      h += '<TR><TD>'+this.log[i].time.toFixed(options.timeDecimals || this.timeDecimals)+'</TD><TD>'+this.log[i].transition.span()+'</TD></TR>';
     }
     h += '</TABLE>';
   }
@@ -31,18 +84,17 @@ StateMachine.prototype.span = function(options) {
 StateMachine.prototype.view = StateMachine.prototype.span;
 
 StateMachine.prototype.runOnce = function(time) {
-  this.time = time || this.time+1;
   var where = 'runOnce';
   try {
     where='runOnce/runF';
     this.currentState.runF.valueOf();
     for (var i = 0; i<this.currentState.length; i++) {
-      if (this.currentState[i].condF == true) {
+      if (this.currentState[i].condF.valueOf() == true) {
         if (this.currentState.exitF) {where='runOnce/exitF';this.currentState.exitF.valueOf()};
         var trans = this.currentState[i];
         this.currentState = this.currentState[i].next;
         if (this.currentState.entryF) {where='runOnce/entryF';this.currentState.entryF.valueOf()};
-        this.log.push({transition:trans,time:this.time});
+        this.log.push({transition:trans,time:time});
         break;
       }
     }
@@ -61,6 +113,9 @@ StateMachine.prototype.toString = function() {
 function stateMachine(name) {
   return v[name] = new StateMachine(name);
 }
+
+
+// State //////////////////////////////////////////////////////////////////////
 
 function State(name,stateMachine) {
   this._name = name;
@@ -141,6 +196,9 @@ State.prototype.span = function(){
   }
   return h+'</DIV>';
 }
+
+// Transition ///////////////////////////////////////////////////////////////
+
 
 function Transition(nextStateName,jcCondition,state) {
   this.state = state;

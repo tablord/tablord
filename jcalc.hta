@@ -78,21 +78,22 @@
 
   <h1>StateMachine</h1>
   <div id="code0401" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-    v('runCount',0);
+    v('count',-1);
     stateMachine('myStateMachine')<p>
     .state('state1').initial()<p>
-    &nbsp;&nbsp;.run('v("runCount",runCount+1)')<p>
-    &nbsp;&nbsp;.transition('state2','runCount == 10')<p>
+    &nbsp;&nbsp;.run('v("count",count+1)')<p>
+    &nbsp;&nbsp;.transition('state2','count == 10')<p>
     .state('state2')<p>
-    &nbsp;&nbsp;.run('v("runCount",runCount-1)')<p>
-    &nbsp;&nbsp;.transition('state1','runCount == 0')<p>
+    &nbsp;&nbsp;.run('v("count",count-1)')<p>
+    &nbsp;&nbsp;.transition('state1','count == 0')<p>
     .end().view();
   </div>
   <div id="out0401" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
   <div id="code0402" class="CODE" onclick="jc.codeClick(this);" contentEditable>
     html()<p>
-    .p(myStateMachine.runOnce().view({log:true}))<p>
-    .p(runCount)
+    .p(jc.simulation.runWhile("jc.simulation.time$s < 10"))<p>
+    .p(myStateMachine.view({log:true}))<p>
+    .p(count)
   </div>
   <div id="out0402" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
 
