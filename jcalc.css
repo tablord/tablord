@@ -45,6 +45,7 @@ td {
   valign: top;
 }
 
+CODE,
 .CODE {
   font-family: courier;
   font-size: 14px;      
@@ -54,6 +55,9 @@ td {
 
 .AUTOEXEC {
   background-color: ffb848;
+}
+.HIDDEN {
+  display: none;
 }
 
 .OUTPUT,
@@ -73,9 +77,18 @@ p {
   background-color: b6fff7;
   border:solid blue 1px;
 }
+.FLOAT {
+  float: left;
+}
 .ERROR {
   background-color: ff4d4d;
   border:solid red 1px;
+}
+.CODEINERROR {
+  font-family: courier;
+  font-size: 14px;      
+  background-color: yellow;
+  border:solid yellow 1px;
 }
 .INSPECT {
   padding: 0px;
@@ -96,6 +109,7 @@ p {
   font-size: 14px;      
 }
 
+.RICHTEXT,
 .TEXT {
   color: black;
 }

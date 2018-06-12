@@ -63,45 +63,86 @@
       tests[i].className = 'INFO';
     };
     if (event.keyCode==10) {  //only IE
-      var prevAutoExec = (element.className.search("AUTOEXEC") != -1);
-      $(element).toggleClass("AUTOEXEC",true);
       jc.execAutoExec(); 
-      $(element).toggleClass("AUTOEXEC",prevAutoExec);
+    }
+  }
+
+  jc.richTextKeyPress = function(event) {
+    var element = event.srcElement;
+    if (event.keyCode==10) {  //only IE
+      jc.execAutoExec(); 
+      element.contentEditable=false;
     }
   }
 
   jc.codeClick = function(element) {
     jc.currentElement = element;
-    var localToolBar = $('#localToolBar')[0];
+    var localToolBar = $('#localToolBar').toggleClass("HIDDEN",false)[0];
     localToolBar.parentNode.insertBefore(localToolBar,element);
     localToolBar.hidden = false;
     window.document.getElementById('codeId').innerHTML = element.id;
   }
 
-  jc.outClick = function(out) {
-    code = window.document.getElementById(out.id.replace(/out/,"code"))
+  jc.richTextClick = function(element) {
+    jc.currentElement = element;
+    var localToolBar = $('#localToolBar').toggleClass("HIDDEN",false)[0];
+    element.contentEditable=true;
+    localToolBar.parentNode.insertBefore(localToolBar,element);
+    window.document.getElementById('codeId').innerHTML = element.id;
+  }
+
+  jc.outClick = function(element) {
+    var code = window.document.getElementById(element.id.replace(/out/,"code"))
     jc.execCode(code);
   }
 
   jc.execCode = function(element) {
-    if (jc.codeElementBeingExecuted) {
-      throw new Error("re-entry in jc.execCode");
+
+    function displayResult (result) {
+      var tag = (out.tagName == 'DIV')?'DIV':'SPAN';
+      try {
+        out.innerHTML = '<'+tag+' class="SUCCESS">'+view(result)+'</'+tag+'>';
+      }
+      catch (e) {
+        displayError(e);
+      }
     }
 
-    jc.codeElementBeingExecuted = element; 
-    var out = window.document.getElementById(element.id.replace(/code/,"out"));
-    tests = jc.testElements(element);
-    var code = 'with (v) {'+jc.removeTags(element.innerHTML)+'};';
-    try {
-      var res = geval(code);
-      if (res == undefined) {
-        out.innerHTML = '<div class="ERROR">undefined</div>';
+    function displayError(error,code) {
+      var faults = error.message.match(/« (.+?) »/);
+      if (faults != null) {
+        var fault = faults[1];
+        code = code.replace(new RegExp(fault,'g'),'<SPAN class="ERROR">'+fault+'</SPAN>');
       }
-      else if (res._error) {
-        out.innerHTML = '<div class="ERROR">'+res._error+'</div>';
+      error = error.name+': '+error.message;
+      if (out.tagName == 'DIV') {
+        out.innerHTML = '<DIV class="ERROR">'+error+(code?'<DIV class="CODEINERROR">'+code+'</DIV>':'')+'</DIV>';
       }
       else {
-        out.innerHTML = '<div class="SUCCESS">'+view(res)+'</div>';
+        out.innerHTML = '<SPAN class="ERROR">'+error+(code?'<SPAN class="CODEINERROR">'+code+'</SPAN>':'')+'</SPAN>';
+      }
+    }
+
+    //-------------
+    try {
+      if (jc.codeElementBeingExecuted) {
+        throw new Error("re-entry in jc.execCode");
+      }
+
+      jc.codeElementBeingExecuted = element; 
+      var out = window.document.getElementById(element.id.replace(/code/,"out"));
+      tests = jc.testElements(element);
+      var code = 'with (v) {'+jc.removeTags(element.innerHTML)+'};';
+  
+      var res = geval(code);
+      if (res == undefined) {
+        displayError('undefined');
+      }
+      else if (res._error) {
+        displayError(res._error);
+      }
+      else {
+        displayResult(res);
       }
       for (var i = 0;i<tests.length;i++) {
         var div = tests[i];
@@ -114,13 +155,7 @@
       }
     }
     catch (e) {
-      var code = '';
-      var faults = e.message.match(/« (.+?) »/);
-      if (faults != null) {
-        var fault = faults[1];
-        code = '<DIV class=CODE>'+element.innerHTML.replace(new RegExp(fault,'g'),'<span class="ERROR">'+fault+'</span>')+'</DIV>';
-      }
-      out.innerHTML = '<div class="ERROR">'+e.name+': '+e.message+code+'</div>';
+      displayError(e,element.innerHTML);
     }
     finally {
       jc.codeElementBeingExecuted = undefined;
@@ -140,7 +175,7 @@
   }
 
   jc.showOutputHtml = function(checkBox) {
-    var outHtmlId = jc.currentElement.id.replace(/code/,"html");
+    var outHtmlId = jc.currentElement.id.replace(/(rich)|(code)/,"html");
     var outHtml = window.document.getElementById(outHtmlId);
     if (!checkBox.checked && outHtml) {
       outHtml.outerHTML = '';
@@ -172,5 +207,6 @@
     jc.debug = window.document.getElementById('debug');
     jc.localToolBar = window.document.getElementById('localToolBar');
     $('.CODE').bind("keypress",undefined,jc.editorKeyPress);
+    $('.RICHTEXT').bind("keypress",undefined,jc.richTextKeyPress);
   });  
   

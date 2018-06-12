@@ -15,9 +15,10 @@
 <script src="jcalcEdi.js"></script>
 
 <body designMode="on">
-  <div id="localToolBar" hidden="true">
+  <div id="localToolBar" class="HIDDEN">
     <span id=codeId>codeid</span>
     <button>new</button>
+    <button onclick="jc.hideCode(this);">hide code</button>
     <button onclick="jc.showOutputHtml(this);">show output html</button>
     <button onclick="jc.toggleAutoExec();">autoexec</button>
     <button onclick="jc.execAutoExec();">run</button>
@@ -97,6 +98,12 @@
   </div>
   <div id="out0402" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
 
-  <div id="inputhtml" contentEditable><h1>titre</h1><p>nomal §</p></div>
+  <div id="rich0000" class="RICHTEXT" onclick="jc.richTextClick(this)">
+    <h1>titre</h1>
+    <p>nomal §<span id="code1111" class="CODE AUTOEXEC" style="display:none;">myTable</span><span id="out1111" class="OUTPUT" contentEditable=false>---</span> textNormal</p>
+    <div id="code1112" class="CODE AUTOEXEC" style="display:none;">myStateMachine</div>
+    <div id="out1112" class="OUTPUT">--</div>
+  </div>
+
 </body>
 </html>
