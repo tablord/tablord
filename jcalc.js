@@ -282,11 +282,24 @@
     return this;
   }
 
+  HTML.prototype.inspect = function(/*objects*/) {
+    for (var i=0; i<arguments.length; i++) {
+      this._html += '<div>'+inspect(arguments[i]).span()+'</div>';
+    }
+    return this;
+  }
+
   HTML.prototype.end = function() {
     this._html += this._tagsEnd.pop();
     return this;
   }  
     
+  HTML.prototype.sendTo = function(jquerySelector){
+    var that = this;
+    $(jquerySelector).each(function(i,e){e.innerHTML = that._html});
+    return this
+  }
+
   HTML.prototype.view = function() {
     return '<div class="TEXT">'+this._html+this._tagsEnd.join('')+'</div>'
   }
