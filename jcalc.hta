@@ -13,6 +13,7 @@
 <script src="axe.js"></script>
 <script src="stateMachine.js"></script>
 <script src="jcalcEdi.js"></script>
+<script src="BOM.js"></script>
 
 <body designMode="on">
   <div id="localToolBar" class="HIDDEN">
@@ -97,13 +98,31 @@
     .p(count)
   </div>
   <div id="out0402" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
-
+  <h1>RichText</h1>
   <div id="rich0000" class="RICHTEXT" onclick="jc.richTextClick(this)">
     <h1>titre</h1>
     <p>nomal §<span id="code1111" class="CODE AUTOEXEC" style="display:none;">myTable</span><span id="out1111" class="OUTPUT" contentEditable=false>---</span> textNormal</p>
     <div id="code1112" class="CODE AUTOEXEC" style="display:none;">myStateMachine</div>
     <div id="out1112" class="OUTPUT">--</div>
   </div>
+  <h1>BOM</h1>
+  <div id="code0501" class="CODE" onclick="jc.codeClick(this);" contentEditable>
+  product('product1', <p> 
+    bom('main170',['width=170'],<p>
+      {part:'OS frame',quantity:1,neededAt:0},<p>
+      {part:'GS frame',quantity:1,neededAt:0},<p>
+      {part:'beam 170',quantity:6,neededAt:0}<p>
+    ),<p>
+    bom('main210',['width=210'],<p>
+      {part:'OS frame',quantity:1,neededAt:0},<p>
+      {part:'GS frame',quantity:1,neededAt:0},<p>
+      {part:'beam 210',quantity:6,neededAt:0}<p>
+    )<p>
+  );
+
+  </div>
+  <div id="out0501" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
+
 
 </body>
 </html>

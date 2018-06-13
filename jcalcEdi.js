@@ -112,7 +112,7 @@
       var faults = error.message.match(/« (.+?) »/);
       if (faults != null) {
         var fault = faults[1];
-        code = code.replace(new RegExp(fault,'g'),'<SPAN class="ERROR">'+fault+'</SPAN>');
+        code = (code || '').replace(new RegExp(fault,'g'),'<SPAN class="ERROR">'+fault+'</SPAN>');
       }
       error = error.name+': '+error.message;
       if (out.tagName == 'DIV') {
