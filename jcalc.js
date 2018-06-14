@@ -158,7 +158,7 @@
   function Table(name) {
     this._name = name;
     this._length = 0;
-    this._cols = {_id:1};
+    this._cols = {};
   }
   
   Table.prototype.cols = function(cols) {
@@ -172,6 +172,7 @@
         this._cols[col] = 1;
       }
     }
+    return this;
   }
 
   Table.prototype.add = function(row) {
@@ -190,11 +191,23 @@
     return this;
   }
   
+  Table.prototype.addRows = function(rows) {
+    for (var i=0; i<rows.length; i++) {
+      this.add(rows[i]);
+    }
+    return this;
+  }
+
   Table.prototype.toString = function() {
     return '[object Table('+this._name+') of '+this._length+' rows]';
   }
 
   Table.prototype.span = function(options) {
+    // options:{
+    //    cols:{
+    //      col1:{head:1},  // any value make this col as <th>
+    //      col2:1          // any value make this col visible
+            
     options = options || {};
     options.cols = options.cols || this._cols;
     options.rows = options.rows || range(0,this._length-1);
@@ -207,7 +220,7 @@
       h += '<tr>';
       for (var col in options.cols) {
         var cell = this[i][col];
-        h += (col=="_id")?'<th>'+cell+'</th>':'<td>'+cell+'</td>';
+        h += ((col=="_id") || (options.cols[col].head))?'<th>'+cell+'</th>':'<td>'+cell+'</td>';
       }
       h += '</tr>';
     }
@@ -219,7 +232,11 @@
     return '<div><var>'+this._name+'</var>'+this.span(options)+'</div>';
   }
 
-  function table(name) {
+  function table(name,local) {
+    // if local=true, do not put in v
+    if ((local == true) || (name == undefined)) {
+      return new Table(name);
+    }
     return v[name] = new Table(name);
   }
 

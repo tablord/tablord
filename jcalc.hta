@@ -113,12 +113,18 @@
       {part:'GS frame',quantity:1,neededAt:0},<p>
       {part:'beam 170',quantity:6,neededAt:0}<p>
     ),<p>
-    bom('main210',['width=210'],<p>
+    bom('main210',['width=210','setup=manual'],<p>
+      {part:'OS frame',quantity:1,neededAt:0},<p>
+      {part:'GS frame',quantity:1,neededAt:0},<p>
+      {part:'beam 210',quantity:6,neededAt:0}<p>
+    ),<p>
+    bom('main210',['width=210','setup=automatic'],<p>
       {part:'OS frame',quantity:1,neededAt:0},<p>
       {part:'GS frame',quantity:1,neededAt:0},<p>
       {part:'beam 210',quantity:6,neededAt:0}<p>
     )<p>
-  ).updateVariables();
+  ).updateVariables()<p>
+  .setScenario({quantity:10,max:{'width=170':6,'width=210':7,'setup=manual':10,'setup=automatic':8}})
 
   </div>
   <div id="out0501" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>

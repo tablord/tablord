@@ -15,7 +15,7 @@ Bom.prototype.toString = function() {
 Bom.prototype.span = function() {
   var h = '<h3>BOM '+this._name+'</h3>';
   h += '<p>condition:('+this.condition.join(' && ')+')</p>';
-  h += this.lines.span({cols:{part:1,quantity:1,neededAt:1}});
+  h += this.lines.span({cols:{part:{head:1},quantity:1,neededAt:1}});
   return h;
 }
 
@@ -50,7 +50,7 @@ Product.prototype.updateVariables = function () {
       else {
         var pv = new ProductVariable(c[0]);
       }
-      this.variables[c[0]] = pv.add(c[1]);
+      this.variables[c[0]] = pv.add(b.condition[n]);
     }
   }
   return this;
@@ -71,6 +71,21 @@ Product.prototype.span = function() {
   return h;
 }
 
+Product.prototype.setScenario = function(scenario) {
+  // scenario = {quantity:qq,
+  //             max:{
+  //               'cond1=c1':xx,
+  //               'cond1=c2':yy,  etc..
+  //             }
+  for (var variable in this.variables) {
+    this.variables[variable].quantity = scenario.quantity;
+  }
+  for (var cond in scenario.max) {
+    this.variables[cond.split('=')[0]][cond].max = scenario.max[cond];
+  }
+  return this;
+}
+
 function product(name /*,boms*/) {
   var p = new Product(name);
   for (var i=1; i< arguments.length; i++){
@@ -84,12 +99,16 @@ function product(name /*,boms*/) {
 function ProductVariable (name) {
   this._name = name;
   this.length = 0;
+  this.quantity = 0;
 }
 
-ProductVariable.prototype.add = function(value){
-  this[value] = (this[value] || {});
+ProductVariable.prototype.add = function(value,max){
+  if (this[value] == undefined) {
+    this[value] = {};
+    this[this.length++]=this[value];
+  }  
   this[value].value=value;
-  this[this.length++]=this[value];
+  this[value].max=max || 0;
   return this;
 }
 
@@ -100,10 +119,31 @@ ProductVariable.prototype.toString = function() {
 }
 
 ProductVariable.prototype.span = function(){
-  var h = '<span>ProductVariable '+this._name+' {';
+  var h = '<span>ProductVariable '+this._name+' for '+this.quantity+'<br>';
+  var t = table();
   for (var i=0; i<this.length; i++){
-    h += this[i].value+' ';
+    t.add(this[i]);
   }
-  return h +'}</span>';
+  return h+ t.span({cols:{value:{head:1},max:1}}) +'</span>';
 }
+
+
+// Permutation ///////// could be in another module //////////////////////
+function permutations(elements){ 
+  if (elements.length == 1) { 
+    return elements; 
+  } 
+  var res = []; 
+  for (var i=0; i<elements.length; i++){ 
+    var first = elements[i];
+    var others = elements.slice(0,i).concat(elements.slice(i+1));
+    var p = permutations(others);
+
+    for (var j=0;j<p.length;j++){
+      res.push([first].concat(p[j]))
+    }
+  }
+  return res;
+}
+
 

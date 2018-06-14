@@ -109,12 +109,14 @@
     }
 
     function displayError(error,code) {
-      var faults = error.message.match(/« (.+?) »/);
-      if (faults != null) {
-        var fault = faults[1];
-        code = (code || '').replace(new RegExp(fault,'g'),'<SPAN class="ERROR">'+fault+'</SPAN>');
+      if (error.message) {
+        var faults = error.message.match(/« (.+?) »/);
+        if (faults != null) {
+          var fault = faults[1];
+          code = (code || '').replace(new RegExp(fault,'g'),'<SPAN class="ERROR">'+fault+'</SPAN>');
+        }
+        error = error.name+': '+error.message;
       }
-      error = error.name+': '+error.message;
       if (out.tagName == 'DIV') {
         out.innerHTML = '<DIV class="ERROR">'+error+(code?'<DIV class="CODEINERROR">'+code+'</DIV>':'')+'</DIV>';
       }
@@ -139,7 +141,7 @@
         displayError('undefined');
       }
       else if (res._error) {
-        displayError(res._error);
+        displayError('res._error');
       }
       else {
         displayResult(res);
