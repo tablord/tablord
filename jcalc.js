@@ -1,20 +1,29 @@
+  // global variables /////////////////////////////////////////////////
+
+  var jc = {debug:{},
+            codeElementBeingExecuted:undefined,
+            currentElement:undefined,
+            localToolBar:undefined,
+            stack:[],
+            htmlIndent:1,
+            simulation:undefined // will be set by StateMachine.js
+           };
 
   // jcalc library /////////////////////////////////////////////////////
     
   
   // calcul ///////////////////
   function V(name,value) {
-    //constructor for a new instance of V
-    //rarely use it directly, but use the v() function instead that also register the variable
-    //in the v namespace
     this.setName(name);
-    this.setValue(value);
+    if (typeof value == "function") {
+      this._func =value;
+    }
+    else {
+      this._value=value;
+    }
   }
 
   V.prototype.setName = function(name) {
-    // for internal use only
-    // changes the name of the variable and also
-    // updates ._label and ._unit
     if (name == undefined) return;
 
     this._name =name;
@@ -25,29 +34,15 @@
     }
   }
 
-  V.prototype.setValue = function(value){
-    if (typeof value == "function") {
-      this._func =value;
-    }
-    else {
-      this._value=value;
-      this._func = undefined;
-    }
-  }
-
   V.prototype.label = function() {
-    // return the label (= variable name without the units)
     return '<var>'+(this._label || this._name)+'</var>';
   }
 
   V.prototype.unit = function() {
-    // return the units of the variable
-    return this._unit?'<span class=UNIT>'+jc.Units.symbole(this._unit)+'</span>':'';
+    return this._unit?'<span class=UNIT>'+this._unit+'</span>':'';
   }
  
   V.prototype.valueOf = function () {
-    // return the value of the variable
-    // if the variable is in fact a function, executes the function and return its value
     if (this._func) {
       return this._func(this._row,this._col);
     }
@@ -57,33 +52,21 @@
     }
     return this._value;
   }
- 
-  V.prototype.to = function(unit) {
-    // return the value converted to unit
-    return jc.Units.convert(this.valueOf(),this._unit,unit);
-  }
 
   V.prototype.toString = function() {
-    // return the summary of the variable
     return '[object V('+this._name+'):'+this.valueOf()+']';
   }
 
+  V.prototype.span = function() {
+    return this.label()+'= <span class=VALUE>'+this.valueOf()+'</span>'+this.unit();
+  }
+
   V.prototype.view = function() {
-    // returns an HTML object with VariableName = value
-    return new HTML(this.label()+'= <span class=VALUE>'+this.valueOf()+'</span>'+this.unit());
+    return '<DIV>'+this.span()+'</DIV>';
   }
 
   function v(name,value) {
-    // v(name) returns the variable name: rarely used since name alone will represent the same as well as v[name]
-    // v(name,value) creates a new variable if it does not already exists and sets a new value
     if (value != undefined) {
-      if (value.toUTCString) { // a Date: v stors a Date as this
-        return v[name]=value;
-      }
-      if (v[name]) {
-        v[name].setValue(value);
-        return v[name]
-      }
       return v[name] = new V(name,value);
     }
     return v[name];
@@ -93,10 +76,6 @@
   /////////////////////////////////////////////////////////////////////////
 
   function f(jcFunc) {
-    // jcFunc can eiter be a true function (rare since in that case it just returns the function)
-    // or a string that is the body of a function that will be called with 2 parameters row and col 
-    // in case this function is used inside a table
-
     if (typeof jcFunc == "string") {
       try {
         if (jcFunc.search(/return/)== -1) {
@@ -134,11 +113,10 @@
     return "[object Row]";
   }
 
-  Row.prototype.eachCol = function(func) {
-    // func must be function(colname,colObject)
+  Row.prototype.eachCol = function(fct) {
     for (var col in this) {
       if (this.hasOwnProperty(col) && (col != '_table')) {
-        func(col,this[col]);
+        fct(col,this[col]);
       }
     }
   }
@@ -162,7 +140,7 @@
       h += (col=="_id")?'<th>'+cell+'</th>':'<td>'+cell+'</td>';
     }
     h += '</tr></tbody></table>';
-    return new HTML(h);
+    return h;
   }
 
   Row.prototype.list = function() {
@@ -178,33 +156,22 @@
 // Table //////////////////////////////////////////////////////////////
 
   function Table(name) {
-    // constructor of a new Table instance
     this._name = name;
     this._length = 0;
-    this._cols = {};
+    this._cols = {_id:1};
   }
   
   Table.prototype.cols = function(cols) {
-    // set the columns that are displayed by default
-    // return the table for command chaining
-    // cols is an object like
-    // { colname: true,   // any value make the column visible
-    //   colname:{style:"css style"  // like 
     this._cols = cols;
     return this;
   }
 
   Table.prototype.updateCols = function(withRow) {
-    // updates the cols description with the fields found in withRow
-    // normally for internal use only
-    // return the table for command chaining
-
     for (var col in withRow) {
       if ((col != "_table") && withRow.hasOwnProperty(col) && (this._cols[col]==undefined)) {
         this._cols[col] = 1;
       }
     }
-    return this;
   }
 
   Table.prototype.add = function(row) {
@@ -223,66 +190,12 @@
     return this;
   }
   
-  Table.prototype.addRows = function(rows) {
-    // add multiple rows
-    // rows must be an array or array-like of objects
-    // columns are ajusted automatically
-    for (var i=0; i<rows.length; i++) {
-      this.add(rows[i]);
-    }
-    return this;
-  }
-
-  Table.prototype.forEachRow = function(func) {
-    // execute func for each row of the table
-    // func must be function(i,row)
-    // return the table for command chaining
-    for (var i=0; i<this._length; i++) {
-      func(i,this[i])
-    }
-    return this;
-  }
-
-  Table.prototype.sort = function(cols) {
-    // sort the table according to the "cols" criteria
-    // cols is an object of the form:
-    //   {  col1: 1    // 1 means ascending  alphabetic or numeric order
-    //      col2:-1    //-1 means descending alphabetic or numeric order
-    //      col3: function(a,b) {... // any function that compare a and b and returns >0 if a>b, <0 if a<b, 0 if a==b
-    // return the table for command chaining
-    function order(a,b) {
-      for (var col in cols) {
-        if (typeof cols[col] == 'function') {
-          var res = cols[col](a[col],b[col])
-          if (res != 0) return res;
-        }
-        if (a[col] > b[col]) return  cols[col];
-        if (a[col] < b[col]) return -cols[col];
-      }
-      return 0;
-    }
-
-    this._savedLenght = this.length;  // to be compatible with sort, must rename _length in .length, but potentially can be used by the _id of a Row
-    this.length = this._length;
-    Array.prototype.sort.call(this,order);
-    this.length = this._savedLength;
-    return this;
-  }
-
   Table.prototype.toString = function() {
-    // return a string summarizing the table
     return '[object Table('+this._name+') of '+this._length+' rows]';
   }
 
   Table.prototype.span = function(options) {
-    // display the table without its name
-    // the span(options) method of table can take many option to customize the presentation of the table
-    // options:{
-    //    cols:{
-    //      col1:{head:1},  // any value make this col as head <th>
-    //      col2:1          // any value make this col visible
     options = options || {};
-    options.format = options.format || function(obj) {return jc.format(obj).toString()};
     options.cols = options.cols || this._cols;
     options.rows = options.rows || range(0,this._length-1);
     var h = '<table border="1px"><thead><tr>';  // TODO modify to style
@@ -293,139 +206,53 @@
     for (var i in options.rows) {
       h += '<tr>';
       for (var col in options.cols) {
-        var cell = options.format(this[i][col]);
-        var style = (options.cols[col].style)?'style="'+options.cols[col].style+'"':'';
-        h += ((col=="_id") || (options.cols[col].head))?'<th '+style+'>'+cell+'</th>':'<td '+style+'>'+cell+'</td>';
+        var cell = this[i][col];
+        h += (col=="_id")?'<th>'+cell+'</th>':'<td>'+cell+'</td>';
       }
       h += '</tr>';
     }
     h += '</tbody></table>';
-    return new HTML(h);
+    return h;
   }
 
   Table.prototype.view = function(options) {
-    //display the table, including its name in a <div>
-    return new HTML('<div><var>'+this._name+'</var>'+this.span(options)+'</div>');
+    return '<div><var>'+this._name+'</var>'+this.span(options)+'</div>';
   }
 
-  table = function(name,local) {
-    // creates a new table
-    // - name is the name of the instance
-    // - if local=true, the instance is not registered in v
-    if ((local == true) || (name == undefined)) {
-      return new Table(name);
-    }
+  function table(name) {
     return v[name] = new Table(name);
   }
 
 
 
-  // Output ///////////////////////////////////////////////
-
-  function newOutput (codeElement,outputElement) {
-    // outputElement is, if specified, the Element where HTML will be dumped
-    //         element is essential if HTML uses the finalize() method
-    h = new HTML();
-    h._codeElement = codeElement;
-    h._outputElement = outputElement;
-    return h;
-  }
-
-
   // html ///////////////////////////////////////////////
 
-
-
-  function HTML(html) {
-    this._html = html || '';
+  function HTML() {
+    this._html = '';
     this._tagsEnd = [];
   }
 
-
-  HTML.prototype.toString = function() {
-    return this._html+this._tagsEnd.join('');
-  }
-
-  HTML.prototype.toAscii = function() {
-    // same as toString(), but no character is bigger than &#255; every such a character is transformed into &#xxx;
-    // Needed for this /&ç&"@ activeX of FileSystem
-    var h = this.toString();
-    var asciiH = '';
-    var i = 0;
-    var last = 0;
-    while (i <= h.length) {
-      c = h.charCodeAt(i);
-      if (c> 255) {
-        asciiH += h.slice(last,i)+'&#'+c+';';
-        last = i+1;
-      }
-      i++;
-    }
-    asciiH += h.slice(last);
-    return asciiH;
-  }
-    
-  HTML.prototype.span = HTML.prototype.toString;
-
-  HTML.prototype.html = function (html) {
-  // insert any html
+  HTML.prototype.htmlCode = function (html) {
     this._html += html;
     return this;
   }
 
-  HTML.prototype.showHtml = function (html) {
-  // show html as html code
-    this._html += '<span class=INSPECTHTML>'+jc.toHtml(html)+'</span>';
-    return this;
-  }
-
-  HTML.prototype.showDiff = function(e1,e2) {
-    if (e1.length != e2.length) {
-      this._html += '<span class=ERROR>e1.length=='+e1.length+' != e2.length=='+e2.length+'</span>';
-    }
-    for (var i=0; (i<e1.length) && (i<e2.length); i++) {
-      if (e1.charAt(i) != e2.charAt(i)) break;
-    }
-    this._html += '<span class=SUCCESS>'+e1.slice(0,i)+'</span><br>e1:<span class=ERROR>'+e1.slice(i)+'</span><br>e2:<span class=ERROR>'+e2.slice(i)+'</span>';
-    return this;
-  }
-
-  HTML.prototype.showHtmlDiff = function(e1,e2) {
-    if (e1.length != e2.length) {
-      this._html += '<span class=ERROR>e1.length=='+e1.length+' != e2.length=='+e2.length+'</span>';
-    }
-    for (var i=0; (i<e1.length) && (i<e2.length); i++) {
-      if (e1.charAt(i) != e2.charAt(i)) break;
-    }
-    this._html += '<span class=SUCCESS>'+jc.toHtml(e1.slice(0,i))+'</span><br>e1:<span class=CODEINERROR>'+jc.toHtml(e1.slice(i))+'</span><br>e2:<span class=CODEINERROR>'+jc.toHtml(e2.slice(i))+'</span>';
-    return this;
-  }
-    
   HTML.prototype.p = function (/*elements*/) {
-    this.tag('P',arguments);
+    this.tag('p',arguments);
     return this;
   }
   HTML.prototype.ul = function (/*elements*/) {
-    this.tag('UL',arguments);
+    this.tag('ul',arguments);
     return this;
   }
   HTML.prototype.li = function (/*elements*/) {
-    this.tag('LI',arguments);
+    this.tag('li',arguments);
     return this;
-  }
-  HTML.prototype.pre = function (/*elements*/) {
-    this.tag('PRE',arguments);
-    return this;
-  }
-  HTML.prototype.hr = function (){
-    this.tag('HR',[]);
-    return this
   }
   HTML.prototype.h = function (/*elements*/) {
     this.tag('H'+jc.htmlIndent,arguments);
     return this;
   }
-
   HTML.prototype.indent = function(levels) {
     levels = levels || 1;
     jc.htmlIndent += levels;
@@ -457,7 +284,7 @@
 
   HTML.prototype.inspect = function(/*objects*/) {
     for (var i=0; i<arguments.length; i++) {
-      this._html += jc.inspect(arguments[i]).span();
+      this._html += '<div>'+inspect(arguments[i]).span()+'</div>';
     }
     return this;
   }
@@ -473,63 +300,33 @@
     return this
   }
 
-  HTML.prototype.finalize = function(finalizationFunc) {
-    // finalizationFunc must be a function() {...}
-    // note that as this function is defined within a code that will be created in secureEval, we are
-    // also inside with(v) so any user variable is availlable as well as output is availlable because of the closure mecanism
+  HTML.prototype.view = function() {
+    return '<div class="TEXT">'+this._html+this._tagsEnd.join('')+'</div>'
+  }
 
-    if ((this._codeElement == undefined) || (this._outputElement == undefined)) {
-      throw new Error('HTML.finalize can only be used if a code and output Element was associated');
+  function html() {
+    return new HTML();
+  }
+  // object viewers /////////////////////////////////////
+
+  function view(obj) {
+    if (obj.span) {
+      return obj.span();
     }
-    this._finalize = finalizationFunc;
-    jc.finalizations.push(this);
-    return this;
+    if (obj.view) {      
+      return obj.view();
+    }
+    if (obj.outerHTML) { // an Element
+      return 'DOM Element<span class="INSPECTHTML">'+jc.toHtml(obj.outerHTML)+'</span>';
+    }
+    if (obj.valueOf) {
+      return obj.valueOf();
+    }
+    else {
+      return '<div class="SUCCESS">'+obj+'</div>';
+    }
   }
     
-  HTML.prototype.alert = function(message) {
-    window.alert(message);
-    return this;
-  }
-
-  // formaters ///////////////////////////////////////////
-  jc.format = function(obj) {
-    return new jc.Format(obj);
-  }
-
-  jc.Format = function(obj) {
-    // returns a format object that contains the reference to obj
-    this.obj = obj;
-  }
-
-  jc.Format.prototype.yyyymmdd = function() {
-    //returns this, with the .formatted set if the formating was successful
-    if ((this.formatted) || (this.obj == undefined) || (this.obj.getFullYear == undefined)) return this;
-    this.formatted = this.obj.getFullYear()+'-'+jc.pad(this.obj.getMonth()+1,2)+'-'+jc.pad(this.obj.getDate(),2);
-    return this;
-  }
-
-  jc.Format.prototype.fixed = function(decimals) {
-    // returns this, with .formatted set as a fixed decimal string format if obj was a number
-    if ((this.formatted) || (this.obj == undefined) || (typeof this.obj != 'number')) return this;
-    this.formatted = this.obj.toFixed(decimals)
-    return this;
-  }
- 
-  jc.Format.prototype.undefinedToBlank = function() {
-    if (this.formatted) return this; 
-    if (this.obj == undefined) {
-      this.formatted = '';
-    }
-    return this;
-  }
-
-  jc.Format.prototype.toString = function() {
-    if (this.formatted != undefined) return this.formatted;
-    if (this.obj == undefined) return 'undefined';
-    return this.obj.toString();
-  }
-
-  
   // helpers /////////////////////////////////////////////
 
   function range(min,max) {    //TODO devrait être un itérateur, mais n'existe pas encore dans cette version
@@ -539,4 +336,3 @@
     }
     return a;
   }
-

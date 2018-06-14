@@ -1,190 +1,126 @@
-body {
-  font-family: Arial;
-  font-size: 10pt;
-  color: black;
-}
-tbody {
-  font-family: Arial;
-  font-size: 10pt;
-}
-thead {
-  font-family: Arial;
-  font-size: 10pt;
-}
 h1 {
+  font-family: Arial;
   font-size: 18pt;
   margin-bottom: 0px;
-  padding-bottom: 0px;
 }
 h2 {
+  font-family: Arial;
   font-size: 14pt;
   margin-bottom: 0px;
-  padding-bottom: 0px;
 }
 h3 {
+  font-family: Arial;
   font-size: 12pt;
   margin-bottom: 0px;
 }
 h4 {
+  font-family: Arial;
   font-size: 10pt;
   margin-bottom: 0px;
 }
 h5 {
+  font-family: Arial;
   font-size: 10pt;
   margin-bottom: 0px;
 }
 h6 {
+  font-family: Arial;
   font-size: 10pt;
   margin-bottom: 0px;
 }
 h7 {
+  font-family: Arial;
   font-size: 10pt;
   margin-bottom: 0px;
 }
 dt {
   font-weight: bold;
 }
-
-
 th {
   text-align: left;
-  text-valign: top;
+  valign: top;
 }
-
 td {
   text-align: right;
   text-valign: top;
 }
-td.LEFT {
-  text-align: left;
-  text-valign: top;
-}
-td.TRACE {
-  border: 1px solid #000080;  
-  text-align: left;
-  text-valign: top;
-}
 
-p {
-  margin: 0px;
-  padding: 0px;
-}
-
-pre {
-  font-family: courier;
-  font-size: 14px;      
-  background-color: f2f9a8;
-  margin: 0px;
-  padding: 0px;
-}
-
-.SELECTED {
-  border: 3px solid #909090;
-}
-
-.SELECTED * {
-  border: solid blue 0px;
-}
-
-.COLLAPSED {
-  height: 100px;
-  overflow: scroll;
-}
-.HIDDEN {
-  display: none;
-}
-.HIDDEN.SELECTED {
-  display:inline-block;
-}
-
-.FLOATLEFT {
-  float:left;
-}
-
-.CODEVIEW {
-  font-family: courier;
-  font-size: 14px;      
-  background-color: bbf9a8;
-  border:solid green 1px;
-  margin: 0px;
-  padding: 0px;
-}
-
-.CODEEXAMPLE,
+CODE,
 .CODE {
   font-family: courier;
   font-size: 14px;      
   background-color: f2f9a8;
-  margin: 0px;
-  padding: 0px;
+  border:solid yellow 1px;
 }
+
 .AUTOEXEC {
   background-color: ffb848;
 }
+.HIDDEN {
+  display: none;
+}
 
-.OUTPUTEXAMPLE,
-.OUTPUT {
-  background-color: b7b7b7;
-  color: 828282;
+.OUTPUT,
+.CODE,
+p {
   margin: 0px;
   padding: 0px;
 }
-
-.TESTEXAMPLE{
-  background-color: b6fff7;
-  border:solid blue 3px;
-  color: blue;
-}
 .TEST {
-  background-color: b6fff7;
   border:solid blue 3px;
   color: blue;
 }
-
-.SUCCESS {
-  background-color: 8dff60;
-  color: black;
-}
-
-.INFO  {
-  background-color: b6fff7;
-}
-
-.TRACE,
+.INFO, 
 .DEBUG {
+  font-family: courier;
   font-size: 14px;      
   background-color: b6fff7;
   border:solid blue 1px;
 }
-
+.FLOAT {
+  float: left;
+}
 .ERROR {
   background-color: ff4d4d;
-  color: black;
+  border:solid red 1px;
 }
-
 .CODEINERROR {
   font-family: courier;
   font-size: 14px;      
   background-color: yellow;
   border:solid yellow 1px;
 }
-
 .INSPECT {
-  padding: 2px;
+  padding: 0px;
   margin: 0px;
+  color: green;
+  background-color: 8dff60;
+  border:solid green 1px;
+  font-family: courier;
+  font-size: 14px;      
 }
-
 .INSPECTHTML {
   padding: 0px;
   margin: 0px;
   color: 004129;
   background-color: 00ffa2;
+  border:solid green 1px;
   font-family: courier;
   font-size: 14px;      
 }
 
-.RICHTEXT {
+.RICHTEXT,
+.TEXT {
   color: black;
+}
+.SUCCESS {
+  background-color: 8dff60;
+  border:solid green 1px;
+}
+.OLD {
+  background-color: b7b7b7;
+  color: 828282;
+  border:solid green 1px;
 }
 
 .SMSTATE,
@@ -195,40 +131,3 @@ pre {
 .SMCURRENTSTATE {
   background-color: yellow;
 }
-
-.DELETED {
-  background-color: b7b7b7;
-  color: 828282;
-  font-size: 8px;
-}
-
-.SECTION {
-  padding-left: 3px;
-  marging-bottom: 5px;
-}
-
-.SECTIONCONTAINER {
-  padding-left: 25px;
-  border-left: grey solid 1px;
-}
-
-.INVALIDLINK {
-  color:red;
-}
-
-.DIFF.EQUAL {
-  background-color: 8dff60;
-}
-.DIFF.DEL {
-  background-color: ffb848;
-  color: red;
-}
-.DIFF.ADD {
-  background-color: ffb848;
-  color: green;
-}
-
-#localToolBar,
-button {
-  background-color: 909090;
-}  
