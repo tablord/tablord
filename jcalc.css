@@ -60,6 +60,10 @@ CODE,
   display: none;
 }
 
+.FLOATLEFT {
+  float:left;
+}
+
 .OUTPUT,
 .CODE,
 p {

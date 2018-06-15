@@ -113,10 +113,11 @@
     return "[object Row]";
   }
 
-  Row.prototype.eachCol = function(fct) {
+  Row.prototype.eachCol = function(func) {
+    // func must be function(colname,colObject)
     for (var col in this) {
       if (this.hasOwnProperty(col) && (col != '_table')) {
-        fct(col,this[col]);
+        func(col,this[col]);
       }
     }
   }
@@ -195,6 +196,29 @@
     for (var i=0; i<rows.length; i++) {
       this.add(rows[i]);
     }
+    return this;
+  }
+
+  Table.prototype.forEachRow = function(func) {
+    // func must be function(i,row)
+    for (var i=0; i<this._length; i++) {
+      func(i,this[i])
+    }
+  }
+
+  Table.prototype.sort = function(cols) {
+    function order(a,b) {
+      for (var col in cols) {
+        if (a[col] > b[col]) return  cols[col];
+        if (a[col] < b[col]) return -cols[col];
+      }
+      return 0;
+    }
+
+    this._savedLenght = this.length;  // to be compatible with sort, must rename _length in .length, but potentially can be used by the _id of a Row
+    this.length = this._length;
+    Array.prototype.sort.call(this,order);
+    this.length = this._savedLength;
     return this;
   }
 
@@ -353,3 +377,15 @@
     }
     return a;
   }
+  
+
+function Test() {
+  this._length = 2;
+  this[0] = 'ZZZZZZ';
+  this[1] = 'AAAAAA';
+}
+
+Test.prototype.sort = function(){
+  this.length = this._length;
+  Array.prototype.sort.call(this);  
+}

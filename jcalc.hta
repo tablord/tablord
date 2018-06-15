@@ -48,7 +48,7 @@
     &nbsp;&nbsp;.p("first § where we show that ",hauteurTotale$mm)<p>
     &nbsp;&nbsp;.p("second § where we show myTable",myTable.span({cols:{_id:1,amount:1}}))<p>
     &nbsp;&nbsp;.ul()<p>
-    &nbsp;&nbsp;&nbsp;&nbsp;.li('list 1 the full table',myTable)<p>
+    &nbsp;&nbsp;&nbsp;&nbsp;.li('list 1 the full table sorted by quantity from max to min',myTable.sort({quantity:-1}))<p>
     &nbsp;&nbsp;&nbsp;&nbsp;.li('list 2 a row',myTable.orange)<p>
     &nbsp;&nbsp;&nbsp;&nbsp;.li('list 3 a row as a list',myTable.orange.list())<p>
     &nbsp;&nbsp;.end()<p>
@@ -124,8 +124,8 @@
       {part:'beam 210',quantity:6,neededAt:0}<p>
     )<p>
   ).updateVariables()<p>
-  .setScenario({quantity:10,max:{'width=170':6,'width=210':7,'setup=manual':10,'setup=automatic':8}})
-
+  .setScenario({quantity:10,max:{'width=170':6,'width=210':7,'setup=manual':10,'setup=automatic':8}})<p>
+  .updateParts()
   </div>
   <div id="out0501" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
 

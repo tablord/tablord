@@ -1,11 +1,16 @@
 function Bom(name,condition) {
   this._name = name;
-  this.condition = condition;
+  this.condition = condition.sort();  //important that we keep always the same order
   this.lines = new table();
 }
 
 Bom.prototype.add = function(line){
   this.lines.add(line);
+}
+
+Bom.prototype.forEachLine = function(func){
+  // func must be function(lineNumber,line)
+  this.lines.forEachRow(func);
 }
 
 Bom.prototype.toString = function() {
@@ -27,16 +32,62 @@ function bom(name,condition /*,lines*/) {
   return b;
 }
 
+// Part //////////////////////////////////////////
+function Part(name){
+  this._name = name;
+  this.needs = table(name,false);
+}
+
+Part.prototype.add = function (quantity,condition,neededAt) {
+  this.needs.add({quantity:quantity,condition:condition,neededAt:neededAt});
+  return this;
+}
+
+Part.prototype.sort = function() {
+  this.needs.sort({condition:1});
+  return this;
+}
+
+Part.prototype.span = function() {
+  return this.needs.view();
+}
+
 
 // Product ///////////////////////////////////////
 function Product(name){
   this._name = name;
   this.boms=[];
   this.variables={};
+  this.parts={};
 }
 
-Product.prototype.add = function(bom) {
+Product.prototype.addBom = function(bom) {
   this.boms.push(bom);
+  return this;
+}
+
+Product.prototype.addPartNeed = function(part,quantity,condition,neededAt) {
+  if (this.parts[part] == undefined) {
+    this.parts[part] = new Part(part);
+  }
+  this.parts[part].add(quantity,condition,neededAt);
+  return this;
+}
+
+Product.prototype.updateParts = function () {
+  for (var i=0; i<this.boms.length; i++) {
+    var cond = this.boms[i].condition;
+    var bom = this.boms[i];
+    var prod = this
+    bom.forEachLine(function(i,line) {
+      prod.addPartNeed(line.part,line.quantity,cond,line.neededAt);
+    })
+  }
+  
+  for (var part in this.parts) {
+    this.parts[part].sort();
+  }
+  return this;
 }
 
 Product.prototype.updateVariables = function () {
@@ -62,11 +113,17 @@ Product.prototype.toString = function() {
 
 Product.prototype.span = function() {
   var h='<h2>Product '+this._name+'</h2>';
+  h += '<h3>Variables</h3>';
   for (var vn in this.variables) {
     h += this.variables[vn].span();
   }
+  h += '<h3>BOMs</h3>';
   for (var i=0; i<this.boms.length; i++) {
     h += this.boms[i].span();
+  }
+  h += '<h3>Parts</h3>';
+  for (var part in this.parts) {
+    h += this.parts[part].span();
   }
   return h;
 }
@@ -89,7 +146,7 @@ Product.prototype.setScenario = function(scenario) {
 function product(name /*,boms*/) {
   var p = new Product(name);
   for (var i=1; i< arguments.length; i++){
-    p.add(arguments[i]);
+    p.addBom(arguments[i]);
   }
   return v[name] = p;
 }
