@@ -32,7 +32,12 @@
   // helpers ///////////////////////////////////////////////////////////
   jc.toHtml = function(htmlCode) {
     // transform htmlCode in such a manner that the code can be visualised in a <code>...
-    return htmlCode.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\\/,'\\\\').replace(/\n/,"<br>");
+    return htmlCode.replace(/&/g,"&amp;")
+                   .replace(/</g,"&lt;")
+                   .replace(/>/g,"&gt;")
+                   .replace(/\\/,'\\\\')
+                   .replace(/\r/,'\\r')
+                   .replace(/\n/,"\\n<br>");
   }
 
   jc.removeErrors = function(html) {
@@ -47,21 +52,21 @@
                .replace(/&amp;/g,"&")
   }
 
-  jc.testElements = function(element) {
-    // returns a pseudo array of Elements containing the test values.
-    // if no tests returns []
+  jc.trimHtml = function(html) {
+  // suppress all unsignificant blanks and non visible char
+    return html.replace(/[ \t\r\n]+/g,' ').replace(/> /,'>').replace(/ </,'<');
+  }
 
-    var testElements = window.document.getElementById(element.id.replace(/code/,"test"));
-    return testElements?testElements.children:[];
+  jc.testElement = function(element) {
+    // returns the test element if any
+
+    return window.document.getElementById(element.id.replace(/code/,"test"));
   }
 
   jc.editorKeyPress = function(event) {
     var element = event.srcElement;
-    window.document.getElementById(element.id.replace(/code/,"out")).children[0].className = 'OLD';
-    var tests = jc.testElements(element);
-    for (var i = 0;i<tests.length;i++) {
-      tests[i].className = 'INFO';
-    };
+    $(element.id.replace(/code/,"#out")).removeClass('SUCCESS').removeClass('ERROR');
+    $(element.id.replace(/code/,"#test")).removeClass('SUCCESS').removeClass('ERROR');
     if (event.keyCode==10) {  //only IE
       jc.execAutoExec(); 
     }
@@ -77,9 +82,8 @@
 
   jc.codeClick = function(element) {
     jc.currentElement = element;
-    var localToolBar = $('#localToolBar').toggleClass("HIDDEN",false)[0];
+    var localToolBar = $('#localToolBar').removeClass("HIDDEN")[0];
     localToolBar.parentNode.insertBefore(localToolBar,element);
-    localToolBar.hidden = false;
     window.document.getElementById('codeId').innerHTML = element.id;
   }
 
@@ -98,17 +102,17 @@
 
   jc.execCode = function(element) {
 
-    function displayResult (result) {
-      var tag = (out.tagName == 'DIV')?'DIV':'SPAN';
+    function displayResult (result,out) {
       try {
-        out.innerHTML = '<'+tag+' class="SUCCESS">'+view(result)+'</'+tag+'>';
+        out.innerHTML = view(result);
+        $(out).removeClass('ERROR').addClass('SUCCESS');
       }
       catch (e) {
-        displayError(e);
+        displayError(e,'',out);
       }
     }
 
-    function displayError(error,code) {
+    function displayError(error,code,out) {
       if (error.message) {
         var faults = error.message.match(/« (.+?) »/);
         if (faults != null) {
@@ -117,12 +121,8 @@
         }
         error = error.name+': '+error.message;
       }
-      if (out.tagName == 'DIV') {
-        out.innerHTML = '<DIV class="ERROR">'+error+(code?'<DIV class="CODEINERROR">'+code+'</DIV>':'')+'</DIV>';
-      }
-      else {
-        out.innerHTML = '<SPAN class="ERROR">'+error+(code?'<SPAN class="CODEINERROR">'+code+'</SPAN>':'')+'</SPAN>';
-      }
+      out.innerHTML = error+(code?'<DIV class="CODEINERROR">'+code+'</DIV>':'');
+      $(out).removeClass('SUCCESS').addClass('ERROR');
     }
 
     //-------------
@@ -133,31 +133,32 @@
 
       jc.codeElementBeingExecuted = element; 
       var out = window.document.getElementById(element.id.replace(/code/,"out"));
-      tests = jc.testElements(element);
-      var code = 'output = new html(); with (v) {'+jc.removeTags(element.innerHTML)+'};';
+      var test = window.document.getElementById(element.id.replace(/code/,"test"));
   
+      var code = 'output = new HTML(); with (v) {'+jc.removeTags(element.innerHTML)+'};';
       var res = geval(code);
       if (res == undefined) {
-        displayError('undefined');
+        displayError('undefined','',out);
       }
       else if (res._error) {
-        displayError('res._error');
+        displayError('res._error','',out);
       }
       else {
-        displayResult(res);
+        displayResult(res,out);
       }
-      for (var i = 0;i<tests.length;i++) {
-        var div = tests[i];
-        if (div.innerHTML == res) {   //TODO rethink how to compare
-          div.className = 'SUCCESS';
+
+      // test
+      if (test != undefined) {
+        if (jc.trimHtml(out.innerHTML) == jc.trimHtml(test.innerHTML)) {   //TODO rethink how to compare
+          $(test).removeClass('ERROR').addClass('SUCCESS');
         }
         else {
-          div.className = 'ERROR';
+          $(test).removeClass('SUCCESS').addClass('ERROR');
         }
       }
     }
     catch (e) {
-      displayError(e,element.innerHTML);
+      displayError(e,element.innerHTML,out);
     }
     finally {
       jc.codeElementBeingExecuted = undefined;

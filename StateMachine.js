@@ -188,9 +188,9 @@ State.prototype.compile = function() {
 
 State.prototype.span = function(){
   var h = '<DIV class="SMSTATE'+((this.stateMachine.currentState==this)?' SMCURRENTSTATE':'')+'">'+this._name+'<br>';
-  if (this.entryCode) h+= 'entry: <CODE class=CODEVIEW>'+this.entryCode+'</CODE>';
-  if (this.runCode)   h+= 'run  : <CODE class=CODEVIEW>'+this.runCode+'</CODE>';
-  if (this.exitCode)  h+= 'exit : <CODE class=CODEVIEW>'+this.exitCode+'</CODE>';
+  if (this.entryCode) h+= 'entry: <SPAN class=CODEVIEW>'+this.entryCode+'</SPAN>';
+  if (this.runCode)   h+= 'run  : <SPAN class=CODEVIEW>'+this.runCode+'</SPAN>';
+  if (this.exitCode)  h+= 'exit : <SPAN class=CODEVIEW>'+this.exitCode+'</SPAN>';
   for (var i=0; i<this.length; i++) {
     h += this[i].span();
   }

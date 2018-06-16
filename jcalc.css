@@ -1,35 +1,33 @@
-h1 {
+body {
   font-family: Arial;
+  font-size: 10pt;
+}
+
+h1 {
   font-size: 18pt;
   margin-bottom: 0px;
 }
 h2 {
-  font-family: Arial;
   font-size: 14pt;
   margin-bottom: 0px;
 }
 h3 {
-  font-family: Arial;
   font-size: 12pt;
   margin-bottom: 0px;
 }
 h4 {
-  font-family: Arial;
   font-size: 10pt;
   margin-bottom: 0px;
 }
 h5 {
-  font-family: Arial;
   font-size: 10pt;
   margin-bottom: 0px;
 }
 h6 {
-  font-family: Arial;
   font-size: 10pt;
   margin-bottom: 0px;
 }
 h7 {
-  font-family: Arial;
   font-size: 10pt;
   margin-bottom: 0px;
 }
@@ -44,18 +42,11 @@ td {
   text-align: right;
   text-valign: top;
 }
-
-CODE,
-.CODE {
-  font-family: courier;
-  font-size: 14px;      
-  background-color: f2f9a8;
-  border:solid yellow 1px;
+p {
+  margin: 0px;
+  padding: 0px;
 }
 
-.AUTOEXEC {
-  background-color: ffb848;
-}
 .HIDDEN {
   display: none;
 }
@@ -64,36 +55,62 @@ CODE,
   float:left;
 }
 
-.OUTPUT,
-.CODE,
-p {
+.CODEVIEW,
+.CODE {
+  font-family: courier;
+  font-size: 14px;      
+  background-color: f2f9a8;
+  border:solid yellow 1px;
   margin: 0px;
   padding: 0px;
 }
+.AUTOEXEC {
+  background-color: ffb848;
+}
+
+.OUTPUT {
+  background-color: b7b7b7;
+  color: 828282;
+  border:solid green 1px;
+  margin: 0px;
+  padding: 0px;
+}
+
+
 .TEST {
+  background-color: b6fff7;
   border:solid blue 3px;
   color: blue;
 }
-.INFO, 
+
+.SUCCESS {
+  background-color: 8dff60;
+  color: black;
+}
+
+.INFO  {
+  background-color: b6fff7;
+}
+
 .DEBUG {
   font-family: courier;
   font-size: 14px;      
   background-color: b6fff7;
   border:solid blue 1px;
 }
-.FLOAT {
-  float: left;
-}
+
 .ERROR {
   background-color: ff4d4d;
-  border:solid red 1px;
+  color: black;
 }
+
 .CODEINERROR {
   font-family: courier;
   font-size: 14px;      
   background-color: yellow;
   border:solid yellow 1px;
 }
+
 .INSPECT {
   padding: 0px;
   margin: 0px;
@@ -103,6 +120,7 @@ p {
   font-family: courier;
   font-size: 14px;      
 }
+
 .INSPECTHTML {
   padding: 0px;
   margin: 0px;
@@ -116,15 +134,6 @@ p {
 .RICHTEXT,
 .TEXT {
   color: black;
-}
-.SUCCESS {
-  background-color: 8dff60;
-  border:solid green 1px;
-}
-.OLD {
-  background-color: b7b7b7;
-  color: 828282;
-  border:solid green 1px;
 }
 
 .SMSTATE,

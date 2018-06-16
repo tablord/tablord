@@ -27,22 +27,22 @@
   </div>
   <h1>basics</h1>
   <div id="code0001" class="CODE" onclick="jc.codeClick(this);" contentEditable>3+5</div>
-  <div id="out0001" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
-  <div id="test0001" class="TEST"><div class="INFO" >8</div></div>
+  <div id="out0001" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
+  <div id="test0001" class="TEST">8</div>
   <h1>jCalc lib</h1>
   <div id="code0102" class="CODE" onclick="jc.codeClick(this);" contentEditable>v("hauteurTotale$mm",f("hauteur$mm+5"))<p>v("hauteur$mm",3)<p>hauteurTotale$mm</div>
-  <div id="out0102" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
-  <div id="test0102" class="TEST"><div class="INFO" >8</div></div>
+  <div id="out0102" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
+  <div id="test0102" class="TEST"><VAR>hauteurTotale</VAR>= <SPAN class=VALUE>8</SPAN><SPAN class=UNIT>mm</SPAN></div>
   <div id="code0103" class="CODE" onclick="jc.codeClick(this);" contentEditable>v("hauteur$mm",3)</div>
-  <div id="out0103" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
+  <div id="out0103" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
   <div id="code0104" class="CODE AUTOEXEC" onclick="jc.codeClick(this);" contentEditable>v("hauteur$mm")</div>
-  <div id="out0104" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
+  <div id="out0104" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
   <div id="code0105" class="CODE" onclick="jc.codeClick(this);" contentEditable>
     table("myTable")<p>
     &nbsp;&nbsp;.add({_id:"apple" ,quantity:250,price:0.5,amount:f("quantity*price")})<p>
     &nbsp;&nbsp;.add({_id:"orange",quantity:100,price:0.7,amount:f("quantity*price")});
   </div>
-  <div id="out0105" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
+  <div id="out0105" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
   <div id="code0106" class="CODE" onclick="jc.codeClick(this);" contentEditable>
     output<p>
     .p("first § where we show that ",hauteurTotale$mm)<p>
@@ -58,11 +58,12 @@
     .indent(-1)<p>
     .h('Titre 2')
   </div>
-  <div id="out0106" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
+  <div id="out0106" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
   <h1>JQuery</h1>
   <div id="code0201" class="CODE" onclick="jc.codeClick(this);" contentEditable>$('#code0104')[0]</div>
-  <div id="out0201" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
-  <div id="test0201" class="TEST"><div class="INFO" >[jQuery of 1 elements]</div></div>
+  <div id="out0201" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
+  <div id="test0201" class="TEST">DOM Element<SPAN class=INSPECTHTML>&lt;DIV onclick=jc.codeClick(this); id=code0104 class="CODE AUTOEXEC" contentEditable=true&gt;v("hauteur$mm")&lt;/DIV&gt;</SPAN>
+</div>
   <h1>Axe</h1>
   <div id="code0301" class="CODE" onclick="jc.codeClick(this);" contentEditable>
     axe('lift')<p>
@@ -71,12 +72,12 @@
     .accelerate({t:15,a:0})<p>
     .move({t:20,a:1,d:40,v1:5})
   </div>
-  <div id="out0301" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
+  <div id="out0301" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
   <div id="code0302" class="CODE" onclick="jc.codeClick(this);" contentEditable>
     lift<p>
     .accelerate({t:33,a:0})<p>
   </div>
-  <div id="out0302" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
+  <div id="out0302" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
 
   <h1>StateMachine</h1>
   <div id="code0401" class="CODE" onclick="jc.codeClick(this);" contentEditable>
@@ -90,14 +91,14 @@
     &nbsp;&nbsp;.transition('state1','count == 0')<p>
     .end().view();
   </div>
-  <div id="out0401" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
+  <div id="out0401" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
   <div id="code0402" class="CODE" onclick="jc.codeClick(this);" contentEditable>
     output<p>
     .p(jc.simulation.runWhile("jc.simulation.time$s < 10"))<p>
     .p(myStateMachine.view({log:true}))<p>
     .p(count)
   </div>
-  <div id="out0402" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
+  <div id="out0402" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
   <h1>RichText</h1>
   <div id="rich0000" class="RICHTEXT" onclick="jc.richTextClick(this)">
     <h1>titre</h1>
@@ -111,10 +112,10 @@
      p.add(0,20).add(3,10).add(0,30);<p>
      p<p>
   </div>
-  <div id="out_Bom_PlanOfNeed" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
-  <div id="test_Bom_PlanOfNeed" class="TEST"><div class="INFO" >
+  <div id="out_Bom_PlanOfNeed" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
+  <div id="test_Bom_PlanOfNeed" class="TEST">
      <DIV><VAR>plan of need</VAR> <TABLE border=1> <THEAD> <TR> <TH>time</TH> <TH>quantity</TH> <TH>cumul</TH></TR></THEAD> <TBODY> <TR> <TD>0</TD> <TD>50</TD> <TD>50</TD></TR> <TR> <TD>3</TD> <TD>10</TD> <TD>60</TD></TR></TBODY></TABLE></DIV>
-  </div></div>
+  </div>
   <div id="code0502" class="CODE" onclick="jc.codeClick(this);" contentEditable>
   product('product1', <p> 
     bom('main170',['width=170'],<p>
@@ -136,7 +137,7 @@
   .setScenario({quantity:10,max:{'width=170':6,'width=210':7,'setup=manual':10,'setup=automatic':8}})<p>
   .updateParts()
   </div>
-  <div id="out0502" class="OUTPUT" onclick="jc.outClick(this)"><div class="OLD">no output</div></div>
+  <div id="out0502" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
 
 
 </body>

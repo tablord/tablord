@@ -8,32 +8,64 @@ JQuery.prototype.isJQuery = function () {
   return true;
 }
 
-JQuery.prototype.addClass = function(className,context) {
-  for (var i = 0; i< context.children.length; i++) {
-    if ((context.children[i].className || '').search(className) != -1) {
-      this[this.length++] = context.children[i];
+JQuery.prototype.hasClass = function(className){
+  for (var i=0; i< this.length; i++){
+    if ((this[i].className || '').search(new RegExp('\\b'+className+'\\b')) != -1) {
+      return true;
     }
-    this.addClass(className,context.children[i]);
   }
+  return false;
 }
 
-JQuery.prototype.addId = function(id,context) {
+JQuery.prototype.addClass = function(className) {
+  return this.toggleClass(className,true);
+}
+JQuery.prototype.removeClass = function(className) {
+  return this.toggleClass(className,false);
+}
+
+JQuery.prototype.toggleClass = function(className,add) { //limited version: only on class at a time
+  this.each(function(i,e) {
+    if ((add==true) || (e.className == undefined) || ((e.className.search(name) == -1) && (add != false))) {
+      e.className += ' '+className;
+    }
+    else {
+      e.className = e.className.replace(new RegExp('\\b'+className+'\\b'),'');
+    }
+  });
+  return this;
+}
+
+JQuery.prototype.addClassSel = function(className,context) {
+  for (var i = 0; i< context.children.length; i++) {
+    if ((context.children[i].className || '').search(new RegExp('\\b'+className+'\\b')) != -1) {
+      this[this.length++] = context.children[i];
+    }
+    this.addClassSel(className,context.children[i]);
+  }
+  return this;
+}
+
+
+JQuery.prototype.addIdSel = function(id,context) {
   for (var i = 0; i< context.children.length; i++) {
     if (context.children[i].id == id) {
       this[this.length++] = context.children[i];
       return; //only one id
     }
-    this.addId(id,context.children[i]);
+    this.addIdSel(id,context.children[i]);
   }
+  return this;
 }
 
-JQuery.prototype.addTag = function(tag,context) {
+JQuery.prototype.addTagSel = function(tag,context) {
   for (var i = 0; i< context.children.length; i++) {
     if (context.children[i].tagName==tag) {
       this[this.length++] = context.children[i];
     }
-    this.addTag(tag,context.children[i]);
+    this.addTagSel(tag,context.children[i]);
   }
+  return this;
 }
 
 JQuery.prototype.add =function (sel,context) {
@@ -43,21 +75,20 @@ JQuery.prototype.add =function (sel,context) {
   var c= context || window.document.documentElement;
   if (sel.tagName != undefined) {  // sel is a DOM Element
     this[this.length++] = sel;
+    return this;
   }
-  else {
-    if (sel.search(/^\./)==0) {
-      var className = sel.slice(1);
-      this.addClass(className,c);
-    }
-    else if (sel.search(/^\#/)==0) {
-      var id = sel.slice(1);
-      this.addId(id,c);
-    }
-    else { //un Tag
-      this.addTag(sel,c);
-    }
-  } 
-  return this; 
+
+  if (sel.search(/^\./)==0) {
+    var className = sel.slice(1);
+    return this.addClassSel(className,c);
+  }
+  if (sel.search(/^\#/)==0) {
+    var id = sel.slice(1);
+    return this.addIdSel(id,c);
+  }
+
+  //un Tag
+  return this.addTagSel(sel,c);
 }
 
 JQuery.prototype.each = function (f) {
@@ -66,26 +97,6 @@ JQuery.prototype.each = function (f) {
   }
 }
 
-JQuery.prototype.hasClass = function(name){
-  for (var i=0; i< this.length; i++){
-    if ((this[i].className || '').search(name) != -1) {
-      return true;
-    }
-  }
-  return false;
-}
-
-JQuery.prototype.toggleClass = function(name,add) { //limited version: only on class at a time
-  this.each(function(i,e) {
-    if ((add==true) || (e.className == undefined) || ((e.className.search(name) == -1) && (add != false))) {
-      e.className += ' '+name;
-    }
-    else {
-      e.className = e.className.replace(new RegExp(name),'');
-    }
-  });
-  return this;
-}
 
 
 JQuery.prototype.toString = function () {

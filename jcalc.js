@@ -282,11 +282,43 @@
     this._tagsEnd = [];
   }
 
-  HTML.prototype.htmlCode = function (html) {
+
+  HTML.prototype.html = function (html) {
+  // insert any html
     this._html += html;
     return this;
   }
 
+  HTML.prototype.showHtml = function (html) {
+  // show html as html code
+    this._html += '<span class=INSPECTHTML>'+jc.toHtml(html)+'</span>';
+    return this;
+  }
+
+  HTML.prototype.showDiff = function(e1,e2) {
+    if (e1.length != e2.length) {
+      this._html += '<span class=ERROR>e1.length=='+e1.length+' != e2.length=='+e2.length+'</span>';
+    }
+    for (var i=0; (i<e1.length) && (i<e2.length); i++) {
+      if (e1.charAt(i) != e2.charAt(i)) break;
+    }
+    this._html += '<span class=SUCCESS>'+e1.slice(0,i)+'</span><br>e1:<span class=ERROR>'+e1.slice(i)+'</span><br>e2:<span class=ERROR>'+e2.slice(i)+'</span>';
+    return this;
+  }
+
+  HTML.prototype.showHtmlDiff = function(e1,e2) {
+    if (e1.length != e2.length) {
+      this._html += '<span class=ERROR>e1.length=='+e1.length+' != e2.length=='+e2.length+'</span>';
+    }
+    for (var i=0; (i<e1.length) && (i<e2.length); i++) {
+      if (e1.charAt(i) != e2.charAt(i)) break;
+    }
+    this._html += '<span class=SUCCESS>'+jc.toHtml(e1.slice(0,i))+'</span><br>e1:<span class=CODEINERROR>'+jc.toHtml(e1.slice(i))+'</span><br>e2:<span class=CODEINERROR>'+jc.toHtml(e2.slice(i))+'</span>';
+    return this;
+  }
+    
+    
+  
   HTML.prototype.p = function (/*elements*/) {
     this.tag('p',arguments);
     return this;
@@ -354,9 +386,6 @@
     return '<div class="TEXT">'+this._html+this._tagsEnd.join('')+'</div>'
   }
 
-  function html() {
-    return new HTML();
-  }
   // object viewers /////////////////////////////////////
 
   function view(obj) {
@@ -367,7 +396,7 @@
       return obj.view();
     }
     if (obj.outerHTML) { // an Element
-      return 'DOM Element<span class="INSPECTHTML">'+jc.toHtml(obj.outerHTML)+'</span>';
+      return 'DOM Element<span class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(obj.outerHTML))+'</span>';
     }
     if (obj.valueOf) {
       return obj.valueOf();
