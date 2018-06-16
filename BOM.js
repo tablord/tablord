@@ -44,12 +44,63 @@ Part.prototype.add = function (quantity,condition,neededAt) {
 }
 
 Part.prototype.sort = function() {
-  this.needs.sort({condition:1});
+  this.needs.sort({condition:function(a,b){
+    var res = a.length - b.length;
+    if (res != 0) return res;
+
+    // knowing that the different values are already in alphabetical order we can just sort by alphabetical representation of condition
+    if (a>b) return  1;
+    if (a<b) return -1;
+    return 0;
+  }});
   return this;
 }
 
 Part.prototype.span = function() {
   return this.needs.view();
+}
+
+
+// Plan of Need //////////////////////////////////
+function PlanOfNeed () {
+  this.plan = [];
+  this.needsUpdate = true;
+}
+
+PlanOfNeed.prototype.add = function(time,quantity) {
+  this.needsUpdate = true;
+  for (var i=this.plan.length-1; i>=0; i--) {
+    if (time == this.plan[i].time) {
+      this.plan[i].quantity += quantity;
+      return this;
+    }
+    if (time > this.plan[i].time) {
+      this.plan.splice(i+1,0,{time:time,quantity:quantity});
+      return this;
+    }
+  }
+  this.plan.splice(0,0,{time:time,quantity:quantity});
+  return this;
+}
+
+PlanOfNeed.prototype.update = function() {
+  if (this.needsUpdate == true) {
+    var cumul = 0;
+    for (var i=0;i<this.plan.length;i++){
+      this.plan[i].cumul = cumul += this.plan[i].quantity; 
+    }
+    this.needsUpdate = false;
+  }
+  return this;
+}
+
+PlanOfNeed.prototype.toString = function() {
+  return '[object PlanOfNeed]';
+}
+
+PlanOfNeed.prototype.span = function() {
+  this.update();
+  return table('plan of need').addRows(this.plan).view({time:1,quantity:1,cumul:1});  
 }
 
 

@@ -207,8 +207,17 @@
   }
 
   Table.prototype.sort = function(cols) {
+    // sort the table according to the "cols" criteria
+    // cols is an object of the form:
+    //   {  col1: 1    // 1 means ascending  alphabetic or numeric order
+    //      col2:-1    //-1 means descending alphabetic or numeric order
+    //      col3: function(a,b) {... // any function that compare a and b and returns >0 if a>b, <0 if a<b, 0 if a==b
     function order(a,b) {
       for (var col in cols) {
+        if (typeof cols[col] == 'function') {
+          var res = cols[col](a[col],b[col])
+          if (res != 0) return res;
+        }
         if (a[col] > b[col]) return  cols[col];
         if (a[col] < b[col]) return -cols[col];
       }

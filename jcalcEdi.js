@@ -134,7 +134,7 @@
       jc.codeElementBeingExecuted = element; 
       var out = window.document.getElementById(element.id.replace(/code/,"out"));
       tests = jc.testElements(element);
-      var code = 'with (v) {'+jc.removeTags(element.innerHTML)+'};';
+      var code = 'output = new html(); with (v) {'+jc.removeTags(element.innerHTML)+'};';
   
       var res = geval(code);
       if (res == undefined) {
