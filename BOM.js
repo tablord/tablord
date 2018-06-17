@@ -216,6 +216,7 @@ function ProductVariable (name) {
   this._name = name;
   this.length = 0;
   this.quantity = 0;
+  this.scenarii = [];
 //this[n]       :array like of values  {value: ,max:  ,s0 ,s1....}
 //this[value]   :access by value
 }
@@ -234,24 +235,23 @@ ProductVariable.prototype.add = function(value,max){
 
 ProductVariable.prototype.updateScenarii = function() {
   // remove any previous scenarii
-  var values = [];
-  for (var i=0; i<this.length; i++){
-    var val = {value:this[i].value,max:this[i].max}
-    this[i] = val;
-    this[val.value] = val;
-    values.push(val.value);
+  this.scenarii = [];
+  var values=[];
+  for (var i=0; i<this.length; i++) {
+    values.push(this[i].value);
   }
-
-  var scenarii = permutations(values);
-  for (var i=0; i<scenarii.length; i++) {
+  var permutationsOfValues = permutations(values);
+  for (var i=0; i<permutationsOfValues.length; i++) {
     var availlable = this.quantity;
-    var scenario = scenarii[i];
-    for (var priority=0; priority<scenario.length; priority++) {
-      var value = scenario[priority]
+    var valuesByPriority = permutationsOfValues[i];
+    var scenario = {};
+    for (var priority=0; priority<valuesByPriority.length; priority++) {
+      var value = valuesByPriority[priority]
       var q = Math.min(availlable,this[value].max)
       availlable -= q;
-      this[value]['S'+i] = q;
+      scenario[value] = q;
     }
+    this.scenarii.push(scenario);
   }
   return this;
 }
@@ -268,7 +268,12 @@ ProductVariable.prototype.span = function(){
   for (var i=0; i<this.length; i++){
     t.add(this[i]);
   }
-  return h+ t.span(/*{cols:{value:{head:1},max:1}}*/) +'</span>';
+  h += t.span({cols:{value:{head:1},max:1}});
+  var t = table();
+  for (var i=0; i<this.scenarii.length; i++){
+    t.add(this.scenarii[i]);
+  }
+  return h+t.span()+'</span>';
 }
 
 
