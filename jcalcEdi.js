@@ -121,7 +121,8 @@
         }
         error = error.name+': '+error.message;
       }
-      out.innerHTML = error+(code?'<DIV class="CODEINERROR">'+code+'</DIV>':'');
+      var tag = out.tagName;  // if span, one can only insert span, not div
+      out.innerHTML = error+(code?'<'+tag+' class="CODEINERROR">'+code+'</'+tag+'>':'');
       $(out).removeClass('SUCCESS').addClass('ERROR');
     }
 

@@ -179,7 +179,7 @@ Product.prototype.span = function() {
   return h;
 }
 
-Product.prototype.setScenario = function(scenario) {
+Product.prototype.setConstraints = function(scenario) {
   // scenario = {quantity:qq,
   //             max:{
   //               'cond1=c1':xx,
@@ -190,6 +190,13 @@ Product.prototype.setScenario = function(scenario) {
   }
   for (var cond in scenario.max) {
     this.variables[cond.split('=')[0]][cond].max = scenario.max[cond];
+  }
+  return this;
+}
+
+Product.prototype.updateScenarii = function() {
+  for (var variable in this.variables) {
+    this.variables[variable].updateScenarii();
   }
   return this;
 }
@@ -208,6 +215,8 @@ function ProductVariable (name) {
   this._name = name;
   this.length = 0;
   this.quantity = 0;
+//this[n]       :array like of values  {value: ,max:  ,s0 ,s1....}
+//this[value]   :access by value
 }
 
 ProductVariable.prototype.add = function(value,max){
@@ -217,6 +226,30 @@ ProductVariable.prototype.add = function(value,max){
   }  
   this[value].value=value;
   this[value].max=max || 0;
+  return this;
+}
+
+ProductVariable.prototype.updateScenarii = function() {
+  // remove any previous scenarii
+  var values = [];
+  for (var i=0; i<this.length; i++){
+    var val = {value:this[i].value,max:this[i].max}
+    this[i] = val;
+    this[val.value] = val;
+    values.push(val.value);
+  }
+
+  var scenarii = permutations(values);
+  for (var i=0; i<scenarii.length; i++) {
+    var availlable = this.quantity;
+    var scenario = scenarii[i];
+    for (var priority=0; priority<scenario.length; priority++) {
+      var value = scenario[priority]
+      var q = Math.min(availlable,this[value].max)
+      availlable -= q;
+      this[value]['S'+i] = q;
+    }
+  }
   return this;
 }
 
@@ -232,7 +265,7 @@ ProductVariable.prototype.span = function(){
   for (var i=0; i<this.length; i++){
     t.add(this[i]);
   }
-  return h+ t.span({cols:{value:{head:1},max:1}}) +'</span>';
+  return h+ t.span(/*{cols:{value:{head:1},max:1}}*/) +'</span>';
 }
 
 
