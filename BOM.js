@@ -145,7 +145,7 @@ Product.prototype.updateVariables = function () {
   for (var i=0; i < this.boms.length; i++) {
     var b = this.boms[i];
     for (var n=0; n < b.condition.length; n++) {
-      var c = b.condition[n].split('=');
+      var c = b.condition[n].split(ProductVariable.SEPARATOR);
       if (this.variables[c[0]]) {
         var pv = this.variables[c[0]];
       }
@@ -182,14 +182,14 @@ Product.prototype.span = function() {
 Product.prototype.setConstraints = function(scenario) {
   // scenario = {quantity:qq,
   //             max:{
-  //               'cond1=c1':xx,
-  //               'cond1=c2':yy,  etc..
+  //               'cond1_c1':xx,
+  //               'cond1_c2':yy,  etc..
   //             }
   for (var variable in this.variables) {
     this.variables[variable].quantity = scenario.quantity;
   }
   for (var cond in scenario.max) {
-    this.variables[cond.split('=')[0]][cond].max = scenario.max[cond];
+    this.variables[cond.split(ProductVariable.SEPARATOR)[0]][cond].max = scenario.max[cond];
   }
   return this;
 }
@@ -211,6 +211,7 @@ function product(name /*,boms*/) {
 
   
 // ProductVariable  ///////////////////////////////
+
 function ProductVariable (name) {
   this._name = name;
   this.length = 0;
@@ -218,6 +219,8 @@ function ProductVariable (name) {
 //this[n]       :array like of values  {value: ,max:  ,s0 ,s1....}
 //this[value]   :access by value
 }
+
+ProductVariable.SEPARATOR = '_';
 
 ProductVariable.prototype.add = function(value,max){
   if (this[value] == undefined) {
@@ -260,7 +263,7 @@ ProductVariable.prototype.toString = function() {
 }
 
 ProductVariable.prototype.span = function(){
-  var h = '<span>ProductVariable '+this._name+' for '+this.quantity+'<br>';
+  var h = '<span>ProductVariable <var>'+this._name+'</var> for '+this.quantity+'<br>';
   var t = table();
   for (var i=0; i<this.length; i++){
     t.add(this[i]);
