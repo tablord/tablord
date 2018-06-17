@@ -149,6 +149,16 @@
   </div>
   <div id="out0502" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
 
+  <h1>Non regression tests</h1>
+  <div id="code_NRT0001" class="CODE" onclick="jc.codeClick(this);" contentEditable>
+     // creating a function "test" or a "out" will destroy a local variable and corrupt the environement<p>
+     function test() {};<p>
+     var out = 'toto';<p>
+     'ok'
+  </div>
+  <div id="out_NRT0001" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
+  <div id="test_NRT0001" class="TEST">ok</div>
+
 
 </body>
 </html>

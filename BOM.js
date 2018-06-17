@@ -209,7 +209,18 @@ function product(name /*,boms*/) {
   return v[name] = p;
 }
 
-  
+// ProductContext /////////////////////////////////
+function ProductContext () {
+  this.result = 0; 
+}
+ 
+ProductContext.prototype.toString = function(){
+  return '[object ProductContext]';
+}
+
+ProductContext.prototype.span = function () {
+  return inspect(this);
+}
 // ProductVariable  ///////////////////////////////
 
 function ProductVariable (name) {
@@ -217,11 +228,12 @@ function ProductVariable (name) {
   this.length = 0;
   this.quantity = 0;
   this.scenarii = [];
-//this[n]       :array like of values  {value: ,max:  ,s0 ,s1....}
+//this[n]       :array like of values  {value: ,max:}
 //this[value]   :access by value
 }
 
 ProductVariable.SEPARATOR = '_';
+ProductVariable.context = new ProductContext();
 
 ProductVariable.prototype.add = function(value,max){
   if (this[value] == undefined) {
@@ -254,6 +266,27 @@ ProductVariable.prototype.updateScenarii = function() {
     this.scenarii.push(scenario);
   }
   return this;
+}
+
+ProductVariable.prototype.worst = function(func) {
+  // func must be function(context) and modifies context according to the result by calling context methods
+
+  for (var s=0; s<this.scenarii.length; s++) {
+    var scenario = this.scenarii[s];
+    for (var i=0; i<this.length; i++) {
+      var value = this[i].value;
+      ProductVariable.context[value] = scenario[value];
+    }
+a(value)
+    func(ProductVariable.context);
+    //TODO faire quelque chose du résultat
+    
+    //par précaution, on détruit les variables, mais en fait inutile si le code appelant est ok
+    for (var i=0; i<this.length; i++) {
+      ProductVariable.context[this[i].value] = undefined; // comme cela un appel echouera
+    }
+  }
+  return ProductVariable.context;
 }
 
 ProductVariable.prototype.join = Array.prototype.join;
@@ -295,4 +328,23 @@ function permutations(elements){
   return res;
 }
 
+/*///////////////////////////////////////////////////////////////////////////////
+var context=ProductVariable.context;
 
+
+
+context.width.worst(function (context){context
+
+  .add(3,[width_170],0)
+
+  .setup.worst(function(){context
+
+    .add(2,[width_210,setup_matic],0)
+
+    .add(3,[width_210,setup_manual],0)
+
+  })
+
+})
+
+*/

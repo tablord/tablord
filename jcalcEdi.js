@@ -1,7 +1,14 @@
 
   // edi related functions ////////////////////////////////////////////
-
   var geval = eval;
+
+  function securedEval(code) {
+  // NRT0001
+  // a bit more secured: since IE<9 executes localy, it was possible do destroy local variable by defining functions or var
+  // with this trick, one can still create global variables by just assigning (eg: v='toto' destroys the global variable v
+  // to be checked what could be done to improve
+    return geval(code)
+  }
 
   function a(message) {
     window.alert(message);
@@ -45,11 +52,12 @@
   }
                
   jc.removeTags = function(html) {
-    return html.replace(/<.+?>/g,"")
+    var res = html.replace(/<.+?>/g,"")
                .replace(/&nbsp;/g," ")
                .replace(/&lt;/g,"<")
                .replace(/&gt;/g,">")
-               .replace(/&amp;/g,"&")
+               .replace(/&amp;/g,"&");
+    return res;
   }
 
   jc.trimHtml = function(html) {
@@ -133,11 +141,11 @@
       }
 
       jc.codeElementBeingExecuted = element; 
-      var out = window.document.getElementById(element.id.replace(/code/,"out"));
+      var out  = window.document.getElementById(element.id.replace(/code/,"out"));
       var test = window.document.getElementById(element.id.replace(/code/,"test"));
   
       var code = 'output = new HTML(); with (v) {'+jc.removeTags(element.innerHTML)+'};';
-      var res = geval(code);
+      var res = securedEval(code);
       if (res == undefined) {
         displayError('undefined','',out);
       }
