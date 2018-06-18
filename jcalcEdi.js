@@ -37,6 +37,17 @@
   }
 
   // helpers ///////////////////////////////////////////////////////////
+  jc.copy = function(obj) {
+    // makes a copy of obj this version only copies the first level
+    // does not copy any inheritance (result is an Object instance)
+    var o = {};
+    for (var k in obj) {
+      o[k] = obj[k]
+    }
+    return o;
+  }
+
+
   jc.toHtml = function(htmlCode) {
     // transform htmlCode in such a manner that the code can be visualised in a <code>...
     return htmlCode.replace(/&/g,"&amp;")

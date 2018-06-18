@@ -4,6 +4,25 @@ function JQuery() {
   this.length = 0;
 }
 
+
+// utility functions /////////////////////////////
+
+JQuery.each = function(o,func) {
+  if (o.length != undefined) { //Array like
+    for (var i=0; i<o.length; i++) {
+      if (func(i,o[i])==false) return o;
+    }
+  }
+  else {
+    for (var name in o) {
+      if (func(name,o[name])==false) return o;
+    }
+  }
+  return o;
+}
+
+// JQuery methodes //////////////////////////////
+
 JQuery.prototype.isJQuery = function () {
   return true;
 }

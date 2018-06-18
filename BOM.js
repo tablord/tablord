@@ -64,7 +64,7 @@ Part.prototype.span = function() {
 // Plan of Need //////////////////////////////////
 function PlanOfNeed () {
   this.plan = [];
-  this.needsUpdate = true;
+  this.needsUpdateFrom = 0;
 }
 
 PlanOfNeed.prototype.add = function(time,quantity) {
@@ -83,14 +83,56 @@ PlanOfNeed.prototype.add = function(time,quantity) {
   return this;
 }
 
-PlanOfNeed.prototype.update = function() {
-  if (this.needsUpdate == true) {
-    var cumul = 0;
-    for (var i=0;i<this.plan.length;i++){
-      this.plan[i].cumul = cumul += this.plan[i].quantity; 
-    }
-    this.needsUpdate = false;
+PlanOfNeed.prototype.copy = function() {
+  // return an independent copy of this
+  var p = new PlanOfNeed();
+  for (var i=0; i<this.plan.length; i++) {
+    p.plan.push(jc.copy(this.plan[i]))
   }
+  p.needsUpdate = this.needsUpdate;
+  return p;
+}
+
+PlanOfNeed.prototype.cumulAt = function(time) {
+  // return the cumul at a given time
+  this.update();
+  if (time < this.plan[0].time) {
+    return 0;
+  }
+  for (var i=0;i<this.plan.length; i++) {
+    if (time >= this.plan[i].time) {
+      return this.plan[i];
+    }
+  }
+}
+
+PlanOfNeed.prototype.max = function(otherPON) {
+  otherPON.update();
+  var j = 0;
+  var cThis = 0;
+  for (var i=0; i<otherPON.plan.length; i++) {
+    var timeOther = otherPON.plan[i].time;
+    var cOther = otherPON.plan[i].cumul;
+a('i:'+i+' timeOther:'+timeOther+' cOther:'+cOther)
+    while ((j<this.plan.length) && (this.plan[j].time <= timeOther)) {
+      this.plan[j].cumul = cThis += this.plan[j].quantity;
+a('j:'+j+' cThis:'+cThis);
+      j++;
+    }
+    if (cOther > cThis) {
+      this.add(timeOther,cOther-cThis);
+    }
+  }
+  return this; 
+} 
+
+PlanOfNeed.prototype.update = function() {
+  if (this.needsUpdate==false) return;
+  var cumul = 0;
+  for (var i=0;i<this.plan.length;i++){
+    this.plan[i].cumul = cumul += this.plan[i].quantity; 
+  }
+  this.needsUpdate = false;
   return this;
 }
 
@@ -210,8 +252,18 @@ function product(name /*,boms*/) {
 }
 
 // ProductContext /////////////////////////////////
+
 function ProductContext () {
-  this.result = 0; 
+  this.plans= [new PlanOfNeed()]; 
+}
+
+ProductContext.prototype.add = function(quantity,condition,neededAt){
+  var cond = Math.min.apply(null,condition);
+  this.plans[this.plans.length].add(neededAt,quantity*cond);
+}
+
+ProductContext.prototype.pushNeeds = function(){
+  this.plans.push(this.plans[this.plans.length].copy());
 }
  
 ProductContext.prototype.toString = function(){
@@ -219,7 +271,11 @@ ProductContext.prototype.toString = function(){
 }
 
 ProductContext.prototype.span = function () {
-  return inspect(this);
+  var h = inspect(this);
+  for (var i=0; i<this.plans.length; i++){
+    h += this.plans[i].span();
+  }
+  return h;
 }
 // ProductVariable  ///////////////////////////////
 
@@ -270,6 +326,7 @@ ProductVariable.prototype.updateScenarii = function() {
 
 ProductVariable.prototype.worst = function(func) {
   // func must be function(context) and modifies context according to the result by calling context methods
+  // in particular .add that add a new need
 
   for (var s=0; s<this.scenarii.length; s++) {
     var scenario = this.scenarii[s];
@@ -277,7 +334,6 @@ ProductVariable.prototype.worst = function(func) {
       var value = this[i].value;
       ProductVariable.context[value] = scenario[value];
     }
-a(value)
     func(ProductVariable.context);
     //TODO faire quelque chose du résultat
     
