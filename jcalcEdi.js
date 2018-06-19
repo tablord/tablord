@@ -10,7 +10,11 @@
     return geval(code)
   }
 
-  function a(message) {
+  function a(/*messages*/) {
+    var message = '';
+    for (var i=0; i<arguments.length; i++){
+      message += inspect(arguments[i]);
+    }
     window.alert(message);
   }
 

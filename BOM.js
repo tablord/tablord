@@ -64,7 +64,15 @@ Part.prototype.span = function() {
 // Plan of Need //////////////////////////////////
 function PlanOfNeed () {
   this.plan = [];
-  this.needsUpdateFrom = 0;
+  this.needsUpdate = false;
+}
+
+PlanOfNeed.prototype.push = function(need) {
+  this.plan.push(need);
+}
+
+PlanOfNeed.prototype.pop = function() {
+  return this.plan.pop();
 }
 
 PlanOfNeed.prototype.add = function(time,quantity) {
@@ -106,25 +114,35 @@ PlanOfNeed.prototype.cumulAt = function(time) {
   }
 }
 
-PlanOfNeed.prototype.max = function(otherPON) {
-  otherPON.update();
-  var j = 0;
+PlanOfNeed.prototype.max = function(other) {
+  var iThis = 0;
+  var iOther = 0;
   var cThis = 0;
-  for (var i=0; i<otherPON.plan.length; i++) {
-    var timeOther = otherPON.plan[i].time;
-    var cOther = otherPON.plan[i].cumul;
-a('i:'+i+' timeOther:'+timeOther+' cOther:'+cOther)
-    while ((j<this.plan.length) && (this.plan[j].time <= timeOther)) {
-      this.plan[j].cumul = cThis += this.plan[j].quantity;
-a('j:'+j+' cThis:'+cThis);
-      j++;
+  var cOther = 0;
+  var cumul = 0;
+  var res = new PlanOfNeed();
+
+  while ((iThis < this.plan.length) || (iOther < other.plan.length)) {
+    if ((iThis < this.plan.length) && (this.plan[iThis].time < other.plan[iOther].time)) {
+      cThis += this.plan[iThis].quantity;
+      if (cThis > cumul) {
+        res.push({time:this.plan[iThis].time,quantity:cThis-cumul,cumul:cThis});
+        cumul = cThis;
+      }
+      iThis++;
     }
-    if (cOther > cThis) {
-      this.add(timeOther,cOther-cThis);
+    else {
+      cOther += other.plan[iOther].quantity;
+      if (cOther > cumul) {
+        res.push({time:other.plan[iOther].time,quantity:cOther-cumul,cumul:cOther});
+        cumul = cOther;
+      }
+      iOther++;
     }
   }
-  return this; 
+  return res; 
 } 
+
 
 PlanOfNeed.prototype.update = function() {
   if (this.needsUpdate==false) return;
