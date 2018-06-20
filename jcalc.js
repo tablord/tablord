@@ -320,21 +320,26 @@
     
   
   HTML.prototype.p = function (/*elements*/) {
-    this.tag('p',arguments);
+    this.tag('P',arguments);
     return this;
   }
   HTML.prototype.ul = function (/*elements*/) {
-    this.tag('ul',arguments);
+    this.tag('UL',arguments);
     return this;
   }
   HTML.prototype.li = function (/*elements*/) {
-    this.tag('li',arguments);
+    this.tag('LI',arguments);
+    return this;
+  }
+  HTML.prototype.pre = function (/*elements*/) {
+    this.tag('PRE',arguments);
     return this;
   }
   HTML.prototype.h = function (/*elements*/) {
     this.tag('H'+jc.htmlIndent,arguments);
     return this;
   }
+
   HTML.prototype.indent = function(levels) {
     levels = levels || 1;
     jc.htmlIndent += levels;

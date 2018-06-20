@@ -33,18 +33,23 @@ function bom(name,condition /*,lines*/) {
 }
 
 // Part //////////////////////////////////////////
-function Part(name){
+function Part(name,product){
   this._name = name;
-  this.needs = table(name,false);
+  this._product = product;
+  this._needs = table(name,false);
 }
 
 Part.prototype.add = function (quantity,condition,neededAt) {
-  this.needs.add({quantity:quantity,condition:condition,neededAt:neededAt});
+  var variables = [];
+  for (var i in condition) {
+    variables.push(condition[i].split(ProductVariable.SEPARATOR)[0])
+  }
+  this._needs.add({quantity:quantity,condition:condition,variables:variables,neededAt:neededAt});
   return this;
 }
 
 Part.prototype.sort = function() {
-  this.needs.sort({condition:function(a,b){
+  this._needs.sort({variables:function(a,b){
     var res = a.length - b.length;
     if (res != 0) return res;
 
@@ -57,9 +62,54 @@ Part.prototype.sort = function() {
 }
 
 Part.prototype.span = function() {
-  return this.needs.view();
+  return this._needs.view();
 }
 
+
+Part.prototype.code = function() {
+  // returns executable source code that calculates the most demanding plan of need for all possible scenarii
+  // code will look like
+  //
+  //  var variant = new Variant();
+  //  with (variant) {
+  //    add(5,[],0);
+  //    variable1.worst(function(){
+  //      add(7,[variable1_true],0);
+  //      add(8,[variable1_false],0);
+  //    });
+  //    variable1.worst(function(){
+  //      variable2.worst(function(){
+  //        add(10,[variable1_true,variable2_170],0);
+  //        ...
+  //      });
+  //    });
+  //  }
+
+  var currentVariables = '';
+  var nbVariables = 0;
+  var source = 'with(variant) {\n';
+  var indent = '  ';
+  this._needs.forEachRow(function(i,row) {
+
+    if (currentVariables != row.variables) {
+      for (var v=0; v<nbVariables; v++) {
+        source += (indent=indent.slice(0,-2))+'});\n';
+      }
+      for (var v in row.variables){
+        source += indent+row.variables[v]+'.worst(function(){\n';
+        indent += '  ';
+      }
+      currentVariables = row.variables+'';
+      nbVariables = row.variables.length;
+    }
+    source += indent+'add('+row.quantity+',['+row.condition+'],'+row.neededAt+');\n';
+  });
+  for (var v=0; v<nbVariables; v++) {
+    source += (indent=indent.slice(0,-2))+'});\n';
+  }
+  source += '}';
+  return source;
+}
 
 // Plan of Need //////////////////////////////////
 function PlanOfNeed () {
@@ -120,7 +170,7 @@ PlanOfNeed.prototype.max = function(other) {
   var cThis = 0;
   var cOther = 0;
   var cumul = 0;
-  var res = new PlanOfNeed();
+  var res = [];
 
   while ((iThis < this.plan.length) || (iOther < other.plan.length)) {
     if ((iThis < this.plan.length) && (this.plan[iThis].time < other.plan[iOther].time)) {
@@ -140,9 +190,16 @@ PlanOfNeed.prototype.max = function(other) {
       iOther++;
     }
   }
-  return res; 
+  this.plan = res;
+  return this; 
 } 
 
+PlanOfNeed.prototype.sum = function(other){  //TODO could be optimized in similar fashion than max
+  for (var i=0;i<other.plan.length;i++) {
+    this.add(other.plan[i].time,other.plan[i].quantity);
+  }
+  return this;
+}
 
 PlanOfNeed.prototype.update = function() {
   if (this.needsUpdate==false) return;
@@ -179,7 +236,7 @@ Product.prototype.addBom = function(bom) {
 
 Product.prototype.addPartNeed = function(part,quantity,condition,neededAt) {
   if (this.parts[part] == undefined) {
-    this.parts[part] = new Part(part);
+    this.parts[part] = new Part(part,this);
   }
   this.parts[part].add(quantity,condition,neededAt);
   return this;
@@ -269,30 +326,30 @@ function product(name /*,boms*/) {
   return v[name] = p;
 }
 
-// ProductContext /////////////////////////////////
+// Variant /////////////////////////////////
 
-function ProductContext () {
-  this.plans= [new PlanOfNeed()]; 
+function Variant () {
+  this.plan= new PlanOfNeed(); 
 }
 
-ProductContext.prototype.add = function(quantity,condition,neededAt){
+Variant.prototype.clearPlan = function(){
+  this.plan= new PlanOfNeed();
+  return this;
+}
+
+Variant.prototype.add = function(quantity,condition,neededAt){
   var cond = Math.min.apply(null,condition);
-  this.plans[this.plans.length].add(neededAt,quantity*cond);
+  this.plan.add(neededAt,quantity*cond);
+  return this;
 }
 
-ProductContext.prototype.pushNeeds = function(){
-  this.plans.push(this.plans[this.plans.length].copy());
-}
- 
-ProductContext.prototype.toString = function(){
+Variant.prototype.toString = function(){
   return '[object ProductContext]';
 }
 
-ProductContext.prototype.span = function () {
+Variant.prototype.span = function () {
   var h = inspect(this);
-  for (var i=0; i<this.plans.length; i++){
-    h += this.plans[i].span();
-  }
+  h += this.plans[i].span();
   return h;
 }
 // ProductVariable  ///////////////////////////////
@@ -307,7 +364,6 @@ function ProductVariable (name) {
 }
 
 ProductVariable.SEPARATOR = '_';
-ProductVariable.context = new ProductContext();
 
 ProductVariable.prototype.add = function(value,max){
   if (this[value] == undefined) {
@@ -343,8 +399,12 @@ ProductVariable.prototype.updateScenarii = function() {
 }
 
 ProductVariable.prototype.worst = function(func) {
-  // func must be function(context) and modifies context according to the result by calling context methods
-  // in particular .add that add a new need
+  // func must be function() and modifies the variant (that is defined and with(variant){})
+  // according to the result by calling Variants methods
+  // in particular add that add a new need
+
+  var mostDemandingPlan = new PlanOfNeed();
+  var previousPlan = jc.copy(ProductVariable.context.plan);
 
   for (var s=0; s<this.scenarii.length; s++) {
     var scenario = this.scenarii[s];
@@ -352,14 +412,17 @@ ProductVariable.prototype.worst = function(func) {
       var value = this[i].value;
       ProductVariable.context[value] = scenario[value];
     }
-    func(ProductVariable.context);
-    //TODO faire quelque chose du résultat
+    
+    func(ProductVariable.context.clearPlan());
+    mostDemandingPlan = mostDemandingPlan.max(ProductVariable.context.plan);
     
     //par précaution, on détruit les variables, mais en fait inutile si le code appelant est ok
     for (var i=0; i<this.length; i++) {
       ProductVariable.context[this[i].value] = undefined; // comme cela un appel echouera
     }
   }
+  
+  ProductVariable.context.plan = previousPlan.sum(mostDemandingPlan);
   return ProductVariable.context;
 }
 
@@ -402,23 +465,3 @@ function permutations(elements){
   return res;
 }
 
-/*///////////////////////////////////////////////////////////////////////////////
-var context=ProductVariable.context;
-
-
-
-context.width.worst(function (context){context
-
-  .add(3,[width_170],0)
-
-  .setup.worst(function(){context
-
-    .add(2,[width_210,setup_matic],0)
-
-    .add(3,[width_210,setup_manual],0)
-
-  })
-
-})
-
-*/
