@@ -37,6 +37,7 @@ function Part(name,product){
   this._name = name;
   this._product = product;
   this._needs = table(name,false);
+  this._source = '';
 }
 
 Part.prototype.add = function (quantity,condition,neededAt) {
@@ -61,18 +62,11 @@ Part.prototype.sort = function() {
   return this;
 }
 
-Part.prototype.span = function() {
-  return this._needs.view();
-}
-
-
 Part.prototype.code = function() {
   // returns executable source code that calculates the most demanding plan of need for all possible scenarii
   // code will look like
   //
-  //  var variant = new Variant();
-  //  with (variant) {
-  //    add(5,[],0);
+  //  with (this._product.variant) {
   //    variable1.worst(function(){
   //      add(7,[variable1_true],0);
   //      add(8,[variable1_false],0);
@@ -87,8 +81,9 @@ Part.prototype.code = function() {
 
   var currentVariables = '';
   var nbVariables = 0;
-  var source = 'with(variant) {\n';
+  var source = 'with(this._product.variant.clearPlan()) {\n';
   var indent = '  ';
+
   this._needs.forEachRow(function(i,row) {
 
     if (currentVariables != row.variables) {
@@ -108,8 +103,38 @@ Part.prototype.code = function() {
     source += (indent=indent.slice(0,-2))+'});\n';
   }
   source += '}';
-  return source;
+  this._source = source;
+  return this;
 }
+
+Part.prototype.compile = function(){
+  try {
+    this._computeNeeds = new Function(this._source);
+  }
+  catch (e) {
+    e.message = 'Part.compile: '+e.message;
+    e.source = this._source;
+    throw e;
+  }
+  return this;
+}
+
+Part.prototype.computeNeeds = function(){
+  try {
+    this._computeNeeds();
+  }
+  catch (e) {
+    e.message = 'Part.computeNeeds: '+e.message +'\n'+ this._source;
+    throw e;
+  }
+  this._mostDemandingPlan = this._product.variant.plan;
+  return this;
+}
+
+Part.prototype.span = function() {
+  return this._needs.view()+'<PRE class=CODEVIEW>'+this._source+'</PRE>';
+}
+
 
 // Plan of Need //////////////////////////////////
 function PlanOfNeed () {
@@ -165,40 +190,57 @@ PlanOfNeed.prototype.cumulAt = function(time) {
 }
 
 PlanOfNeed.prototype.max = function(other) {
+  // returns a new planOfNeed that is the max of this and other
   var iThis = 0;
   var iOther = 0;
   var cThis = 0;
   var cOther = 0;
   var cumul = 0;
-  var res = [];
+  var res = new PlanOfNeed();
 
-  while ((iThis < this.plan.length) || (iOther < other.plan.length)) {
-    if ((iThis < this.plan.length) && (this.plan[iThis].time < other.plan[iOther].time)) {
-      cThis += this.plan[iThis].quantity;
-      if (cThis > cumul) {
-        res.push({time:this.plan[iThis].time,quantity:cThis-cumul,cumul:cThis});
-        cumul = cThis;
-      }
-      iThis++;
+  function processThis (This) {
+    cThis += This.plan[iThis].quantity;
+    if (cThis > cumul) {
+      res.push({time:This.plan[iThis].time,quantity:cThis-cumul,cumul:cThis});
+      cumul = cThis;
+    }
+    iThis++;
+  }
+
+  function processOther () {
+    cOther += other.plan[iOther].quantity;
+    if (cOther > cumul) {
+      res.push({time:other.plan[iOther].time,quantity:cOther-cumul,cumul:cOther});
+      cumul = cOther;
+    }
+    iOther++;
+  }
+
+  while ((iThis < this.plan.length) && (iOther < other.plan.length)) {
+    if (this.plan[iThis].time < other.plan[iOther].time) {
+      processThis(this);
     }
     else {
-      cOther += other.plan[iOther].quantity;
-      if (cOther > cumul) {
-        res.push({time:other.plan[iOther].time,quantity:cOther-cumul,cumul:cOther});
-        cumul = cOther;
-      }
-      iOther++;
+      processOther();
     }
   }
-  this.plan = res;
-  return this; 
+  while (iThis < this.plan.length) {
+    processThis();
+  }
+  while (iOther < other.plan.length) {
+    processOther();
+  }
+  
+  return res;
 } 
 
 PlanOfNeed.prototype.sum = function(other){  //TODO could be optimized in similar fashion than max
+  // returns a new planOfNeed that is the sum of this and other
+  var res = this.copy();
   for (var i=0;i<other.plan.length;i++) {
-    this.add(other.plan[i].time,other.plan[i].quantity);
+    res.add(other.plan[i].time,other.plan[i].quantity);
   }
-  return this;
+  return res;
 }
 
 PlanOfNeed.prototype.update = function() {
@@ -227,6 +269,8 @@ function Product(name){
   this.boms=[];
   this.variables={};
   this.parts={};
+  this.variant = new Variant();  // will be used as a global access of variables and conditions as well 
+                                 // as a calculation context
 }
 
 Product.prototype.addBom = function(bom) {
@@ -259,6 +303,9 @@ Product.prototype.updateParts = function () {
 }
 
 Product.prototype.updateVariables = function () {
+  // updates all variables that are used in BOMs.
+  // also updates this.variant, the global variable that is used in calculation
+
   for (var i=0; i < this.boms.length; i++) {
     var b = this.boms[i];
     for (var n=0; n < b.condition.length; n++) {
@@ -267,7 +314,8 @@ Product.prototype.updateVariables = function () {
         var pv = this.variables[c[0]];
       }
       else {
-        var pv = new ProductVariable(c[0]);
+        var pv = new ProductVariable(c[0],this);
+        this.variant[c[0]] = pv;
       }
       this.variables[c[0]] = pv.add(b.condition[n]);
     }
@@ -326,11 +374,14 @@ function product(name /*,boms*/) {
   return v[name] = p;
 }
 
+
+
 // Variant /////////////////////////////////
 
 function Variant () {
   this.plan= new PlanOfNeed(); 
 }
+
 
 Variant.prototype.clearPlan = function(){
   this.plan= new PlanOfNeed();
@@ -342,23 +393,24 @@ Variant.prototype.add = function(quantity,condition,neededAt){
   this.plan.add(neededAt,quantity*cond);
   return this;
 }
-
+  
 Variant.prototype.toString = function(){
-  return '[object ProductContext]';
+  return '[object Variant]';
 }
 
 Variant.prototype.span = function () {
-  var h = inspect(this);
-  h += this.plans[i].span();
+  var h = inspect(this).span();
+  h += this.plan.span();
   return h;
 }
 // ProductVariable  ///////////////////////////////
 
-function ProductVariable (name) {
+function ProductVariable (name,product) {
   this._name = name;
   this.length = 0;
   this.quantity = 0;
   this.scenarii = [];
+  this.product = product;
 //this[n]       :array like of values  {value: ,max:}
 //this[value]   :access by value
 }
@@ -399,31 +451,26 @@ ProductVariable.prototype.updateScenarii = function() {
 }
 
 ProductVariable.prototype.worst = function(func) {
-  // func must be function() and modifies the variant (that is defined and with(variant){})
+  // func must be function() and modifies the variant of the product
   // according to the result by calling Variants methods
   // in particular add that add a new need
 
   var mostDemandingPlan = new PlanOfNeed();
-  var previousPlan = jc.copy(ProductVariable.context.plan);
+  var previousPlan = jc.copy(this.product.variant.plan);
 
   for (var s=0; s<this.scenarii.length; s++) {
     var scenario = this.scenarii[s];
     for (var i=0; i<this.length; i++) {
       var value = this[i].value;
-      ProductVariable.context[value] = scenario[value];
+      this.product.variant[value] = scenario[value];
     }
     
-    func(ProductVariable.context.clearPlan());
-    mostDemandingPlan = mostDemandingPlan.max(ProductVariable.context.plan);
-    
-    //par précaution, on détruit les variables, mais en fait inutile si le code appelant est ok
-    for (var i=0; i<this.length; i++) {
-      ProductVariable.context[this[i].value] = undefined; // comme cela un appel echouera
-    }
+    func(this.product.variant.clearPlan());
+    mostDemandingPlan = mostDemandingPlan.max(this.product.variant.plan);
   }
   
-  ProductVariable.context.plan = previousPlan.sum(mostDemandingPlan);
-  return ProductVariable.context;
+  this.product.variant.plan = previousPlan.sum(mostDemandingPlan);
+  return this;
 }
 
 ProductVariable.prototype.join = Array.prototype.join;

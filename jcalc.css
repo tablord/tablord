@@ -35,6 +35,10 @@ h7 {
 dt {
   font-weight: bold;
 }
+table {
+
+}
+
 th {
   text-align: left;
   valign: top;
@@ -56,7 +60,15 @@ p {
   float:left;
 }
 
-.CODEVIEW,
+.CODEVIEW {
+  font-family: courier;
+  font-size: 14px;      
+  background-color: bbf9a8;
+  border:solid green 1px;
+  margin: 0px;
+  padding: 0px;
+}
+
 .CODE {
   font-family: courier;
   font-size: 14px;      
