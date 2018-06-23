@@ -30,81 +30,85 @@
   <div id="out_basics01" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
   <div id="test_basics01" class="TEST">8</div>
   <h1>ECMA5 and jcExt</h1>
-  <div id="code_ext01" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-    output.inspect(a={one:1,two:2,three:3},b=jc.copy(a),b.one='un',a,b)
-  </div>
+  <pre id="code_ext01" class="CODE" onclick="jc.codeClick(this);" contentEditable>
+output.inspect(a={one:1,two:2,three:3},b=jc.copy(a),b.one='un',a,b)
+  </pre>
   <div id="out_ext01" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
   <div id="test_ext01" class="TEST">
 <DIV class=TEXT><DIV> <H3>[object Object]</H3> <TABLE> <TBODY> <TR> <TH vAlign=top>one</TH> <TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR> <TR> <TH vAlign=top>two</TH> <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR> <TR> <TH vAlign=top>three</TH> <TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV> <DIV> <H3>[object Object]</H3> <TABLE> <TBODY> <TR> <TH vAlign=top>one</TH> <TD style="TEXT-ALIGN: left" vAlign=top>un</TD></TR> <TR> <TH vAlign=top>two</TH> <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR> <TR> <TH vAlign=top>three</TH> <TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV> <DIV> <H3>un</H3> <TABLE> <TBODY></TBODY></TABLE></DIV> <DIV> <H3>[object Object]</H3> <TABLE> <TBODY> <TR> <TH vAlign=top>one</TH> <TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR> <TR> <TH vAlign=top>two</TH> <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR> <TR> <TH vAlign=top>three</TH> <TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV> <DIV> <H3>[object Object]</H3> <TABLE> <TBODY> <TR> <TH vAlign=top>one</TH> <TD style="TEXT-ALIGN: left" vAlign=top>un</TD></TR> <TR> <TH vAlign=top>two</TH> <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR> <TR> <TH vAlign=top>three</TH> <TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV></DIV>  </div>
   <h1>jCalc lib</h1>
-  <div id="code0102" class="CODE" onclick="jc.codeClick(this);" contentEditable>v("hauteurTotale$mm",f("hauteur$mm+5"))<p>v("hauteur$mm",3)<p>hauteurTotale$mm</div>
+  <pre id="code0102" class="CODE" onclick="jc.codeClick(this);" contentEditable>
+v("hauteurTotale$mm",f("hauteur$mm+5"));
+v("hauteur$mm",3);
+hauteurTotale$mm
+  </pre>
   <div id="out0102" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
   <div id="test0102" class="TEST"><VAR>hauteurTotale</VAR>= <SPAN class=VALUE>8</SPAN><SPAN class=UNIT>mm</SPAN></div>
-  <div id="code0103" class="CODE" onclick="jc.codeClick(this);" contentEditable>v("hauteur$mm",3)</div>
+  <pre id="code0103" class="CODE" onclick="jc.codeClick(this);" contentEditable>v("hauteur$mm",3)</pre>
   <div id="out0103" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-  <div id="code0104" class="CODE AUTOEXEC" onclick="jc.codeClick(this);" contentEditable>v("hauteur$mm")</div>
+  <pre id="code0104" class="CODE AUTOEXEC" onclick="jc.codeClick(this);" contentEditable>v("hauteur$mm")</pre>
   <div id="out0104" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-  <div id="code0105" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-    table("myTable")<p>
-    &nbsp;&nbsp;.add({_id:"apple" ,quantity:250,price:0.5,amount:f("quantity*price")})<p>
-    &nbsp;&nbsp;.add({_id:"orange",quantity:100,price:0.7,amount:f("quantity*price")});
-  </div>
+  <pre id="code0105" class="CODE" onclick="jc.codeClick(this);" contentEditable>
+table("myTable")
+.add({_id:"apple" ,quantity:250,price:0.5,amount:f("quantity*price")})
+.add({_id:"orange",quantity:100,price:0.7,amount:f("quantity*price")});
+  </pre>
   <div id="out0105" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-  <div id="code0106" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-    output<p>
-    .p("first § where we show that ",hauteurTotale$mm)<p>
-    .p("second § where we show myTable",myTable.span({cols:{_id:1,amount:1}}))<p>
-    .ul()<p>
-    &nbsp;&nbsp;.li('list 1 the full table sorted by quantity from min to max',myTable.sort({quantity:1}))<p>
-    &nbsp;&nbsp;.li('list 2 a row',myTable.orange)<p>
-    &nbsp;&nbsp;.li('list 3 a row as a list',myTable.orange.list())<p>
-    .end()<p>
-    .h('Titre 1').indent()<p>
-    &nbsp;&nbsp;.h('Sous-Titre 1')<p>
-    &nbsp;&nbsp;.h('Sous-Titre 2')<p>
-    .indent(-1)<p>
-    .h('Titre 2')
-  </div>
+  <pre id="code0106" class="CODE" onclick="jc.codeClick(this);" contentEditable>
+output
+.p("first § where we show that ",hauteurTotale$mm)
+.p("second § where we show myTable",myTable.span({cols:{_id:1,amount:1}}))
+.ul()
+  .li('list 1 the full table sorted by quantity from min to max',myTable.sort({quantity:1}))
+  .li('list 2 a row',myTable.orange)
+  .li('list 3 a row as a list',myTable.orange.list())
+.end()
+.h('Titre 1').indent()
+  .h('Sous-Titre 1')
+  .h('Sous-Titre 2')
+.indent(-1)
+.h('Titre 2')
+  </pre>
   <div id="out0106" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
   <h1>JQuery</h1>
-  <div id="code0201" class="CODE" onclick="jc.codeClick(this);" contentEditable>$('#code0104')[0]</div>
+  <pre id="code0201" class="CODE" onclick="jc.codeClick(this);" contentEditable>$('#code0104')[0]</pre>
   <div id="out0201" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-  <div id="test0201" class="TEST">DOM Element<SPAN class=INSPECTHTML>&lt;DIV onclick=jc.codeClick(this); id=code0104 class="CODE AUTOEXEC" contentEditable=true&gt;v("hauteur$mm")&lt;/DIV&gt;</SPAN>
+  <div id="test0201" class="TEST">DOM Element<SPAN class=INSPECTHTML>&lt;PRE onclick=jc.codeClick(this); id=code0104 class="CODE AUTOEXEC" contentEditable=true&gt;v("hauteur$mm")&lt;/PRE&gt;</SPAN>
 </div>
   <h1>Axe</h1>
-  <div id="code0301" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-    axe('lift')<p>
-    .accelerate({t:5,a:1})<p>
-    .accelerate({t:10,a:-1})<p>
-    .accelerate({t:15,a:0})<p>
-    .move({t:20,a:1,d:40,v1:5})
-  </div>
+  <pre id="code0301" class="CODE" onclick="jc.codeClick(this);" contentEditable>
+axe('lift')
+.accelerate({t:5,a:1})
+.accelerate({t:10,a:-1})
+.accelerate({t:15,a:0})
+.move({t:20,a:1,d:40,v1:5})
+  </pre>
   <div id="out0301" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-  <div id="code0302" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-    lift<p>
-    .accelerate({t:33,a:0})<p>
-  </div>
+  <pre id="code0302" class="CODE" onclick="jc.codeClick(this);" contentEditable>
+lift
+.accelerate({t:33,a:0})
+  </pre>
   <div id="out0302" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
 
   <h1>StateMachine</h1>
-  <div id="code0401" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-    v('count',-1);
-    stateMachine('myStateMachine')<p>
-    .state('state1').initial()<p>
-    &nbsp;&nbsp;.run('v("count",count+1)')<p>
-    &nbsp;&nbsp;.transition('state2','count == 10')<p>
-    .state('state2')<p>
-    &nbsp;&nbsp;.run('v("count",count-1)')<p>
-    &nbsp;&nbsp;.transition('state1','count == 0')<p>
-    .end().view();
-  </div>
+  <pre id="code0401" class="CODE" onclick="jc.codeClick(this);" contentEditable>
+v('count',-1);
+stateMachine('myStateMachine')
+.state('state1').initial()
+  .run('v("count",count+1)')
+  .transition('state2','count == 10')
+.state('state2')
+  .run('v("count",count-1)')
+  .transition('state1','count == 0')
+.end().view();
+  </pre>
   <div id="out0401" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-  <div id="code0402" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-    output<p>
-    .p(jc.simulation.runWhile("jc.simulation.time$s < 10"))<p>
-    .p(myStateMachine.view({log:true}))<p>
-    .p(count)
-  </div>
+  <pre id="code0402" class="CODE" onclick="jc.codeClick(this);" contentEditable>
+output
+.p(jc.simulation.runWhile("jc.simulation.time$s < 10"))
+.p(myStateMachine.view({log:true}))
+.p(count)
+  </pre>
   <div id="out0402" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
   <h1>RichText</h1>
   <div id="rich0000" class="RICHTEXT" onclick="jc.richTextClick(this)">
@@ -114,58 +118,58 @@
     <div id="out1112" class="OUTPUT">--</div>
   </div>
   <h1>BOM</h1>
-  <div id="code_Permutation" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-     p = permutations(['A','B','C']);<p>
-     table().addRows(p);<p>
-  </div>
+  <pre id="code_Permutation" class="CODE" onclick="jc.codeClick(this);" contentEditable>
+p = permutations(['A','B','C']);
+table().addRows(p);
+  </pre>
   <div id="out_Permutation" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
   <div id="test_Permutation" class="TEST">
     <TABLE border=1> <THEAD> <TR> <TH>0</TH> <TH>1</TH> <TH>2</TH></TR></THEAD> <TBODY> <TR> <TD>A</TD> <TD>B</TD> <TD>C</TD></TR> <TR> <TD>A</TD> <TD>C</TD> <TD>B</TD></TR> <TR> <TD>B</TD> <TD>A</TD> <TD>C</TD></TR> <TR> <TD>B</TD> <TD>C</TD> <TD>A</TD></TR> <TR> <TD>C</TD> <TD>A</TD> <TD>B</TD></TR> <TR> <TD>C</TD> <TD>B</TD> <TD>A</TD></TR></TBODY></TABLE>
   </div>
-  <div id="code_Bom_PlanOfNeed" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-     var p1,p2,p3,p4,p5; 
-     output<p>
-     .p(p1 = (new PlanOfNeed()).add(0,20).add(3,10).add(0,30))<p>
-     .p(p2 = p1.copy().add(3,100))<p>
-     .p(p3 = (new PlanOfNeed()).add(1,15).add(2,45).add(5,60))<p>
-     .p(p4 = p1.max(p3))<p>
-     .p(p5 = p2.sum(p4))
-  </div>
+  <pre id="code_Bom_PlanOfNeed" class="CODE" onclick="jc.codeClick(this);" contentEditable>
+var p1,p2,p3,p4,p5; 
+output
+.p(p1 = (new PlanOfNeed()).add(0,20).add(3,10).add(0,30))
+.p(p2 = p1.copy().add(3,100))
+.p(p3 = (new PlanOfNeed()).add(1,15).add(2,45).add(5,60))
+.p(p4 = p1.max(p3))
+.p(p5 = p2.sum(p4))
+  </pre>
   <div id="out_Bom_PlanOfNeed" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
   <div id="test_Bom_PlanOfNeed" class="TEST">
 <DIV class=TEXT><P> <DIV><VAR>plan of need</VAR> <TABLE border=1> <THEAD> <TR> <TH>time</TH> <TH>quantity</TH> <TH>cumul</TH></TR></THEAD> <TBODY> <TR> <TD>0</TD> <TD>50</TD> <TD>50</TD></TR> <TR> <TD>3</TD> <TD>10</TD> <TD>60</TD></TR></TBODY></TABLE></DIV> <P></P> <P> <DIV><VAR>plan of need</VAR> <TABLE border=1> <THEAD> <TR> <TH>time</TH> <TH>quantity</TH> <TH>cumul</TH></TR></THEAD> <TBODY> <TR> <TD>0</TD> <TD>50</TD> <TD>50</TD></TR> <TR> <TD>3</TD> <TD>110</TD> <TD>160</TD></TR></TBODY></TABLE></DIV> <P></P> <P> <DIV><VAR>plan of need</VAR> <TABLE border=1> <THEAD> <TR> <TH>time</TH> <TH>quantity</TH> <TH>cumul</TH></TR></THEAD> <TBODY> <TR> <TD>1</TD> <TD>15</TD> <TD>15</TD></TR> <TR> <TD>2</TD> <TD>45</TD> <TD>60</TD></TR> <TR> <TD>5</TD> <TD>60</TD> <TD>120</TD></TR></TBODY></TABLE></DIV> <P></P> <P> <DIV><VAR>plan of need</VAR> <TABLE border=1> <THEAD> <TR> <TH>time</TH> <TH>quantity</TH> <TH>cumul</TH></TR></THEAD> <TBODY> <TR> <TD>0</TD> <TD>50</TD> <TD>50</TD></TR> <TR> <TD>2</TD> <TD>10</TD> <TD>60</TD></TR> <TR> <TD>5</TD> <TD>60</TD> <TD>120</TD></TR></TBODY></TABLE></DIV> <P></P> <P> <DIV><VAR>plan of need</VAR> <TABLE border=1> <THEAD> <TR> <TH>time</TH> <TH>quantity</TH> <TH>cumul</TH></TR></THEAD> <TBODY> <TR> <TD>0</TD> <TD>100</TD> <TD>100</TD></TR> <TR> <TD>2</TD> <TD>10</TD> <TD>110</TD></TR> <TR> <TD>3</TD> <TD>110</TD> <TD>220</TD></TR> <TR> <TD>5</TD> <TD>60</TD> <TD>280</TD></TR></TBODY></TABLE></DIV> <P></P></DIV>  </div>
-  <div id="code0502" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-  product('product1', <p> 
-    bom('main170',['width_170'],<p>
-      {part:'OS frame',quantity:1,neededAt:0},<p>
-      {part:'GS frame',quantity:1,neededAt:0},<p>
-      {part:'beam 170',quantity:6,neededAt:0}<p>
-    ),<p>
-    bom('main210',['width_210','setup_manual'],<p>
-      {part:'OS frame',quantity:1,neededAt:0},<p>
-      {part:'GS frame',quantity:1,neededAt:0},<p>
-      {part:'beam 210',quantity:6,neededAt:0}<p>
-    ),<p>
-    bom('main210',['width_210','setup_automatic'],<p>
-      {part:'OS frame',quantity:1,neededAt:0},<p>
-      {part:'GS frame',quantity:1,neededAt:0},<p>
-      {part:'beam 210',quantity:6,neededAt:0}<p>
-    )<p>
-  ).updateVariables()<p>
-  .setConstraints({quantity:10,max:{'width_170':6,'width_210':7,'setup_manual':10,'setup_automatic':8}})<p>
-  .updateParts()<p>
-  .updateScenarii()<p>
-  product1.parts['OS frame'].code().compile().computeNeeds()
-  </div>
+  <pre id="code0502" class="CODE" onclick="jc.codeClick(this);" contentEditable>
+product('product1',
+  bom('main170',['width_170'],
+    {part:'OS frame',quantity:1,neededAt:0},
+    {part:'GS frame',quantity:1,neededAt:0},
+    {part:'beam 170',quantity:6,neededAt:0}
+  ),
+  bom('main210',['width_210','setup_manual'],
+    {part:'OS frame',quantity:1,neededAt:0},
+    {part:'GS frame',quantity:1,neededAt:0},
+    {part:'beam 210',quantity:6,neededAt:0}
+  ),
+  bom('main210',['width_210','setup_automatic'],
+    {part:'OS frame',quantity:1,neededAt:0},
+    {part:'GS frame',quantity:1,neededAt:0},
+    {part:'beam 210',quantity:6,neededAt:0}
+  )
+).updateVariables()
+.setConstraints({quantity:10,max:{'width_170':6,'width_210':7,'setup_manual':10,'setup_automatic':8}})
+.updateParts()
+.updateScenarii()
+product1.parts['OS frame'].code().compile().computeNeeds()
+  </pre>
   <div id="out0502" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
 
   <h1>Non regression tests</h1>
-  <div id="code_NRT0001" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-     // creating a function "test" or a "out" will destroy a local variable and corrupt the environement<p>
-     function test() {};<p>
-     var out = 'toto';<p>
-     'ok'
-  </div>
+  <pre id="code_NRT0001" class="CODE" onclick="jc.codeClick(this);" contentEditable>
+     // creating a function "test" or a "out" will destroy a local variable and corrupt the environement
+function test() {};
+var out = 'toto';
+'ok'
+  </pre>
   <div id="out_NRT0001" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
   <div id="test_NRT0001" class="TEST">ok</div>
 

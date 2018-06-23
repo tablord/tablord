@@ -145,7 +145,7 @@
         }
         error = error.name+': '+error.message;
       }
-      var tag = out.tagName;  // if span, one can only insert span, not div
+      var tag = (out.tagName=='SPAN')?'SPAN':'PRE';  // if span, one can only insert span, not div
       out.innerHTML = error+(code?'<'+tag+' class="CODEINERROR">'+code+'</'+tag+'>':'');
       $(out).removeClass('SUCCESS').addClass('ERROR');
     }
