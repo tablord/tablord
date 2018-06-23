@@ -131,16 +131,17 @@
         $(out).removeClass('ERROR').addClass('SUCCESS');
       }
       catch (e) {
-        displayError(e,'',out);
+        e.code='displayResult> view(result)'
+        displayError(e,out);
       }
     }
 
-    function displayError(error,code,out) {
+    function displayError(error,out) {
       if (error.message) {
         var faults = error.message.match(/« (.+?) »/);
         if (faults != null) {
           var fault = faults[1];
-          code = (code || '').replace(new RegExp(fault,'g'),'<SPAN class="ERROR">'+fault+'</SPAN>');
+          code = (error.code || '').replace(new RegExp(fault,'g'),'<SPAN class="ERROR">'+fault+'</SPAN>');
         }
         error = error.name+': '+error.message;
       }
@@ -162,10 +163,11 @@
       var code = 'output = new HTML(); with (v) {'+jc.removeTags(element.innerHTML)+'};';
       var res = securedEval(code);
       if (res == undefined) {
-        displayError('undefined','',out);
+        displayError('undefined',out);
       }
       else if (res._error) {
-        displayError('res._error','',out);
+        displayError('res._error',out);
+a('ce code est il encore utile??');
       }
       else {
         displayResult(res,out);
@@ -182,7 +184,8 @@
       }
     }
     catch (e) {
-      displayError(e,element.innerHTML,out);
+      e.code = (e.code || '')+element.innerHTML;
+      displayError(e,out);
     }
     finally {
       jc.codeElementBeingExecuted = undefined;

@@ -124,7 +124,7 @@ Part.prototype.computeNeeds = function(){
     this._computeNeeds();
   }
   catch (e) {
-    e.message = 'Part.computeNeeds: '+e.message +'\n'+ this._source;
+    e.code = 'Part.computeNeeds> '+ this._source;
     throw e;
   }
   this._mostDemandingPlan = this._product.variant.plan;
