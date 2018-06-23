@@ -126,6 +126,18 @@ table().addRows(p);
   <div id="test_Permutation" class="TEST">
     <TABLE border=1> <THEAD> <TR> <TH>0</TH> <TH>1</TH> <TH>2</TH></TR></THEAD> <TBODY> <TR> <TD>A</TD> <TD>B</TD> <TD>C</TD></TR> <TR> <TD>A</TD> <TD>C</TD> <TD>B</TD></TR> <TR> <TD>B</TD> <TD>A</TD> <TD>C</TD></TR> <TR> <TD>B</TD> <TD>C</TD> <TD>A</TD></TR> <TR> <TD>C</TD> <TD>A</TD> <TD>B</TD></TR> <TR> <TD>C</TD> <TD>B</TD> <TD>A</TD></TR></TBODY></TABLE>
   </div>
+  <h2>Groups</h2>
+  <pre id="code_Groups" class="CODE" onclick="jc.codeClick(this);" contentEditable>
+g = new Groups();
+output
+.p(g.regroup(['toto']).regroup(['tutu']))
+.p(g.regroup(['titi','toto']))
+.p(g.regroup(['titi','tyty']))
+  </pre>
+  <div id="out_Groups" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
+  <div id="test_Groups" class="TEST">
+<DIV class=TEXT><P> <H3>[object Groups]</H3> <H3>[object Object]</H3> <TABLE> <TBODY> <TR> <TH vAlign=top>toto</TH> <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR> <TR> <TH vAlign=top>tutu</TH> <TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR></TBODY></TABLE> <H3>[object Object]</H3> <TABLE> <TBODY> <TR> <TH vAlign=top>0</TH> <TD style="TEXT-ALIGN: left" vAlign=top>toto</TD></TR> <TR> <TH vAlign=top>1</TH> <TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE> <P></P> <P> <H3>[object Groups]</H3> <H3>[object Object]</H3> <TABLE> <TBODY> <TR> <TH vAlign=top>toto</TH> <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR> <TR> <TH vAlign=top>tutu</TH> <TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR> <TR> <TH vAlign=top>titi</TH> <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE> <H3>[object Object]</H3> <TABLE> <TBODY> <TR> <TH vAlign=top>0</TH> <TD style="TEXT-ALIGN: left" vAlign=top>toto,titi</TD></TR> <TR> <TH vAlign=top>1</TH> <TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE> <P></P> <P> <H3>[object Groups]</H3> <H3>[object Object]</H3> <TABLE> <TBODY> <TR> <TH vAlign=top>toto</TH> <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR> <TR> <TH vAlign=top>tutu</TH> <TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR> <TR> <TH vAlign=top>titi</TH> <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR> <TR> <TH vAlign=top>tyty</TH> <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE> <H3>[object Object]</H3> <TABLE> <TBODY> <TR> <TH vAlign=top>0</TH> <TD style="TEXT-ALIGN: left" vAlign=top>toto,titi,tyty</TD></TR> <TR> <TH vAlign=top>1</TH> <TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE> <P></P></DIV>  
+  </div>
   <pre id="code_Bom_PlanOfNeed" class="CODE" onclick="jc.codeClick(this);" contentEditable>
 var p1,p2,p3,p4,p5; 
 output

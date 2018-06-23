@@ -74,13 +74,14 @@
   
 
   // Inspector ////////////////////////////////////////////////////////
-  jc.Inspector = function(obj) {
+  jc.Inspector = function(obj,name) {
     this.obj = obj;
+    this.name = name || '';
   }
   
 
   jc.Inspector.prototype.toString = function (){
-    var r = this.obj+'\n';
+    var r = this.obj+' '+this.name+'\n';
     for (var k in this.obj) { r += k+':  '+this.obj[k]+'\n' };
     return r;
   }
@@ -91,8 +92,8 @@
     return r+'</table>';
   }
 
-  function inspect(obj){
-    return new jc.Inspector(obj);
+  function inspect(obj,name){
+    return new jc.Inspector(obj,name);
   }
 
   // helpers ///////////////////////////////////////////////////////////

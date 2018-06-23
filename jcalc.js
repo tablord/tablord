@@ -325,6 +325,10 @@
     this.tag('PRE',arguments);
     return this;
   }
+  HTML.prototype.hr = function (){
+    this.tag('HR',[]);
+    return this
+  }
   HTML.prototype.h = function (/*elements*/) {
     this.tag('H'+jc.htmlIndent,arguments);
     return this;

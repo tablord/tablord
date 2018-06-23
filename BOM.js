@@ -50,16 +50,13 @@ Part.prototype.add = function (quantity,condition,neededAt) {
   return this;
 }
 
-Part.prototype.sort = function() {
-  this._needs.sort({variables:function(a,b){
-    var res = a.length - b.length;
-    if (res != 0) return res;
-
-    // knowing that the different values are already in alphabetical order we can just sort by alphabetical representation of condition
-    if (a>b) return  1;
-    if (a<b) return -1;
-    return 0;
-  }});
+Part.prototype.groupAndSort = function() {
+  this._groups = new Groups();
+  this._needs.updateCols({group:1});
+  var that = this;
+  this._needs.forEachRow(function(i,row) {that._groups.regroup(row.variables)});
+  this._needs.forEachRow(function(i,row) {row.group=that._groups.names[row.variables[0]]});
+  this._needs.sort({group:1});
   return this;
 }
 
@@ -80,23 +77,24 @@ Part.prototype.code = function() {
   //    });
   //  }
 
-  var currentVariables = '';
+  var currentGroup = undefined;
   var nbVariables = 0;
   var source = 'with(this._product.variant.clearPlan()) {\n';
   var indent = '  ';
-
+  var that = this;
   this._needs.forEachRow(function(i,row) {
 
-    if (currentVariables != row.variables) {
+    if (currentGroup != row.group) {
       for (var v=0; v<nbVariables; v++) {
         source += (indent=indent.slice(0,-2))+'});\n';
       }
-      for (var v in row.variables){
-        source += indent+row.variables[v]+'.worst(function(){\n';
+      nbVariables = 0;
+      for (var v in that._groups.groups[row.group]){
+        source += indent+that._groups.groups[row.group][v]+'.worst(function(){\n';
         indent += '  ';
+        nbVariables++;
       }
-      currentVariables = row.variables+'';
-      nbVariables = row.variables.length;
+      currentGroup = row.group;
     }
     source += indent+'add('+row.quantity+',['+row.condition+'],'+row.neededAt+');\n';
   });
@@ -296,7 +294,7 @@ Product.prototype.updateParts = function () {
   }
   
   for (var part in this.parts) {
-    this.parts[part].sort();
+    this.parts[part].groupAndSort();
   }
   return this;
 }
@@ -491,6 +489,57 @@ ProductVariable.prototype.span = function(){
   }
   return h+t.span()+'</span>';
 }
+
+
+// Groups ////////////////////////////////////////////////////////////////
+// a class that regroups names that are linked togther 
+
+
+function Groups () {
+  this.names = {};  //{name1:1,name2:1,name3:0}
+  this.groups = {}; //{0:[name3],1:[name1,name2]}
+  this.nextGroupNumber = 0;
+}
+
+Groups.prototype.regroup = function(names) {
+  //names: array of names
+  //regroup the different names under one single group number
+  //if names are not known in different groups, a new group number will be given
+  var currentGroupNumber = this.nextGroupNumber++;
+  var currentGroup = this.groups[currentGroupNumber] = [];  // new empty group
+  for (var i in names) {
+    var name = names[i];
+    var g = this.names[name];
+    if (g == undefined) {
+      currentGroup.push(name);
+      this.names[name] = currentGroupNumber;
+    }
+    else {
+      if (g != currentGroupNumber) { //we must merge g and currentGroup
+        for (var j in currentGroup) {
+          this.names[currentGroup[j]] = g;
+          this.groups[g].push(currentGroup[j]);
+        }
+        currentGroup = this.groups[g];
+        delete this.groups[currentGroupNumber];
+        currentGroupNumber = g;
+      }
+      //else nothing to do, since name is already in the right group
+    }
+  }
+  return this;
+}
+
+Groups.prototype.toString = function() {
+  return '[object Groups]';
+}
+
+Groups.prototype.span = function() {
+  return '<h3>'+this.toString()+'</h3>'+inspect(this.names,'names').span()+inspect(this.groups,'groups').span();
+}  
+      
+    
+    
 
 
 // Permutation ///////// could be in another module //////////////////////
