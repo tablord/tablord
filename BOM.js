@@ -38,6 +38,7 @@ function Part(name,product){
   this._product = product;
   this._needs = table(name,false);
   this._source = '';
+  this._mostDemandingPlan = new PlanOfNeed();
 }
 
 Part.prototype.add = function (quantity,condition,neededAt) {
@@ -120,19 +121,14 @@ Part.prototype.compile = function(){
 }
 
 Part.prototype.computeNeeds = function(){
-  try {
-    this._computeNeeds();
-  }
-  catch (e) {
-    e.code = 'Part.computeNeeds> '+ this._source;
-    throw e;
-  }
+trace('computeNeeds');
+  this._computeNeeds();
   this._mostDemandingPlan = this._product.variant.plan;
   return this;
 }
 
 Part.prototype.span = function() {
-  return this._needs.view()+'<PRE class=CODEVIEW>'+this._source+'</PRE>';
+  return this._needs.view()+'<PRE class=CODEVIEW>'+this._source+'</PRE>'+this._mostDemandingPlan.span();
 }
 
 
@@ -198,7 +194,9 @@ PlanOfNeed.prototype.max = function(other) {
   var cumul = 0;
   var res = new PlanOfNeed();
 
+trace('max'+this.span()+other.span())
   function processThis (This) {
+trace('processThis'+iThis);
     cThis += This.plan[iThis].quantity;
     if (cThis > cumul) {
       res.push({time:This.plan[iThis].time,quantity:cThis-cumul,cumul:cThis});
@@ -207,7 +205,8 @@ PlanOfNeed.prototype.max = function(other) {
     iThis++;
   }
 
-  function processOther () {
+  function processOther (other) {
+trace('processOther'+iOther);
     cOther += other.plan[iOther].quantity;
     if (cOther > cumul) {
       res.push({time:other.plan[iOther].time,quantity:cOther-cumul,cumul:cOther});
@@ -221,14 +220,14 @@ PlanOfNeed.prototype.max = function(other) {
       processThis(this);
     }
     else {
-      processOther();
+      processOther(other);
     }
   }
   while (iThis < this.plan.length) {
-    processThis();
+    processThis(this);
   }
   while (iOther < other.plan.length) {
-    processOther();
+    processOther(other);
   }
   
   return res;

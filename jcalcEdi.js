@@ -1,14 +1,55 @@
+  // global variables /////////////////////////////////////////////////
+
+  var jc = {codeElementBeingExecuted:undefined,
+            currentElement:undefined,
+            output:undefined,
+            codeElementBeingExecuted:undefined,
+            traces:[],
+            tracesMaxLength:100,
+            localToolBar:undefined,
+            htmlIndent:1,
+            simulation:undefined, // will be set by StateMachine.js
+            errorHandler:function(message,url,line) {
+                var out  = window.document.getElementById(jc.codeElementBeingExecuted.id.replace(/code/,"out"));
+                if (out) {
+                  if (url) {
+                    out.innerHTML = message+'<br>'+url+' line:'+line+'<br>'+jc.traceSpan();
+                  }
+                  else {
+                    var tag = (out.tagName=='SPAN')?'SPAN':'PRE';  // if span, one can only insert span, not div
+                    var code = jc.errorHandler.code || '';
+                    var faults = message.match(/« (.+?) »/);
+                    if (faults != null) {
+                      var fault = faults[1];
+                      code = code.replace(new RegExp(fault,'g'),'<SPAN class="ERROR">'+fault+'</SPAN>');
+                    }
+                    out.innerHTML = message+'<'+tag+' class="CODEINERROR">'+code+'</'+tag+'>';
+                  }
+                  $(out).removeClass('SUCCESS').addClass('ERROR');
+                  return true;
+                }
+              return false;
+            }
+           };
 
   // edi related functions ////////////////////////////////////////////
   var geval = eval;
 
-  function securedEval(code) {
+  jc.securedEval = function(code) {
   // NRT0001
   // a bit more secured: since IE<9 executes localy, it was possible do destroy local variable by defining functions or var
   // with this trick, one can still create global variables by just assigning (eg: v='toto' destroys the global variable v
   // to be checked what could be done to improve
+
+    jc.errorHandler.code = code;
+    code = 'var output = jc.output; with (v) {'+code+'};';
     return geval(code)
   }
+
+
+  // debug //////////////////////////////////////////////////////////
+
+
 
   function a(/*messages*/) {
     var message = '';
@@ -17,6 +58,20 @@
     }
     window.alert(message);
   }
+
+
+  function trace(msg) {
+    jc.traces.push(msg);
+    if (jc.traces.length > jc.tracesMaxLength) {
+      jc.traces.pop();
+      jc.traces[0]='...';
+    }
+  }
+
+  jc.traceSpan = function () {
+    return jc.traces.length+' traces:<table border=1><tr><td>'+jc.traces.join('</td></tr><tr><td>')+'</td></tr></table>';
+  }
+  
 
   // Inspector ////////////////////////////////////////////////////////
   jc.Inspector = function(obj) {
@@ -151,17 +206,13 @@
     }
 
     //-------------
-    try {
-      if (jc.codeElementBeingExecuted) {
-        throw new Error("re-entry in jc.execCode");
-      }
+//    try {
 
       jc.codeElementBeingExecuted = element; 
       var out  = window.document.getElementById(element.id.replace(/code/,"out"));
       var test = window.document.getElementById(element.id.replace(/code/,"test"));
-  
-      var code = 'output = new HTML(); with (v) {'+jc.removeTags(element.innerHTML)+'};';
-      var res = securedEval(code);
+      jc.output = new HTML();
+      var res = jc.securedEval(jc.removeTags(element.innerHTML));
       if (res == undefined) {
         displayError('undefined',out);
       }
@@ -182,14 +233,11 @@ a('ce code est il encore utile??');
           $(test).removeClass('SUCCESS').addClass('ERROR');
         }
       }
-    }
-    catch (e) {
-      e.code = (e.code || '')+element.innerHTML;
-      displayError(e,out);
-    }
-    finally {
-      jc.codeElementBeingExecuted = undefined;
-    }
+//    }
+//    catch (e) {
+//      e.code = (e.code || '')+element.innerHTML;
+//      displayError(e,out);
+//    }
   }
 
   jc.execAll = function() {
@@ -240,3 +288,4 @@ a('ce code est il encore utile??');
     $('.RICHTEXT').bind("keypress",undefined,jc.richTextKeyPress);
   });  
   
+  window.onerror = jc.errorHandler;

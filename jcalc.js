@@ -1,13 +1,3 @@
-  // global variables /////////////////////////////////////////////////
-
-  var jc = {debug:{},
-            codeElementBeingExecuted:undefined,
-            currentElement:undefined,
-            localToolBar:undefined,
-            stack:[],
-            htmlIndent:1,
-            simulation:undefined // will be set by StateMachine.js
-           };
 
   // jcalc library /////////////////////////////////////////////////////
     
