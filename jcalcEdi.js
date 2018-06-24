@@ -13,7 +13,7 @@
                 var out  = window.document.getElementById(jc.codeElementBeingExecuted.id.replace(/code/,"out"));
                 if (out) {
                   if (url) {
-                    out.innerHTML = message+'<br>'+url+' line:'+line+'<br>'+jc.traceSpan();
+                    out.innerHTML = message+'<br>'+url+' line:'+line+'<br>'+trace.span();
                   }
                   else {
                     var tag = (out.tagName=='SPAN')?'SPAN':'PRE';  // if span, one can only insert span, not div
@@ -23,7 +23,7 @@
                       var fault = faults[1];
                       code = code.replace(new RegExp(fault,'g'),'<SPAN class="ERROR">'+fault+'</SPAN>');
                     }
-                    out.innerHTML = jc.traceSpan()+message+'<'+tag+' class="CODEINERROR">'+code+'</'+tag+'>';
+                    out.innerHTML = trace.span()+message+'<'+tag+' class="CODEINERROR">'+code+'</'+tag+'>';
                   }
                   $(out).removeClass('SUCCESS').addClass('ERROR');
                   return true;
@@ -63,7 +63,7 @@
   function trace(/*messages*/) {
     var message = '';
     for (var i=0; i<arguments.length; i++){
-      message += inspect(arguments[i]).span();
+      message += view(arguments[i]);
     }
     jc.traces.push(message);
     if (jc.traces.length > jc.tracesMaxLength) {
@@ -72,13 +72,35 @@
     }
   }
 
-  jc.traceSpan = function () {
+  trace.span = function () {
     if (jc.traces.length > 0){
-      var h = jc.traces.length+' traces:<table class=DEBUG><tr><td class=TRACE>'+jc.traces.join('</td></tr><tr><td class=TRACE>')+'</td></tr></table>';
+      var h = '<DIV class=TRACE>'+jc.traces.length+' traces:<table class=DEBUG><tr><td class=TRACE>'+jc.traces.join('</td></tr><tr><td class=TRACE>')+'</td></tr></table></DIV>';
       jc.traces = [];
       return h
     }
     return '';
+  }
+
+
+  // object viewers /////////////////////////////////////
+
+  function view(obj) {
+    if (typeof obj == 'function') {
+      return jc.help(obj);
+    }
+    if (obj.span) {
+      return obj.span();
+    }
+    if (obj.view) {      
+      return obj.view();
+    }
+    if (obj.outerHTML) { // an Element
+      return 'DOM Element<span class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(obj.outerHTML))+'</span>';
+    }
+    if (obj == '[object Object]') {
+      return inspect(obj).span();
+    }
+    return obj;
   }
   
 
@@ -96,11 +118,14 @@
 
   jc.Inspector.prototype.span = function (){
     if (typeof this.obj == 'string') {
-      return this.obj;
+      return '<SPAN class=INSPECT>'+this.obj+'</SPAN>';
     }
-    var r = '<h3>'+this.obj+' '+this.name+'</h3><table>';
-    for (var k in this.obj) { r += '<tr><th valign="top">'+k+'</th><td valign="top" style="text-align:left;">'+jc.toHtml(''+this.obj[k])+'</td></tr>' };
-    return r+'</table>';
+    var r = '<DIV class=INSPECT>'+(((this.obj != '[object Object]') || (this.name != ''))?'<h3>'+this.obj+' '+this.name+'</h3>':'');
+    r += '<table class=INSPECT>';
+    for (var k in this.obj) {
+      r += '<tr><th valign="top">'+k+'</th><td valign="top" style="text-align:left;">'+((typeof this.obj[k] == 'function')?jc.help(this.obj[k]):jc.toHtml(''+this.obj[k]))+'</td></tr>'; 
+    };
+    return r+'</table></DIV>';
   }
 
   function inspect(obj,name){
@@ -124,9 +149,9 @@
     return htmlCode.replace(/&/g,"&amp;")
                    .replace(/</g,"&lt;")
                    .replace(/>/g,"&gt;")
-                   .replace(/\\/,'\\\\')
-                   .replace(/\r/,'\\r')
-                   .replace(/\n/,"\\n<br>");
+                   .replace(/\\/g,'\\\\')
+                   .replace(/\r/g,'\\r')
+                   .replace(/\n/g,"\\n<br>");
   }
 
   jc.removeErrors = function(html) {
@@ -194,7 +219,7 @@
 
     function displayResult (result,out) {
       try {
-        out.innerHTML = jc.traceSpan()+view(result);
+        out.innerHTML = trace.span()+view(result);
         $(out).removeClass('ERROR').addClass('SUCCESS');
       }
       catch (e) {
@@ -208,48 +233,36 @@
         var faults = error.message.match(/« (.+?) »/);
         if (faults != null) {
           var fault = faults[1];
-          code = (error.code || '').replace(new RegExp(fault,'g'),'<SPAN class="ERROR">'+fault+'</SPAN>');
+          var code = (error.code || '').replace(new RegExp(fault,'g'),'<SPAN class="ERROR">'+fault+'</SPAN>');
         }
         error = error.name+': '+error.message;
       }
       var tag = (out.tagName=='SPAN')?'SPAN':'PRE';  // if span, one can only insert span, not div
-      out.innerHTML = jc.traceSpan()+error+(code?'<'+tag+' class="CODEINERROR">'+code+'</'+tag+'>':'');
+      out.innerHTML = trace.span()+error+(code?'<'+tag+' class="CODEINERROR">'+code+'</'+tag+'>':'');
       $(out).removeClass('SUCCESS').addClass('ERROR');
     }
 
     //-------------
-//    try {
-
-      jc.codeElementBeingExecuted = element; 
-      var out  = window.document.getElementById(element.id.replace(/code/,"out"));
-      var test = window.document.getElementById(element.id.replace(/code/,"test"));
-      jc.output = new HTML();
-      var res = jc.securedEval(jc.removeTags(element.innerHTML));
-      if (res == undefined) {
-        displayError('undefined',out);
-      }
-      else if (res._error) {
-        displayError('res._error',out);
-a('ce code est il encore utile??');
+    jc.codeElementBeingExecuted = element; 
+    var out  = window.document.getElementById(element.id.replace(/code/,"out"));
+    var test = window.document.getElementById(element.id.replace(/code/,"test"));
+    jc.output = new HTML();
+    var res = jc.securedEval(jc.removeTags(element.innerHTML));
+    if (res == undefined) {
+      displayError('undefined',out);
+    }
+    else {
+      displayResult(res,out);
+    }
+    // test
+    if (test != undefined) {
+      if (jc.trimHtml(out.innerHTML) == jc.trimHtml(test.innerHTML)) {   //TODO rethink how to compare
+        $(test).removeClass('ERROR').addClass('SUCCESS');
       }
       else {
-        displayResult(res,out);
+        $(test).removeClass('SUCCESS').addClass('ERROR');
       }
-
-      // test
-      if (test != undefined) {
-        if (jc.trimHtml(out.innerHTML) == jc.trimHtml(test.innerHTML)) {   //TODO rethink how to compare
-          $(test).removeClass('ERROR').addClass('SUCCESS');
-        }
-        else {
-          $(test).removeClass('SUCCESS').addClass('ERROR');
-        }
-      }
-//    }
-//    catch (e) {
-//      e.code = (e.code || '')+element.innerHTML;
-//      displayError(e,out);
-//    }
+    }
   }
 
   jc.execAll = function() {
@@ -283,14 +296,22 @@ a('ce code est il encore utile??');
   }
 
 
-  jc.debug = function(/*messages*/) {
-    var n ='';
-    for (var i = 0;i<arguments.length;i++) {
-      n += '<DIV>'+arguments[i]+'</DIV>';
-    };
-    jc.debug.insertAdjacentHTML('beforeend',n);
-
-  };
+  jc.help = function(func) {
+  // returns the signature of the function and the first comment in a pretty html 
+  // - func: the function to be inspected
+    var source = func.toString().split('\n');
+    var comments = []
+    var signature = source[0].match(/(function.*\))/)[0];
+    for (var i=1; i<source.length; i++) {
+      var comment = source[i].match(/^\s*\/\/(.*)$/);
+      if (comment && (comment.length ==2)) {
+        comments.push(comment[1]);
+      }
+      else break;
+    }
+    return '<b>'+signature+'</b><br>'+comments.join('<br>');
+  }
+  
 
 
   window.attachEvent('onload',function () {

@@ -3,7 +3,14 @@ body {
   font-size: 10pt;
   color: black;
 }
-
+tbody {
+  font-family: Arial;
+  font-size: 10pt;
+}
+thead {
+  font-family: Arial;
+  font-size: 10pt;
+}
 h1 {
   font-size: 18pt;
   margin-bottom: 0px;
@@ -61,6 +68,10 @@ p {
   padding: 0px;
 }
 
+.COLLAPSED {
+  height: 100px;
+  overflow: scroll;
+}
 .HIDDEN {
   display: none;
 }
@@ -114,6 +125,7 @@ p {
   background-color: b6fff7;
 }
 
+.TRACE,
 .DEBUG {
   font-size: 14px;      
   background-color: b6fff7;
@@ -133,13 +145,9 @@ p {
 }
 
 .INSPECT {
-  padding: 0px;
+  padding: 2px;
   margin: 0px;
-  color: green;
-  background-color: 8dff60;
   border:solid green 1px;
-  font-family: courier;
-  font-size: 14px;      
 }
 
 .INSPECTHTML {

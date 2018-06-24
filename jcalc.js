@@ -365,7 +365,7 @@
 
   HTML.prototype.inspect = function(/*objects*/) {
     for (var i=0; i<arguments.length; i++) {
-      this._html += '<div>'+inspect(arguments[i]).span()+'</div>';
+      this._html += inspect(arguments[i]).span();
     }
     return this;
   }
@@ -382,28 +382,9 @@
   }
 
   HTML.prototype.view = function() {
-    return '<div class="TEXT">'+this._html+this._tagsEnd.join('')+'</div>'
+    return this._html+this._tagsEnd.join('');
   }
 
-  // object viewers /////////////////////////////////////
-
-  function view(obj) {
-    if (obj.span) {
-      return obj.span();
-    }
-    if (obj.view) {      
-      return obj.view();
-    }
-    if (obj.outerHTML) { // an Element
-      return 'DOM Element<span class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(obj.outerHTML))+'</span>';
-    }
-    if (obj.valueOf) {
-      return obj.valueOf();
-    }
-    else {
-      return '<div class="SUCCESS">'+obj+'</div>';
-    }
-  }
     
   // helpers /////////////////////////////////////////////
 

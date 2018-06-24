@@ -192,9 +192,7 @@ PlanOfNeed.prototype.max = function(other) {
   var cumul = 0;
   var res = new PlanOfNeed();
 
-trace('max',this.span(),other.span())
   function processThis (This) {
-trace('processThis'+iThis);
     cThis += This.plan[iThis].quantity;
     if (cThis > cumul) {
       res.push({time:This.plan[iThis].time,quantity:cThis-cumul,cumul:cThis});
@@ -204,7 +202,6 @@ trace('processThis'+iThis);
   }
 
   function processOther (other) {
-trace('processOther'+iOther);
     cOther += other.plan[iOther].quantity;
     if (cOther > cumul) {
       res.push({time:other.plan[iOther].time,quantity:cOther-cumul,cumul:cOther});
@@ -387,6 +384,7 @@ Variant.prototype.clearPlan = function(){
 
 Variant.prototype.add = function(quantity,condition,neededAt){
   var cond = Math.min.apply(null,condition);
+trace(inspect({quantity:quantity,condition:condition,min:cond,neededAt:neededAt}))
   this.plan.add(neededAt,quantity*cond);
   return this;
 }
@@ -457,6 +455,7 @@ ProductVariable.prototype.worst = function(func) {
 
   for (var s=0; s<this.scenarii.length; s++) {
     var scenario = this.scenarii[s];
+trace('scenario',scenario)
     for (var i=0; i<this.length; i++) {
       var value = this[i].value;
       this.product.variant[value] = scenario[value];
@@ -465,7 +464,7 @@ ProductVariable.prototype.worst = function(func) {
     func(this.product.variant.clearPlan());
     mostDemandingPlan = mostDemandingPlan.max(this.product.variant.plan);
   }
-  
+trace(mostDemandingPlan);  
   this.product.variant.plan = previousPlan.sum(mostDemandingPlan);
   return this;
 }

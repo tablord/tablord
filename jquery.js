@@ -45,7 +45,7 @@ JQuery.prototype.removeClass = function(className) {
 
 JQuery.prototype.toggleClass = function(className,add) { //limited version: only on class at a time
   this.each(function(i,e) {
-    if ((add==true) || (e.className == undefined) || ((e.className.search(name) == -1) && (add != false))) {
+    if ((add===true) || ((add !== false) && ((e.className == undefined) || (e.className.search('\\b'+className+'\\b') == -1)))) {
       e.className += ' '+className;
     }
     else {
