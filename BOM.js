@@ -192,7 +192,7 @@ PlanOfNeed.prototype.max = function(other) {
   var cumul = 0;
   var res = new PlanOfNeed();
 
-trace('max'+this.span()+other.span())
+trace('max',this.span(),other.span())
   function processThis (This) {
 trace('processThis'+iThis);
     cThis += This.plan[iThis].quantity;

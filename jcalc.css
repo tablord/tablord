@@ -35,18 +35,27 @@ h7 {
 dt {
   font-weight: bold;
 }
-table {
 
-}
 
 th {
   text-align: left;
   valign: top;
 }
+
 td {
   text-align: right;
   text-valign: top;
 }
+td.LEFT {
+  text-align: left;
+  text-valign: top;
+}
+td.TRACE {
+  border: 1px solid #000080;  
+  text-align: left;
+  text-valign: top;
+}
+
 p {
   margin: 0px;
   padding: 0px;
@@ -106,7 +115,6 @@ p {
 }
 
 .DEBUG {
-  font-family: courier;
   font-size: 14px;      
   background-color: b6fff7;
   border:solid blue 1px;

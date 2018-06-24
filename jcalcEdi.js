@@ -23,7 +23,7 @@
                       var fault = faults[1];
                       code = code.replace(new RegExp(fault,'g'),'<SPAN class="ERROR">'+fault+'</SPAN>');
                     }
-                    out.innerHTML = message+'<'+tag+' class="CODEINERROR">'+code+'</'+tag+'>';
+                    out.innerHTML = jc.traceSpan()+message+'<'+tag+' class="CODEINERROR">'+code+'</'+tag+'>';
                   }
                   $(out).removeClass('SUCCESS').addClass('ERROR');
                   return true;
@@ -60,8 +60,12 @@
   }
 
 
-  function trace(msg) {
-    jc.traces.push(msg);
+  function trace(/*messages*/) {
+    var message = '';
+    for (var i=0; i<arguments.length; i++){
+      message += inspect(arguments[i]).span();
+    }
+    jc.traces.push(message);
     if (jc.traces.length > jc.tracesMaxLength) {
       jc.traces.pop();
       jc.traces[0]='...';
@@ -69,7 +73,12 @@
   }
 
   jc.traceSpan = function () {
-    return jc.traces.length+' traces:<table border=1><tr><td>'+jc.traces.join('</td></tr><tr><td>')+'</td></tr></table>';
+    if (jc.traces.length > 0){
+      var h = jc.traces.length+' traces:<table class=DEBUG><tr><td class=TRACE>'+jc.traces.join('</td></tr><tr><td class=TRACE>')+'</td></tr></table>';
+      jc.traces = [];
+      return h
+    }
+    return '';
   }
   
 
@@ -79,7 +88,6 @@
     this.name = name || '';
   }
   
-
   jc.Inspector.prototype.toString = function (){
     var r = this.obj+' '+this.name+'\n';
     for (var k in this.obj) { r += k+':  '+this.obj[k]+'\n' };
@@ -87,7 +95,10 @@
   }
 
   jc.Inspector.prototype.span = function (){
-    var r = '<h3>'+this.obj+'</h3><table>';
+    if (typeof this.obj == 'string') {
+      return this.obj;
+    }
+    var r = '<h3>'+this.obj+' '+this.name+'</h3><table>';
     for (var k in this.obj) { r += '<tr><th valign="top">'+k+'</th><td valign="top" style="text-align:left;">'+jc.toHtml(''+this.obj[k])+'</td></tr>' };
     return r+'</table>';
   }
@@ -183,7 +194,7 @@
 
     function displayResult (result,out) {
       try {
-        out.innerHTML = view(result);
+        out.innerHTML = jc.traceSpan()+view(result);
         $(out).removeClass('ERROR').addClass('SUCCESS');
       }
       catch (e) {
@@ -202,7 +213,7 @@
         error = error.name+': '+error.message;
       }
       var tag = (out.tagName=='SPAN')?'SPAN':'PRE';  // if span, one can only insert span, not div
-      out.innerHTML = error+(code?'<'+tag+' class="CODEINERROR">'+code+'</'+tag+'>':'');
+      out.innerHTML = jc.traceSpan()+error+(code?'<'+tag+' class="CODEINERROR">'+code+'</'+tag+'>':'');
       $(out).removeClass('SUCCESS').addClass('ERROR');
     }
 
