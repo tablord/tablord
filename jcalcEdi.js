@@ -178,6 +178,16 @@
     return window.document.getElementById(element.id.replace(/code/,"test"));
   }
 
+  jc.save = function(fileName) {
+    // save the sheet under fileName or the current name if fileName is not specified
+    fileName = fileName || window.location;
+    var fso = new ActiveXObject("Scripting.FileSystemObject");
+a(fileName);
+    var file = fso.OpenTextFile(fileName,2,true);
+    file.Write(window.document.documentElement.outerHTML);
+    file.Close();
+  }
+
   jc.editorKeyPress = function(event) {
     var element = event.srcElement;
     $(element.id.replace(/code/,"#out")).removeClass('SUCCESS').removeClass('ERROR');
