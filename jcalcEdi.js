@@ -10,7 +10,7 @@
             htmlIndent:1,
             simulation:undefined, // will be set by StateMachine.js
             errorHandler:function(message,url,line) {
-                var out  = window.document.getElementById(jc.codeElementBeingExecuted.id.replace(/code/,"out"));
+                var out  = jc.outputElement(jc.codeElementBeingExecuted);
                 if (out) {
                   if (url) {
                     out.innerHTML = message+'<br>'+url+' line:'+line+'<br>'+trace.span();
@@ -172,20 +172,38 @@
     return html.replace(/[ \t\r\n]+/g,' ').replace(/> /,'>').replace(/ </,'<');
   }
 
+  jc.outputElement = function(element) {
+    // return the output element associated with element
+    return window.document.getElementById(element.id.replace(/code/,"out"));
+  }
+
   jc.testElement = function(element) {
     // returns the test element if any
-
     return window.document.getElementById(element.id.replace(/code/,"test"));
   }
 
-  jc.save = function(fileName) {
+
+  jc.save = function() {
     // save the sheet under fileName or the current name if fileName is not specified
-    fileName = fileName || window.location;
+    var fileName = window.location.pathname;
+a(fileName)
     var fso = new ActiveXObject("Scripting.FileSystemObject");
-a(fileName);
     var file = fso.OpenTextFile(fileName,2,true);
     file.Write(window.document.documentElement.outerHTML);
     file.Close();
+a('saved');
+  }
+
+  jc.copyOutputToTest = function() {
+    var out = jc.outputElement(jc.currentElement);
+    var test = jc.testElement(jc.currentElement);
+    if (test == undefined) {
+      out.insertAdjacentHTML('afterend','<DIV id="'+jc.currentElement.id.replace(/code/,"test")+'" class=TEST>'+out.innerHTML+'</DIV>');
+    }
+    else {
+      test.innerHTML = out.innerHTML;
+      $(test).removeClass('ERROR').addClass('SUCCESS');
+    }
   }
 
   jc.editorKeyPress = function(event) {
@@ -254,8 +272,8 @@ a(fileName);
 
     //-------------
     jc.codeElementBeingExecuted = element; 
-    var out  = window.document.getElementById(element.id.replace(/code/,"out"));
-    var test = window.document.getElementById(element.id.replace(/code/,"test"));
+    var out  = jc.outputElement(element);
+    var test = jc.testElement(element)
     jc.output = new HTML();
     var res = jc.securedEval(jc.removeTags(element.innerHTML));
     if (res == undefined) {
@@ -293,7 +311,7 @@ a(fileName);
     if (!checkBox.checked && outHtml) {
       outHtml.outerHTML = '';
     }
-    var out = window.document.getElementById(jc.currentElement.id.replace(/code/,"out"));
+    var out = jc.outputElement(jc.currentElement);
     if (outHtml == undefined) {
       out.insertAdjacentHTML('afterend','<DIV id='+outHtmlId+' class=DEBUG>html</DIV>');
       var outHtml = window.document.getElementById(outHtmlId);
@@ -326,7 +344,7 @@ a(fileName);
 
   window.attachEvent('onload',function () {
     jc.debug = window.document.getElementById('debug');
-    jc.localToolBar = window.document.getElementById('localToolBar');
+    jc.localToolBar = $('#localToolBar').addClass('HIDDEN')[0];  // start with localToolBar hidden so that its position is irrelevent
     $('.CODE').bind("keypress",undefined,jc.editorKeyPress);
     $('.RICHTEXT').bind("keypress",undefined,jc.richTextKeyPress);
   });  

@@ -13,14 +13,25 @@
 </HEAD>
 <BODY designMode="on">
 <H1>basics</H1>
-<DIV id=localToolBar><SPAN id=codeId>code_basics01</SPAN> <INPUT onclick="$('.CODE').toggleClass('HIDDEN',this.checked);" type=checkbox>hide codes</BUTTON> <INPUT onclick="$('.TEST').toggleClass('HIDDEN',this.checked);" type=checkbox>hide tests</BUTTON> <INPUT onclick="$('.TRACE').toggleClass('HIDDEN',this.checked);" type=checkbox>hide traces</BUTTON><BUTTON onclick=jc.showOutputHtml(this);>show output html</BUTTON><BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON><BUTTON onclick=jc.execAutoExec();>run</BUTTON><BUTTON onclick=jc.execAll();>run all</BUTTON><BUTTON onclick="jc.save('d:\\Documents\\programmation\\jcalcV0\\jcalc2.hta');">save</BUTTON> </DIV>
 <DIV onclick=jc.codeClick(this); id=code_basics01 class=CODE contentEditable=true>3+5</DIV>
 <DIV onclick=jc.outClick(this) id=out_basics01 class=OUTPUT>no output</DIV>
 <DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_basics01 class=TEST>8</DIV>
-<H1>ECMA5 and jcExt</H1><PRE onclick=jc.codeClick(this); id=code_ext01 class=CODE contentEditable=true>output
+<H1>ECMA5 and jcExt</H1>
+<DIV id=localToolBar>
+<SPAN id=codeId>code_ext01</SPAN> 
+<INPUT onclick="$('.CODE').toggleClass('HIDDEN',this.checked);" type=checkbox>hide codes</INPUT>
+<INPUT onclick="$('.TEST').toggleClass('HIDDEN',this.checked);" type=checkbox>hide tests</INPUT> 
+<INPUT onclick="$('.TRACE').toggleClass('HIDDEN',this.checked);" type=checkbox>hide traces</INPUT>
+<BUTTON onclick=jc.showOutputHtml(this);>show output html</BUTTON>
+<BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON>
+<BUTTON onclick=jc.execAutoExec();>run</BUTTON>
+<BUTTON onclick=jc.execAll();>run all</BUTTON>
+<BUTTON onclick=jc.save();>save</BUTTON> 
+</DIV>
+<PRE onclick=jc.codeClick(this); id=code_ext01 class=CODE contentEditable=true>output
 .inspect(a={one:1,two:2,three:3},b=jc.copy(a))
 .inspect(b.one='un',a,b)
-  </PRE>
+</PRE>
 <DIV onclick=jc.outClick(this) id=out_ext01 class=OUTPUT>no output</DIV>
 <DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_ext01 class=TEST>
 <DIV>

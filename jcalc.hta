@@ -1,66 +1,97 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:svg="http://www.w3.org/2000/svg">
-<head>
-  <HTA:APPLICATION
-    APPLICATIONNAME="Operating System Version par exemple"
-    SCROLL="yes"
-    SINGLEINSTANCE="yes">
-  <link rel="stylesheet" href="jcalc.css" type="text/css" src="jcalc.css"/>
-</head>
+<HTML xmlns="http://www.w3.org/1999/xhtml" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="Operating System Version par exemple" SCROLL="yes" SINGLEINSTANCE="yes"><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
+<SCRIPT src="jcalcEdi.js"></SCRIPT>
 
-<script src="jcalcEdi.js"></script>
-<script src="jquery.js"></script>
-<script src="jcalc.js"></script>
-<script src="axe.js"></script>
-<script src="stateMachine.js"></script>
-<script src="BOM.js"></script>
+<SCRIPT src="jquery.js"></SCRIPT>
 
-<body designMode="on">
-  <div id="localToolBar" class="HIDDEN">
-    <span id=codeId>codeid</span>
-    <input type="checkbox" onclick="$('.CODE').toggleClass('HIDDEN',this.checked);">hide codes</button>
-    <input type="checkbox" onclick="$('.TEST').toggleClass('HIDDEN',this.checked);">hide tests</button>
-    <input type="checkbox" onclick="$('.TRACE').toggleClass('HIDDEN',this.checked);">hide traces</button>
-    <button onclick="jc.showOutputHtml(this);">show output html</button>
-    <button onclick="jc.toggleAutoExec();">autoexec</button>
-    <button onclick="jc.execAutoExec();">run</button>
-    <button onclick="jc.execAll();">run all</button>
-    <button onclick="jc.save();">save</button>
-  </div>
-  <h1>basics</h1>
-  <div id="code_basics01" class="CODE" onclick="jc.codeClick(this);" contentEditable>3+5</div>
-  <div id="out_basics01" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-  <div id="test_basics01" class=TEST  onclick="$(this).toggleClass('COLLAPSED');">8</div>
-  <h1>ECMA5 and jcExt</h1>
-  <pre id="code_ext01" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-output
+<SCRIPT src="jcalc.js"></SCRIPT>
+
+<SCRIPT src="axe.js"></SCRIPT>
+
+<SCRIPT src="stateMachine.js"></SCRIPT>
+
+<SCRIPT src="BOM.js"></SCRIPT>
+</HEAD>
+<BODY designMode="on">
+<H1>basics</H1>
+<DIV id=localToolBar class=" "><SPAN id=codeId>code_basics01</SPAN> 
+<INPUT onclick="$('.CODE').toggleClass('HIDDEN',this.checked);" type=checkbox>hide codes</INPUT> <INPUT onclick="$('.TEST').toggleClass('HIDDEN',this.checked);" type=checkbox>hide tests</INPUT> <INPUT onclick="$('.TRACE').toggleClass('HIDDEN',this.checked);" type=checkbox>hide traces</INPUT>
+<BUTTON onclick=jc.showOutputHtml(this);>show output html</BUTTON>
+<BUTTON onclick=jc.copyOutputToTest(this);>copy output to test</BUTTON>
+<BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON>
+<BUTTON onclick=jc.execAutoExec();>run</BUTTON>
+<BUTTON onclick=jc.execAll();>run all</BUTTON>
+<BUTTON onclick=jc.save();>save</BUTTON> 
+</DIV>
+<DIV onclick=jc.codeClick(this); id=code_basics01 class=CODE contentEditable=true>3+5</DIV>
+<DIV onclick=jc.outClick(this) id=out_basics01 class=OUTPUT>no output</DIV>
+<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_basics01 class=TEST>8</DIV>
+<H1>ECMA5 and jcExt</H1><PRE onclick=jc.codeClick(this); id=code_ext01 class=CODE contentEditable=true>output
 .inspect(a={one:1,two:2,three:3},b=jc.copy(a))
 .inspect(b.one='un',a,b)
-  </pre>
-  <div id="out_ext01" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-  <div id="test_ext01" class=TEST  onclick="$(this).toggleClass('COLLAPSED');">
-<DIV><TABLE class=INSPECT> <TBODY> <TR> <TH vAlign=top>one</TH> <TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR> <TR> <TH vAlign=top>two</TH> <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR> <TR> <TH vAlign=top>three</TH> <TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV> <DIV> <TABLE class=INSPECT> <TBODY> <TR> <TH vAlign=top>one</TH> <TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR> <TR> <TH vAlign=top>two</TH> <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR> <TR> <TH vAlign=top>three</TH> <TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV> <DIV>un</DIV> <DIV> <TABLE class=INSPECT> <TBODY> <TR> <TH vAlign=top>one</TH> <TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR> <TR> <TH vAlign=top>two</TH> <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR> <TR> <TH vAlign=top>three</TH> <TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV> <DIV> <TABLE class=INSPECT> <TBODY> <TR> <TH vAlign=top>one</TH> <TD style="TEXT-ALIGN: left" vAlign=top>un</TD></TR> <TR> <TH vAlign=top>two</TH> <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR> <TR> <TH vAlign=top>three</TH> <TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV>
-  </div>
-  <h1>jCalc lib</h1>
-  <pre id="code0102" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-v("hauteurTotale$mm",f("hauteur$mm+5"));
+</PRE>
+<DIV onclick=jc.outClick(this) id=out_ext01 class=OUTPUT>no output</DIV>
+<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_ext01 class=TEST>
+<DIV>
+<TABLE class=INSPECT>
+<TBODY>
+<TR>
+<TH vAlign=top>one</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR>
+<TR>
+<TH vAlign=top>two</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR>
+<TR>
+<TH vAlign=top>three</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV>
+<DIV>
+<TABLE class=INSPECT>
+<TBODY>
+<TR>
+<TH vAlign=top>one</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR>
+<TR>
+<TH vAlign=top>two</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR>
+<TR>
+<TH vAlign=top>three</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV>
+<DIV>un</DIV>
+<DIV>
+<TABLE class=INSPECT>
+<TBODY>
+<TR>
+<TH vAlign=top>one</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR>
+<TR>
+<TH vAlign=top>two</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR>
+<TR>
+<TH vAlign=top>three</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV>
+<DIV>
+<TABLE class=INSPECT>
+<TBODY>
+<TR>
+<TH vAlign=top>one</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>un</TD></TR>
+<TR>
+<TH vAlign=top>two</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR>
+<TR>
+<TH vAlign=top>three</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV></DIV>
+<H1>jCalc lib</H1><PRE onclick=jc.codeClick(this); id=code0102 class=CODE contentEditable=true>v("hauteurTotale$mm",f("hauteur$mm+5"));
 v("hauteur$mm",3);
 hauteurTotale$mm
-  </pre>
-  <div id="out0102" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-  <div id="test0102" class=TEST  onclick="$(this).toggleClass('COLLAPSED');"><VAR>hauteurTotale</VAR>= <SPAN class=VALUE>8</SPAN><SPAN class=UNIT>mm</SPAN></div>
-  <pre id="code0103" class="CODE" onclick="jc.codeClick(this);" contentEditable>v("hauteur$mm",3)</pre>
-  <div id="out0103" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-  <pre id="code0104" class="CODE AUTOEXEC" onclick="jc.codeClick(this);" contentEditable>v("hauteur$mm")</pre>
-  <div id="out0104" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-  <pre id="code0105" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-table("myTable")
+  </PRE>
+<DIV onclick=jc.outClick(this) id=out0102 class=OUTPUT>no output</DIV>
+<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test0102 class=TEST><VAR>hauteurTotale</VAR>= <SPAN class=VALUE>8</SPAN><SPAN class=UNIT>mm</SPAN></DIV><PRE onclick=jc.codeClick(this); id=code0103 class=CODE contentEditable=true>v("hauteur$mm",3)</PRE>
+<DIV onclick=jc.outClick(this) id=out0103 class=OUTPUT>no output</DIV><PRE onclick=jc.codeClick(this); id=code0104 class="CODE AUTOEXEC" contentEditable=true>v("hauteur$mm")</PRE>
+<DIV onclick=jc.outClick(this) id=out0104 class=OUTPUT>no output</DIV><PRE onclick=jc.codeClick(this); id=code0105 class=CODE contentEditable=true>table("myTable")
 .add({_id:"apple" ,quantity:250,price:0.5,amount:f("quantity*price")})
 .add({_id:"orange",quantity:100,price:0.7,amount:f("quantity*price")});
-  </pre>
-  <div id="out0105" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-  <pre id="code0106" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-output
+  </PRE>
+<DIV onclick=jc.outClick(this) id=out0105 class=OUTPUT>no output</DIV><PRE onclick=jc.codeClick(this); id=code0106 class=CODE contentEditable=true>output
 .p("first § where we show that ",hauteurTotale$mm)
 .p("second § where we show myTable",myTable.span({cols:{_id:1,amount:1}}))
 .ul()
@@ -73,31 +104,22 @@ output
   .h('Sous-Titre 2')
 .indent(-1)
 .h('Titre 2')
-  </pre>
-  <div id="out0106" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-  <h1>JQuery</h1>
-  <pre id="code0201" class="CODE" onclick="jc.codeClick(this);" contentEditable>$('#code0104')[0]</pre>
-  <div id="out0201" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-  <div id="test0201" class=TEST  onclick="$(this).toggleClass('COLLAPSED');">DOM Element<SPAN class=INSPECTHTML>&lt;PRE onclick=jc.codeClick(this); id=code0104 class="CODE AUTOEXEC" contentEditable=true&gt;v("hauteur$mm")&lt;/PRE&gt;</SPAN>
-</div>
-  <h1>Axe</h1>
-  <pre id="code0301" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-axe('lift')
+  </PRE>
+<DIV onclick=jc.outClick(this) id=out0106 class=OUTPUT>no output</DIV>
+<H1>JQuery</H1><PRE onclick=jc.codeClick(this); id=code0201 class=CODE contentEditable=true>$('#code0104')[0]</PRE>
+<DIV onclick=jc.outClick(this) id=out0201 class=OUTPUT>no output</DIV>
+<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test0201 class=TEST>DOM Element<SPAN class=INSPECTHTML>&lt;PRE onclick=jc.codeClick(this); id=code0104 class="CODE AUTOEXEC" contentEditable=true&gt;v("hauteur$mm")&lt;/PRE&gt;</SPAN> </DIV>
+<H1>Axe</H1><PRE onclick=jc.codeClick(this); id=code0301 class=CODE contentEditable=true>axe('lift')
 .accelerate({t:5,a:1})
 .accelerate({t:10,a:-1})
 .accelerate({t:15,a:0})
 .move({t:20,a:1,d:40,v1:5})
-  </pre>
-  <div id="out0301" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-  <pre id="code0302" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-lift
+  </PRE>
+<DIV onclick=jc.outClick(this) id=out0301 class=OUTPUT>no output</DIV><PRE onclick=jc.codeClick(this); id=code0302 class=CODE contentEditable=true>lift
 .accelerate({t:33,a:0})
-  </pre>
-  <div id="out0302" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-
-  <h1>StateMachine</h1>
-  <pre id="code0401" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-v('count',-1);
+  </PRE>
+<DIV onclick=jc.outClick(this) id=out0302 class=OUTPUT>no output</DIV>
+<H1>StateMachine</H1><PRE onclick=jc.codeClick(this); id=code0401 class=CODE contentEditable=true>v('count',-1);
 stateMachine('myStateMachine')
 .state('state1').initial()
   .run('v("count",count+1)')
@@ -106,57 +128,252 @@ stateMachine('myStateMachine')
   .run('v("count",count-1)')
   .transition('state1','count == 0')
 .end().view();
-  </pre>
-  <div id="out0401" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-  <pre id="code0402" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-output
-.p(jc.simulation.runWhile("jc.simulation.time$s < 10"))
+  </PRE>
+<DIV onclick=jc.outClick(this) id=out0401 class=OUTPUT>no output</DIV><PRE onclick=jc.codeClick(this); id=code0402 class=CODE contentEditable=true>output
+.p(jc.simulation.runWhile("jc.simulation.time$s &lt; 10"))
 .p(myStateMachine.view({log:true}))
 .p(count)
-  </pre>
-  <div id="out0402" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-  <h1>RichText</h1>
-  <div id="rich0000" class="RICHTEXT" onclick="jc.richTextClick(this)">
-    <h1>titre</h1>
-    <p>nomal §<span id="code1111" class="CODE AUTOEXEC" style="display:none;">myTable</span><span id="out1111" class="OUTPUT" contentEditable=false>---</span> textNormal</p>
-    <div id="code1112" class="CODE AUTOEXEC" style="display:none;">myStateMachine</div>
-    <div id="out1112" class="OUTPUT">--</div>
-  </div>
-  <h1>BOM</h1>
-  <pre id="code_Permutation" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-p = permutations(['A','B','C']);
+  </PRE>
+<DIV onclick=jc.outClick(this) id=out0402 class=OUTPUT>no output</DIV>
+<H1>RichText</H1>
+<DIV onclick=jc.richTextClick(this) id=rich0000 class=RICHTEXT>
+<H1>titre</H1>
+<P>nomal §<SPAN id=code1111 class="CODE AUTOEXEC" style="DISPLAY: none">myTable</SPAN><SPAN id=out1111 class=OUTPUT contentEditable=false>---</SPAN> textNormal</P>
+<DIV id=code1112 class="CODE AUTOEXEC" style="DISPLAY: none">myStateMachine</DIV>
+<DIV id=out1112 class=OUTPUT>--</DIV></DIV>
+<H1>BOM</H1><PRE onclick=jc.codeClick(this); id=code_Permutation class=CODE contentEditable=true>p = permutations(['A','B','C']);
 table().addRows(p);
-  </pre>
-  <div id="out_Permutation" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-  <div id="test_Permutation" class=TEST  onclick="$(this).toggleClass('COLLAPSED');">
-    <TABLE border=1> <THEAD> <TR> <TH>0</TH> <TH>1</TH> <TH>2</TH></TR></THEAD> <TBODY> <TR> <TD>A</TD> <TD>B</TD> <TD>C</TD></TR> <TR> <TD>A</TD> <TD>C</TD> <TD>B</TD></TR> <TR> <TD>B</TD> <TD>A</TD> <TD>C</TD></TR> <TR> <TD>B</TD> <TD>C</TD> <TD>A</TD></TR> <TR> <TD>C</TD> <TD>A</TD> <TD>B</TD></TR> <TR> <TD>C</TD> <TD>B</TD> <TD>A</TD></TR></TBODY></TABLE>
-  </div>
-  <h2>Groups</h2>
-  <pre id="code_Groups" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-g = new Groups();
+  </PRE>
+<DIV onclick=jc.outClick(this) id=out_Permutation class=OUTPUT>no output</DIV>
+<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_Permutation class=TEST>
+<TABLE border=1>
+<THEAD>
+<TR>
+<TH>0</TH>
+<TH>1</TH>
+<TH>2</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>A</TD>
+<TD>B</TD>
+<TD>C</TD></TR>
+<TR>
+<TD>A</TD>
+<TD>C</TD>
+<TD>B</TD></TR>
+<TR>
+<TD>B</TD>
+<TD>A</TD>
+<TD>C</TD></TR>
+<TR>
+<TD>B</TD>
+<TD>C</TD>
+<TD>A</TD></TR>
+<TR>
+<TD>C</TD>
+<TD>A</TD>
+<TD>B</TD></TR>
+<TR>
+<TD>C</TD>
+<TD>B</TD>
+<TD>A</TD></TR></TBODY></TABLE></DIV>
+<H2>Groups</H2><PRE onclick=jc.codeClick(this); id=code_Groups class=CODE contentEditable=true>g = new Groups();
 output
 .p(g.regroup(['toto']).regroup(['tutu']))
 .p(g.regroup(['titi','toto']))
 .p(g.regroup(['titi','tyty']))
-  </pre>
-  <div id="out_Groups" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-  <div id="test_Groups" class=TEST  onclick="$(this).toggleClass('COLLAPSED');">
-<DIV class=TEXT><P> <H3>[object Groups]</H3> <H3>[object Object]</H3> <TABLE> <TBODY> <TR> <TH vAlign=top>toto</TH> <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR> <TR> <TH vAlign=top>tutu</TH> <TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR></TBODY></TABLE> <H3>[object Object]</H3> <TABLE> <TBODY> <TR> <TH vAlign=top>0</TH> <TD style="TEXT-ALIGN: left" vAlign=top>toto</TD></TR> <TR> <TH vAlign=top>1</TH> <TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE> <P></P> <P> <H3>[object Groups]</H3> <H3>[object Object]</H3> <TABLE> <TBODY> <TR> <TH vAlign=top>toto</TH> <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR> <TR> <TH vAlign=top>tutu</TH> <TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR> <TR> <TH vAlign=top>titi</TH> <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE> <H3>[object Object]</H3> <TABLE> <TBODY> <TR> <TH vAlign=top>0</TH> <TD style="TEXT-ALIGN: left" vAlign=top>toto,titi</TD></TR> <TR> <TH vAlign=top>1</TH> <TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE> <P></P> <P> <H3>[object Groups]</H3> <H3>[object Object]</H3> <TABLE> <TBODY> <TR> <TH vAlign=top>toto</TH> <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR> <TR> <TH vAlign=top>tutu</TH> <TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR> <TR> <TH vAlign=top>titi</TH> <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR> <TR> <TH vAlign=top>tyty</TH> <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE> <H3>[object Object]</H3> <TABLE> <TBODY> <TR> <TH vAlign=top>0</TH> <TD style="TEXT-ALIGN: left" vAlign=top>toto,titi,tyty</TD></TR> <TR> <TH vAlign=top>1</TH> <TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE> <P></P></DIV>  
-  </div>
-  <pre id="code_Bom_PlanOfNeed" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-var p1,p2,p3,p4,p5; 
+  </PRE>
+<DIV onclick=jc.outClick(this) id=out_Groups class=OUTPUT>no output</DIV>
+<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_Groups class=TEST>
+<DIV class=TEXT>
+<P>
+<H3>[object Groups]</H3>
+<H3>[object Object]</H3>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>toto</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR>
+<TR>
+<TH vAlign=top>tutu</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR></TBODY></TABLE>
+<H3>[object Object]</H3>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>toto</TD></TR>
+<TR>
+<TH vAlign=top>1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE>
+<P></P>
+<P>
+<H3>[object Groups]</H3>
+<H3>[object Object]</H3>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>toto</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR>
+<TR>
+<TH vAlign=top>tutu</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR>
+<TR>
+<TH vAlign=top>titi</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE>
+<H3>[object Object]</H3>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>toto,titi</TD></TR>
+<TR>
+<TH vAlign=top>1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE>
+<P></P>
+<P>
+<H3>[object Groups]</H3>
+<H3>[object Object]</H3>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>toto</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR>
+<TR>
+<TH vAlign=top>tutu</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR>
+<TR>
+<TH vAlign=top>titi</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR>
+<TR>
+<TH vAlign=top>tyty</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE>
+<H3>[object Object]</H3>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>toto,titi,tyty</TD></TR>
+<TR>
+<TH vAlign=top>1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE>
+<P></P></DIV></DIV><PRE onclick=jc.codeClick(this); id=code_Bom_PlanOfNeed class=CODE contentEditable=true>var p1,p2,p3,p4,p5; 
 output
 .p(p1 = (new PlanOfNeed()).add(0,20).add(3,10).add(0,30))
 .p(p2 = p1.copy().add(3,100))
 .p(p3 = (new PlanOfNeed()).add(1,15).add(2,45).add(5,60))
 .p(p4 = p1.max(p3))
 .p(p5 = p2.sum(p4))
-  </pre>
-  <div id="out_Bom_PlanOfNeed" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-  <div id="test_Bom_PlanOfNeed" class=TEST  onclick="$(this).toggleClass('COLLAPSED');">
-<DIV class=TEXT><P> <DIV><VAR>plan of need</VAR> <TABLE border=1> <THEAD> <TR> <TH>time</TH> <TH>quantity</TH> <TH>cumul</TH></TR></THEAD> <TBODY> <TR> <TD>0</TD> <TD>50</TD> <TD>50</TD></TR> <TR> <TD>3</TD> <TD>10</TD> <TD>60</TD></TR></TBODY></TABLE></DIV> <P></P> <P> <DIV><VAR>plan of need</VAR> <TABLE border=1> <THEAD> <TR> <TH>time</TH> <TH>quantity</TH> <TH>cumul</TH></TR></THEAD> <TBODY> <TR> <TD>0</TD> <TD>50</TD> <TD>50</TD></TR> <TR> <TD>3</TD> <TD>110</TD> <TD>160</TD></TR></TBODY></TABLE></DIV> <P></P> <P> <DIV><VAR>plan of need</VAR> <TABLE border=1> <THEAD> <TR> <TH>time</TH> <TH>quantity</TH> <TH>cumul</TH></TR></THEAD> <TBODY> <TR> <TD>1</TD> <TD>15</TD> <TD>15</TD></TR> <TR> <TD>2</TD> <TD>45</TD> <TD>60</TD></TR> <TR> <TD>5</TD> <TD>60</TD> <TD>120</TD></TR></TBODY></TABLE></DIV> <P></P> <P> <DIV><VAR>plan of need</VAR> <TABLE border=1> <THEAD> <TR> <TH>time</TH> <TH>quantity</TH> <TH>cumul</TH></TR></THEAD> <TBODY> <TR> <TD>0</TD> <TD>50</TD> <TD>50</TD></TR> <TR> <TD>2</TD> <TD>10</TD> <TD>60</TD></TR> <TR> <TD>5</TD> <TD>60</TD> <TD>120</TD></TR></TBODY></TABLE></DIV> <P></P> <P> <DIV><VAR>plan of need</VAR> <TABLE border=1> <THEAD> <TR> <TH>time</TH> <TH>quantity</TH> <TH>cumul</TH></TR></THEAD> <TBODY> <TR> <TD>0</TD> <TD>100</TD> <TD>100</TD></TR> <TR> <TD>2</TD> <TD>10</TD> <TD>110</TD></TR> <TR> <TD>3</TD> <TD>110</TD> <TD>220</TD></TR> <TR> <TD>5</TD> <TD>60</TD> <TD>280</TD></TR></TBODY></TABLE></DIV> <P></P></DIV>  </div>
-  <pre id="code0502" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-product('product1',
+  </PRE>
+<DIV onclick=jc.outClick(this) id=out_Bom_PlanOfNeed class=OUTPUT>no output</DIV>
+<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_Bom_PlanOfNeed class=TEST>
+<DIV class=TEXT>
+<P>
+<DIV><VAR>plan of need</VAR> 
+<TABLE border=1>
+<THEAD>
+<TR>
+<TH>time</TH>
+<TH>quantity</TH>
+<TH>cumul</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>0</TD>
+<TD>50</TD>
+<TD>50</TD></TR>
+<TR>
+<TD>3</TD>
+<TD>10</TD>
+<TD>60</TD></TR></TBODY></TABLE></DIV>
+<P></P>
+<P>
+<DIV><VAR>plan of need</VAR> 
+<TABLE border=1>
+<THEAD>
+<TR>
+<TH>time</TH>
+<TH>quantity</TH>
+<TH>cumul</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>0</TD>
+<TD>50</TD>
+<TD>50</TD></TR>
+<TR>
+<TD>3</TD>
+<TD>110</TD>
+<TD>160</TD></TR></TBODY></TABLE></DIV>
+<P></P>
+<P>
+<DIV><VAR>plan of need</VAR> 
+<TABLE border=1>
+<THEAD>
+<TR>
+<TH>time</TH>
+<TH>quantity</TH>
+<TH>cumul</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>1</TD>
+<TD>15</TD>
+<TD>15</TD></TR>
+<TR>
+<TD>2</TD>
+<TD>45</TD>
+<TD>60</TD></TR>
+<TR>
+<TD>5</TD>
+<TD>60</TD>
+<TD>120</TD></TR></TBODY></TABLE></DIV>
+<P></P>
+<P>
+<DIV><VAR>plan of need</VAR> 
+<TABLE border=1>
+<THEAD>
+<TR>
+<TH>time</TH>
+<TH>quantity</TH>
+<TH>cumul</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>0</TD>
+<TD>50</TD>
+<TD>50</TD></TR>
+<TR>
+<TD>2</TD>
+<TD>10</TD>
+<TD>60</TD></TR>
+<TR>
+<TD>5</TD>
+<TD>60</TD>
+<TD>120</TD></TR></TBODY></TABLE></DIV>
+<P></P>
+<P>
+<DIV><VAR>plan of need</VAR> 
+<TABLE border=1>
+<THEAD>
+<TR>
+<TH>time</TH>
+<TH>quantity</TH>
+<TH>cumul</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>0</TD>
+<TD>100</TD>
+<TD>100</TD></TR>
+<TR>
+<TD>2</TD>
+<TD>10</TD>
+<TD>110</TD></TR>
+<TR>
+<TD>3</TD>
+<TD>110</TD>
+<TD>220</TD></TR>
+<TR>
+<TD>5</TD>
+<TD>60</TD>
+<TD>280</TD></TR></TBODY></TABLE></DIV>
+<P></P></DIV></DIV><PRE onclick=jc.codeClick(this); id=code0502 class=CODE contentEditable=true>product('product1',
   bom('main170',['width_170'],
     {part:'OS frame',quantity:1,neededAt:0},
     {part:'GS frame',quantity:1,neededAt:0},
@@ -177,59 +394,32 @@ product('product1',
 .updateParts()
 .updateScenarii()
 product1.parts['OS frame'].code().compile().computeNeeds()
-  </pre>
-  <div id="out0502" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-
-  <h1>Non regression tests</h1>
-  <pre id="code_NRT0001" class="CODE" onclick="jc.codeClick(this);" contentEditable>
-     // creating a function "test" or a "out" will destroy a local variable and corrupt the environement
+  </PRE>
+<DIV onclick=jc.outClick(this) id=out0502 class=OUTPUT>no output</DIV>
+<H1>Non regression tests</H1><PRE onclick=jc.codeClick(this); id=code_NRT0001 class=CODE contentEditable=true>     // creating a function "test" or a "out" will destroy a local variable and corrupt the environement
 function test() {};
 var out = 'toto';
 'ok'
-  </pre>
-  <div id="out_NRT0001" class="OUTPUT" onclick="jc.outClick(this)">no output</div>
-  <div id="test_NRT0001" class=TEST  onclick="$(this).toggleClass('COLLAPSED');">ok</div>
-
-<table width="100%" cellpadding="4" cellspacing="0">
-	<col width="128*">
-	<col width="128*">
-	<tr valign="top">
-		<td width="50%" style="border-top: 1px solid #000080; border-bottom: 1px solid #000080; border-left: 1px solid #000080; border-right: none; padding-top: 0.1cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
-			<p><br/>
-
-			</p>
-		</td>
-		<td width="50%" style="border: 1px solid #000080; padding: 0.1cm">
-			<p><br/>
-
-			</p>
-		</td>
-	</tr>
-	<tr valign="top">
-		<td width="50%" style="border-top: none; border-bottom: 1px solid #000080; border-left: 1px solid #000080; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
-			<p><br/>
-
-			</p>
-		</td>
-		<td width="50%" style="border-top: none; border-bottom: 1px solid #000080; border-left: 1px solid #000080; border-right: 1px solid #000080; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
-			<p><br/>
-
-			</p>
-		</td>
-	</tr>
-	<tr valign="top">
-		<td width="50%" style="border-top: none; border-bottom: 1px solid #000080; border-left: 1px solid #000080; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
-			<p><br/>
-
-			</p>
-		</td>
-		<td width="50%" style="border-top: none; border-bottom: 1px solid #000080; border-left: 1px solid #000080; border-right: 1px solid #000080; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
-			<p><br/>
-
-			</p>
-		</td>
-	</tr>
-</table>
-
-</body>
-</html>
+  </PRE>
+<DIV onclick=jc.outClick(this) id=out_NRT0001 class=OUTPUT>no output</DIV>
+<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_NRT0001 class=TEST>ok</DIV>
+<TABLE cellSpacing=0 cellPadding=4 width="100%">
+<COLGROUP>
+<COL width=128>
+<COL width=128>
+<TBODY>
+<TR vAlign=top>
+<TD style="BORDER-TOP: #000080 1px solid; BORDER-RIGHT: medium none; BORDER-BOTTOM: #000080 1px solid; PADDING-BOTTOM: 0.1cm; PADDING-TOP: 0.1cm; PADDING-LEFT: 0.1cm; BORDER-LEFT: #000080 1px solid; PADDING-RIGHT: 0cm" width="50%">
+<P><BR></P></TD>
+<TD style="BORDER-TOP: #000080 1px solid; BORDER-RIGHT: #000080 1px solid; BORDER-BOTTOM: #000080 1px solid; PADDING-BOTTOM: 0.1cm; PADDING-TOP: 0.1cm; PADDING-LEFT: 0.1cm; BORDER-LEFT: #000080 1px solid; PADDING-RIGHT: 0.1cm" width="50%">
+<P><BR></P></TD></TR>
+<TR vAlign=top>
+<TD style="BORDER-TOP: medium none; BORDER-RIGHT: medium none; BORDER-BOTTOM: #000080 1px solid; PADDING-BOTTOM: 0.1cm; PADDING-TOP: 0cm; PADDING-LEFT: 0.1cm; BORDER-LEFT: #000080 1px solid; PADDING-RIGHT: 0cm" width="50%">
+<P><BR></P></TD>
+<TD style="BORDER-TOP: medium none; BORDER-RIGHT: #000080 1px solid; BORDER-BOTTOM: #000080 1px solid; PADDING-BOTTOM: 0.1cm; PADDING-TOP: 0cm; PADDING-LEFT: 0.1cm; BORDER-LEFT: #000080 1px solid; PADDING-RIGHT: 0.1cm" width="50%">
+<P><BR></P></TD></TR>
+<TR vAlign=top>
+<TD style="BORDER-TOP: medium none; BORDER-RIGHT: medium none; BORDER-BOTTOM: #000080 1px solid; PADDING-BOTTOM: 0.1cm; PADDING-TOP: 0cm; PADDING-LEFT: 0.1cm; BORDER-LEFT: #000080 1px solid; PADDING-RIGHT: 0cm" width="50%">
+<P><BR></P></TD>
+<TD style="BORDER-TOP: medium none; BORDER-RIGHT: #000080 1px solid; BORDER-BOTTOM: #000080 1px solid; PADDING-BOTTOM: 0.1cm; PADDING-TOP: 0cm; PADDING-LEFT: 0.1cm; BORDER-LEFT: #000080 1px solid; PADDING-RIGHT: 0.1cm" width="50%">
+<P><BR></P></TD></TR></TBODY></TABLE></HTA:APPLICATION></BODY></HTML>
