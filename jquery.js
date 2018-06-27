@@ -49,7 +49,7 @@ JQuery.prototype.toggleClass = function(className,add) { //limited version: only
       e.className += ' '+className;
     }
     else {
-      e.className = e.className.replace(new RegExp('\\b'+className+'\\b'),'');
+      e.className = e.className.replace(new RegExp('\\b'+className+'\\b','g'),'');
     }
   });
   return this;
@@ -111,6 +111,7 @@ JQuery.prototype.add =function (sel,context) {
 }
 
 JQuery.prototype.each = function (f) {
+  // f is function(i,element)
   for (var i=0; i < this.length; i++) {
     if (f(i,this[i]) == false) {break};
   }

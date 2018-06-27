@@ -172,3 +172,8 @@ p {
 .SMCURRENTSTATE {
   background-color: yellow;
 }
+
+#localToolBar,
+button {
+  background-color: 909090;
+}  

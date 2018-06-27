@@ -9,6 +9,7 @@
             localToolBar:undefined,
             htmlIndent:1,
             simulation:undefined, // will be set by StateMachine.js
+            nextBlockNumber:0,
             errorHandler:function(message,url,line) {
                 var out  = jc.outputElement(jc.codeElementBeingExecuted);
                 if (out) {
@@ -143,6 +144,9 @@
     return o;
   }
 
+  jc.pad = function(integer,numberOfDigits){
+    return ('00000000000000000'+integer).slice(-numberOfDigits);
+  }
 
   jc.toHtml = function(htmlCode) {
     // transform htmlCode in such a manner that the code can be visualised in a <code>...
@@ -152,6 +156,16 @@
                    .replace(/\\/g,'\\\\')
                    .replace(/\r/g,'\\r')
                    .replace(/\n/g,"\\n<br>");
+  }
+
+  jc.findNextBlockNumber = function() {
+    $('.CODE').each(function(i,e) {
+      var n = Number(e.id.slice(4));
+      if (!isNaN(n)) {
+        jc.nextBlockNumber = Math.max(jc.nextBlockNumber,n);
+      }
+    });
+    jc.nextBlockNumber++;
   }
 
   jc.removeErrors = function(html) {
@@ -186,12 +200,11 @@
   jc.save = function() {
     // save the sheet under fileName or the current name if fileName is not specified
     var fileName = window.location.pathname;
-a(fileName)
     var fso = new ActiveXObject("Scripting.FileSystemObject");
     var file = fso.OpenTextFile(fileName,2,true);
     file.Write(window.document.documentElement.outerHTML);
     file.Close();
-a('saved');
+a(fileName+' saved');
   }
 
   jc.copyOutputToTest = function() {
@@ -204,6 +217,15 @@ a('saved');
       test.innerHTML = out.innerHTML;
       $(test).removeClass('ERROR').addClass('SUCCESS');
     }
+  }
+
+  jc.insertNewCodeBlock = function(beforeThatElement) {
+    // insert a new code and output DIV 
+    // -beforeThatElement is where it must be inserted (usually the localToolBox, but can be any Element)
+    var nextBlockId = jc.pad(jc.nextBlockNumber++,4);
+    beforeThatElement.insertAdjacentHTML('beforebegin','<PRE onclick=jc.codeClick(this); class=CODE id=code'+nextBlockId+' contentEditable=true></PRE><DIV class="OUTPUT OLD" onclick=jc.outClick(this) id=out'+nextBlockId+'>no output</DIV>');
+    $('.CODE').bind("keypress",undefined,jc.editorKeyPress);
+
   }
 
   jc.editorKeyPress = function(event) {
@@ -347,6 +369,9 @@ a('saved');
     jc.localToolBar = $('#localToolBar').addClass('HIDDEN')[0];  // start with localToolBar hidden so that its position is irrelevent
     $('.CODE').bind("keypress",undefined,jc.editorKeyPress);
     $('.RICHTEXT').bind("keypress",undefined,jc.richTextKeyPress);
+    $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR');
+    $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
+    jc.findNextBlockNumber();
   });  
   
   window.onerror = jc.errorHandler;

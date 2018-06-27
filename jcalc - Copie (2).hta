@@ -13,15 +13,16 @@
 </HEAD>
 <BODY designMode="on">
 <H1>basics</H1>
-<DIV id=localToolBar class="       "><SPAN id=codeId>code_basics01</SPAN> <INPUT onclick="$('.CODE').toggleClass('HIDDEN',this.checked);this.scrollIntoView();" type=checkbox>hide codes</INPUT> <INPUT onclick="$('.TEST').toggleClass('HIDDEN',this.checked);" type=checkbox>hide tests</INPUT> <INPUT onclick="$('.TRACE').toggleClass('HIDDEN',this.checked);" type=checkbox>hide traces</INPUT><BUTTON onclick=jc.showOutputHtml(this);>show output html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this);>copy output to test</BUTTON><BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON><BUTTON onclick=jc.execAutoExec();>run</BUTTON><BUTTON onclick=jc.execAll();>run all</BUTTON><BUTTON onclick=jc.save();>save</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>^ new code ^</BUTTON><BUTTON onclick=;>^ new richtext ^</BUTTON> </DIV>
+<DIV id=localToolBar class="     "><SPAN id=codeId>code1112</SPAN> <INPUT onclick="$('.CODE').toggleClass('HIDDEN',this.checked);this.scrollIntoView();" type=checkbox>hide codes</INPUT> <INPUT onclick="$('.TEST').toggleClass('HIDDEN',this.checked);" type=checkbox>hide tests</INPUT> <INPUT onclick="$('.TRACE').toggleClass('HIDDEN',this.checked);" type=checkbox>hide traces</INPUT><BUTTON onclick=jc.showOutputHtml(this);>show output html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this);>copy output to test</BUTTON><BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON><BUTTON onclick=jc.execAutoExec();>run</BUTTON><BUTTON onclick=jc.execAll();>run all</BUTTON><BUTTON onclick=jc.save();>save</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>^ new code ^</BUTTON><BUTTON onclick=;>^ new richtext ^</BUTTON> </DIV><PRE onclick=jc.codeClick(this); id=code1112 class=CODE contentEditable=true>5</PRE>
+<DIV onclick=jc.outClick(this) id=out1112 class="OUTPUT OLD SUCCESS">5</DIV>
 <DIV onclick=jc.codeClick(this); id=code_basics01 class=CODE contentEditable=true>3+5</DIV>
-<DIV onclick=jc.outClick(this) id=out_basics01 class="OUTPUT    SUCCESS">8</DIV>
-<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_basics01 class="TEST    SUCCESS">8</DIV>
+<DIV onclick=jc.outClick(this) id=out_basics01 class="OUTPUT SUCCESS SUCCESS">8</DIV>
+<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_basics01 class="TEST SUCCESS SUCCESS">8</DIV>
 <H1>ECMA5 and jcExt</H1><PRE onclick=jc.codeClick(this); id=code_ext01 class=CODE contentEditable=true><P>var a,b;</P><P>output
 .inspect(a={one:1,two:2,three:3},b=jc.copy(a))
 .inspect(b.one='un',a,b)
 </P></PRE>
-<DIV onclick=jc.outClick(this) id=out_ext01 class="OUTPUT     SUCCESS">
+<DIV onclick=jc.outClick(this) id=out_ext01 class="OUTPUT SUCCESS SUCCESS SUCCESS">
 <DIV class=INSPECT>
 <TABLE class=INSPECT>
 <TBODY>
@@ -45,7 +46,7 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR>
 <TR>
 <TH vAlign=top>three</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV><SPAN class=INSPECT>un</SPAN>
+<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV><SPAN class=INSPECT>un</SPAN> 
 <DIV class=INSPECT>
 <TABLE class=INSPECT>
 <TBODY>
@@ -70,7 +71,7 @@
 <TR>
 <TH vAlign=top>three</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV></DIV>
-<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_ext01 class="TEST      SUCCESS">
+<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_ext01 class="TEST  SUCCESS SUCCESS SUCCESS">
 <DIV class=INSPECT>
 <TABLE class=INSPECT>
 <TBODY>
@@ -123,14 +124,14 @@
 v("hauteur$mm",3);
 hauteurTotale$mm
   </PRE>
-<DIV onclick=jc.outClick(this) id=out0102 class="OUTPUT   SUCCESS"><VAR>hauteurTotale</VAR>= <SPAN class=VALUE>8</SPAN><SPAN class=UNIT>mm</SPAN></DIV>
-<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test0102 class="TEST   SUCCESS"><VAR>hauteurTotale</VAR>= <SPAN class=VALUE>8</SPAN><SPAN class=UNIT>mm</SPAN></DIV><PRE onclick=jc.codeClick(this); id=code0103 class=CODE contentEditable=true>v("hauteur$mm",3)</PRE>
-<DIV onclick=jc.outClick(this) id=out0103 class="OUTPUT   SUCCESS"><VAR>hauteur</VAR>= <SPAN class=VALUE>3</SPAN><SPAN class=UNIT>mm</SPAN></DIV><PRE onclick=jc.codeClick(this); id=code0104 class="CODE AUTOEXEC" contentEditable=true>v("hauteur$mm")</PRE>
-<DIV onclick=jc.outClick(this) id=out0104 class="OUTPUT       SUCCESS"><VAR>hauteur</VAR>= <SPAN class=VALUE>3</SPAN><SPAN class=UNIT>mm</SPAN></DIV><PRE onclick=jc.codeClick(this); id=code0105 class=CODE contentEditable=true>table("myTable")
+<DIV onclick=jc.outClick(this) id=out0102 class="OUTPUT SUCCESS"><VAR>hauteurTotale</VAR>= <SPAN class=VALUE>8</SPAN><SPAN class=UNIT>mm</SPAN></DIV>
+<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test0102 class="TEST SUCCESS"><VAR>hauteurTotale</VAR>= <SPAN class=VALUE>8</SPAN><SPAN class=UNIT>mm</SPAN></DIV><PRE onclick=jc.codeClick(this); id=code0103 class=CODE contentEditable=true>v("hauteur$mm",3)</PRE>
+<DIV onclick=jc.outClick(this) id=out0103 class="OUTPUT SUCCESS"><VAR>hauteur</VAR>= <SPAN class=VALUE>3</SPAN><SPAN class=UNIT>mm</SPAN></DIV><PRE onclick=jc.codeClick(this); id=code0104 class="CODE AUTOEXEC" contentEditable=true>v("hauteur$mm")</PRE>
+<DIV onclick=jc.outClick(this) id=out0104 class="OUTPUT   ERROR">undefined</DIV><PRE onclick=jc.codeClick(this); id=code0105 class=CODE contentEditable=true>table("myTable")
 .add({_id:"apple" ,quantity:250,price:0.5,amount:f("quantity*price")})
 .add({_id:"orange",quantity:100,price:0.7,amount:f("quantity*price")});
   </PRE>
-<DIV onclick=jc.outClick(this) id=out0105 class="OUTPUT   SUCCESS">
+<DIV onclick=jc.outClick(this) id=out0105 class="OUTPUT SUCCESS">
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -162,9 +163,9 @@ hauteurTotale$mm
 .indent(-1)
 .h('Titre 2')
   </PRE>
-<DIV onclick=jc.outClick(this) id=out0106 class="OUTPUT   SUCCESS">
+<DIV onclick=jc.outClick(this) id=out0106 class="OUTPUT SUCCESS">
 <P>first § where we show that <VAR>hauteurTotale</VAR>= <SPAN class=VALUE>8</SPAN><SPAN class=UNIT>mm</SPAN></P>
-<P>second § where we show myTable
+<P>second § where we show myTable 
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -178,7 +179,7 @@ hauteurTotale$mm
 <TH>orange</TH>
 <TD>70</TD></TR></TBODY></TABLE></P>
 <UL>
-<LI>list 1 the full table sorted by quantity from min to max
+<LI>list 1 the full table sorted by quantity from min to max 
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -196,8 +197,8 @@ hauteurTotale$mm
 <TH>apple</TH>
 <TD>250</TD>
 <TD>0.5</TD>
-<TD>125</TD></TR></TBODY></TABLE></LI>
-<LI>list 2 a row
+<TD>125</TD></TR></TBODY></TABLE>
+<LI>list 2 a row 
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -210,8 +211,8 @@ hauteurTotale$mm
 <TH>orange</TH>
 <TD>100</TD>
 <TD>0.7</TD>
-<TD>70</TD></TR></TBODY></TABLE></LI>
-<LI>list 3 a row as a list
+<TD>70</TD></TR></TBODY></TABLE>
+<LI>list 3 a row as a list 
 <TABLE>
 <TBODY>
 <TR>
@@ -231,15 +232,15 @@ hauteurTotale$mm
 <H2>Sous-Titre 2</H2>
 <H1>Titre 2</H1></DIV>
 <H1>JQuery</H1><PRE onclick=jc.codeClick(this); id=code0201 class=CODE contentEditable=true>$('#code0104')[0]</PRE>
-<DIV onclick=jc.outClick(this) id=out0201 class="OUTPUT   SUCCESS">DOM Element<SPAN class=INSPECTHTML>&lt;PRE onclick=jc.codeClick(this); id=code0104 class="CODE AUTOEXEC" contentEditable=true&gt;v("hauteur$mm")&lt;/PRE&gt;</SPAN></DIV>
-<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test0201 class="TEST   SUCCESS">DOM Element<SPAN class=INSPECTHTML>&lt;PRE onclick=jc.codeClick(this); id=code0104 class="CODE AUTOEXEC" contentEditable=true&gt;v("hauteur$mm")&lt;/PRE&gt;</SPAN> </DIV>
+<DIV onclick=jc.outClick(this) id=out0201 class="OUTPUT SUCCESS">DOM Element<SPAN class=INSPECTHTML>&lt;PRE onclick=jc.codeClick(this); id=code0104 class="CODE AUTOEXEC" contentEditable=true&gt;v("hauteur$mm")&lt;/PRE&gt;</SPAN></DIV>
+<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test0201 class="TEST SUCCESS">DOM Element<SPAN class=INSPECTHTML>&lt;PRE onclick=jc.codeClick(this); id=code0104 class="CODE AUTOEXEC" contentEditable=true&gt;v("hauteur$mm")&lt;/PRE&gt;</SPAN> </DIV>
 <H1>Axe</H1><PRE onclick=jc.codeClick(this); id=code0301 class=CODE contentEditable=true>axe('lift')
 .accelerate({t:5,a:1})
 .accelerate({t:10,a:-1})
 .accelerate({t:15,a:0})
 .move({t:20,a:1,d:40,v1:5})
   </PRE>
-<DIV onclick=jc.outClick(this) id=out0301 class="OUTPUT   SUCCESS">
+<DIV onclick=jc.outClick(this) id=out0301 class="OUTPUT SUCCESS">
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -333,7 +334,7 @@ hauteurTotale$mm
 <TD>--</TD></TR></TBODY></TABLE></DIV><PRE onclick=jc.codeClick(this); id=code0302 class=CODE contentEditable=true>lift
 .accelerate({t:33,a:0})
   </PRE>
-<DIV onclick=jc.outClick(this) id=out0302 class="OUTPUT   SUCCESS">
+<DIV onclick=jc.outClick(this) id=out0302 class="OUTPUT SUCCESS">
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -443,24 +444,24 @@ stateMachine('myStateMachine')
   .transition('state1','count == 0')
 .end().view();
   </PRE>
-<DIV onclick=jc.outClick(this) id=out0401 class="OUTPUT   SUCCESS">
-<DIV class=STATEMACHINE>myStateMachine
-<DIV class="SMSTATE SMCURRENTSTATE">state1<BR>run : <SPAN class=CODEVIEW>v("count",count+1)</SPAN>
+<DIV onclick=jc.outClick(this) id=out0401 class="OUTPUT SUCCESS">
+<DIV class=STATEMACHINE>myStateMachine 
+<DIV class="SMSTATE SMCURRENTSTATE">state1<BR>run : <SPAN class=CODEVIEW>v("count",count+1)</SPAN> 
 <DIV class=SMTRANSITION>count == 10 --&gt;state2</DIV></DIV>
-<DIV class=SMSTATE>state2<BR>run : <SPAN class=CODEVIEW>v("count",count-1)</SPAN>
+<DIV class=SMSTATE>state2<BR>run : <SPAN class=CODEVIEW>v("count",count-1)</SPAN> 
 <DIV class=SMTRANSITION>count == 0 --&gt;state1</DIV></DIV></DIV></DIV><PRE onclick=jc.codeClick(this); id=code0402 class=CODE contentEditable=true>output
 .p(jc.simulation.runWhile("jc.simulation.time$s &lt; 10"))
 .p(myStateMachine.view({log:true}))
 .p(count)
   </PRE>
-<DIV onclick=jc.outClick(this) id=out0402 class="OUTPUT   SUCCESS">
+<DIV onclick=jc.outClick(this) id=out0402 class="OUTPUT SUCCESS">
 <P>[Simulation "_simulation" time: 10.100]</P>
 <P>
-<DIV class=STATEMACHINE>myStateMachine
-<DIV class="SMSTATE SMCURRENTSTATE">state1<BR>run : <SPAN class=CODEVIEW>v("count",count+1)</SPAN>
+<DIV class=STATEMACHINE>myStateMachine 
+<DIV class="SMSTATE SMCURRENTSTATE">state1<BR>run : <SPAN class=CODEVIEW>v("count",count+1)</SPAN> 
 <DIV class=SMTRANSITION>count == 10 --&gt;state2</DIV></DIV>
-<DIV class=SMSTATE>state2<BR>run : <SPAN class=CODEVIEW>v("count",count-1)</SPAN>
-<DIV class=SMTRANSITION>count == 0 --&gt;state1</DIV></DIV>Log
+<DIV class=SMSTATE>state2<BR>run : <SPAN class=CODEVIEW>v("count",count-1)</SPAN> 
+<DIV class=SMTRANSITION>count == 0 --&gt;state1</DIV></DIV>Log 
 <TABLE>
 <TBODY>
 <TR>
@@ -508,36 +509,18 @@ stateMachine('myStateMachine')
 <H1>RichText</H1>
 <DIV onclick=jc.richTextClick(this) id=rich0000 class=RICHTEXT>
 <H1>titre</H1>
-<P>nomal §<SPAN id=code1111 class="CODE AUTOEXEC" style="DISPLAY: none">myTable</SPAN><SPAN id=out1111 class="OUTPUT      SUCCESS" contentEditable=false>
-<TABLE border=1>
-<THEAD>
-<TR>
-<TH>_id</TH>
-<TH>quantity</TH>
-<TH>price</TH>
-<TH>amount</TH></TR></THEAD>
-<TBODY>
-<TR>
-<TH>orange</TH>
-<TD>100</TD>
-<TD>0.7</TD>
-<TD>70</TD></TR>
-<TR>
-<TH>apple</TH>
-<TD>250</TD>
-<TD>0.5</TD>
-<TD>125</TD></TR></TBODY></TABLE></SPAN>textNormal</P>
+<P>nomal §<SPAN id=code1111 class="CODE AUTOEXEC" style="DISPLAY: none">myTable</SPAN><SPAN id=out1111 class="OUTPUT   ERROR" contentEditable=false>« myTable » est indéfini<SPAN class=CODEINERROR><SPAN class=ERROR>myTable</SPAN></SPAN></SPAN>textNormal</P>
 <DIV id=code1112 class="CODE AUTOEXEC" style="DISPLAY: none">myStateMachine</DIV>
-<DIV id=out1112 class="OUTPUT   SUCCESS">
-<DIV class=STATEMACHINE>myStateMachine
-<DIV class="SMSTATE SMCURRENTSTATE">state1<BR>run : <SPAN class=CODEVIEW>v("count",count+1)</SPAN>
+<DIV id=out1112 class="OUTPUT SUCCESS SUCCESS">
+<DIV class=STATEMACHINE>myStateMachine 
+<DIV class="SMSTATE SMCURRENTSTATE">state1<BR>run : <SPAN class=CODEVIEW>v("count",count+1)</SPAN> 
 <DIV class=SMTRANSITION>count == 10 --&gt;state2</DIV></DIV>
-<DIV class=SMSTATE>state2<BR>run : <SPAN class=CODEVIEW>v("count",count-1)</SPAN>
+<DIV class=SMSTATE>state2<BR>run : <SPAN class=CODEVIEW>v("count",count-1)</SPAN> 
 <DIV class=SMTRANSITION>count == 0 --&gt;state1</DIV></DIV></DIV></DIV></DIV>
 <H1>BOM</H1><PRE onclick=jc.codeClick(this); id=code_Permutation class=CODE contentEditable=true>p = permutations(['A','B','C']);
 table().addRows(p);
   </PRE>
-<DIV onclick=jc.outClick(this) id=out_Permutation class="OUTPUT   SUCCESS">
+<DIV onclick=jc.outClick(this) id=out_Permutation class="OUTPUT SUCCESS">
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -569,7 +552,7 @@ table().addRows(p);
 <TD>C</TD>
 <TD>B</TD>
 <TD>A</TD></TR></TBODY></TABLE></DIV>
-<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_Permutation class="TEST   SUCCESS">
+<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_Permutation class="TEST SUCCESS">
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -607,7 +590,7 @@ output
 .p(g.regroup(['titi','toto']))
 .p(g.regroup(['titi','tyty']))
   </PRE>
-<DIV onclick=jc.outClick(this) id=out_Groups class="OUTPUT   SUCCESS">
+<DIV onclick=jc.outClick(this) id=out_Groups class="OUTPUT SUCCESS">
 <P>
 <H3>[object Groups]</H3>
 <DIV class=INSPECT>
@@ -686,7 +669,7 @@ output
 <TH vAlign=top>1</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE></DIV>
 <P></P></DIV>
-<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_Groups class="TEST    SUCCESS">
+<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_Groups class="TEST  SUCCESS">
 <P>
 <H3>[object Groups]</H3>
 <DIV class=INSPECT>
@@ -772,9 +755,9 @@ output
 .p(p4 = p1.max(p3))
 .p(p5 = p2.sum(p4))
   </PRE>
-<DIV onclick=jc.outClick(this) id=out_Bom_PlanOfNeed class="OUTPUT   SUCCESS">
+<DIV onclick=jc.outClick(this) id=out_Bom_PlanOfNeed class="OUTPUT SUCCESS">
 <P>
-<DIV><VAR>plan of need</VAR>
+<DIV><VAR>plan of need</VAR> 
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -792,7 +775,7 @@ output
 <TD>60</TD></TR></TBODY></TABLE></DIV>
 <P></P>
 <P>
-<DIV><VAR>plan of need</VAR>
+<DIV><VAR>plan of need</VAR> 
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -810,7 +793,7 @@ output
 <TD>160</TD></TR></TBODY></TABLE></DIV>
 <P></P>
 <P>
-<DIV><VAR>plan of need</VAR>
+<DIV><VAR>plan of need</VAR> 
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -832,7 +815,7 @@ output
 <TD>120</TD></TR></TBODY></TABLE></DIV>
 <P></P>
 <P>
-<DIV><VAR>plan of need</VAR>
+<DIV><VAR>plan of need</VAR> 
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -854,7 +837,7 @@ output
 <TD>120</TD></TR></TBODY></TABLE></DIV>
 <P></P>
 <P>
-<DIV><VAR>plan of need</VAR>
+<DIV><VAR>plan of need</VAR> 
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -879,7 +862,7 @@ output
 <TD>60</TD>
 <TD>280</TD></TR></TBODY></TABLE></DIV>
 <P></P></DIV>
-<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_Bom_PlanOfNeed class="TEST    SUCCESS">
+<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_Bom_PlanOfNeed class="TEST  SUCCESS">
 <P>
 <DIV><VAR>plan of need</VAR> 
 <TABLE border=1>
@@ -1007,14 +990,14 @@ output
 .updateScenarii()
 product1.parts['OS frame'].code().compile().computeNeeds()
   </PRE>
-<DIV onclick=jc.outClick(this) id=out0502 class="OUTPUT   SUCCESS">
-<DIV class=TRACE>22 traces:
+<DIV onclick=jc.outClick(this) id=out0502 class="OUTPUT SUCCESS">
+<DIV class=TRACE>22 traces: 
 <TABLE class=DEBUG>
 <TBODY>
 <TR>
 <TD class=TRACE>computeNeeds</TD></TR>
 <TR>
-<TD class=TRACE>scenario
+<TD class=TRACE>scenario 
 <DIV class=INSPECT>
 <TABLE class=INSPECT>
 <TBODY>
@@ -1025,7 +1008,7 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TH vAlign=top>width_210</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>4</TD></TR></TBODY></TABLE></DIV></TD></TR>
 <TR>
-<TD class=TRACE>scenario
+<TD class=TRACE>scenario 
 <DIV class=INSPECT>
 <TABLE class=INSPECT>
 <TBODY>
@@ -1087,7 +1070,7 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TH vAlign=top>neededAt</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></DIV></TD></TR>
 <TR>
-<TD class=TRACE>scenario
+<TD class=TRACE>scenario 
 <DIV class=INSPECT>
 <TABLE class=INSPECT>
 <TBODY>
@@ -1150,7 +1133,7 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></DIV></TD></TR>
 <TR>
 <TD class=TRACE>
-<DIV><VAR>plan of need</VAR>
+<DIV><VAR>plan of need</VAR> 
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -1163,7 +1146,7 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD>12</TD>
 <TD>12</TD></TR></TBODY></TABLE></DIV></TD></TR>
 <TR>
-<TD class=TRACE>scenario
+<TD class=TRACE>scenario 
 <DIV class=INSPECT>
 <TABLE class=INSPECT>
 <TBODY>
@@ -1174,7 +1157,7 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TH vAlign=top>width_170</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV></TD></TR>
 <TR>
-<TD class=TRACE>scenario
+<TD class=TRACE>scenario 
 <DIV class=INSPECT>
 <TABLE class=INSPECT>
 <TBODY>
@@ -1236,7 +1219,7 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TH vAlign=top>neededAt</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></DIV></TD></TR>
 <TR>
-<TD class=TRACE>scenario
+<TD class=TRACE>scenario 
 <DIV class=INSPECT>
 <TABLE class=INSPECT>
 <TBODY>
@@ -1299,7 +1282,7 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></DIV></TD></TR>
 <TR>
 <TD class=TRACE>
-<DIV><VAR>plan of need</VAR>
+<DIV><VAR>plan of need</VAR> 
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -1313,7 +1296,7 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD>12</TD></TR></TBODY></TABLE></DIV></TD></TR>
 <TR>
 <TD class=TRACE>
-<DIV><VAR>plan of need</VAR>
+<DIV><VAR>plan of need</VAR> 
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -1325,7 +1308,7 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD>0</TD>
 <TD>12</TD>
 <TD>12</TD></TR></TBODY></TABLE></DIV></TD></TR></TBODY></TABLE></DIV>
-<DIV><VAR>OS frame</VAR>
+<DIV><VAR>OS frame</VAR> 
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -1361,7 +1344,7 @@ product1.parts['OS frame'].code().compile().computeNeeds()
     });
   });
 }</PRE>
-<DIV><VAR>plan of need</VAR>
+<DIV><VAR>plan of need</VAR> 
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -1378,6 +1361,10 @@ function test() {};
 var out = 'toto';
 'ok'
   </PRE>
-<DIV onclick=jc.outClick(this) id=out_NRT0001 class="OUTPUT   SUCCESS">ok</DIV>
-<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_NRT0001 class="TEST   SUCCESS">ok</DIV>
-<DIV><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON><BUTTON onclick=;>^ new richtext ^</BUTTON> </DIV></HTA:APPLICATION></BODY></HTML>
+<DIV onclick=jc.outClick(this) id=out_NRT0001 class="OUTPUT SUCCESS">ok</DIV>
+<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_NRT0001 class="TEST SUCCESS">ok</DIV>
+<DIV>
+<BUTTON onclick=jc.insertNewCodeBlock(this.parent);>^ new code ^</BUTTON><BUTTON onclick=;>^ new richtext ^</BUTTON>
+</DIV>
+
+</HTA:APPLICATION></BODY></HTML>
