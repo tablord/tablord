@@ -13,7 +13,7 @@
 </HEAD>
 <BODY designMode="on">
 <H1>basics</H1>
-<DIV id=localToolBar class="       "><SPAN id=codeId>code_basics01</SPAN> <INPUT onclick="$('.CODE').toggleClass('HIDDEN',this.checked);this.scrollIntoView();" type=checkbox>hide codes</INPUT> <INPUT onclick="$('.TEST').toggleClass('HIDDEN',this.checked);" type=checkbox>hide tests</INPUT> <INPUT onclick="$('.TRACE').toggleClass('HIDDEN',this.checked);" type=checkbox>hide traces</INPUT><BUTTON onclick=jc.showOutputHtml(this);>show output html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this);>copy output to test</BUTTON><BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON><BUTTON onclick=jc.execAutoExec();>run</BUTTON><BUTTON onclick=jc.execAll();>run all</BUTTON><BUTTON onclick=jc.save();>save</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>^ new code ^</BUTTON><BUTTON onclick=;>^ new richtext ^</BUTTON> </DIV>
+<DIV id=localToolBar></DIV>
 <DIV onclick=jc.codeClick(this); id=code_basics01 class=CODE contentEditable=true>3+5</DIV>
 <DIV onclick=jc.outClick(this) id=out_basics01 class="OUTPUT    SUCCESS">8</DIV>
 <DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_basics01 class="TEST    SUCCESS">8</DIV>
@@ -21,7 +21,7 @@
 .inspect(a={one:1,two:2,three:3},b=jc.copy(a))
 .inspect(b.one='un',a,b)
 </P></PRE>
-<DIV onclick=jc.outClick(this) id=out_ext01 class="OUTPUT     SUCCESS">
+<DIV onclick="jc.outClick(this)" id=out_ext01 class="OUTPUT     SUCCESS">
 <DIV class=INSPECT>
 <TABLE class=INSPECT>
 <TBODY>

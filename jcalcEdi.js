@@ -133,7 +133,7 @@
     return new jc.Inspector(obj,name);
   }
 
-  // helpers ///////////////////////////////////////////////////////////
+  // general purpose helpers ////////////////////////////////////////////
   jc.copy = function(obj) {
     // makes a copy of obj this version only copies the first level
     // does not copy any inheritance (result is an Object instance)
@@ -158,6 +158,31 @@
                    .replace(/\n/g,"\\n<br>");
   }
 
+
+  jc.trimHtml = function(html) {
+  // suppress all unsignificant blanks and non visible char
+    return html.replace(/[ \t\r\n]+/g,' ').replace(/> /,'>').replace(/ </,'<');
+  }
+
+
+  jc.help = function(func) {
+  // returns the signature of the function and the first comment in a pretty html 
+  // - func: the function to be inspected
+    var source = func.toString().split('\n');
+    var comments = []
+    var signature = source[0].match(/(function.*\))/)[0];
+    for (var i=1; i<source.length; i++) {
+      var comment = source[i].match(/^\s*\/\/(.*)$/);
+      if (comment && (comment.length ==2)) {
+        comments.push(comment[1]);
+      }
+      else break;
+    }
+    return '<b>'+signature+'</b><br>'+comments.join('<br>');
+  }
+  
+  // EDI ///////////////////////////////////////////////////////////////////////////////
+
   jc.findNextBlockNumber = function() {
     $('.CODE').each(function(i,e) {
       var n = Number(e.id.slice(4));
@@ -181,11 +206,6 @@
     return res;
   }
 
-  jc.trimHtml = function(html) {
-  // suppress all unsignificant blanks and non visible char
-    return html.replace(/[ \t\r\n]+/g,' ').replace(/> /,'>').replace(/ </,'<');
-  }
-
   jc.outputElement = function(element) {
     // return the output element associated with element
     return window.document.getElementById(element.id.replace(/code/,"out"));
@@ -196,6 +216,24 @@
     return window.document.getElementById(element.id.replace(/code/,"test"));
   }
 
+  jc.initLocalToolBar = function() {
+    jc.localToolBar = $('#localToolBar').addClass('HIDDEN')[0];  // start with localToolBar hidden so that its position is irrelevent
+    jc.localToolBar.innerHTML = 
+      '<SPAN id=codeId>code_basics01</SPAN>'+
+      '<INPUT onclick="$(\'.CODE\').toggleClass(\'HIDDEN\',this.checked);this.scrollIntoView();" type=checkbox>hide codes</INPUT>'+
+      '<INPUT onclick="$(\'.DELETED\').toggleClass(\'HIDDEN\',this.checked);this.scrollIntoView();" type=checkbox>hide deleted</INPUT>'+
+      '<INPUT onclick="$(\'.TEST\').toggleClass(\'HIDDEN\',this.checked);" type=checkbox>hide tests</INPUT>'+
+      '<INPUT onclick="$(\'.TRACE\').toggleClass(\'HIDDEN\',this.checked);" type=checkbox>hide traces</INPUT>'+
+      '<BUTTON onclick=jc.showOutputHtml(this);>show output html</BUTTON>'+
+      '<BUTTON onclick=jc.copyOutputToTest(this);>copy output to test</BUTTON>'+
+      '<BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON>'+
+      '<BUTTON onclick=jc.execAutoExec();>run</BUTTON>'+
+      '<BUTTON onclick=jc.execAll();>run all</BUTTON>'+
+      '<BUTTON onclick=jc.save();>save</BUTTON>'+
+      '<BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>^ new code ^</BUTTON>'+
+      '<BUTTON onclick=;>^ new richtext ^</BUTTON>'+
+      '<BUTTON onclick=jc.deleteBlock(jc.currentElement);>V delete V</BUTTON>'; 
+  }
 
   jc.save = function() {
     // save the sheet under fileName or the current name if fileName is not specified
@@ -217,6 +255,13 @@ a(fileName+' saved');
       test.innerHTML = out.innerHTML;
       $(test).removeClass('ERROR').addClass('SUCCESS');
     }
+  }
+
+  jc.deleteBlock = function(codeElement) {
+    $(codeElement)
+    .add(jc.outputElement(codeElement))
+    .add(jc.testElement(codeElement))
+    .addClass('DELETED');
   }
 
   jc.insertNewCodeBlock = function(beforeThatElement) {
@@ -293,6 +338,8 @@ a(fileName+' saved');
     }
 
     //-------------
+    if ($(element).hasClass('DELETED')) return;
+
     jc.codeElementBeingExecuted = element; 
     var out  = jc.outputElement(element);
     var test = jc.testElement(element)
@@ -346,32 +393,15 @@ a(fileName+' saved');
   }
 
 
-  jc.help = function(func) {
-  // returns the signature of the function and the first comment in a pretty html 
-  // - func: the function to be inspected
-    var source = func.toString().split('\n');
-    var comments = []
-    var signature = source[0].match(/(function.*\))/)[0];
-    for (var i=1; i<source.length; i++) {
-      var comment = source[i].match(/^\s*\/\/(.*)$/);
-      if (comment && (comment.length ==2)) {
-        comments.push(comment[1]);
-      }
-      else break;
-    }
-    return '<b>'+signature+'</b><br>'+comments.join('<br>');
-  }
-  
-
 
   window.attachEvent('onload',function () {
     jc.debug = window.document.getElementById('debug');
-    jc.localToolBar = $('#localToolBar').addClass('HIDDEN')[0];  // start with localToolBar hidden so that its position is irrelevent
     $('.CODE').bind("keypress",undefined,jc.editorKeyPress);
     $('.RICHTEXT').bind("keypress",undefined,jc.richTextKeyPress);
     $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR');
     $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
     jc.findNextBlockNumber();
+    jc.initLocalToolBar();
   });  
   
   window.onerror = jc.errorHandler;
