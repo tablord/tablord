@@ -39,21 +39,24 @@ JQuery.prototype.hasClass = function(className){
 JQuery.prototype.addClass = function(className) {
   return this.toggleClass(className,true);
 }
+
 JQuery.prototype.removeClass = function(className) {
   return this.toggleClass(className,false);
 }
 
 JQuery.prototype.toggleClass = function(className,add) { //limited version: only on class at a time
   this.each(function(i,e) {
-    if ((add===true) || ((add !== false) && ((e.className == undefined) || (e.className.search('\\b'+className+'\\b') == -1)))) {
-      e.className += ' '+className;
-    }
-    else {
-      e.className = e.className.replace(new RegExp('\\b'+className+'\\b','g'),'');
+    if (e.className == undefined) { e.className = className; return;};
+    var classMissing = (e.className.search(new RegExp('\\b'+className+'\\b')) == -1);
+    if ((add!==false) && classMissing) {e.className += ' '+className; return};  //if add & missing   OR  add==undefined & missing
+    if ((add===false) || ((add===undefined) && !classMissing)) {
+      e.className = e.className.replace(new RegExp('\\b'+className+'\\b','g'),'').replace(/^\s+/,'').replace(/\s+$/,'').replace(/\s+/g,' ');
     }
   });
   return this;
 }
+
+// selection methods ///////////
 
 JQuery.prototype.addClassSel = function(className,context) {
   for (var i = 0; i< context.children.length; i++) {
