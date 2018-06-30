@@ -6,16 +6,13 @@
 </HEAD>
 <BODY designMode="on">
 <H1>basics</H1>
-<DIV id=TEST style="border: 1px green solid;">coucou<SPAN contentEditable=true style="background-color: green;">coucou</SPAN></DIV>
+<DIV id=TEST style="border: 1px green solid;">coucou</DIV>
 <DIV id=OUTPUT onclick="$('#OUTPUT')[0].innerHTML=jc.toHtml($('#TEST')[0].innerHTML);">no output</DIV>
-
-<TEXTAREA>my text</TEXTAREA>
-
 <SCRIPT>
 
 window.pell.init({
   element: window.document.getElementById('TEST'),
-  onChange: function(html){window.document.getElementById('OUTPUT').innerHTML = html}
+  onChange: function(html){window.document.getElementById('TEST').innerHTML = html}
 });
 
 

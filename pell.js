@@ -42,8 +42,6 @@
     return window.document.execCommand(command, false, value);
   };
 
-  var formatCode = function formatCode() {
-
   var defaultActions = {
     bold: {
       icon:  '<b>B</b>',
@@ -89,7 +87,7 @@
       icon: '<b>H1</b>',
       title: 'Heading 1',
       result: function result() {
-        return exec(formatBlock, '<h1  class=toto>');
+        return exec(formatBlock, '<h1>');
       }
     },
     heading2: {
@@ -104,13 +102,6 @@
       title: 'Paragraph',
       result: function result() {
         return exec(formatBlock, '<p>');
-      }
-    },
-    div: {
-      icon: '&#8220;&#8221;',
-      title: 'div',
-      result: function result() {
-        return exec(formatBlock, '<div>');
       }
     },
     olist: {
@@ -156,26 +147,7 @@
         var url = window.prompt('Enter the image URL');
         if (url) exec('insertImage',url);
       }
-    },
-    table: {
-      name: 'table',
-      icon: 't',
-      title: 'table',
-      result: function() {exec('insertHTML','<TABLE><TBODY><TR><TD>toto</TD><TD>tutu</TD></TR><TR><TD>titi</TD><TD>tyty</TD></TR></TBODY></TABLE>');}
-    },
-    text: {
-      name: 'text',
-      icon: 'txt',
-      title: 'text',
-      result: function() {exec('insertText','coucou');}
-    },
-    encode: {
-      name: 'encode',
-      icon: 'cde',
-      title: 'encode',
-      result: function() {content.innerHTML = 'truc'; return true}
     }
-
   };
 
   var defaultClasses = {
@@ -207,23 +179,23 @@
     var content = settings.element.content = createElement('div');
     content.contentEditable = true;
     content.className = classes.content;
-
-    content.oninput = function(_ref) {
+    content.onchange = function(_ref) {
+a('onchange',window.event.srcElement,ref);
       var firstChild = window.event.srcElement.firstChild;  //***** 201  target is  srcElement is IE7
       if (firstChild && firstChild.nodeType === 3) exec ( formatBlock, '<'+defaultParagraphSeparator+'>');
       else if (content.innerHTML === '<br>') content.innerHTML = '';
       settings.onChange(content.innerHTML);
     };
-
     content.onkeydown = function(event) {
       event = event || window.event;    //**** for IE 7
-      var h = event.srcElement.innerHTML;
-//$('#OUTPUT')[0].innerHTML=h+'<br/>'+queryCommandValue('bold')+'<hr/>onkeydown<br/>'+inspect(event).span()+inspect(event.boundElements).span();
+//a('onkeydown',event);
       if (event.keyCode === 9) {     //*** key not supported by IE7   tab = 9
         event.returnValue = false;    //*** preventDefault() is returnValue in IE7
       }
       else if (event.keyCode === 13 && queryCommandValue(formatBlock) === 'blockquote') {  //enter = 13
+a('enter');
         window.setTimeout(function() {
+a('timeout');
           return exec(formatBlock,'<'+defaultParagraphSeparator+'>');
         },0);
       }
@@ -240,14 +212,26 @@
         return action.result() && content.focus();
       };
       if (action.state) {
-        var handler = function handler() {$(button).toggleClass(classes.selected,action.state());return true;}  //*** attention valeur retour
+        var handler = function handler() {return $(button).toggleClass(classes.selected,action.state());}  //*** attention valeur retour
         addEventListener(content, 'keyup', handler);   //** à adapter
         addEventListener(content, 'mouseup', handler);
         addEventListener(button, 'click', handler);
       }
       appendChild(actionbar,button);
     }); 
+////
+      var button = createElement('button');
+      button.className = classes.button;
+      button.innerHTML = 'cde';
+      button.title = 'encode';
+      button.setAttribute('type','button');
+      button.onclick  = function() {
+        content.innerHTML = content.innerHTML.replace(/\&lt;\$(.*)\$\&gt;/g,'<SPAN class=CODE>&nbsp;$1</SPAN>');
+        content.focus();
+      };
+      appendChild(actionbar,button);
       
+////
     if (settings.styleWithCSS) exec('styleWithCSS');
     exec(defaultParagraphSeparatorString,defaultParagraphSeparator);
     return settings.element;
