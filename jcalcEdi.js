@@ -428,8 +428,13 @@ a(fileName+' saved');
   }
 
   jc.reformatRichText = function(element) {
-    element.innerHTML = element.innerHTML.replace(/\&lt;\$(.*)\$\&gt;/g,'<SPAN class=CODE id=code'+ jc.nextBlockNumber+'>$1</SPAN><SPAN class=OUTPUT id=out'+ jc.nextBlockNumber+'>no output</SPAN>');
-    jc.nextBlockNumber++;
+    var mark = /\{\{(.*?)\}\}/;
+    var h = element.innerHTML;
+    while (h.search(mark)!=-1) {
+      h = h.replace(mark,'<SPAN class="CODE AUTOEXEC" id=code'+ jc.nextBlockNumber+' style="DISPLAY: none;">$1</SPAN><SPAN class=OUTPUT id=out'+ jc.nextBlockNumber+'>no output</SPAN>');
+      jc.nextBlockNumber++;
+    }
+    element.innerHTML = h;
   }
 
   jc.showOutputHtml = function(checkBox) {

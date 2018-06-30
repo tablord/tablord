@@ -1,4 +1,4 @@
-<HTML xmlns="http://www.w3.org/1999/xhtml" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION SINGLEINSTANCE="yes" SCROLL="yes" APPLICATIONNAME="Operating System Version par exemple"><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
+<HTML xmlns="http://www.w3.org/1999/xhtml" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="Operating System Version par exemple" SCROLL="yes" SINGLEINSTANCE="yes"><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
 <SCRIPT src="jcalcEdi.js"></SCRIPT>
 
 <SCRIPT src="jquery.js"></SCRIPT>
@@ -22,6 +22,7 @@
 </P></PRE>
 <DIV onclick=jc.outClick(this) id=out_ext01 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -32,8 +33,9 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR>
 <TR>
 <TH vAlign=top>three</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV>
+<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></FIELDSET></DIV>
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -44,8 +46,9 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR>
 <TR>
 <TH vAlign=top>three</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV><SPAN class=INSPECT>un</SPAN>
+<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></FIELDSET></DIV><SPAN class=INSPECT>un</SPAN>
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -56,8 +59,9 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR>
 <TR>
 <TH vAlign=top>three</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV>
+<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></FIELDSET></DIV>
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -68,9 +72,10 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR>
 <TR>
 <TH vAlign=top>three</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV></DIV>
+<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
 <DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_ext01 class="TEST SUCCESS">
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -81,8 +86,9 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR>
 <TR>
 <TH vAlign=top>three</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV>
+<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></FIELDSET></DIV>
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -93,8 +99,9 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR>
 <TR>
 <TH vAlign=top>three</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV><SPAN class=INSPECT>un</SPAN> 
+<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></FIELDSET></DIV><SPAN class=INSPECT>un</SPAN> 
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -105,8 +112,9 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR>
 <TR>
 <TH vAlign=top>three</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV>
+<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></FIELDSET></DIV>
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -117,7 +125,7 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR>
 <TR>
 <TH vAlign=top>three</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV></DIV>
+<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
 <H1>jCalc lib</H1><PRE onclick=jc.codeClick(this); id=code0102 class=CODE contentEditable=true>v("hauteurTotale$mm",f("hauteur$mm+5"));
 v("hauteur$mm",3);
 hauteurTotale$mm
@@ -231,8 +239,7 @@ hauteurTotale$mm
 <H1>Titre 2</H1></DIV>
 <H1>JQuery</H1><PRE onclick=jc.codeClick(this); id=code1113 class=CODE contentEditable=true><P>$('#code1113')</P></PRE>
 <DIV onclick=jc.outClick(this) id=out1113 class="OUTPUT OLD SUCCESS">[jQuery of 1 elements]<BR><CODE class=INSPECTHTML>&lt;PRE onclick=jc.codeClick(this); id=code1113 class=CODE contentEditable=true&gt;&lt;P&gt;$('#code1113')&lt;/P&gt;&lt;/PRE&gt;</CODE></DIV>
-<DIV id=test1113 class="TEST SUCCESS">[jQuery of 1 elements]<BR><CODE class=INSPECTHTML>&lt;PRE onclick=jc.codeClick(this); id=code1113 class=CODE contentEditable=true&gt;&lt;P&gt;$('#code1113')&lt;/P&gt;&lt;/PRE&gt;</CODE></DIV>
-<DIV id=localToolBar><SPAN id=codeId>code0201</SPAN><INPUT onclick="$('.CODE').toggleClass('HIDDEN',this.checked);this.scrollIntoView();" type=checkbox>hide codes</INPUT><INPUT onclick="$('.DELETED').toggleClass('HIDDEN',this.checked);this.scrollIntoView();" type=checkbox>hide deleted</INPUT><INPUT onclick="$('.TEST').toggleClass('HIDDEN',this.checked);" type=checkbox>hide tests</INPUT><INPUT onclick="$('.TRACE').toggleClass('HIDDEN',this.checked);" type=checkbox>hide traces</INPUT><BUTTON onclick=jc.showOutputHtml(this);>show output html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this);>copy output to test</BUTTON><BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON><BUTTON onclick=jc.execAutoExec();>run</BUTTON><BUTTON onclick=jc.execAll();>run all</BUTTON><BUTTON onclick=jc.save();>save</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>^ new code ^</BUTTON><BUTTON onclick=;>^ new richtext ^</BUTTON><BUTTON onclick=jc.deleteBlock(jc.currentElement);>V delete V</BUTTON></DIV><PRE onclick=jc.codeClick(this); id=code0201 class=CODE contentEditable=true><P>output</P><P>.p($('#code0201').addClass('TOTO').addClass('TUTU').addClass('TOTO'))</P><P>.p($('#code0201').removeClass('TOTO').removeClass('TITI'))</P><P>.p($('#code0201').removeClass('TUTU'))</P></PRE>
+<DIV id=test1113 class="TEST SUCCESS">[jQuery of 1 elements]<BR><CODE class=INSPECTHTML>&lt;PRE onclick=jc.codeClick(this); id=code1113 class=CODE contentEditable=true&gt;&lt;P&gt;$('#code1113')&lt;/P&gt;&lt;/PRE&gt;</CODE></DIV><PRE onclick=jc.codeClick(this); id=code0201 class=CODE contentEditable=true><P>output</P><P>.p($('#code0201').addClass('TOTO').addClass('TUTU').addClass('TOTO'))</P><P>.p($('#code0201').removeClass('TOTO').removeClass('TITI'))</P><P>.p($('#code0201').removeClass('TUTU'))</P></PRE>
 <DIV onclick=jc.outClick(this) id=out0201 class="OUTPUT SUCCESS">
 <P>[jQuery of 1 elements]<BR><CODE class=INSPECTHTML>&lt;PRE onclick=jc.codeClick(this); id=code0201 class="CODE TOTO TUTU" contentEditable=true&gt;&lt;P&gt;output&lt;/P&gt;&lt;P&gt;.p($('#code0201').addClass('TOTO').addClass('TUTU').addClass('TOTO'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TOTO').removeClass('TITI'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TUTU'))&lt;/P&gt;&lt;/PRE&gt;</CODE></P>
 <P>[jQuery of 1 elements]<BR><CODE class=INSPECTHTML>&lt;PRE onclick=jc.codeClick(this); id=code0201 class="CODE TUTU" contentEditable=true&gt;&lt;P&gt;output&lt;/P&gt;&lt;P&gt;.p($('#code0201').addClass('TOTO').addClass('TUTU').addClass('TOTO'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TOTO').removeClass('TITI'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TUTU'))&lt;/P&gt;&lt;/PRE&gt;</CODE></P>
@@ -514,9 +521,13 @@ stateMachine('myStateMachine')
 <P></P>
 <P><VAR>count</VAR>= <SPAN class=VALUE>1</SPAN></P></DIV>
 <H1>RichText</H1>
-<DIV onclick=jc.richTextClick(this) id=rich0000 class=RICHTEXT>
+<DIV id=localToolBar><SPAN id=codeId>rich0000</SPAN><INPUT onclick="$('.CODE').toggleClass('HIDDEN',this.checked);this.scrollIntoView();" type=checkbox>hide codes</INPUT><INPUT onclick="$('.DELETED').toggleClass('HIDDEN',this.checked);this.scrollIntoView();" type=checkbox>hide deleted</INPUT><INPUT onclick="$('.TEST').toggleClass('HIDDEN',this.checked);" type=checkbox>hide tests</INPUT><INPUT onclick="$('.TRACE').toggleClass('HIDDEN',this.checked);" type=checkbox>hide traces</INPUT><BUTTON onclick=jc.showOutputHtml(this);>show output html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this);>copy output to test</BUTTON><BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON><BUTTON onclick=jc.execAutoExec();>run</BUTTON><BUTTON onclick=jc.execAll();>run all</BUTTON><BUTTON onclick=jc.save();>save</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>^ new code ^</BUTTON><BUTTON onclick=;>^ new richtext ^</BUTTON><BUTTON onclick=jc.deleteBlock(jc.currentElement);>V delete V</BUTTON>
+<DIV class=RICHEDITTOOLBAR><BUTTON onclick=jc.richedit.bold();><B>B</B></BUTTON><BUTTON onclick=jc.richedit.italic();><I>i</I></BUTTON><BUTTON onclick=jc.richedit.underline();><U>U</U></BUTTON><BUTTON onclick=jc.richedit.strike();><STRIKE>S</STRIKE></BUTTON><BUTTON onclick=jc.richedit.h1();><B>H1</B></BUTTON><BUTTON onclick=jc.richedit.h2();><B>H2</B></BUTTON><BUTTON onclick=jc.richedit.div();>div</BUTTON><BUTTON onclick=jc.richedit.p();>¶</BUTTON><BUTTON onclick=jc.richedit.ol();>#</BUTTON><BUTTON onclick=jc.richedit.ul();>•</BUTTON><BUTTON onclick=jc.richedit.pre();>{}</BUTTON></DIV></DIV>
+<DIV onclick=jc.richTextClick(this) id=rich0000 class=RICHTEXT contentEditable=false>
 <H1>titre</H1>
-<P>nomal §<SPAN id=code1111 class="CODE AUTOEXEC" style="DISPLAY: none">myTable</SPAN><SPAN id=out1111 class="OUTPUT SUCCESS" contentEditable=false>
+<P>la variable <SPAN id=code1114 class="CODE AUTOEXEC" style="DISPLAY: none">hauteur$mm</SPAN><SPAN id=out1114 class="OUTPUT SUCCESS"><VAR>hauteur</VAR>= <SPAN class=VALUE>3</SPAN><SPAN class=UNIT>mm</SPAN></SPAN> est importante, allez savoir <STRONG>pourquoi?</STRONG> tout comme <SPAN id=code1115 class="CODE AUTOEXEC" style="DISPLAY: none">v('PI',Math.PI)</SPAN><SPAN id=out1115 class="OUTPUT SUCCESS"><VAR>PI</VAR>= <SPAN class=VALUE>3.141592653589793</SPAN></SPAN>&nbsp; dfsadf <SPAN id=code1118 class="CODE AUTOEXEC" style="DISPLAY: none">PI.valueOf()</SPAN><SPAN id=out1118 class="OUTPUT SUCCESS">3.141592653589793</SPAN></P>
+<P>nomal §</P>
+<P><SPAN id=code1111 class="CODE AUTOEXEC" style="DISPLAY: none">myTable</SPAN><SPAN id=out1111 class="OUTPUT SUCCESS" contentEditable=false>
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -534,14 +545,30 @@ stateMachine('myStateMachine')
 <TH>apple</TH>
 <TD>250</TD>
 <TD>0.5</TD>
-<TD>125</TD></TR></TBODY></TABLE></SPAN>textNormal</P>
-<DIV id=code1112 class="CODE AUTOEXEC" style="DISPLAY: none">myStateMachine</DIV>
-<DIV id=out1112 class="OUTPUT SUCCESS">
-<DIV class=STATEMACHINE>myStateMachine
-<DIV class="SMSTATE SMCURRENTSTATE">state1<BR>run : <SPAN class=CODEVIEW>v("count",count+1)</SPAN>
-<DIV class=SMTRANSITION>count == 10 --&gt;state2</DIV></DIV>
-<DIV class=SMSTATE>state2<BR>run : <SPAN class=CODEVIEW>v("count",count-1)</SPAN>
-<DIV class=SMTRANSITION>count == 0 --&gt;state1</DIV></DIV></DIV></DIV></DIV>
+<TD>125</TD></TR></TBODY></TABLE></SPAN></P>
+<P>&nbsp;</P>
+<P>textNormal</P>
+<P>&nbsp;</P>
+<P>On peut du coup extraire comme on veut une ligne d'une table</P>
+<P><SPAN id=code1119 class="CODE AUTOEXEC" style="DISPLAY: none">myTable.orange</SPAN><SPAN id=out1119 class="OUTPUT SUCCESS">
+<TABLE border=1>
+<THEAD>
+<TR>
+<TH>_id</TH>
+<TH>quantity</TH>
+<TH>price</TH>
+<TH>amount</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TH>orange</TH>
+<TD>100</TD>
+<TD>0.7</TD>
+<TD>70</TD></TR></TBODY></TABLE></SPAN></P>
+<P>ou même d'une cellule <SPAN id=code1120 class="CODE AUTOEXEC" style="DISPLAY: none">myTable.orange.amount+0</SPAN><SPAN id=out1120 class="OUTPUT SUCCESS">70</SPAN>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></DIV>
 <H1>BOM</H1><PRE onclick=jc.codeClick(this); id=code_Permutation class=CODE contentEditable=true>p = permutations(['A','B','C']);
 table().addRows(p);
   </PRE>
@@ -616,10 +643,10 @@ output
 .p(g.regroup(['titi','tyty']))
   </PRE>
 <DIV onclick=jc.outClick(this) id=out_Groups class="OUTPUT SUCCESS">
-<P>
-<H3>[object Groups]</H3>
+<P></P>
+<FIELDSET><LABEL>[object Groups]</LABEL>
 <DIV class=INSPECT>
-<H3>[object Object] names</H3>
+<FIELDSET><LEGEND>{} names</LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -627,9 +654,9 @@ output
 <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR>
 <TR>
 <TH vAlign=top>tutu</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR></TBODY></TABLE></DIV>
+<TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR></TBODY></TABLE></FIELDSET></DIV>
 <DIV class=INSPECT>
-<H3>[object Object] groups</H3>
+<FIELDSET><LEGEND>{} groups</LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -637,12 +664,12 @@ output
 <TD style="TEXT-ALIGN: left" vAlign=top>toto</TD></TR>
 <TR>
 <TH vAlign=top>1</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE></DIV>
+<TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE></FIELDSET></DIV></FIELDSET>
 <P></P>
-<P>
-<H3>[object Groups]</H3>
+<P></P>
+<FIELDSET><LABEL>[object Groups]</LABEL>
 <DIV class=INSPECT>
-<H3>[object Object] names</H3>
+<FIELDSET><LEGEND>{} names</LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -653,9 +680,9 @@ output
 <TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR>
 <TR>
 <TH vAlign=top>titi</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></DIV>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></FIELDSET></DIV>
 <DIV class=INSPECT>
-<H3>[object Object] groups</H3>
+<FIELDSET><LEGEND>{} groups</LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -663,12 +690,12 @@ output
 <TD style="TEXT-ALIGN: left" vAlign=top>toto,titi</TD></TR>
 <TR>
 <TH vAlign=top>1</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE></DIV>
+<TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE></FIELDSET></DIV></FIELDSET>
 <P></P>
-<P>
-<H3>[object Groups]</H3>
+<P></P>
+<FIELDSET><LABEL>[object Groups]</LABEL>
 <DIV class=INSPECT>
-<H3>[object Object] names</H3>
+<FIELDSET><LEGEND>{} names</LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -682,9 +709,9 @@ output
 <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR>
 <TR>
 <TH vAlign=top>tyty</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></DIV>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></FIELDSET></DIV>
 <DIV class=INSPECT>
-<H3>[object Object] groups</H3>
+<FIELDSET><LEGEND>{} groups</LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -692,13 +719,13 @@ output
 <TD style="TEXT-ALIGN: left" vAlign=top>toto,titi,tyty</TD></TR>
 <TR>
 <TH vAlign=top>1</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE></DIV>
+<TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE></FIELDSET></DIV></FIELDSET>
 <P></P></DIV>
 <DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_Groups class="TEST SUCCESS">
-<P>
-<H3>[object Groups]</H3>
+<P></P>
+<FIELDSET><LABEL>[object Groups]</LABEL> 
 <DIV class=INSPECT>
-<H3>[object Object] names</H3>
+<FIELDSET><LEGEND>{} names</LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -706,9 +733,9 @@ output
 <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR>
 <TR>
 <TH vAlign=top>tutu</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR></TBODY></TABLE></DIV>
+<TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR></TBODY></TABLE></FIELDSET></DIV>
 <DIV class=INSPECT>
-<H3>[object Object] groups</H3>
+<FIELDSET><LEGEND>{} groups</LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -716,12 +743,12 @@ output
 <TD style="TEXT-ALIGN: left" vAlign=top>toto</TD></TR>
 <TR>
 <TH vAlign=top>1</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE></DIV>
+<TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE></FIELDSET></DIV></FIELDSET> 
 <P></P>
-<P>
-<H3>[object Groups]</H3>
+<P></P>
+<FIELDSET><LABEL>[object Groups]</LABEL> 
 <DIV class=INSPECT>
-<H3>[object Object] names</H3>
+<FIELDSET><LEGEND>{} names</LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -732,9 +759,9 @@ output
 <TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR>
 <TR>
 <TH vAlign=top>titi</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></DIV>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></FIELDSET></DIV>
 <DIV class=INSPECT>
-<H3>[object Object] groups</H3>
+<FIELDSET><LEGEND>{} groups</LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -742,12 +769,12 @@ output
 <TD style="TEXT-ALIGN: left" vAlign=top>toto,titi</TD></TR>
 <TR>
 <TH vAlign=top>1</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE></DIV>
+<TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE></FIELDSET></DIV></FIELDSET> 
 <P></P>
-<P>
-<H3>[object Groups]</H3>
+<P></P>
+<FIELDSET><LABEL>[object Groups]</LABEL> 
 <DIV class=INSPECT>
-<H3>[object Object] names</H3>
+<FIELDSET><LEGEND>{} names</LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -761,9 +788,9 @@ output
 <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR>
 <TR>
 <TH vAlign=top>tyty</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></DIV>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></FIELDSET></DIV>
 <DIV class=INSPECT>
-<H3>[object Object] groups</H3>
+<FIELDSET><LEGEND>{} groups</LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -771,7 +798,7 @@ output
 <TD style="TEXT-ALIGN: left" vAlign=top>toto,titi,tyty</TD></TR>
 <TR>
 <TH vAlign=top>1</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE></DIV>
+<TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE></FIELDSET></DIV></FIELDSET> 
 <P></P></DIV><PRE onclick=jc.codeClick(this); id=code_Bom_PlanOfNeed class=CODE contentEditable=true>var p1,p2,p3,p4,p5; 
 output
 .p(p1 = (new PlanOfNeed()).add(0,20).add(3,10).add(0,30))
@@ -1024,6 +1051,7 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TR>
 <TD class=TRACE>scenario
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -1031,10 +1059,11 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD style="TEXT-ALIGN: left" vAlign=top>6</TD></TR>
 <TR>
 <TH vAlign=top>width_210</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>4</TD></TR></TBODY></TABLE></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>4</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TD class=TRACE>scenario
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -1042,10 +1071,11 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD style="TEXT-ALIGN: left" vAlign=top>10</TD></TR>
 <TR>
 <TH vAlign=top>setup_automatic</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TD class=TRACE>
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -1059,10 +1089,11 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD style="TEXT-ALIGN: left" vAlign=top>6</TD></TR>
 <TR>
 <TH vAlign=top>neededAt</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TD class=TRACE>
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -1076,10 +1107,11 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD style="TEXT-ALIGN: left" vAlign=top>4</TD></TR>
 <TR>
 <TH vAlign=top>neededAt</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TD class=TRACE>
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -1093,10 +1125,11 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR>
 <TR>
 <TH vAlign=top>neededAt</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TD class=TRACE>scenario
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -1104,10 +1137,11 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD style="TEXT-ALIGN: left" vAlign=top>8</TD></TR>
 <TR>
 <TH vAlign=top>setup_manual</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR></TBODY></TABLE></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TD class=TRACE>
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -1121,10 +1155,11 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD style="TEXT-ALIGN: left" vAlign=top>6</TD></TR>
 <TR>
 <TH vAlign=top>neededAt</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TD class=TRACE>
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -1138,10 +1173,11 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR>
 <TR>
 <TH vAlign=top>neededAt</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TD class=TRACE>
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -1155,7 +1191,7 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD style="TEXT-ALIGN: left" vAlign=top>4</TD></TR>
 <TR>
 <TH vAlign=top>neededAt</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TD class=TRACE>
 <DIV><VAR>plan of need</VAR>
@@ -1173,6 +1209,7 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TR>
 <TD class=TRACE>scenario
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -1180,10 +1217,11 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD style="TEXT-ALIGN: left" vAlign=top>7</TD></TR>
 <TR>
 <TH vAlign=top>width_170</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TD class=TRACE>scenario
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -1191,10 +1229,11 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD style="TEXT-ALIGN: left" vAlign=top>10</TD></TR>
 <TR>
 <TH vAlign=top>setup_automatic</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TD class=TRACE>
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -1208,10 +1247,11 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR>
 <TR>
 <TH vAlign=top>neededAt</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TD class=TRACE>
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -1225,10 +1265,11 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD style="TEXT-ALIGN: left" vAlign=top>7</TD></TR>
 <TR>
 <TH vAlign=top>neededAt</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TD class=TRACE>
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -1242,10 +1283,11 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR>
 <TR>
 <TH vAlign=top>neededAt</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TD class=TRACE>scenario
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -1253,10 +1295,11 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD style="TEXT-ALIGN: left" vAlign=top>8</TD></TR>
 <TR>
 <TH vAlign=top>setup_manual</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR></TBODY></TABLE></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TD class=TRACE>
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -1270,10 +1313,11 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR>
 <TR>
 <TH vAlign=top>neededAt</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TD class=TRACE>
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -1287,10 +1331,11 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR>
 <TR>
 <TH vAlign=top>neededAt</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TD class=TRACE>
 <DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -1304,7 +1349,7 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD style="TEXT-ALIGN: left" vAlign=top>7</TD></TR>
 <TR>
 <TH vAlign=top>neededAt</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TD class=TRACE>
 <DIV><VAR>plan of need</VAR>
