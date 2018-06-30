@@ -106,9 +106,10 @@
   
 
   // Inspector ////////////////////////////////////////////////////////
-  jc.Inspector = function(obj,name) {
+  jc.Inspector = function(obj,name,depth) {
     this.obj = obj;
     this.name = name || '';
+    this.depth = depth || 1;
   }
   
   jc.Inspector.prototype.toString = function (){
@@ -117,20 +118,25 @@
     return r;
   }
 
-  jc.Inspector.prototype.span = function (){
+  jc.Inspector.prototype.span = function (depth){
+    depth = depth || this.depth;
     if (typeof this.obj == 'string') {
       return '<SPAN class=INSPECT>'+this.obj+'</SPAN>';
     }
-    var r = '<DIV class=INSPECT>'+(((this.obj != '[object Object]') || (this.name != ''))?'<h3>'+this.obj+' '+this.name+'</h3>':'');
+    var r = '<DIV class=INSPECT><fieldset><legend>'+((this.obj != '[object Object]')?this.obj:'{}')+' '+this.name+'</legend>';
     r += '<table class=INSPECT>';
     for (var k in this.obj) {
-      r += '<tr><th valign="top">'+k+'</th><td valign="top" style="text-align:left;">'+((typeof this.obj[k] == 'function')?jc.help(this.obj[k]):jc.toHtml(''+this.obj[k]))+'</td></tr>'; 
+      r += '<tr><th valign="top">'+k+'</th><td valign="top" style="text-align:left;">'+
+           (  (typeof this.obj[k] == 'function')?jc.help(this.obj[k]):
+                 ((depth == 1)?jc.toHtml(''+this.obj[k]):inspect(this.obj[k]).span(depth-1))
+           )
+          +'</td></tr>'; 
     };
-    return r+'</table></DIV>';
+    return r+'</table></fieldset></DIV>';
   }
 
-  function inspect(obj,name){
-    return new jc.Inspector(obj,name);
+  function inspect(obj,name,depth){
+    return new jc.Inspector(obj,name,depth);
   }
 
   // general purpose helpers ////////////////////////////////////////////
@@ -163,8 +169,8 @@
                    .replace(/</g,"&lt;")
                    .replace(/>/g,"&gt;")
                    .replace(/\\/g,'\\\\')
-                   .replace(/\r/g,'\\r')
-                   .replace(/\n/g,"\\n<br>");
+                   .replace(/\r/g,'')
+                   .replace(/\n/g,"<br>");
   }
 
 
@@ -191,6 +197,21 @@
   }
   
   // EDI ///////////////////////////////////////////////////////////////////////////////
+
+  jc.richedit = {
+    exec:      function(command,value) {window.document.execCommand(command,false,value || null)},
+    bold:      function(){jc.richedit.exec('bold')},
+    italic:    function(){jc.richedit.exec('italic')},
+    underline: function(){jc.richedit.exec('underline')},
+    strike:    function(){jc.richedit.exec('strikeThrough')},
+    h1:        function(){jc.richedit.exec('formatBlock','<h1>')},
+    h2:        function(){jc.richedit.exec('formatBlock','<h2>')},
+    div:       function(){jc.richedit.exec('formatBlock','<div>')},
+    p:         function(){jc.richedit.exec('formatBlock','<p>')},
+    ol:        function(){jc.richedit.exec('insertOrderedList')},
+    ul:        function(){jc.richedit.exec('insertUnorderedList')},
+    pre:       function(){jc.richedit.exec('formatBlock','<pre>')}
+  }
 
   jc.findNextBlockNumber = function() {
     $('.CODE').each(function(i,e) {
@@ -243,7 +264,24 @@
       '<BUTTON onclick=jc.save();>save</BUTTON>'+
       '<BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>^ new code ^</BUTTON>'+
       '<BUTTON onclick=;>^ new richtext ^</BUTTON>'+
-      '<BUTTON onclick=jc.deleteBlock(jc.currentElement);>V delete V</BUTTON>'; 
+      '<BUTTON onclick=jc.deleteBlock(jc.currentElement);>V delete V</BUTTON>'+
+      '<DIV class=RICHEDITTOOLBAR>'+
+        '<BUTTON onclick=jc.richedit.bold();><b>B</b></BUTTON>'+ 
+        '<BUTTON onclick=jc.richedit.italic();><i>i</i></BUTTON>'+ 
+        '<BUTTON onclick=jc.richedit.underline();><U>U</U></BUTTON>'+ 
+        '<BUTTON onclick=jc.richedit.strike();><strike>S</strike></BUTTON>'+ 
+        '<BUTTON onclick=jc.richedit.h1();><b>H1</b></BUTTON>'+ 
+        '<BUTTON onclick=jc.richedit.h2();><b>H2</b></BUTTON>'+ 
+        '<BUTTON onclick=jc.richedit.div();>div</BUTTON>'+ 
+        '<BUTTON onclick=jc.richedit.p();>&#182;</BUTTON>'+ 
+        '<BUTTON onclick=jc.richedit.ol();>#</BUTTON>'+ 
+        '<BUTTON onclick=jc.richedit.ul();>&#8226;</BUTTON>'+ 
+        '<BUTTON onclick=jc.richedit.pre();>{}</BUTTON>'+ 
+      '</DIV>';
+
+
+
+
   }
 
   jc.save = function() {
@@ -297,7 +335,6 @@ a(fileName+' saved');
     var element = event.srcElement;
     if (event.keyCode==10) {  //only IE
       jc.execAutoExec(); 
-      element.contentEditable=false;
     }
   }
 
@@ -351,6 +388,7 @@ a(fileName+' saved');
     //-------------
     if ($(element).hasClass('DELETED')) return;
 
+
     jc.codeElementBeingExecuted = element; 
     var out  = jc.outputElement(element);
     var test = jc.testElement(element)
@@ -378,11 +416,20 @@ a(fileName+' saved');
   }
 
   jc.execAutoExec = function() {
+    if ($(jc.currentElement).hasClass('RICHTEXT')) {
+      jc.currentElement.contentEditable=false;
+      jc.reformatRichText(jc.currentElement);
+    }
     $('.CODE').each(function(i,e) {
       if ($(e).hasClass('AUTOEXEC') || (e==jc.currentElement)) {
         jc.execCode(e);
       }
     })
+  }
+
+  jc.reformatRichText = function(element) {
+    element.innerHTML = element.innerHTML.replace(/\&lt;\$(.*)\$\&gt;/g,'<SPAN class=CODE id=code'+ jc.nextBlockNumber+'>$1</SPAN><SPAN class=OUTPUT id=out'+ jc.nextBlockNumber+'>no output</SPAN>');
+    jc.nextBlockNumber++;
   }
 
   jc.showOutputHtml = function(checkBox) {

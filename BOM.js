@@ -18,10 +18,10 @@ Bom.prototype.toString = function() {
 }
 
 Bom.prototype.span = function() {
-  var h = '<h3>BOM '+this._name+'</h3>';
+  var h = '<fieldset><legend>BOM '+this._name+'</legend>';
   h += '<p>condition:('+this.condition.join(' && ')+')</p>';
   h += this.lines.span({cols:{part:{head:1},quantity:1,neededAt:1}});
-  return h;
+  return h +'</fieldset>';
 }
 
 function bom(name,condition /*,lines*/) {
@@ -323,19 +323,19 @@ Product.prototype.toString = function() {
 
 Product.prototype.span = function() {
   var h='<h2>Product '+this._name+'</h2>';
-  h += '<h3>Variables</h3>';
+  h += '<fieldset><label>Variables</label>';
   for (var vn in this.variables) {
     h += this.variables[vn].span();
   }
-  h += '<h3>BOMs</h3>';
+  h += '</fieldset><fieldset><label>BOMs</label>';
   for (var i=0; i<this.boms.length; i++) {
     h += this.boms[i].span();
   }
-  h += '<h3>Parts</h3>';
+  h += '</fieldset><fieldset><label>Parts</label>';
   for (var part in this.parts) {
     h += this.parts[part].span();
   }
-  return h;
+  return h+'</fieldset>';
 }
 
 Product.prototype.setConstraints = function(scenario) {
@@ -534,7 +534,7 @@ Groups.prototype.toString = function() {
 }
 
 Groups.prototype.span = function() {
-  return '<h3>'+this.toString()+'</h3>'+inspect(this.names,'names').span()+inspect(this.groups,'groups').span();
+  return '<fieldset><label>'+this.toString()+'</label>'+inspect(this.names,'names').span()+inspect(this.groups,'groups').span()+'</fieldset>';
 }  
       
     
