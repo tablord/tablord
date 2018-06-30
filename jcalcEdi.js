@@ -134,6 +134,15 @@
   }
 
   // general purpose helpers ////////////////////////////////////////////
+
+  jc.keys = function(obj) {
+    var res = [];
+    for (var k in obj) {
+      res.push(k);
+    }
+    return res;
+  }
+
   jc.copy = function(obj) {
     // makes a copy of obj this version only copies the first level
     // does not copy any inheritance (result is an Object instance)
@@ -218,6 +227,8 @@
 
   jc.initLocalToolBar = function() {
     jc.localToolBar = $('#localToolBar').addClass('HIDDEN')[0];  // start with localToolBar hidden so that its position is irrelevent
+    if (jc.localToolBar == undefined) return;
+
     jc.localToolBar.innerHTML = 
       '<SPAN id=codeId>code_basics01</SPAN>'+
       '<INPUT onclick="$(\'.CODE\').toggleClass(\'HIDDEN\',this.checked);this.scrollIntoView();" type=checkbox>hide codes</INPUT>'+
@@ -395,7 +406,6 @@ a(fileName+' saved');
 
 
   window.attachEvent('onload',function () {
-    jc.debug = window.document.getElementById('debug');
     $('.CODE').bind("keypress",undefined,jc.editorKeyPress);
     $('.RICHTEXT').bind("keypress",undefined,jc.richTextKeyPress);
     $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR');

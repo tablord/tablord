@@ -46,7 +46,7 @@ dt {
 
 th {
   text-align: left;
-  valign: top;
+  text-valign: top;
 }
 
 td {

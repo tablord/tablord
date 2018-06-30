@@ -1,0 +1,24 @@
+<HTML xmlns="http://www.w3.org/1999/xhtml" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION SINGLEINSTANCE="yes" SCROLL="yes" APPLICATIONNAME="PELL test">
+<LINK rel=stylesheet type=text/css href="pell.css">
+<SCRIPT src="jcalcEdi.js"></SCRIPT>
+<SCRIPT src="jquery.js"></SCRIPT>
+<SCRIPT src="pell.js"></SCRIPT>
+</HEAD>
+<BODY designMode="on">
+<H1>basics</H1>
+<DIV id=TEST style="border: 1px green solid;">coucou<SPAN contentEditable=true style="background-color: green;">coucou</SPAN></DIV>
+<DIV id=OUTPUT onclick="$('#OUTPUT')[0].innerHTML=jc.toHtml($('#TEST')[0].innerHTML);">no output</DIV>
+
+<TEXTAREA>my text</TEXTAREA>
+
+<SCRIPT>
+
+window.pell.init({
+  element: window.document.getElementById('TEST'),
+  onChange: function(html){window.document.getElementById('OUTPUT').innerHTML = html}
+});
+
+
+</SCRIPT>
+</BODY>
+</HTML>

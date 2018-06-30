@@ -7,6 +7,8 @@ function JQuery() {
 
 // utility functions /////////////////////////////
 
+
+
 JQuery.each = function(o,func) {
   if (o.length != undefined) { //Array like
     for (var i=0; i<o.length; i++) {
@@ -19,6 +21,15 @@ JQuery.each = function(o,func) {
     }
   }
   return o;
+}
+
+JQuery.map = function (a,func) {
+  var res = [];
+  for (var i=0; i<a.length; i++) {
+    var r = func(a[i],i);
+    if (r != null) res.push(r);
+  }
+  return res;
 }
 
 // JQuery methodes //////////////////////////////
