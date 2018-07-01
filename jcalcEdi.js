@@ -198,8 +198,30 @@
   }
   
   // Table of Content //////////////////////////////////////////////////////////////////
-  
-
+  jc.tableOfContent = {
+    toc : [],
+    updateSections : function (element) {
+      var currentNumbers = [];
+      this.toc = [];
+      $('.SECTION').each(function (i,e) {
+        if ($(e).hasClass('DELETED')) return;
+        var title = e.firstChild;
+        var level = Number(title.tagName.slice(1))-1;
+        currentNumbers[level] = (currentNumbers[level] || 0)+1;
+        currentNumbers.length = level+1;
+        var number = currentNumbers.join('.');
+        var t = title.innerHTML.replace(/^[\d\.]*(\s|\&nbsp;)*/,'');
+        title.innerHTML = number+' '+t;
+        jc.tableOfContent.toc.push({number:number,title:t,sectionId:e.id});
+      });
+    },
+    span : function() {
+      var t = table();
+      t.addRows(this.toc);
+      return t.span();
+    }
+  };
+    
   // EDI ///////////////////////////////////////////////////////////////////////////////
 
   jc.richedit = {
@@ -339,11 +361,13 @@ a(fileName+' saved');
     }
   }
 
-  jc.deleteBlock = function(codeElement) {
-    $(codeElement)
-    .add(jc.outputElement(codeElement))
-    .add(jc.testElement(codeElement))
-    .addClass('DELETED');
+  jc.deleteBlock = function(element,del) {
+    del = del || !$(element).hasClass('DELETED');
+    $(element)
+    .add(jc.outputElement(element))
+    .add(jc.testElement(element))
+    .toggleClass('DELETED',del);
+    for (var i=0; i<element.children.length; i++) jc.deleteBlock(element.children[i],del);
   }
 
   jc.insertNewCodeBlock = function(beforeThatElement) {
@@ -390,6 +414,7 @@ a(fileName+' saved');
     newSection.appendChild(container);
     beforeThatElement.parentNode.insertBefore(newSection,beforeThatElement);
     jc.initBottomToolBar(container);
+    jc.tableOfContent.updateSections();
     jc.selectElement(newSection);
   }
 
@@ -488,10 +513,12 @@ a(fileName+' saved');
   }
 
   jc.execAll = function() {
+    jc.tableOfContent.updateSections();
     $('.CODE').each(function(i,e) {jc.execCode(e);});
   }
 
   jc.execAutoExec = function() {
+    jc.tableOfContent.updateSections();
     if ($(jc.selectedElement).hasClass('RICHTEXT')) {
       jc.selectedElement.contentEditable=false;
       jc.reformatRichText(jc.selectedElement);
