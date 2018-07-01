@@ -70,7 +70,14 @@ p {
   padding: 0px;
 }
 
-  
+.SELECTED {
+  border: 3px solid #909090;
+}
+
+.SELECTED * {
+  border: solid blue 0px;
+}
+
 .COLLAPSED {
   height: 100px;
   overflow: scroll;
@@ -96,7 +103,6 @@ p {
   font-family: courier;
   font-size: 14px;      
   background-color: f2f9a8;
-  border:solid yellow 1px;
   margin: 0px;
   padding: 0px;
 }
@@ -181,10 +187,16 @@ p {
   font-size: 8px;
 }
 
+.SECTION {
+  padding-left: 3px;
+  marging-bottom: 5px;
+}
+
 .SECTIONCONTAINER {
   padding-left: 25px;
   border-left: grey solid 1px;
 }
+
 
 #localToolBar,
 button {

@@ -1,7 +1,7 @@
   // global variables /////////////////////////////////////////////////
 
   var jc = {codeElementBeingExecuted:undefined,
-            currentElement:undefined,
+            selectedElement:undefined,
             output:undefined,
             codeElementBeingExecuted:undefined,
             traces:[],
@@ -295,7 +295,7 @@
         '<BUTTON onclick=jc.copyOutputToTest(this);>--&gt;test</BUTTON>'+
         '<BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON>'+
         '<BUTTON onclick=jc.save();>save</BUTTON>'+
-        '<BUTTON onclick=jc.deleteBlock(jc.currentElement);>V delete V</BUTTON>'+
+        '<BUTTON onclick=jc.deleteBlock(jc.selectedElement);>V delete V</BUTTON>'+
       '</DIV>';
   }
 
@@ -328,10 +328,10 @@ a(fileName+' saved');
   }
 
   jc.copyOutputToTest = function() {
-    var out = jc.outputElement(jc.currentElement);
-    var test = jc.testElement(jc.currentElement);
+    var out = jc.outputElement(jc.selectedElement);
+    var test = jc.testElement(jc.selectedElement);
     if (test == undefined) {
-      out.insertAdjacentHTML('afterend','<DIV id="'+jc.currentElement.id.replace(/code/,"test")+'" class=TEST>'+out.innerHTML+'</DIV>');
+      out.insertAdjacentHTML('afterend','<DIV id="'+jc.selectedElement.id.replace(/code/,"test")+'" class=TEST>'+out.innerHTML+'</DIV>');
     }
     else {
       test.innerHTML = out.innerHTML;
@@ -351,23 +351,23 @@ a(fileName+' saved');
     // -beforeThatElement is where it must be inserted (usually the localToolBox, but can be any Element)
 
     jc.blockNumber++;
-    var newCode = window.document.createElement('<PRE onclick=jc.editElement(this); class=CODE id='+jc.blockId('code')+' contentEditable=true>');
+    var newCode = window.document.createElement('<PRE onclick=jc.selectElement(this); class=CODE id='+jc.blockId('code')+' contentEditable=true>');
     var newOutput = window.document.createElement('<DIV class="OUTPUT OLD" onclick=jc.outClick(this) id='+jc.blockId('out')+'>');
     newOutput.innerHTML='no output';
     beforeThatElement.parentNode.insertBefore(newCode,beforeThatElement);
     beforeThatElement.parentNode.insertBefore(newOutput,beforeThatElement);
     $(newCode).bind("keypress",undefined,jc.editorKeyPress);
-    jc.editElement(newCode);
+    jc.selectElement(newCode);
   }
 
   jc.insertNewRichText = function(beforeThatElement) {
     // insert a new richText DIV 
     // -beforeThatElement is where it must be inserted (usually the localToolBox, but can be any Element)
     jc.blockNumber++;
-    var newRichText = window.document.createElement('<DIV id='+jc.blockId('rich')+' class=RICHTEXT onclick=jc.editElement(this); contentEditable=false>');
+    var newRichText = window.document.createElement('<DIV id='+jc.blockId('rich')+' class=RICHTEXT onclick=jc.selectElement(this); contentEditable=false>');
     $(newRichText).bind("keypress",undefined,jc.richTextKeyPress);
     beforeThatElement.parentNode.insertBefore(newRichText,beforeThatElement);
-    jc.editElement(newRichText);
+    jc.selectElement(newRichText);
   }
 
   jc.insertNewSection = function(beforeThatElement) {
@@ -383,14 +383,14 @@ a(fileName+' saved');
         currentLevel = Number(tag.slice(1))+1;
       }
     }
-    var newSection = window.document.createElement('<SECTION id='+jc.blockId('sect')+' class=SECTION>');
-    var title = window.document.createElement('<H'+currentLevel+' class=SECTIONTITLE onclick=jc.editElement(this.parentNode); contentEditable=true>');
+    var newSection = window.document.createElement('<DIV id='+jc.blockId('sect')+' class=SECTION>');
+    var title = window.document.createElement('<H'+currentLevel+' class=SECTIONTITLE onclick=jc.selectElement(this.parentNode); contentEditable=true>');
     var container = window.document.createElement('<DIV class=SECTIONCONTAINER>');
     newSection.appendChild(title);
     newSection.appendChild(container);
     beforeThatElement.parentNode.insertBefore(newSection,beforeThatElement);
     jc.initBottomToolBar(container);
-    jc.editElement(newSection);
+    jc.selectElement(newSection);
   }
 
   jc.editorKeyPress = function(event) {
@@ -415,11 +415,18 @@ a(fileName+' saved');
     window.document.getElementById('codeId').innerHTML = element.id;
   }
 
-  jc.editElement = function(element) {
-    jc.currentElement = element;
+  jc.selectElement = function(element) {
+    $(jc.selectedElement).removeClass('SELECTED');
+    $(element).addClass('SELECTED');
+    jc.selectedElement = element;
     jc.moveLocalToolBar(element);
-    if (element.tagName !='SECTION') element.contentEditable=true;
-    element.focus();
+    if ($(element).hasClass('SECTION')) {
+      element.firstChild.focus(); // the title
+    }
+    else {
+      element.contentEditable=true;
+      element.focus();
+    }
   }
 
   jc.outClick = function(element) {
@@ -485,12 +492,12 @@ a(fileName+' saved');
   }
 
   jc.execAutoExec = function() {
-    if ($(jc.currentElement).hasClass('RICHTEXT')) {
-      jc.currentElement.contentEditable=false;
-      jc.reformatRichText(jc.currentElement);
+    if ($(jc.selectedElement).hasClass('RICHTEXT')) {
+      jc.selectedElement.contentEditable=false;
+      jc.reformatRichText(jc.selectedElement);
     }
     $('.CODE').each(function(i,e) {
-      if ($(e).hasClass('AUTOEXEC') || (e==jc.currentElement)) {
+      if ($(e).hasClass('AUTOEXEC') || (e==jc.selectedElement)) {
         jc.execCode(e);
       }
     })
@@ -507,12 +514,12 @@ a(fileName+' saved');
   }
 
   jc.showOutputHtml = function(checkBox) {
-    var outHtmlId = 'html'+jc.currentElement.id;
+    var outHtmlId = 'html'+jc.selectedElement.id;
     var outHtml = window.document.getElementById(outHtmlId);
     if (!checkBox.checked && outHtml) {
       outHtml.outerHTML = '';
     }
-    var out = jc.outputElement(jc.currentElement) || jc.currentElement;
+    var out = jc.outputElement(jc.selectedElement) || jc.selectedElement;
     if (outHtml == undefined) {
       out.insertAdjacentHTML('afterend','<DIV id='+outHtmlId+' class=DEBUG>html</DIV>');
       var outHtml = window.document.getElementById(outHtmlId);
@@ -521,7 +528,7 @@ a(fileName+' saved');
   }
 
   jc.toggleAutoExec = function() {
-    $(jc.currentElement).toggleClass("AUTOEXEC");
+    $(jc.selectedElement).toggleClass("AUTOEXEC");
   }
 
 

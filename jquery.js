@@ -103,7 +103,7 @@ JQuery.prototype.addTagSel = function(tag,context) {
 
 JQuery.prototype.add =function (sel,context) {
   if (sel == undefined) {
-    return window.document.documentElement;
+    return this;
   }
   var c= context || window.document.documentElement;
   if (sel.tagName != undefined) {  // sel is a DOM Element
