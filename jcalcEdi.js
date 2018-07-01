@@ -9,7 +9,7 @@
             localToolBar:undefined,
             htmlIndent:1,
             simulation:undefined, // will be set by StateMachine.js
-            nextBlockNumber:0,
+            blockNumber:0,
             errorHandler:function(message,url,line) {
                 var out  = jc.outputElement(jc.codeElementBeingExecuted);
                 if (out) {
@@ -197,6 +197,9 @@
     return '<b>'+signature+'</b><br>'+comments.join('<br>');
   }
   
+  // Table of Content //////////////////////////////////////////////////////////////////
+  
+
   // EDI ///////////////////////////////////////////////////////////////////////////////
 
   jc.richedit = {
@@ -214,18 +217,18 @@
     pre:       function(){jc.richedit.exec('formatBlock','<pre>')}
   }
 
-  jc.findNextBlockNumber = function() {
+  jc.findblockNumber = function() {
     $('.CODE').each(function(i,e) {
       var n = Number(e.id.slice(4));
       if (!isNaN(n)) {
-        jc.nextBlockNumber = Math.max(jc.nextBlockNumber,n);
+        jc.blockNumber = Math.max(jc.blockNumber,n);
       }
     });
-    jc.nextBlockNumber++;
+    jc.blockNumber++;
   }
 
-  jc.nextBlockId = function(prefix) {
-    return prefix+jc.pad(jc.nextBlockNumber,4);
+  jc.blockId = function(prefix) {
+    return prefix+jc.pad(jc.blockNumber,4);
   }
 
   jc.removeErrors = function(html) {
@@ -242,39 +245,37 @@
   }
 
   jc.outputElement = function(element) {
-    // return the output element associated with element
+    // return the output element associated with element if any
+    // if applied on another element than id=codexxxx return undefined;
+    if (element.id.slice(0,4) !== 'code') return;
     return window.document.getElementById(element.id.replace(/code/,"out"));
   }
 
   jc.testElement = function(element) {
     // returns the test element if any
+    // if applied on another element than id=codexxxx return undefined;
+    if (element.id.slice(0,4) !== 'code') return;
     return window.document.getElementById(element.id.replace(/code/,"test"));
   }
 
   jc.initLocalToolBar = function() {
-    jc.localToolBar = $('#localToolBar').addClass('HIDDEN')[0];  // start with localToolBar hidden so that its position is irrelevent
+    jc.localToolBar = $('#localToolBar')[0];  // start with localToolBar hidden so that its position is irrelevent
     if (jc.localToolBar == undefined) {
       jc.localToolBar = window.document.createElement('DIV');
       jc.localToolBar.id='localToolBar';
       window.document.body.insertBefore(jc.localToolBar,window.document.body.lastChild);
     }
-
+    $(jc.localToolBar).addClass('HIDDEN');
     jc.localToolBar.innerHTML = 
-      '<SPAN id=codeId>code_basics01</SPAN>'+
+      '<BUTTON onclick=jc.insertNewSection(jc.localToolBar);>^ new section ^</BUTTON>'+
+      '<BUTTON onclick=jc.insertNewRichText(jc.localToolBar);>^ new richtext ^</BUTTON>'+
+      '<BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>^ new code ^</BUTTON>'+
+      '<SPAN id=codeId>no element</SPAN>'+
       '<INPUT onclick="$(\'.CODE\').toggleClass(\'HIDDEN\',this.checked);this.scrollIntoView();" type=checkbox>hide codes</INPUT>'+
       '<INPUT onclick="$(\'.DELETED\').toggleClass(\'HIDDEN\',this.checked);this.scrollIntoView();" type=checkbox>hide deleted</INPUT>'+
       '<INPUT onclick="$(\'.TEST\').toggleClass(\'HIDDEN\',this.checked);" type=checkbox>hide tests</INPUT>'+
       '<INPUT onclick="$(\'.TRACE\').toggleClass(\'HIDDEN\',this.checked);" type=checkbox>hide traces</INPUT>'+
-      '<BUTTON onclick=jc.showOutputHtml(this);>show output html</BUTTON>'+
-      '<BUTTON onclick=jc.copyOutputToTest(this);>copy output to test</BUTTON>'+
-      '<BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON>'+
-      '<BUTTON onclick=jc.execAutoExec();>run</BUTTON>'+
-      '<BUTTON onclick=jc.execAll();>run all</BUTTON>'+
-      '<BUTTON onclick=jc.save();>save</BUTTON>'+
-      '<BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>^ new code ^</BUTTON>'+
-      '<BUTTON onclick=jc.insertNewRichText();>^ new richtext ^</BUTTON>'+
-      '<BUTTON onclick=jc.deleteBlock(jc.currentElement);>V delete V</BUTTON>'+
-      '<DIV class=RICHEDITTOOLBAR>'+
+      '<DIV class=RICHEDITTOOLBAR style="float:left;">'+
         '<BUTTON onclick=jc.richedit.bold();><b>B</b></BUTTON>'+ 
         '<BUTTON onclick=jc.richedit.italic();><i>i</i></BUTTON>'+ 
         '<BUTTON onclick=jc.richedit.underline();><U>U</U></BUTTON>'+ 
@@ -286,6 +287,15 @@
         '<BUTTON onclick=jc.richedit.ol();>#</BUTTON>'+ 
         '<BUTTON onclick=jc.richedit.ul();>&#8226;</BUTTON>'+ 
         '<BUTTON onclick=jc.richedit.pre();>{}</BUTTON>'+ 
+      '</DIV>'+
+      '<DIV>'+
+        '<BUTTON onclick=jc.execAutoExec();>run</BUTTON>'+
+        '<BUTTON onclick=jc.execAll();>run all</BUTTON>'+
+        '<BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON>'+
+        '<BUTTON onclick=jc.copyOutputToTest(this);>--&gt;test</BUTTON>'+
+        '<BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON>'+
+        '<BUTTON onclick=jc.save();>save</BUTTON>'+
+        '<BUTTON onclick=jc.deleteBlock(jc.currentElement);>V delete V</BUTTON>'+
       '</DIV>';
   }
 
@@ -302,8 +312,9 @@
       section.appendChild(bottomToolBar);
     }
     bottomToolBar.innerHTML = 
-      '<BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON>'+
-      '<BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON>';
+      '<BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON>'+
+      '<BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON>'+
+      '<BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON>';
   }
 
   jc.save = function() {
@@ -338,28 +349,50 @@ a(fileName+' saved');
   jc.insertNewCodeBlock = function(beforeThatElement) {
     // insert a new code and output DIV 
     // -beforeThatElement is where it must be inserted (usually the localToolBox, but can be any Element)
-    var newCode = window.document.createElement('<PRE onclick=jc.codeClick(this); class=CODE id='+jc.nextBlockId('code')+' contentEditable=true>');
-    var newOutput = window.document.createElement('<DIV class="OUTPUT OLD" onclick=jc.outClick(this) id='+jc.nextBlockId('out')+'>');
+
+    jc.blockNumber++;
+    var newCode = window.document.createElement('<PRE onclick=jc.editElement(this); class=CODE id='+jc.blockId('code')+' contentEditable=true>');
+    var newOutput = window.document.createElement('<DIV class="OUTPUT OLD" onclick=jc.outClick(this) id='+jc.blockId('out')+'>');
     newOutput.innerHTML='no output';
-    jc.nextBlockNumber++;
     beforeThatElement.parentNode.insertBefore(newCode,beforeThatElement);
     beforeThatElement.parentNode.insertBefore(newOutput,beforeThatElement);
     $(newCode).bind("keypress",undefined,jc.editorKeyPress);
-    jc.codeClick(newCode);
+    jc.editElement(newCode);
   }
 
   jc.insertNewRichText = function(beforeThatElement) {
     // insert a new richText DIV 
     // -beforeThatElement is where it must be inserted (usually the localToolBox, but can be any Element)
-    var newRichText = window.document.createElement('<DIV id='+jc.nextBlockId('rich')+' class=RICHTEXT onclick=jc.richTextClick(this); contentEditable=false>');
-    jc.nextBlockNumber++;
+    jc.blockNumber++;
+    var newRichText = window.document.createElement('<DIV id='+jc.blockId('rich')+' class=RICHTEXT onclick=jc.editElement(this); contentEditable=false>');
     $(newRichText).bind("keypress",undefined,jc.richTextKeyPress);
     beforeThatElement.parentNode.insertBefore(newRichText,beforeThatElement);
-    jc.richTextClick(newRichText);
+    jc.editElement(newRichText);
   }
 
-//***************** section
-  
+  jc.insertNewSection = function(beforeThatElement) {
+    //insert a new section that consist of one title and one div as futur container of embeeded elements
+    //a bottomToolBar is added in the container
+    
+    jc.blockNumber++;
+    var currentLevel = 1;
+    if (beforeThatElement.parentNode != window.document.body) {
+      var parentSectionTitle = beforeThatElement.parentNode.previousSibling;
+      var tag = parentSectionTitle.tagName;
+      if (tag.slice(0,1) === 'H') {
+        currentLevel = Number(tag.slice(1))+1;
+      }
+    }
+    var newSection = window.document.createElement('<SECTION id='+jc.blockId('sect')+' class=SECTION>');
+    var title = window.document.createElement('<H'+currentLevel+' class=SECTIONTITLE onclick=jc.editElement(this.parentNode); contentEditable=true>');
+    var container = window.document.createElement('<DIV class=SECTIONCONTAINER>');
+    newSection.appendChild(title);
+    newSection.appendChild(container);
+    beforeThatElement.parentNode.insertBefore(newSection,beforeThatElement);
+    jc.initBottomToolBar(container);
+    jc.editElement(newSection);
+  }
+
   jc.editorKeyPress = function(event) {
     var element = event.srcElement;
     $(element.id.replace(/code/,"#out")).removeClass('SUCCESS').removeClass('ERROR');
@@ -382,16 +415,10 @@ a(fileName+' saved');
     window.document.getElementById('codeId').innerHTML = element.id;
   }
 
-  jc.codeClick = function(element) {
+  jc.editElement = function(element) {
     jc.currentElement = element;
     jc.moveLocalToolBar(element);
-    element.focus();
-  }
-
-  jc.richTextClick = function(element) {
-    jc.currentElement = element;
-    jc.moveLocalToolBar(element);
-    element.contentEditable=true;
+    if (element.tagName !='SECTION') element.contentEditable=true;
     element.focus();
   }
 
@@ -473,19 +500,19 @@ a(fileName+' saved');
     var mark = /\{\{(.*?)\}\}/;
     var h = element.innerHTML;
     while (h.search(mark)!=-1) {
-      h = h.replace(mark,'<SPAN class="CODE AUTOEXEC" id=code'+ jc.nextBlockNumber+' style="DISPLAY: none;">$1</SPAN><SPAN class=OUTPUT id=out'+ jc.nextBlockNumber+'>no output</SPAN>');
-      jc.nextBlockNumber++;
+      h = h.replace(mark,'<SPAN class="CODE AUTOEXEC" id=code'+ jc.blockNumber+' style="DISPLAY: none;">$1</SPAN><SPAN class=OUTPUT id=out'+ jc.blockNumber+'>no output</SPAN>');
+      jc.blockNumber++;
     }
     element.innerHTML = h;
   }
 
   jc.showOutputHtml = function(checkBox) {
-    var outHtmlId = jc.currentElement.id.replace(/(rich)|(code)/,"html");
+    var outHtmlId = 'html'+jc.currentElement.id;
     var outHtml = window.document.getElementById(outHtmlId);
     if (!checkBox.checked && outHtml) {
       outHtml.outerHTML = '';
     }
-    var out = jc.outputElement(jc.currentElement);
+    var out = jc.outputElement(jc.currentElement) || jc.currentElement;
     if (outHtml == undefined) {
       out.insertAdjacentHTML('afterend','<DIV id='+outHtmlId+' class=DEBUG>html</DIV>');
       var outHtml = window.document.getElementById(outHtmlId);
@@ -504,7 +531,7 @@ a(fileName+' saved');
     $('.RICHTEXT').bind("keypress",undefined,jc.richTextKeyPress);
     $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR');
     $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
-    jc.findNextBlockNumber();
+    jc.findblockNumber();
     jc.initLocalToolBar();
     jc.initBottomToolBar();
   });  

@@ -14,10 +14,12 @@ thead {
 h1 {
   font-size: 18pt;
   margin-bottom: 0px;
+  padding-bottom: 0px;
 }
 h2 {
   font-size: 14pt;
   margin-bottom: 0px;
+  padding-bottom: 0px;
 }
 h3 {
   font-size: 12pt;
@@ -179,6 +181,10 @@ p {
   font-size: 8px;
 }
 
+.SECTIONCONTAINER {
+  padding-left: 25px;
+  border-left: grey solid 1px;
+}
 
 #localToolBar,
 button {

@@ -13,10 +13,10 @@
 </HEAD>
 <BODY designMode="on">
 <H1>basics</H1>
-<DIV onclick=jc.codeClick(this); id=code_basics01 class=CODE contentEditable=true>3+5</DIV>
+<DIV onclick=jc.editElement(this); id=code_basics01 class=CODE contentEditable=true>3+5</DIV>
 <DIV onclick=jc.outClick(this) id=out_basics01 class="OUTPUT SUCCESS">8</DIV>
 <DIV onclick="$(this).toggleClass('COLLAPSED');" id=test_basics01 class="TEST SUCCESS">8</DIV>
-<H1>ECMA5 and jcExt</H1><PRE onclick=jc.codeClick(this); id=code_ext01 class=CODE contentEditable=true><P>var a,b;</P><P>output
+<H1>ECMA5 and jcExt</H1><PRE onclick=jc.editElement(this); id=code_ext01 class=CODE contentEditable=true><P>var a,b;</P><P>output
 .inspect(a={one:1,two:2,three:3},b=jc.copy(a))
 .inspect(b.one='un',a,b)
 </P></PRE>
@@ -126,14 +126,14 @@
 <TR>
 <TH vAlign=top>three</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
-<H1>jCalc lib</H1><PRE onclick=jc.codeClick(this); id=code0102 class=CODE contentEditable=true>v("hauteurTotale$mm",f("hauteur$mm+5"));
+<H1>jCalc lib</H1><PRE onclick=jc.editElement(this); id=code0102 class=CODE contentEditable=true>v("hauteurTotale$mm",f("hauteur$mm+5"));
 v("hauteur$mm",3);
 hauteurTotale$mm
   </PRE>
 <DIV onclick=jc.outClick(this) id=out0102 class="OUTPUT SUCCESS"><VAR>hauteurTotale</VAR>= <SPAN class=VALUE>8</SPAN><SPAN class=UNIT>mm</SPAN></DIV>
-<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test0102 class="TEST SUCCESS"><VAR>hauteurTotale</VAR>= <SPAN class=VALUE>8</SPAN><SPAN class=UNIT>mm</SPAN></DIV><PRE onclick=jc.codeClick(this); id=code0103 class=CODE contentEditable=true>v("hauteur$mm",3)</PRE>
-<DIV onclick=jc.outClick(this) id=out0103 class="OUTPUT SUCCESS"><VAR>hauteur</VAR>= <SPAN class=VALUE>3</SPAN><SPAN class=UNIT>mm</SPAN></DIV><PRE onclick=jc.codeClick(this); id=code0104 class="CODE AUTOEXEC" contentEditable=true>v("hauteur$mm")</PRE>
-<DIV onclick=jc.outClick(this) id=out0104 class="OUTPUT SUCCESS"><VAR>hauteur</VAR>= <SPAN class=VALUE>3</SPAN><SPAN class=UNIT>mm</SPAN></DIV><PRE onclick=jc.codeClick(this); id=code0105 class=CODE contentEditable=true>table("myTable")
+<DIV onclick="$(this).toggleClass('COLLAPSED');" id=test0102 class="TEST SUCCESS"><VAR>hauteurTotale</VAR>= <SPAN class=VALUE>8</SPAN><SPAN class=UNIT>mm</SPAN></DIV><PRE onclick=jc.editElement(this); id=code0103 class=CODE contentEditable=true>v("hauteur$mm",3)</PRE>
+<DIV onclick=jc.outClick(this) id=out0103 class="OUTPUT SUCCESS"><VAR>hauteur</VAR>= <SPAN class=VALUE>3</SPAN><SPAN class=UNIT>mm</SPAN></DIV><PRE onclick=jc.editElement(this); id=code0104 class="CODE AUTOEXEC" contentEditable=true>v("hauteur$mm")</PRE>
+<DIV onclick=jc.outClick(this) id=out0104 class="OUTPUT SUCCESS"><VAR>hauteur</VAR>= <SPAN class=VALUE>3</SPAN><SPAN class=UNIT>mm</SPAN></DIV><PRE onclick=jc.editElement(this); id=code0105 class=CODE contentEditable=true>table("myTable")
 .add({_id:"apple" ,quantity:250,price:0.5,amount:f("quantity*price")})
 .add({_id:"orange",quantity:100,price:0.7,amount:f("quantity*price")});
   </PRE>
@@ -155,7 +155,7 @@ hauteurTotale$mm
 <TH>orange</TH>
 <TD>100</TD>
 <TD>0.7</TD>
-<TD>70</TD></TR></TBODY></TABLE></DIV><PRE onclick=jc.codeClick(this); id=code0106 class=CODE contentEditable=true>output
+<TD>70</TD></TR></TBODY></TABLE></DIV><PRE onclick=jc.editElement(this); id=code0106 class=CODE contentEditable=true>output
 .p("first § where we show that ",hauteurTotale$mm)
 .p("second § where we show myTable",myTable.span({cols:{_id:1,amount:1}}))
 .ul()
@@ -237,18 +237,18 @@ hauteurTotale$mm
 <H2>Sous-Titre 1</H2>
 <H2>Sous-Titre 2</H2>
 <H1>Titre 2</H1></DIV>
-<H1>JQuery</H1><PRE onclick=jc.codeClick(this); id=code1113 class=CODE contentEditable=true><P>$('#code1113')</P></PRE>
-<DIV onclick=jc.outClick(this) id=out1113 class="OUTPUT OLD SUCCESS">[jQuery of 1 elements]<BR><CODE class=INSPECTHTML>&lt;PRE onclick=jc.codeClick(this); id=code1113 class=CODE contentEditable=true&gt;&lt;P&gt;$('#code1113')&lt;/P&gt;&lt;/PRE&gt;</CODE></DIV>
-<DIV id=test1113 class="TEST SUCCESS">[jQuery of 1 elements]<BR><CODE class=INSPECTHTML>&lt;PRE onclick=jc.codeClick(this); id=code1113 class=CODE contentEditable=true&gt;&lt;P&gt;$('#code1113')&lt;/P&gt;&lt;/PRE&gt;</CODE></DIV><PRE onclick=jc.codeClick(this); id=code0201 class=CODE contentEditable=true><P>output</P><P>.p($('#code0201').addClass('TOTO').addClass('TUTU').addClass('TOTO'))</P><P>.p($('#code0201').removeClass('TOTO').removeClass('TITI'))</P><P>.p($('#code0201').removeClass('TUTU'))</P></PRE>
+<H1>JQuery</H1><PRE onclick=jc.editElement(this); id=code1113 class=CODE contentEditable=true><P>$('#code1113')</P></PRE>
+<DIV onclick=jc.outClick(this) id=out1113 class="OUTPUT OLD SUCCESS">[jQuery of 1 elements]<BR><CODE class=INSPECTHTML>&lt;PRE onclick=jc.editElement(this); id=code1113 class=CODE contentEditable=true&gt;&lt;P&gt;$('#code1113')&lt;/P&gt;&lt;/PRE&gt;</CODE></DIV>
+<DIV id=test1113 class="TEST SUCCESS">[jQuery of 1 elements]<BR><CODE class=INSPECTHTML>&lt;PRE onclick=jc.editElement(this); id=code1113 class=CODE contentEditable=true&gt;&lt;P&gt;$('#code1113')&lt;/P&gt;&lt;/PRE&gt;</CODE></DIV><PRE onclick=jc.editElement(this); id=code0201 class=CODE contentEditable=true><P>output</P><P>.p($('#code0201').addClass('TOTO').addClass('TUTU').addClass('TOTO'))</P><P>.p($('#code0201').removeClass('TOTO').removeClass('TITI'))</P><P>.p($('#code0201').removeClass('TUTU'))</P></PRE>
 <DIV onclick=jc.outClick(this) id=out0201 class="OUTPUT SUCCESS">
-<P>[jQuery of 1 elements]<BR><CODE class=INSPECTHTML>&lt;PRE onclick=jc.codeClick(this); id=code0201 class="CODE TOTO TUTU" contentEditable=true&gt;&lt;P&gt;output&lt;/P&gt;&lt;P&gt;.p($('#code0201').addClass('TOTO').addClass('TUTU').addClass('TOTO'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TOTO').removeClass('TITI'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TUTU'))&lt;/P&gt;&lt;/PRE&gt;</CODE></P>
-<P>[jQuery of 1 elements]<BR><CODE class=INSPECTHTML>&lt;PRE onclick=jc.codeClick(this); id=code0201 class="CODE TUTU" contentEditable=true&gt;&lt;P&gt;output&lt;/P&gt;&lt;P&gt;.p($('#code0201').addClass('TOTO').addClass('TUTU').addClass('TOTO'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TOTO').removeClass('TITI'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TUTU'))&lt;/P&gt;&lt;/PRE&gt;</CODE></P>
-<P>[jQuery of 1 elements]<BR><CODE class=INSPECTHTML>&lt;PRE onclick=jc.codeClick(this); id=code0201 class=CODE contentEditable=true&gt;&lt;P&gt;output&lt;/P&gt;&lt;P&gt;.p($('#code0201').addClass('TOTO').addClass('TUTU').addClass('TOTO'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TOTO').removeClass('TITI'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TUTU'))&lt;/P&gt;&lt;/PRE&gt;</CODE></P></DIV>
+<P>[jQuery of 1 elements]<BR><CODE class=INSPECTHTML>&lt;PRE onclick=jc.editElement(this); id=code0201 class="CODE TOTO TUTU" contentEditable=true&gt;&lt;P&gt;output&lt;/P&gt;&lt;P&gt;.p($('#code0201').addClass('TOTO').addClass('TUTU').addClass('TOTO'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TOTO').removeClass('TITI'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TUTU'))&lt;/P&gt;&lt;/PRE&gt;</CODE></P>
+<P>[jQuery of 1 elements]<BR><CODE class=INSPECTHTML>&lt;PRE onclick=jc.editElement(this); id=code0201 class="CODE TUTU" contentEditable=true&gt;&lt;P&gt;output&lt;/P&gt;&lt;P&gt;.p($('#code0201').addClass('TOTO').addClass('TUTU').addClass('TOTO'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TOTO').removeClass('TITI'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TUTU'))&lt;/P&gt;&lt;/PRE&gt;</CODE></P>
+<P>[jQuery of 1 elements]<BR><CODE class=INSPECTHTML>&lt;PRE onclick=jc.editElement(this); id=code0201 class=CODE contentEditable=true&gt;&lt;P&gt;output&lt;/P&gt;&lt;P&gt;.p($('#code0201').addClass('TOTO').addClass('TUTU').addClass('TOTO'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TOTO').removeClass('TITI'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TUTU'))&lt;/P&gt;&lt;/PRE&gt;</CODE></P></DIV>
 <DIV onclick="$(this).toggleClass('COLLAPSED');" id=test0201 class="TEST SUCCESS">
-<P>[jQuery of 1 elements]<BR><CODE class=INSPECTHTML>&lt;PRE onclick=jc.codeClick(this); id=code0201 class="CODE TOTO TUTU" contentEditable=true&gt;&lt;P&gt;output&lt;/P&gt;&lt;P&gt;.p($('#code0201').addClass('TOTO').addClass('TUTU').addClass('TOTO'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TOTO').removeClass('TITI'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TUTU'))&lt;/P&gt;&lt;/PRE&gt;</CODE></P>
-<P>[jQuery of 1 elements]<BR><CODE class=INSPECTHTML>&lt;PRE onclick=jc.codeClick(this); id=code0201 class="CODE TUTU" contentEditable=true&gt;&lt;P&gt;output&lt;/P&gt;&lt;P&gt;.p($('#code0201').addClass('TOTO').addClass('TUTU').addClass('TOTO'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TOTO').removeClass('TITI'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TUTU'))&lt;/P&gt;&lt;/PRE&gt;</CODE></P>
-<P>[jQuery of 1 elements]<BR><CODE class=INSPECTHTML>&lt;PRE onclick=jc.codeClick(this); id=code0201 class=CODE contentEditable=true&gt;&lt;P&gt;output&lt;/P&gt;&lt;P&gt;.p($('#code0201').addClass('TOTO').addClass('TUTU').addClass('TOTO'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TOTO').removeClass('TITI'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TUTU'))&lt;/P&gt;&lt;/PRE&gt;</CODE></P></DIV>
-<H1>Axe</H1><PRE onclick=jc.codeClick(this); id=code0301 class=CODE contentEditable=true>axe('lift')
+<P>[jQuery of 1 elements]<BR><CODE class=INSPECTHTML>&lt;PRE onclick=jc.editElement(this); id=code0201 class="CODE TOTO TUTU" contentEditable=true&gt;&lt;P&gt;output&lt;/P&gt;&lt;P&gt;.p($('#code0201').addClass('TOTO').addClass('TUTU').addClass('TOTO'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TOTO').removeClass('TITI'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TUTU'))&lt;/P&gt;&lt;/PRE&gt;</CODE></P>
+<P>[jQuery of 1 elements]<BR><CODE class=INSPECTHTML>&lt;PRE onclick=jc.editElement(this); id=code0201 class="CODE TUTU" contentEditable=true&gt;&lt;P&gt;output&lt;/P&gt;&lt;P&gt;.p($('#code0201').addClass('TOTO').addClass('TUTU').addClass('TOTO'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TOTO').removeClass('TITI'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TUTU'))&lt;/P&gt;&lt;/PRE&gt;</CODE></P>
+<P>[jQuery of 1 elements]<BR><CODE class=INSPECTHTML>&lt;PRE onclick=jc.editElement(this); id=code0201 class=CODE contentEditable=true&gt;&lt;P&gt;output&lt;/P&gt;&lt;P&gt;.p($('#code0201').addClass('TOTO').addClass('TUTU').addClass('TOTO'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TOTO').removeClass('TITI'))&lt;/P&gt;&lt;P&gt;.p($('#code0201').removeClass('TUTU'))&lt;/P&gt;&lt;/PRE&gt;</CODE></P></DIV>
+<H1>Axe</H1><PRE onclick=jc.editElement(this); id=code0301 class=CODE contentEditable=true>axe('lift')
 .accelerate({t:5,a:1})
 .accelerate({t:10,a:-1})
 .accelerate({t:15,a:0})
@@ -345,7 +345,7 @@ hauteurTotale$mm
 <TD>0</TD>
 <TD>0</TD>
 <TD>--</TD>
-<TD>--</TD></TR></TBODY></TABLE></DIV><PRE onclick=jc.codeClick(this); id=code0302 class=CODE contentEditable=true>lift
+<TD>--</TD></TR></TBODY></TABLE></DIV><PRE onclick=jc.editElement(this); id=code0302 class=CODE contentEditable=true>lift
 .accelerate({t:33,a:0})
   </PRE>
 <DIV onclick=jc.outClick(this) id=out0302 class="OUTPUT SUCCESS">
@@ -448,7 +448,7 @@ hauteurTotale$mm
 <TD>0</TD>
 <TD>--</TD>
 <TD>--</TD></TR></TBODY></TABLE></DIV>
-<H1>StateMachine</H1><PRE onclick=jc.codeClick(this); id=code0401 class=CODE contentEditable=true>v('count',-1);
+<H1>StateMachine</H1><PRE onclick=jc.editElement(this); id=code0401 class=CODE contentEditable=true>v('count',-1);
 stateMachine('myStateMachine')
 .state('state1').initial()
   .run('v("count",count+1)')
@@ -463,7 +463,7 @@ stateMachine('myStateMachine')
 <DIV class="SMSTATE SMCURRENTSTATE">state1<BR>run : <SPAN class=CODEVIEW>v("count",count+1)</SPAN>
 <DIV class=SMTRANSITION>count == 10 --&gt;state2</DIV></DIV>
 <DIV class=SMSTATE>state2<BR>run : <SPAN class=CODEVIEW>v("count",count-1)</SPAN>
-<DIV class=SMTRANSITION>count == 0 --&gt;state1</DIV></DIV></DIV></DIV><PRE onclick=jc.codeClick(this); id=code0402 class=CODE contentEditable=true>output
+<DIV class=SMTRANSITION>count == 0 --&gt;state1</DIV></DIV></DIV></DIV><PRE onclick=jc.editElement(this); id=code0402 class=CODE contentEditable=true>output
 .p(jc.simulation.runWhile("jc.simulation.time$s &lt; 10"))
 .p(myStateMachine.view({log:true}))
 .p(count)
@@ -523,7 +523,7 @@ stateMachine('myStateMachine')
 <H1>RichText</H1>
 <DIV id=localToolBar><SPAN id=codeId>rich0000</SPAN><INPUT onclick="$('.CODE').toggleClass('HIDDEN',this.checked);this.scrollIntoView();" type=checkbox>hide codes</INPUT><INPUT onclick="$('.DELETED').toggleClass('HIDDEN',this.checked);this.scrollIntoView();" type=checkbox>hide deleted</INPUT><INPUT onclick="$('.TEST').toggleClass('HIDDEN',this.checked);" type=checkbox>hide tests</INPUT><INPUT onclick="$('.TRACE').toggleClass('HIDDEN',this.checked);" type=checkbox>hide traces</INPUT><BUTTON onclick=jc.showOutputHtml(this);>show output html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this);>copy output to test</BUTTON><BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON><BUTTON onclick=jc.execAutoExec();>run</BUTTON><BUTTON onclick=jc.execAll();>run all</BUTTON><BUTTON onclick=jc.save();>save</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>^ new code ^</BUTTON><BUTTON onclick=;>^ new richtext ^</BUTTON><BUTTON onclick=jc.deleteBlock(jc.currentElement);>V delete V</BUTTON>
 <DIV class=RICHEDITTOOLBAR><BUTTON onclick=jc.richedit.bold();><B>B</B></BUTTON><BUTTON onclick=jc.richedit.italic();><I>i</I></BUTTON><BUTTON onclick=jc.richedit.underline();><U>U</U></BUTTON><BUTTON onclick=jc.richedit.strike();><STRIKE>S</STRIKE></BUTTON><BUTTON onclick=jc.richedit.h1();><B>H1</B></BUTTON><BUTTON onclick=jc.richedit.h2();><B>H2</B></BUTTON><BUTTON onclick=jc.richedit.div();>div</BUTTON><BUTTON onclick=jc.richedit.p();>¶</BUTTON><BUTTON onclick=jc.richedit.ol();>#</BUTTON><BUTTON onclick=jc.richedit.ul();>•</BUTTON><BUTTON onclick=jc.richedit.pre();>{}</BUTTON></DIV></DIV>
-<DIV onclick=jc.richTextClick(this) id=rich0000 class=RICHTEXT contentEditable=false>
+<DIV onclick=jc.editElement(this) id=rich0000 class=RICHTEXT contentEditable=false>
 <H1>titre</H1>
 <P>la variable <SPAN id=code1114 class="CODE AUTOEXEC" style="DISPLAY: none">hauteur$mm</SPAN><SPAN id=out1114 class="OUTPUT SUCCESS"><VAR>hauteur</VAR>= <SPAN class=VALUE>3</SPAN><SPAN class=UNIT>mm</SPAN></SPAN> est importante, allez savoir <STRONG>pourquoi?</STRONG> tout comme <SPAN id=code1115 class="CODE AUTOEXEC" style="DISPLAY: none">v('PI',Math.PI)</SPAN><SPAN id=out1115 class="OUTPUT SUCCESS"><VAR>PI</VAR>= <SPAN class=VALUE>3.141592653589793</SPAN></SPAN>&nbsp; dfsadf <SPAN id=code1118 class="CODE AUTOEXEC" style="DISPLAY: none">PI.valueOf()</SPAN><SPAN id=out1118 class="OUTPUT SUCCESS">3.141592653589793</SPAN></P>
 <P>nomal §</P>
@@ -569,7 +569,7 @@ stateMachine('myStateMachine')
 <P>&nbsp;</P>
 <P>&nbsp;</P>
 <P>&nbsp;</P></DIV>
-<H1>BOM</H1><PRE onclick=jc.codeClick(this); id=code_Permutation class=CODE contentEditable=true>p = permutations(['A','B','C']);
+<H1>BOM</H1><PRE onclick=jc.editElement(this); id=code_Permutation class=CODE contentEditable=true>p = permutations(['A','B','C']);
 table().addRows(p);
   </PRE>
 <DIV onclick=jc.outClick(this) id=out_Permutation class="OUTPUT SUCCESS">
@@ -636,7 +636,7 @@ table().addRows(p);
 <TD>C</TD>
 <TD>B</TD>
 <TD>A</TD></TR></TBODY></TABLE></DIV>
-<H2>Groups</H2><PRE onclick=jc.codeClick(this); id=code_Groups class=CODE contentEditable=true>g = new Groups();
+<H2>Groups</H2><PRE onclick=jc.editElement(this); id=code_Groups class=CODE contentEditable=true>g = new Groups();
 output
 .p(g.regroup(['toto']).regroup(['tutu']))
 .p(g.regroup(['titi','toto']))
@@ -799,7 +799,7 @@ output
 <TR>
 <TH vAlign=top>1</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>tutu</TD></TR></TBODY></TABLE></FIELDSET></DIV></FIELDSET> 
-<P></P></DIV><PRE onclick=jc.codeClick(this); id=code_Bom_PlanOfNeed class=CODE contentEditable=true>var p1,p2,p3,p4,p5; 
+<P></P></DIV><PRE onclick=jc.editElement(this); id=code_Bom_PlanOfNeed class=CODE contentEditable=true>var p1,p2,p3,p4,p5; 
 output
 .p(p1 = (new PlanOfNeed()).add(0,20).add(3,10).add(0,30))
 .p(p2 = p1.copy().add(3,100))
@@ -1020,7 +1020,7 @@ output
 <TD>5</TD>
 <TD>60</TD>
 <TD>280</TD></TR></TBODY></TABLE></DIV>
-<P></P></DIV><PRE onclick=jc.codeClick(this); id=code0502 class=CODE contentEditable=true>product('product1',
+<P></P></DIV><PRE onclick=jc.editElement(this); id=code0502 class=CODE contentEditable=true>product('product1',
   bom('main170',['width_170'],
     {part:'OS frame',quantity:1,neededAt:0},
     {part:'GS frame',quantity:1,neededAt:0},
@@ -1426,7 +1426,7 @@ product1.parts['OS frame'].code().compile().computeNeeds()
 <TD>0</TD>
 <TD>12</TD>
 <TD>12</TD></TR></TBODY></TABLE></DIV></DIV>
-<H1>Non regression tests</H1><PRE onclick=jc.codeClick(this); id=code_NRT0001 class=CODE contentEditable=true>     // creating a function "test" or a "out" will destroy a local variable and corrupt the environement
+<H1>Non regression tests</H1><PRE onclick=jc.editElement(this); id=code_NRT0001 class=CODE contentEditable=true>     // creating a function "test" or a "out" will destroy a local variable and corrupt the environement
 function test() {};
 var out = 'toto';
 'ok'
