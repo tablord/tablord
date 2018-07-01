@@ -395,15 +395,4 @@
     }
     return a;
   }
-  
 
-function Test() {
-  this._length = 2;
-  this[0] = 'ZZZZZZ';
-  this[1] = 'AAAAAA';
-}
-
-Test.prototype.sort = function(){
-  this.length = this._length;
-  Array.prototype.sort.call(this);  
-}
