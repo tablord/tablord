@@ -47,6 +47,14 @@ JQuery.prototype.hasClass = function(className){
   return false;
 }
 
+JQuery.prototype.attr = function (name,value) {
+  this.each(function(i,e) {
+    e[name]=value;
+  });
+  return this;
+}
+
+
 JQuery.prototype.addClass = function(className) {
   return this.toggleClass(className,true);
 }
@@ -70,6 +78,7 @@ JQuery.prototype.toggleClass = function(className,add) { //limited version: only
 // selection methods ///////////
 
 JQuery.prototype.addClassSel = function(className,context) {
+  if (context==null) return this;
   for (var i = 0; i< context.children.length; i++) {
     if ((context.children[i].className || '').search(new RegExp('\\b'+className+'\\b')) != -1) {
       this[this.length++] = context.children[i];
@@ -81,6 +90,7 @@ JQuery.prototype.addClassSel = function(className,context) {
 
 
 JQuery.prototype.addIdSel = function(id,context) {
+  if (context==null) return this;
   for (var i = 0; i< context.children.length; i++) {
     if (context.children[i].id == id) {
       this[this.length++] = context.children[i];
@@ -92,6 +102,7 @@ JQuery.prototype.addIdSel = function(id,context) {
 }
 
 JQuery.prototype.addTagSel = function(tag,context) {
+  if (context==null) return this;
   for (var i = 0; i< context.children.length; i++) {
     if (context.children[i].tagName==tag) {
       this[this.length++] = context.children[i];

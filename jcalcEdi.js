@@ -180,6 +180,12 @@
     return html.replace(/[ \t\r\n]+/g,' ').replace(/> /,'>').replace(/ </,'<');
   }
 
+  jc.textContent = function(html) {
+  // return the text like textcontent that doesn't exist in IE7
+  // first remove all tags having HIDDEN in class and then keeps the text only
+  // TODO******** not ok for nested tags !!!! ********************************
+    return html.replace(/\<.*?style\="DISPLAY\: none".*?\<\/.*?\>/g,'').replace(/\<.*?\>/g,'');
+  }
 
   jc.help = function(func) {
   // returns the signature of the function and the first comment in a pretty html 
@@ -212,7 +218,7 @@
         var number = currentNumbers.join('.');
         var t = title.innerHTML.replace(/^[\d\.]*(\s|\&nbsp;)*/,'');
         title.innerHTML = number+' '+t;
-        jc.tableOfContent.toc.push({number:number,title:t,sectionId:e.id});
+        jc.tableOfContent.toc.push({number:number,title:jc.textContent(t),sectionId:e.id});
       });
     },
     span : function() {
@@ -346,7 +352,7 @@
     var file = fso.OpenTextFile(fileName,2,true);
     file.Write(window.document.documentElement.outerHTML);
     file.Close();
-a(fileName+' saved');
+    window.alert(fileName+' saved');
   }
 
   jc.copyOutputToTest = function() {
@@ -440,18 +446,31 @@ a(fileName+' saved');
     window.document.getElementById('codeId').innerHTML = element.id;
   }
 
+  jc.$editables = function(element) {
+    // returns a JQuery of the tags that are editable in element
+    if ($(element).hasClass('SECTION')) return $(element.firstChild);
+    return $(element);
+  }
+
   jc.selectElement = function(element) {
-    $(jc.selectedElement).removeClass('SELECTED');
+    var e = jc.selectedElement;
+    $(e).removeClass('SELECTED');
+    jc.$editables(e)
+    .attr('contentEditable',false)
+    .each(function(i,e){jc.reformatRichText(e)});
+//    while (e != null) {
+//      $('.BOTTOMTOOLBAR',e).addClass('HIDDEN');
+//      e = e.parentNode;
+//    }
+
     $(element).addClass('SELECTED');
     jc.selectedElement = element;
     jc.moveLocalToolBar(element);
-    if ($(element).hasClass('SECTION')) {
-      element.firstChild.focus(); // the title
-    }
-    else {
-      element.contentEditable=true;
-      element.focus();
-    }
+    jc.$editables(jc.selectedElement).attr('contentEditable',true)[0].focus();
+//    while (element != null) {
+//      $('.BOTTOMTOOLBAR',element).removeClass('HIDDEN');
+//      element = element.parentNode;
+//    }
   }
 
   jc.outClick = function(element) {
@@ -514,15 +533,13 @@ a(fileName+' saved');
 
   jc.execAll = function() {
     jc.tableOfContent.updateSections();
+    jc.$editables(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
     $('.CODE').each(function(i,e) {jc.execCode(e);});
   }
 
   jc.execAutoExec = function() {
     jc.tableOfContent.updateSections();
-    if ($(jc.selectedElement).hasClass('RICHTEXT')) {
-      jc.selectedElement.contentEditable=false;
-      jc.reformatRichText(jc.selectedElement);
-    }
+    jc.$editables(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
     $('.CODE').each(function(i,e) {
       if ($(e).hasClass('AUTOEXEC') || (e==jc.selectedElement)) {
         jc.execCode(e);
@@ -531,11 +548,12 @@ a(fileName+' saved');
   }
 
   jc.reformatRichText = function(element) {
+    if (element == undefined) return;
     var mark = /\{\{(.*?)\}\}/;
     var h = element.innerHTML;
     while (h.search(mark)!=-1) {
-      h = h.replace(mark,'<SPAN class="CODE AUTOEXEC" id=code'+ jc.blockNumber+' style="DISPLAY: none;">$1</SPAN><SPAN class=OUTPUT id=out'+ jc.blockNumber+'>no output</SPAN>');
       jc.blockNumber++;
+      h = h.replace(mark,'<SPAN class="CODE AUTOEXEC" id='+ jc.blockId('code')+' style="DISPLAY: none;">$1</SPAN><SPAN class=OUTPUT id='+ jc.blockId('out')+'>no output</SPAN>');
     }
     element.innerHTML = h;
   }
