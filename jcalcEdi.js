@@ -34,6 +34,15 @@
             }
            };
 
+  //JQuery extentions /////////////////////////////////////////////////
+  $.prototype.span = function() {
+    var s = [];
+    for (var i=0; i < this.length; i++) {
+      s.push(jc.toHtml(this[i].outerHTML));
+    }
+    return this.toString()+'<br><code class="INSPECTHTML">'+s.join('<br>')+'</code>';
+  }  
+
   // edi related functions ////////////////////////////////////////////
   var geval = eval;
 
@@ -87,6 +96,9 @@
   // object viewers /////////////////////////////////////
 
   function view(obj) {
+    if (typeof obj == 'string') {
+      return jc.toHtml(obj);
+    }
     if (typeof obj == 'function') {
       return jc.help(obj);
     }
@@ -102,7 +114,7 @@
     if (obj == '[object Object]') {
       return inspect(obj).span();
     }
-    return obj;
+    return jc.toHtml(obj+''); //either valueOf or toString
   }
   
 
@@ -122,7 +134,7 @@
   jc.Inspector.prototype.span = function (depth){
     depth = depth || this.depth;
     if (typeof this.obj == 'string') {
-      return '<SPAN class=INSPECT>'+this.obj+'</SPAN>';
+      return '<SPAN class=INSPECT>'+jc.toHtml(this.obj)+'</SPAN>';
     }
     var r = '<DIV class=INSPECT><fieldset><legend>'+((this.obj != '[object Object]')?this.obj:'{}')+' '+this.name+'</legend>';
     r += '<table class=INSPECT>';
@@ -162,6 +174,20 @@
 
   jc.pad = function(integer,numberOfDigits){
     return ('00000000000000000'+integer).slice(-numberOfDigits);
+  }
+
+  jc.purgeJqueryAttr = function(html) {
+    // supress all jqueryxxx="yy" attributes, since they are meaningless for the user and also compromise the testability
+    // since they depend on the context
+
+    var reg = /(.*?)(<.+?>)/g;
+    var res,lastIndex=0;
+    var result = '';
+    while ((res = reg.exec(html)) != null) {
+      result += res[1]+res[2].replace(/\s*?jQuery\d+="\d"/g,'');
+      lastIndex = res.lastIndex;
+    };
+    return result;
   }
 
   jc.toHtml = function(htmlCode) {

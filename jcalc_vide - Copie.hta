@@ -1,11 +1,21 @@
-<HTML xmlns="http://www.w3.org/1999/xhtml" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SCROLL="yes" SINGLEINSTANCE="yes"/><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
+<HTML xmlns="http://www.w3.org/1999/xhtml" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SCROLL="yes" SINGLEINSTANCE="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
 <SCRIPT src="jcalcEdi.js"></SCRIPT>
+
 <SCRIPT src="jquery.js"></SCRIPT>
+
 <SCRIPT src="jcalc.js"></SCRIPT>
+
 <SCRIPT src="axe.js"></SCRIPT>
+
 <SCRIPT src="stateMachine.js"></SCRIPT>
+
 <SCRIPT src="BOM.js"></SCRIPT>
+
+<SCRIPT src="sys.js"></SCRIPT>
 </HEAD>
 <BODY designMode="on">
-
-</BODY></HTML>
+<DIV id=localToolBar><BUTTON onclick=jc.insertNewSection(jc.localToolBar);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(jc.localToolBar);>^ new richtext ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>^ new code ^</BUTTON><SPAN id=codeId>code0002</SPAN><INPUT onclick="$('.CODE').toggleClass('HIDDEN',this.checked);this.scrollIntoView();" type=checkbox>hide codes</INPUT><INPUT onclick="$('.DELETED').toggleClass('HIDDEN',this.checked);this.scrollIntoView();" type=checkbox>hide deleted</INPUT><INPUT onclick="$('.TEST').toggleClass('HIDDEN',this.checked);" type=checkbox>hide tests</INPUT><INPUT onclick="$('.TRACE').toggleClass('HIDDEN',this.checked);" type=checkbox>hide traces</INPUT>
+<DIV class=RICHEDITTOOLBAR style="FLOAT: left"><BUTTON onclick=jc.richedit.bold();><B>B</B></BUTTON><BUTTON onclick=jc.richedit.italic();><I>i</I></BUTTON><BUTTON onclick=jc.richedit.underline();><U>U</U></BUTTON><BUTTON onclick=jc.richedit.strike();><STRIKE>S</STRIKE></BUTTON><BUTTON onclick=jc.richedit.h1();><B>H1</B></BUTTON><BUTTON onclick=jc.richedit.h2();><B>H2</B></BUTTON><BUTTON onclick=jc.richedit.div();>div</BUTTON><BUTTON onclick=jc.richedit.p();>¶</BUTTON><BUTTON onclick=jc.richedit.ol();>#</BUTTON><BUTTON onclick=jc.richedit.ul();>•</BUTTON><BUTTON onclick=jc.richedit.pre();>{}</BUTTON></DIV>
+<DIV><BUTTON onclick=jc.execAutoExec();>run</BUTTON><BUTTON onclick=jc.execAll();>run all</BUTTON><BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this);>--&gt;test</BUTTON><BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON><BUTTON onclick=jc.save();>save</BUTTON><BUTTON onclick=jc.deleteBlock(jc.selectedElement);>V delete V</BUTTON></DIV></DIV><PRE onclick=jc.selectElement(this); id=code0002 class="CODE SELECTED" contentEditable=true><P>jc.fso.findAll('*.*','d:\\Documents\\programmation')</P><P>&nbsp;</P></PRE>
+<DIV onclick=jc.outClick(this) id=out0002 class="OUTPUT OLD">Argument ou appel de procédure incorrect<BR>file:///D:/Documents/programmation/jcalcV0/sys.js line:18<BR></DIV>
+<DIV class=BOTTOMTOOLBAR><BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON></DIV></BODY></HTML>
