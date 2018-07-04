@@ -38,9 +38,9 @@
   $.prototype.span = function() {
     var s = [];
     for (var i=0; i < this.length; i++) {
-      s.push(jc.toHtml(this[i].outerHTML));
+      s.push(i+': <code class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(jc.purgeJQueryAttr(this[i].outerHTML)))+'</code>');
     }
-    return this.toString()+'<br><code class="INSPECTHTML">'+s.join('<br>')+'</code>';
+    return 'JQuery of '+this.length+' elements<br>'+s.join('<br>');
   }  
 
   // edi related functions ////////////////////////////////////////////
@@ -109,7 +109,7 @@
       return obj.view();
     }
     if (obj.outerHTML) { // an Element
-      return 'DOM Element<span class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(obj.outerHTML))+'</span>';
+      return 'DOM Element<SPAN class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(jc.purgeJQueryAttr(obj.outerHTML)))+'</SPAN>';
     }
     if (obj == '[object Object]') {
       return inspect(obj).span();
@@ -176,7 +176,7 @@
     return ('00000000000000000'+integer).slice(-numberOfDigits);
   }
 
-  jc.purgeJqueryAttr = function(html) {
+  jc.purgeJQueryAttr = function(html) {
     // supress all jqueryxxx="yy" attributes, since they are meaningless for the user and also compromise the testability
     // since they depend on the context
 
@@ -480,23 +480,28 @@
 
   jc.selectElement = function(element) {
     var e = jc.selectedElement;
+    if (e === element) {
+      e.focus();
+      return;
+    }
     $(e).removeClass('SELECTED');
     jc.$editables(e)
     .attr('contentEditable',false)
     .each(function(i,e){jc.reformatRichText(e)});
-//    while (e != null) {
-//      $('.BOTTOMTOOLBAR',e).addClass('HIDDEN');
-//      e = e.parentNode;
-//    }
+    $('.BOTTOMTOOLBAR').not(window.document.body.lastChild).addClass('HIDDEN');
 
     $(element).addClass('SELECTED');
     jc.selectedElement = element;
     jc.moveLocalToolBar(element);
-    jc.$editables(jc.selectedElement).attr('contentEditable',true)[0].focus();
-//    while (element != null) {
-//      $('.BOTTOMTOOLBAR',element).removeClass('HIDDEN');
-//      element = element.parentNode;
-//    }
+    jc.$editables(jc.selectedElement).attr('contentEditable',true);
+    element.focus();
+    //show only the necessary BottomToolBars
+    while (element != null) {
+      if ($(element).hasClass('SECTION')){
+        $(element.lastChild.lastChild).removeClass('HIDDEN');
+      }
+      element = element.parentNode;
+    }
   }
 
   jc.outClick = function(element) {
