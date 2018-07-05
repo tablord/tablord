@@ -267,9 +267,12 @@
 
   // html ///////////////////////////////////////////////
 
-  function HTML() {
+  function HTML(outputElement) {
+    // outputElement is, if specified, the Element where HTML will be dumped
+    //         element is essential if HTML uses the finalize() method
     this._html = '';
     this._tagsEnd = [];
+    this._outputElement = outputElement;
   }
 
 
@@ -385,7 +388,19 @@
     return this._html+this._tagsEnd.join('');
   }
 
+  HTML.prototype.finalize = function(finalizationFunc) {
+    // finalizationFunc must be a function(output) {...}
+    //
+    if (this._outputElement == undefined) throw new Error('HTML.finalize can only be used if an outputElement was associated');
+    this._finalize = finalizationFunc;
+    jc.finalizations.push(this);
+    return this;
+  }
     
+  HTML.prototype.alert = function(message) {
+    window.alert(message);
+    return this;
+  }
   // helpers /////////////////////////////////////////////
 
   function range(min,max) {    //TODO devrait être un itérateur, mais n'existe pas encore dans cette version

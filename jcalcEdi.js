@@ -10,6 +10,8 @@
             htmlIndent:1,
             simulation:undefined, // will be set by StateMachine.js
             blockNumber:0,
+            finalizations:[],
+
             errorHandler:function(message,url,line) {
                 var out  = jc.outputElement(jc.codeElementBeingExecuted);
                 if (out) {
@@ -329,6 +331,7 @@
       '<INPUT onclick="$(\'.DELETED\').toggleClass(\'HIDDEN\',this.checked);this.scrollIntoView();" type=checkbox>hide deleted</INPUT>'+
       '<INPUT onclick="$(\'.TEST\').toggleClass(\'HIDDEN\',this.checked);" type=checkbox>hide tests</INPUT>'+
       '<INPUT onclick="$(\'.TRACE\').toggleClass(\'HIDDEN\',this.checked);" type=checkbox>hide traces</INPUT>'+
+      '<BUTTON onclick=jc.hideToolBars();>hide ToolBars</BUTTON>'+
       '<DIV class=RICHEDITTOOLBAR style="float:left;">'+
         '<BUTTON onclick=jc.richedit.bold();><b>B</b></BUTTON>'+ 
         '<BUTTON onclick=jc.richedit.italic();><i>i</i></BUTTON>'+ 
@@ -478,7 +481,12 @@
     return $(element);
   }
 
+  jc.hideToolBars = function() {
+    $('.BOTTOMTOOLBAR').add(jc.localToolBar).addClass('HIDDEN');
+  }
+
   jc.selectElement = function(element) {
+    jc.moveLocalToolBar(element);
     var e = jc.selectedElement;
     if (e === element) {
       e.focus();
@@ -488,11 +496,10 @@
     jc.$editables(e)
     .attr('contentEditable',false)
     .each(function(i,e){jc.reformatRichText(e)});
-    $('.BOTTOMTOOLBAR').not(window.document.body.lastChild).addClass('HIDDEN');
+    $('.BOTTOMTOOLBAR').addClass('HIDDEN');
 
     $(element).addClass('SELECTED');
     jc.selectedElement = element;
-    jc.moveLocalToolBar(element);
     jc.$editables(jc.selectedElement).attr('contentEditable',true);
     element.focus();
     //show only the necessary BottomToolBars
@@ -502,6 +509,7 @@
       }
       element = element.parentNode;
     }
+    $(window.document.body.lastChild).removeClass('HIDDEN');
   }
 
   jc.outClick = function(element) {
@@ -509,48 +517,44 @@
     jc.execCode(code);
   }
 
+  jc.displayResult = function(result,out) {
+    try {
+      if (result == undefined) {
+        jc.displayError('undefined',out);
+      }
+      out.innerHTML = trace.span()+view(result);
+      $(out).removeClass('ERROR').addClass('SUCCESS');
+    }
+    catch (e) {
+      e.code='displayResult> view(result)'
+      jc.displayError(e,out);
+    }
+  }
+
+  jc.displayError = function(error,out) {
+    if (error.message) {
+      var faults = error.message.match(/« (.+?) »/);
+      if (faults != null) {
+        var fault = faults[1];
+        var code = (error.code || '').replace(new RegExp(fault,'g'),'<SPAN class="ERROR">'+fault+'</SPAN>');
+      }
+      error = error.name+': '+error.message;
+    }
+    var tag = (out.tagName=='SPAN')?'SPAN':'PRE';  // if span, one can only insert span, not div
+    out.innerHTML = trace.span()+error+(code?'<'+tag+' class="CODEINERROR">'+code+'</'+tag+'>':'');
+    $(out).removeClass('SUCCESS').addClass('ERROR');
+  }
+
+
   jc.execCode = function(element) {
-
-    function displayResult (result,out) {
-      try {
-        out.innerHTML = trace.span()+view(result);
-        $(out).removeClass('ERROR').addClass('SUCCESS');
-      }
-      catch (e) {
-        e.code='displayResult> view(result)'
-        displayError(e,out);
-      }
-    }
-
-    function displayError(error,out) {
-      if (error.message) {
-        var faults = error.message.match(/« (.+?) »/);
-        if (faults != null) {
-          var fault = faults[1];
-          var code = (error.code || '').replace(new RegExp(fault,'g'),'<SPAN class="ERROR">'+fault+'</SPAN>');
-        }
-        error = error.name+': '+error.message;
-      }
-      var tag = (out.tagName=='SPAN')?'SPAN':'PRE';  // if span, one can only insert span, not div
-      out.innerHTML = trace.span()+error+(code?'<'+tag+' class="CODEINERROR">'+code+'</'+tag+'>':'');
-      $(out).removeClass('SUCCESS').addClass('ERROR');
-    }
-
-    //-------------
     if ($(element).hasClass('DELETED')) return;
-
 
     jc.codeElementBeingExecuted = element; 
     var out  = jc.outputElement(element);
     var test = jc.testElement(element)
-    jc.output = new HTML();
+    jc.output = new HTML(out);
     var res = jc.securedEval(jc.removeTags(element.innerHTML));
-    if (res == undefined) {
-      displayError('undefined',out);
-    }
-    else {
-      displayResult(res,out);
-    }
+    jc.displayResult(res,out);
     // test
     if (test != undefined) {
       if (jc.trimHtml(out.innerHTML) == jc.trimHtml(test.innerHTML)) {   //TODO rethink how to compare
@@ -562,13 +566,27 @@
     }
   }
 
+  jc.finalize = function() {
+    for (var i=0;i<jc.finalizations.length;i++) {
+      var out = jc.finalizations[i];
+a(out._html,out._finalize)
+      jc.codeElementBeingExecuted = element; 
+      out._finalize(out);
+      out._finalize = undefined;
+      jc.displayResult(out,out._outputElement);
+    }
+  }
+
   jc.execAll = function() {
+    jc.finalizations = [];
     jc.tableOfContent.updateSections();
     jc.$editables(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
     $('.CODE').each(function(i,e) {jc.execCode(e);});
+    jc.finalize();
   }
 
   jc.execAutoExec = function() {
+    jc.finalizations = [];
     jc.tableOfContent.updateSections();
     jc.$editables(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
     $('.CODE').each(function(i,e) {
@@ -576,6 +594,7 @@
         jc.execCode(e);
       }
     })
+    jc.finalize();
   }
 
   jc.reformatRichText = function(element) {
@@ -610,6 +629,7 @@
 
 
   window.attachEvent('onload',function () {
+    $('.SELECTED').removeClass('SELECTED');
     $('.CODE').bind("keypress",undefined,jc.editorKeyPress);
     $('.RICHTEXT').bind("keypress",undefined,jc.richTextKeyPress);
     $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR');
