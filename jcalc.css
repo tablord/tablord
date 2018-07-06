@@ -117,6 +117,10 @@ p {
   padding: 4px;
 }
 
+.OUTPUT {
+  background-color: b7b7b7;
+  color: 828282;
+}
 
 .TEST {
   background-color: b6fff7;

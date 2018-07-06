@@ -267,11 +267,12 @@
 
   // html ///////////////////////////////////////////////
 
-  function HTML(outputElement) {
+  function HTML(codeElement,outputElement) {
     // outputElement is, if specified, the Element where HTML will be dumped
     //         element is essential if HTML uses the finalize() method
     this._html = '';
     this._tagsEnd = [];
+    this._codeElement = codeElement;
     this._outputElement = outputElement;
   }
 
@@ -389,9 +390,13 @@
   }
 
   HTML.prototype.finalize = function(finalizationFunc) {
-    // finalizationFunc must be a function(output) {...}
-    //
-    if (this._outputElement == undefined) throw new Error('HTML.finalize can only be used if an outputElement was associated');
+    // finalizationFunc must be a function() {...}
+    // note that as this function is defined within a code that will be created in secureEval, we are
+    // also inside with(v) so any user variable is availlable as well as output is availlable because of the closure mecanism
+
+    if ((this._codeElement == undefined) || (this._outputElement == undefined)) {
+      throw new Error('HTML.finalize can only be used if a code and output Element was associated');
+    }
     this._finalize = finalizationFunc;
     jc.finalizations.push(this);
     return this;

@@ -552,7 +552,7 @@
     jc.codeElementBeingExecuted = element; 
     var out  = jc.outputElement(element);
     var test = jc.testElement(element)
-    jc.output = new HTML(out);
+    jc.output = new HTML(element,out);
     var res = jc.securedEval(jc.removeTags(element.innerHTML));
     jc.displayResult(res,out);
     // test
@@ -569,10 +569,10 @@
   jc.finalize = function() {
     for (var i=0;i<jc.finalizations.length;i++) {
       var out = jc.finalizations[i];
-a(out._html,out._finalize)
-      jc.codeElementBeingExecuted = element; 
-      out._finalize(out);
-      out._finalize = undefined;
+      jc.codeElementBeingExecuted = out._codeElement;
+      jc.errorHandler.code = out._finalize+''; 
+      out._finalize();
+      out._finalize = undefined;  // so that displayResult will not show ... to be finalized...
       jc.displayResult(out,out._outputElement);
     }
   }
@@ -598,7 +598,7 @@ a(out._html,out._finalize)
   }
 
   jc.reformatRichText = function(element) {
-    if (element == undefined) return;
+    if ((element == undefined) || ($(element).hasClass('CODE'))) return;
     var mark = /\{\{(.*?)\}\}/;
     var h = element.innerHTML;
     while (h.search(mark)!=-1) {
