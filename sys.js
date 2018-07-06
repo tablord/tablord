@@ -35,8 +35,20 @@ jc.fso = {
   copy: function (source,target) {
     var fso = new ActiveXObject("Scripting.FileSystemObject");
     fso.CopyFile(source,target);
-  }
+  },
 
+  writeFile: function (fileName,text,mode) {
+    mode = mode || 2;
+    var fso = new ActiveXObject("Scripting.FileSystemObject");
+    var stream = fso.OpenTextFile(fileName,mode,true);
+    stream.Write(text);
+    stream.Close();
+  },
+  readFile: function(fileName) {
+    var fso = new ActiveXObject("Scripting.FileSystemObject");
+    var stream = fso.OpenTextFile(fileName,1,true);
+    return stream.ReadAll();
+  }
 }
 
   

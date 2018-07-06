@@ -94,30 +94,6 @@
     return '';
   }
 
-
-  // object viewers /////////////////////////////////////
-
-  function view(obj) {
-    if (typeof obj == 'string') {
-      return jc.toHtml(obj);
-    }
-    if (typeof obj == 'function') {
-      return jc.help(obj);
-    }
-    if (obj.span) {
-      return obj.span();
-    }
-    if (obj.view) {      
-      return obj.view();
-    }
-    if (obj.outerHTML) { // an Element
-      return 'DOM Element<SPAN class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(jc.purgeJQueryAttr(obj.outerHTML)))+'</SPAN>';
-    }
-    if (obj == '[object Object]') {
-      return inspect(obj).span();
-    }
-    return jc.toHtml(obj+''); //either valueOf or toString
-  }
   
 
   // Inspector ////////////////////////////////////////////////////////
@@ -376,7 +352,9 @@
 
   jc.save = function() {
     // save the sheet under fileName or the current name if fileName is not specified
-    var fileName = window.location.pathname;
+    var fileName = window.prompt('save this sheet in this file?',window.location.pathname);
+    if (fileName == undefined) return;
+
     var fso = new ActiveXObject("Scripting.FileSystemObject");
     var file = fso.OpenTextFile(fileName,2,true);
     file.Write(window.document.documentElement.outerHTML);
@@ -517,16 +495,39 @@
     jc.execCode(code);
   }
 
+
+  jc.view = function(obj) {
+    if (obj === undefined) {
+      return '<SPAN style=color:red;>undefined</SPAN>';
+    }
+    if (obj === '') {
+      return '<SPAN style=color:red;>empty string</SPAN>';
+    }
+    if (typeof obj == 'function') {
+      return jc.help(obj);
+    }
+    if (obj.span) {
+      return obj.span();
+    }
+    if (obj.view) {      
+      return obj.view();
+    }
+    if (obj.outerHTML) { // an Element
+      return 'DOM Element<SPAN class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(jc.purgeJQueryAttr(obj.outerHTML)))+'</SPAN>';
+    }
+    if (obj == '[object Object]') {
+      return inspect(obj).span();
+    }
+    return jc.toHtml(obj+''); //either valueOf or toString
+  }
+
   jc.displayResult = function(result,out) {
     try {
-      if (result == undefined) {
-        jc.displayError('undefined',out);
-      }
-      out.innerHTML = trace.span()+view(result);
+      out.innerHTML = trace.span()+jc.view(result);
       $(out).removeClass('ERROR').addClass('SUCCESS');
     }
     catch (e) {
-      e.code='displayResult> view(result)'
+      e.code='displayResult> jc.view(result)'
       jc.displayError(e,out);
     }
   }
