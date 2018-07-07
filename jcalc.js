@@ -47,14 +47,8 @@
     return '[object V('+this._name+'):'+this.valueOf()+']';
   }
 
-  V.prototype.span = v.prototype.valueOf;
-
   V.prototype.full = function() {
-    return this.label()+'= <span class=VALUE>'+this.valueOf()+'</span>'+this.unit();
-  }
-
-  V.prototype.view = function() {
-    return '<DIV>'+this.span()+'</DIV>';
+    return new HTML(this.label()+'= <span class=VALUE>'+this.valueOf()+'</span>'+this.unit());
   }
 
   function v(name,value) {
@@ -133,7 +127,7 @@
       h += (col=="_id")?'<th>'+cell+'</th>':'<td>'+cell+'</td>';
     }
     h += '</tr></tbody></table>';
-    return h;
+    return new HTML(h);
   }
 
   Row.prototype.list = function() {
@@ -250,11 +244,11 @@
       h += '</tr>';
     }
     h += '</tbody></table>';
-    return h;
+    return new HTML(h);
   }
 
   Table.prototype.view = function(options) {
-    return '<div><var>'+this._name+'</var>'+this.span(options)+'</div>';
+    return new HTML('<div><var>'+this._name+'</var>'+this.span(options)+'</div>');
   }
 
   function table(name,local) {
@@ -267,17 +261,33 @@
 
 
 
-  // html ///////////////////////////////////////////////
+  // Output ///////////////////////////////////////////////
 
-  function HTML(codeElement,outputElement) {
+  function newOutput (codeElement,outputElement) {
     // outputElement is, if specified, the Element where HTML will be dumped
     //         element is essential if HTML uses the finalize() method
-    this._html = '';
-    this._tagsEnd = [];
-    this._codeElement = codeElement;
-    this._outputElement = outputElement;
+    h = new HTML();
+    h._codeElement = codeElement;
+    h._outputElement = outputElement;
+    return h;
   }
 
+
+  // html ///////////////////////////////////////////////
+
+
+
+  function HTML(html) {
+    this._html = html || '';
+    this._tagsEnd = [];
+  }
+
+
+  HTML.prototype.toString = function() {
+    return this._html+this._tagsEnd.join('');
+  }
+
+  HTML.prototype.span = HTML.prototype.toString;
 
   HTML.prototype.html = function (html) {
   // insert any html
@@ -313,8 +323,6 @@
     return this;
   }
     
-    
-  
   HTML.prototype.p = function (/*elements*/) {
     this.tag('P',arguments);
     return this;
@@ -385,10 +393,6 @@
     var that = this;
     $(jquerySelector).each(function(i,e){e.innerHTML = that._html});
     return this
-  }
-
-  HTML.prototype.view = function() {
-    return this._html+this._tagsEnd.join('');
   }
 
   HTML.prototype.finalize = function(finalizationFunc) {

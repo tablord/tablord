@@ -42,7 +42,7 @@
     for (var i=0; i < this.length; i++) {
       s.push(i+': <code class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(jc.purgeJQueryAttr(this[i].outerHTML)))+'</code>');
     }
-    return 'JQuery of '+this.length+' elements<br>'+s.join('<br>');
+    return new HTML('JQuery of '+this.length+' elements<br>'+s.join('<br>'));
   }  
 
   // edi related functions ////////////////////////////////////////////
@@ -76,7 +76,7 @@
   function trace(/*messages*/) {
     var message = '';
     for (var i=0; i<arguments.length; i++){
-      message += view(arguments[i]);
+      message += jc.htmlView(arguments[i]);
     }
     jc.traces.push(message);
     if (jc.traces.length > jc.tracesMaxLength) {
@@ -89,7 +89,7 @@
     if (jc.traces.length > 0){
       var h = '<DIV class=TRACE>'+jc.traces.length+' traces:<table class=DEBUG><tr><td class=TRACE>'+jc.traces.join('</td></tr><tr><td class=TRACE>')+'</td></tr></table></DIV>';
       jc.traces = [];
-      return h
+      return new HTML(h);
     }
     return '';
   }
@@ -123,7 +123,7 @@
            )
           +'</td></tr>'; 
     };
-    return r+'</table></fieldset></DIV>';
+    return new HTML(r+'</table></fieldset></DIV>');
   }
 
   function inspect(obj,name,depth){
@@ -170,12 +170,13 @@
 
   jc.toHtml = function(htmlCode) {
     // transform htmlCode in such a manner that the code can be visualised in a <code>...
-    return htmlCode.replace(/&/g,"&amp;")
-                   .replace(/</g,"&lt;")
-                   .replace(/>/g,"&gt;")
-                   .replace(/\\/g,'\\\\')
-                   .replace(/\r/g,'')
-                   .replace(/\n/g,"<br>");
+    return String(htmlCode)
+             .replace(/&/g,"&amp;")
+             .replace(/</g,"&lt;")
+             .replace(/>/g,"&gt;")
+             .replace(/\\/g,'\\\\')
+             .replace(/\r/g,'')
+             .replace(/\n/g,"<br>");
   }
 
 
@@ -190,6 +191,19 @@
   // TODO******** not ok for nested tags !!!! ********************************
     return html.replace(/\<.*?style\="DISPLAY\: none".*?\<\/.*?\>/g,'').replace(/\<.*?\>/g,'');
   }
+
+  jc.findInArrayOfObject = function(criteria,a) {
+    // find the first object in the array of object a that has all criteria true
+    // example jc.findInArrayOfObject({toto:5},[{toto:1,tutu:5},{toto:5}])
+    // will return 1
+    next: for (var i=0; i<a.length; i++) {
+      for (var k in criteria) {
+        if (a[i][k] !== criteria[k]) continue next;
+      }
+      return i;
+    }
+  }
+    
 
   jc.help = function(func) {
   // returns the signature of the function and the first comment in a pretty html 
@@ -225,6 +239,9 @@
         jc.tableOfContent.toc.push({number:number,title:jc.textContent(t),sectionId:e.id});
       });
     },
+    find : function(title) {
+      return this.toc[jc.findInArrayOfObject({title:title},this.toc)];
+    },
     span : function() {
       var t = table();
       t.addRows(this.toc);
@@ -232,6 +249,18 @@
     }
   };
     
+  jc.link = function(text,url) {
+    // if no url is given, text is used as a search into table of content to find the section
+    // TODO: futur version will accept http url
+    url = url || text;
+    var entry = jc.tableOfContent.find(url);
+    if (entry) {
+      return new HTML('<a href="#'+entry.sectionId+'">'+text+'</a>');
+    }
+    return new HTML('<span class=INVALIDLINK title="'+url+'">'+text+'</span>');
+  }
+
+
   // EDI ///////////////////////////////////////////////////////////////////////////////
 
   jc.richedit = {
@@ -388,7 +417,6 @@
 
   jc.removeDeletedBlocks = function() {
     $('.DELETED').remove();
-a('removed')
   }
 
   jc.insertNewCodeBlock = function(beforeThatElement) {
@@ -508,7 +536,7 @@ a('removed')
   }
 
 
-  jc.view = function(obj) {
+  jc.htmlView = function(obj) {
     if (obj === undefined) {
       return '<SPAN style=color:red;>undefined</SPAN>';
     }
@@ -521,25 +549,29 @@ a('removed')
     if (obj.span) {
       return obj.span();
     }
-    if (obj.view) {      
-      return obj.view();
-    }
     if (obj.outerHTML) { // an Element
       return 'DOM Element<SPAN class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(jc.purgeJQueryAttr(obj.outerHTML)))+'</SPAN>';
     }
     if (obj == '[object Object]') {
       return inspect(obj).span();
     }
-    return jc.toHtml(obj+''); //either valueOf or toString
+    if (obj.valueOf) {
+      var v = obj.valueOf();
+      if ((typeof v == 'number') || (typeof v == 'string')) {
+        return v;
+      }
+      return jc.htmlView(obj.valueOf());    //as valueOf might be an object or a function let start the process again
+    }
+    return jc.toHtml(obj); 
   }
 
   jc.displayResult = function(result,out) {
     try {
-      out.innerHTML = trace.span()+jc.view(result);
+      out.innerHTML = trace.span()+jc.htmlView(result);
       $(out).removeClass('ERROR').addClass('SUCCESS');
     }
     catch (e) {
-      e.code='displayResult> jc.view(result)'
+      e.code='displayResult>'
       jc.displayError(e,out);
     }
   }
@@ -565,7 +597,7 @@ a('removed')
     jc.codeElementBeingExecuted = element; 
     var out  = jc.outputElement(element);
     var test = jc.testElement(element)
-    jc.output = new HTML(element,out);
+    jc.output = newOutput(element,out);
     var res = jc.securedEval(jc.removeTags(element.innerHTML));
     jc.displayResult(res,out);
     // test
@@ -612,11 +644,15 @@ a('removed')
 
   jc.reformatRichText = function(element) {
     if ((element == undefined) || ($(element).hasClass('CODE'))) return;
-    var mark = /\{\{(.*?)\}\}/;
+    var mark = /\{\{[#]?(.*?)\}\}/;
     var h = element.innerHTML;
-    while (h.search(mark)!=-1) {
+    var idx=-1;
+    while ((idx=h.search(mark))!=-1) {
       jc.blockNumber++;
-      h = h.replace(mark,'<SPAN class="CODE AUTOEXEC" id='+ jc.blockId('code')+' style="DISPLAY: none;">$1</SPAN><SPAN class=OUTPUT id='+ jc.blockId('out')+'>no output</SPAN>');
+      if (h.charAt(idx+2) == '#') {
+        h = h.replace(mark,'<SPAN class="CODE AUTOEXEC" id='+ jc.blockId('code')+' style="DISPLAY: none;">jc.link("$1")</SPAN><SPAN class=OUTPUT contentEditable=false id='+ jc.blockId('out')+'>no output</SPAN>');
+      }
+      h = h.replace(mark,'<SPAN class="CODE AUTOEXEC" id='+ jc.blockId('code')+' style="DISPLAY: none;">$1</SPAN><SPAN class=OUTPUT contentEditable=false id='+ jc.blockId('out')+'>no output</SPAN>');
     }
     element.innerHTML = h;
   }

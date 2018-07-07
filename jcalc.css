@@ -194,6 +194,9 @@ p {
   border-left: grey solid 1px;
 }
 
+.INVALIDLINK {
+  color:red;
+}
 
 #localToolBar,
 button {
