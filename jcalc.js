@@ -47,7 +47,9 @@
     return '[object V('+this._name+'):'+this.valueOf()+']';
   }
 
-  V.prototype.span = function() {
+  V.prototype.span = v.prototype.valueOf;
+
+  V.prototype.full = function() {
     return this.label()+'= <span class=VALUE>'+this.valueOf()+'</span>'+this.unit();
   }
 

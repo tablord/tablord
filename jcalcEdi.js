@@ -355,6 +355,8 @@
     var fileName = window.prompt('save this sheet in this file?',window.location.pathname);
     if (fileName == undefined) return;
 
+    jc.removeDeletedBlocks();
+    jc.selectElement(undefined);
     var fso = new ActiveXObject("Scripting.FileSystemObject");
     var file = fso.OpenTextFile(fileName,2,true);
     file.Write(window.document.documentElement.outerHTML);
@@ -379,8 +381,14 @@
     $(element)
     .add(jc.outputElement(element))
     .add(jc.testElement(element))
+    .find('*')
+    .andSelf()
     .toggleClass('DELETED',del);
-    for (var i=0; i<element.children.length; i++) jc.deleteBlock(element.children[i],del);
+  }
+
+  jc.removeDeletedBlocks = function() {
+    $('.DELETED').remove();
+a('removed')
   }
 
   jc.insertNewCodeBlock = function(beforeThatElement) {
@@ -464,7 +472,6 @@
   }
 
   jc.selectElement = function(element) {
-    jc.moveLocalToolBar(element);
     var e = jc.selectedElement;
     if (e === element) {
       e.focus();
@@ -475,9 +482,14 @@
     .attr('contentEditable',false)
     .each(function(i,e){jc.reformatRichText(e)});
     $('.BOTTOMTOOLBAR').addClass('HIDDEN');
-
-    $(element).addClass('SELECTED');
     jc.selectedElement = element;
+    if (element == undefined){
+      $(jc.localToolBar).addClass('HIDDEN');
+      return;
+    }
+
+    jc.moveLocalToolBar(element);
+    $(element).addClass('SELECTED');
     jc.$editables(jc.selectedElement).attr('contentEditable',true);
     element.focus();
     //show only the necessary BottomToolBars
