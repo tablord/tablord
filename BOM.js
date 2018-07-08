@@ -384,7 +384,7 @@ Variant.prototype.clearPlan = function(){
 
 Variant.prototype.add = function(quantity,condition,neededAt){
   var cond = Math.min.apply(null,condition);
-trace(inspect({quantity:quantity,condition:condition,min:cond,neededAt:neededAt}))
+trace(jc.inspect({quantity:quantity,condition:condition,min:cond,neededAt:neededAt}))
   this.plan.add(neededAt,quantity*cond);
   return this;
 }
@@ -394,7 +394,7 @@ Variant.prototype.toString = function(){
 }
 
 Variant.prototype.span = function () {
-  var h = inspect(this).span();
+  var h = jc.inspect(this).span();
   h += this.plan.span();
   return h;
 }
@@ -534,7 +534,7 @@ Groups.prototype.toString = function() {
 }
 
 Groups.prototype.span = function() {
-  return '<fieldset><label>'+this.toString()+'</label>'+inspect(this.names,'names').span()+inspect(this.groups,'groups').span()+'</fieldset>';
+  return '<fieldset><label>'+this.toString()+'</label>'+jc.inspect(this.names,'names').span()+jc.inspect(this.groups,'groups').span()+'</fieldset>';
 }  
       
     

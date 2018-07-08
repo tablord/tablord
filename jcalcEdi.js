@@ -1,6 +1,9 @@
   // global variables /////////////////////////////////////////////////
 
-  var jc = {codeElementBeingExecuted:undefined,
+  var jc = {name:'JCalc',
+            version:'0.1',
+            authors:['Marc Nicole'],
+            codeElementBeingExecuted:undefined,
             selectedElement:undefined,
             output:undefined,
             codeElementBeingExecuted:undefined,
@@ -36,6 +39,10 @@
             }
            };
 
+
+  jc.credits = {name:jc.name,version:jc.version,authors:jc.authors};
+  jc.helps = {credits:jc.credits};
+
   //JQuery extentions /////////////////////////////////////////////////
   $.prototype.span = function() {
     var s = [];
@@ -67,7 +74,7 @@
   function a(/*messages*/) {
     var message = '';
     for (var i=0; i<arguments.length; i++){
-      message += inspect(arguments[i]);
+      message += jc.inspect(arguments[i]);
     }
     window.alert(message);
   }
@@ -119,14 +126,14 @@
     for (var k in this.obj) {
       r += '<tr><th valign="top">'+k+'</th><td valign="top" style="text-align:left;">'+
            (  (typeof this.obj[k] == 'function')?jc.help(this.obj[k]):
-                 ((depth == 1)?jc.toHtml(''+this.obj[k]):inspect(this.obj[k]).span(depth-1))
+                 ((depth == 1)?jc.toHtml(this.obj[k]):jc.inspect(this.obj[k]).span(depth-1))
            )
           +'</td></tr>'; 
     };
     return new HTML(r+'</table></fieldset></DIV>');
   }
 
-  function inspect(obj,name,depth){
+  jc.inspect = function(obj,name,depth){
     return new jc.Inspector(obj,name,depth);
   }
 
@@ -179,6 +186,9 @@
              .replace(/\n/g,"<br>");
   }
 
+  jc.codeExample = function(example) {
+    return new HTML('<span class=CODEEXAMPLE>'+example+'</span>');
+  }
 
   jc.trimHtml = function(html) {
   // suppress all unsignificant blanks and non visible char
@@ -208,18 +218,49 @@
   jc.help = function(func) {
   // returns the signature of the function and the first comment in a pretty html 
   // - func: the function to be inspected
+  // if func is undefined returns all helps of all installed modules
+    if (func == undefined) {
+      var h = '';
+      for (var module in jc.helps) {
+        h += jc.inspect(jc.helps[module],module).span();
+      }
+      return new HTML(h);
+    }
+
     var source = func.toString().split('\n');
     var comments = []
     var signature = source[0].match(/(function.*\))/)[0];
     for (var i=1; i<source.length; i++) {
       var comment = source[i].match(/^\s*\/\/(.*)$/);
       if (comment && (comment.length ==2)) {
-        comments.push(comment[1]);
+        comments.push(jc.toHtml(comment[1]));
       }
       else break;
     }
-    return '<b>'+signature+'</b><br>'+comments.join('<br>');
+    return new HTML('<b>'+signature+'</b><br>'+comments.join('<br>'));
   }
+
+  // navigation within document ////////////////////////////////////////////////////////
+  jc.sectionBeingExecuted$ = function() {
+    // returns a jQuery containing the deepest section that contains the code currently in execution
+    return $(jc.currentElementBeingExecuted).closest('.SECTION');
+  }
+
+  jc.testStatus = function() {
+    // set a finalize function that will write to the current output the number of test Failure
+    // in the section that includes the code that executes this function
+    // mostly used in a small code inside the title of a section to summerize the tests below
+    var output = jc.output; // closure on jc.output
+    output.finalize(function(){
+      var section = $(output._codeElement).closest('.SECTION');
+      var numberOfSuccess= section.find('.TEST.SUCCESS').length;
+      var numberOfErrors = section.find('.TEST.ERROR').length;
+      output.html(
+        '<SPAN class='+(numberOfErrors==0?'SUCCESS':'ERROR')+'>tests passed:'+numberOfSuccess+' failed:'+numberOfErrors+'</SPAN>'
+      )}
+    );
+  }
+
   
   // Table of Content //////////////////////////////////////////////////////////////////
   jc.tableOfContent = {
@@ -257,7 +298,7 @@
     if (entry) {
       return new HTML('<a href="#'+entry.sectionId+'">'+text+'</a>');
     }
-    return new HTML('<span class=INVALIDLINK title="'+url+'">'+text+'</span>');
+    return new HTML('<span class=INVALIDLINK title="#'+url+' is not found in the table of content">'+text+'</span>');
   }
 
 
@@ -309,7 +350,14 @@
     // return the output element associated with element if any
     // if applied on another element than id=codexxxx return undefined;
     if (element.id.slice(0,4) !== 'code') return;
-    return window.document.getElementById(element.id.replace(/code/,"out"));
+    var outId = element.id.replace(/code/,"out");
+    var out = window.document.getElementById(outId);
+    if (out == undefined) {
+      var tag = (element.tagName=='SPAN'?'SPAN':'DIV');
+      out = $('<'+tag+' class=OUTPUT id='+outId+'>no output: created on the fly</'+tag+'>')[0];
+      $(out).insertAfter(element);
+    }
+    return out;
   }
 
   jc.testElement = function(element) {
@@ -553,7 +601,7 @@
       return 'DOM Element<SPAN class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(jc.purgeJQueryAttr(obj.outerHTML)))+'</SPAN>';
     }
     if (obj == '[object Object]') {
-      return inspect(obj).span();
+      return jc.inspect(obj).span();
     }
     if (obj.valueOf) {
       var v = obj.valueOf();

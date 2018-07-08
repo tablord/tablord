@@ -14,10 +14,10 @@
 <BODY designMode="on">
 <DIV id=sect0002 class=SECTION>
 <H1 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false>1 TOC</H1>
-<DIV class=SECTIONCONTAINER><PRE onclick=jc.selectElement(this); id=code0017 class=CODE contentEditable=false jQuery15105627521341651112="1" jQuery15105167460032090546="1" jQuery151017430690767923435="1" jQuery151003707577822768998="7" jQuery151011891968453480761="1" jQuery15104875754274703493="1" jQuery15102998244875157195="1" jQuery1510234951271020519="1"><P>output</P><P>.p('this example shows that we can finalize the output so that we can depend on the result of further codes')</P><P>.finalize(function () {output</P><P>.p('this is the finalization: ',toto);</P><P>})</P><P>&nbsp;</P><P>&nbsp;</P></PRE>
+<DIV class=SECTIONCONTAINER><PRE onclick=jc.selectElement(this); id=code0017 class=CODE contentEditable=false jQuery15103178250476983002="1" jQuery15105627521341651112="1" jQuery15105167460032090546="1" jQuery151017430690767923435="1" jQuery151003707577822768998="7" jQuery151011891968453480761="1" jQuery15104875754274703493="1" jQuery15102998244875157195="1" jQuery1510234951271020519="1" jQuery151024243486173701562="1"><P>output</P><P>.p('this example shows that we can finalize the output so that we can depend on the result of further codes')</P><P>.finalize(function () {output</P><P>.p('this is the finalization: ',toto);</P><P>})</P><P>&nbsp;</P><P>&nbsp;</P></PRE>
 <DIV onclick=jc.outClick(this) id=out0017 class="OUTPUT OLD SUCCESS">
 <P>this example shows that we can finalize the output so that we can depend on the result of further codes</P>
-<P>this is the finalization: 3</P></DIV><PRE onclick=jc.selectElement(this); id=code0008 class=CODE contentEditable=false jQuery15105627521341651112="2" jQuery15105167460032090546="2" jQuery151017430690767923435="2" jQuery151003707577822768998="1" jQuery151011891968453480761="2" jQuery15104875754274703493="2" jQuery15102998244875157195="2" jQuery15108828527293875901="1" jQuery15106953995169036529="1" jQuery1510234951271020519="2">jc.tableOfContent</PRE>
+<P>this is the finalization: <VAR>toto</VAR>= <SPAN class=VALUE>34</SPAN></P></DIV><PRE onclick=jc.selectElement(this); id=code0008 class=CODE contentEditable=false jQuery15103178250476983002="2" jQuery15105627521341651112="2" jQuery15105167460032090546="2" jQuery151017430690767923435="2" jQuery151003707577822768998="1" jQuery151011891968453480761="2" jQuery15104875754274703493="2" jQuery15102998244875157195="2" jQuery1510234951271020519="2" jQuery15108828527293875901="1" jQuery15106953995169036529="1" jQuery151024243486173701562="2">jc.tableOfContent</PRE>
 <DIV onclick=jc.outClick(this) id=out0008 class="OUTPUT OLD SUCCESS">
 <TABLE border=1>
 <THEAD>
@@ -32,23 +32,23 @@
 <TD>sect0002</TD></TR>
 <TR>
 <TD>2</TD>
-<TD>var</TD>
+<TD>var {{jc.testStatus()}}</TD>
 <TD>sect0003</TD></TR>
 <TR>
 <TD>3</TD>
-<TD>3</TD>
+<TD>34</TD>
 <TD>sect0005</TD></TR>
 <TR>
 <TD>3.1</TD>
-<TD>bidule 6</TD>
+<TD>bidule 37</TD>
 <TD>sect0012</TD></TR>
 <TR>
 <TD>3.1.1</TD>
-<TD>truc 12</TD>
+<TD>truc 43</TD>
 <TD>sect0013</TD></TR>
 <TR>
 <TD>4</TD>
-<TD></TD>
+<TD>asdfasdfasdf</TD>
 <TD>sect0006</TD></TR>
 <TR>
 <TD>5</TD>
@@ -57,32 +57,38 @@
 <TR>
 <TD>6</TD>
 <TD>sdfgsdf</TD>
-<TD>sect0023</TD></TR></TBODY></TABLE></DIV><PRE onclick=jc.selectElement(this); id=code0019 class=CODE contentEditable=false jQuery15105627521341651112="8" jQuery1510234951271020519="3">jc.link('target')</PRE>
+<TD>sect0023</TD></TR></TBODY></TABLE></DIV><PRE onclick=jc.selectElement(this); id=code0019 class=CODE contentEditable=false jQuery15103178250476983002="3" jQuery15105627521341651112="8" jQuery1510234951271020519="3" jQuery151024243486173701562="3">jc.link('target')</PRE>
 <DIV onclick=jc.outClick(this) id=out0019 class="OUTPUT OLD SUCCESS"><A href="file:///D:/Documents/programmation/jcalcV0/jcalc_test.hta#sect0022">target</A></DIV>
 <DIV class="BOTTOMTOOLBAR HIDDEN"><BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON></DIV></DIV></DIV>
+<DIV id=localToolBar class=HIDDEN><BUTTON onclick=jc.insertNewSection(jc.localToolBar);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(jc.localToolBar);>^ new richtext ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>^ new code ^</BUTTON><SPAN id=codeId>sect0003</SPAN><INPUT onclick="$('.CODE').toggleClass('HIDDEN',this.checked);this.scrollIntoView();" type=checkbox>hide codes</INPUT><INPUT onclick="$('.DELETED').toggleClass('HIDDEN',this.checked);this.scrollIntoView();" type=checkbox>hide deleted</INPUT><INPUT onclick="$('.TEST').toggleClass('HIDDEN',this.checked);" type=checkbox>hide tests</INPUT><INPUT onclick="$('.TRACE').toggleClass('HIDDEN',this.checked);" type=checkbox>hide traces</INPUT><BUTTON onclick=jc.hideToolBars();>hide ToolBars</BUTTON>
+<DIV class=RICHEDITTOOLBAR style="FLOAT: left"><BUTTON onclick=jc.richedit.bold();><B>B</B></BUTTON><BUTTON onclick=jc.richedit.italic();><I>i</I></BUTTON><BUTTON onclick=jc.richedit.underline();><U>U</U></BUTTON><BUTTON onclick=jc.richedit.strike();><STRIKE>S</STRIKE></BUTTON><BUTTON onclick=jc.richedit.h1();><B>H1</B></BUTTON><BUTTON onclick=jc.richedit.h2();><B>H2</B></BUTTON><BUTTON onclick=jc.richedit.div();>div</BUTTON><BUTTON onclick=jc.richedit.p();>¶</BUTTON><BUTTON onclick=jc.richedit.ol();>#</BUTTON><BUTTON onclick=jc.richedit.ul();>•</BUTTON><BUTTON onclick=jc.richedit.pre();>{}</BUTTON></DIV>
+<DIV><BUTTON onclick=jc.execAutoExec();>run</BUTTON><BUTTON onclick=jc.execAll();>run all</BUTTON><BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this);>--&gt;test</BUTTON><BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON><BUTTON onclick=jc.save();>save</BUTTON><BUTTON onclick=jc.deleteBlock(jc.selectedElement);>V delete V</BUTTON></DIV></DIV>
 <DIV id=sect0003 class=SECTION>
-<H1 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false>2 var</H1>
-<DIV class=SECTIONCONTAINER><PRE onclick=jc.selectElement(this); id=code0004 class=CODE contentEditable=false jQuery15105627521341651112="3" jQuery15105167460032090546="3" jQuery151017430690767923435="3" jQuery151003707577822768998="2" jQuery151011891968453480761="3" jQuery15104875754274703493="3" jQuery15102998244875157195="3" jQuery15108828527293875901="2" jQuery15106953995169036529="2" jQuery1510234951271020519="4">v('toto',3)</PRE>
-<DIV onclick=jc.outClick(this) id=out0004 class="OUTPUT OLD SUCCESS">3</DIV>
+<H1 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false>2 var <SPAN id=code0023 class="CODE AUTOEXEC" style="DISPLAY: none">jc.testStatus()</SPAN><SPAN id=out0023 class="OUTPUT ERROR" contentEditable=false>Impossible d’obtenir la propriété « html » d’une référence null ou non définie<BR>file:///D:/Documents/programmation/jcalcV0/jcalcEdi.js line:256<BR></SPAN></H1>
+<DIV class=SECTIONCONTAINER><PRE onclick=jc.selectElement(this); id=code0004 class=CODE contentEditable=false jQuery15103178250476983002="4" jQuery15105627521341651112="3" jQuery15105167460032090546="3" jQuery151017430690767923435="3" jQuery151003707577822768998="2" jQuery151011891968453480761="3" jQuery15104875754274703493="3" jQuery15102998244875157195="3" jQuery1510234951271020519="4" jQuery15108828527293875901="2" jQuery15106953995169036529="2" jQuery151024243486173701562="4">v('toto',34)</PRE>
+<DIV onclick=jc.outClick(this) id=out0004 class="OUTPUT OLD SUCCESS">34</DIV>
+<DIV id=test0004 class="TEST ERROR">3</DIV><PRE onclick=jc.selectElement(this); id=code0021 class=CODE contentEditable=false jQuery15103178250476983002="11" jQuery151024243486173701562="5">toto+5</PRE>
+<DIV onclick=jc.outClick(this) id=out0021 class="OUTPUT OLD SUCCESS">39</DIV>
+<DIV id=test0021 class="TEST SUCCESS">39</DIV>
 <DIV class="BOTTOMTOOLBAR HIDDEN"><BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON></DIV></DIV></DIV>
 <DIV id=sect0005 class=SECTION>
-<H1 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false>3 <SPAN id=code0007 class="CODE AUTOEXEC" style="DISPLAY: none" jQuery15105627521341651112="4" jQuery15105167460032090546="4" jQuery151017430690767923435="4" jQuery151003707577822768998="3" jQuery151011891968453480761="4" jQuery15104875754274703493="4" jQuery15102998244875157195="4" jQuery15108828527293875901="3" jQuery15106953995169036529="3" jQuery1510234951271020519="5">toto</SPAN><SPAN id=out0007 class="OUTPUT SUCCESS">3</SPAN></H1>
-<DIV class=SECTIONCONTAINER><PRE onclick=jc.selectElement(this); id=code0010 class=CODE contentEditable=false jQuery15105627521341651112="5" jQuery15105167460032090546="5" jQuery151017430690767923435="5" jQuery151003707577822768998="4" jQuery151011891968453480761="5" jQuery15104875754274703493="5" jQuery15102998244875157195="5" jQuery15108828527293875901="4" jQuery15106953995169036529="4" jQuery1510234951271020519="6">$('#code0010')[0].nodeType</PRE>
-<DIV onclick=jc.outClick(this) id=out0010 class="OUTPUT OLD SUCCESS">1</DIV>
+<H1 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false>3 <SPAN id=code0007 class="CODE AUTOEXEC" style="DISPLAY: none" jQuery15103178250476983002="5" jQuery15105627521341651112="4" jQuery15105167460032090546="4" jQuery151017430690767923435="4" jQuery151003707577822768998="3" jQuery151011891968453480761="4" jQuery15104875754274703493="4" jQuery15102998244875157195="4" jQuery1510234951271020519="5" jQuery15108828527293875901="3" jQuery15106953995169036529="3" jQuery151024243486173701562="6">toto</SPAN><SPAN id=out0007 class="OUTPUT SUCCESS">34</SPAN></H1>
+<DIV class=SECTIONCONTAINER><PRE onclick=jc.selectElement(this); id=code0010 class=CODE contentEditable=false jQuery15103178250476983002="6" jQuery15105627521341651112="5" jQuery15105167460032090546="5" jQuery151017430690767923435="5" jQuery151003707577822768998="4" jQuery151011891968453480761="5" jQuery15104875754274703493="5" jQuery15102998244875157195="5" jQuery1510234951271020519="6" jQuery15108828527293875901="4" jQuery15106953995169036529="4" jQuery151024243486173701562="7">$('#code0021').closest('.SECTION').find('.TEST')</PRE>
+<DIV onclick=jc.outClick(this) id=out0010 class="OUTPUT OLD SUCCESS">JQuery of 2 elements<BR>0: <CODE class=INSPECTHTML>&lt;DIV id=test0004 class="TEST ERROR"&gt;3&lt;/DIV&gt;</CODE><BR>1: <CODE class=INSPECTHTML>&lt;DIV id=test0021 class="TEST SUCCESS"&gt;39&lt;/DIV&gt;</CODE></DIV>
 <DIV id=sect0012 class=SECTION>
-<H2 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false>3.1 bidule <SPAN id=code0014 class="CODE AUTOEXEC" style="DISPLAY: none" jQuery15105627521341651112="6" jQuery15105167460032090546="6" jQuery151017430690767923435="6" jQuery151003707577822768998="5" jQuery151011891968453480761="6" jQuery15104875754274703493="6" jQuery15102998244875157195="6" jQuery15106953995169036529="5" jQuery1510234951271020519="7">toto+3</SPAN><SPAN id=out0014 class="OUTPUT SUCCESS">6</SPAN></H2>
+<H2 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false>3.1 bidule <SPAN id=code0014 class="CODE AUTOEXEC" style="DISPLAY: none" jQuery15103178250476983002="7" jQuery15105627521341651112="6" jQuery15105167460032090546="6" jQuery151017430690767923435="6" jQuery151003707577822768998="5" jQuery151011891968453480761="6" jQuery15104875754274703493="6" jQuery15102998244875157195="6" jQuery1510234951271020519="7" jQuery15106953995169036529="5" jQuery151024243486173701562="8">toto+3</SPAN><SPAN id=out0014 class="OUTPUT SUCCESS">37</SPAN></H2>
 <DIV class=SECTIONCONTAINER>
 <DIV id=sect0013 class=SECTION>
-<H3 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false>3.1.1 truc <SPAN id=code0015 class="CODE AUTOEXEC" style="DISPLAY: none" jQuery15105627521341651112="7" jQuery15105167460032090546="7" jQuery151017430690767923435="7" jQuery151003707577822768998="6" jQuery151011891968453480761="7" jQuery15104875754274703493="7" jQuery15102998244875157195="7" jQuery15106953995169036529="6" jQuery1510234951271020519="8">toto+9</SPAN><SPAN id=out0015 class="OUTPUT SUCCESS">12</SPAN></H3>
+<H3 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false>3.1.1 truc <SPAN id=code0015 class="CODE AUTOEXEC" style="DISPLAY: none" jQuery15103178250476983002="8" jQuery15105627521341651112="7" jQuery15105167460032090546="7" jQuery151017430690767923435="7" jQuery151003707577822768998="6" jQuery151011891968453480761="7" jQuery15104875754274703493="7" jQuery15102998244875157195="7" jQuery1510234951271020519="8" jQuery15106953995169036529="6" jQuery151024243486173701562="9">toto+9</SPAN><SPAN id=out0015 class="OUTPUT SUCCESS">43</SPAN></H3>
 <DIV class=SECTIONCONTAINER>
 <DIV class="BOTTOMTOOLBAR HIDDEN"><BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON></DIV></DIV></DIV>
 <DIV class="BOTTOMTOOLBAR HIDDEN"><BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON></DIV></DIV></DIV>
 <DIV class="BOTTOMTOOLBAR HIDDEN"><BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON></DIV></DIV></DIV>
 <DIV id=sect0006 class=SECTION>
-<H1 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false>4 </H1>
+<H1 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false>4 asdfasdfasdf</H1>
 <DIV class=SECTIONCONTAINER>
 <DIV class="BOTTOMTOOLBAR HIDDEN"><BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON></DIV></DIV></DIV>
-<DIV onclick=jc.selectElement(this); id=rich0021 class=RICHTEXT contentEditable=false jQuery1510234951271020519="9">
+<DIV onclick=jc.selectElement(this); id=rich0021 class=RICHTEXT contentEditable=false jQuery15103178250476983002="9" jQuery1510234951271020519="9" jQuery151024243486173701562="10">
 <P>sd</P>
 <P>fs</P>
 <P>dfg</P>
@@ -117,9 +123,6 @@
 <P>df</P>
 <P>gs</P>
 <P>df</P></DIV>
-<DIV id=localToolBar class=HIDDEN><BUTTON onclick=jc.insertNewSection(jc.localToolBar);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(jc.localToolBar);>^ new richtext ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>^ new code ^</BUTTON><SPAN id=codeId>sect0022</SPAN><INPUT onclick="$('.CODE').toggleClass('HIDDEN',this.checked);this.scrollIntoView();" type=checkbox>hide codes</INPUT><INPUT onclick="$('.DELETED').toggleClass('HIDDEN',this.checked);this.scrollIntoView();" type=checkbox>hide deleted</INPUT><INPUT onclick="$('.TEST').toggleClass('HIDDEN',this.checked);" type=checkbox>hide tests</INPUT><INPUT onclick="$('.TRACE').toggleClass('HIDDEN',this.checked);" type=checkbox>hide traces</INPUT><BUTTON onclick=jc.hideToolBars();>hide ToolBars</BUTTON>
-<DIV class=RICHEDITTOOLBAR style="FLOAT: left"><BUTTON onclick=jc.richedit.bold();><B>B</B></BUTTON><BUTTON onclick=jc.richedit.italic();><I>i</I></BUTTON><BUTTON onclick=jc.richedit.underline();><U>U</U></BUTTON><BUTTON onclick=jc.richedit.strike();><STRIKE>S</STRIKE></BUTTON><BUTTON onclick=jc.richedit.h1();><B>H1</B></BUTTON><BUTTON onclick=jc.richedit.h2();><B>H2</B></BUTTON><BUTTON onclick=jc.richedit.div();>div</BUTTON><BUTTON onclick=jc.richedit.p();>¶</BUTTON><BUTTON onclick=jc.richedit.ol();>#</BUTTON><BUTTON onclick=jc.richedit.ul();>•</BUTTON><BUTTON onclick=jc.richedit.pre();>{}</BUTTON></DIV>
-<DIV><BUTTON onclick=jc.execAutoExec();>run</BUTTON><BUTTON onclick=jc.execAll();>run all</BUTTON><BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this);>--&gt;test</BUTTON><BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON><BUTTON onclick=jc.save();>save</BUTTON><BUTTON onclick=jc.deleteBlock(jc.selectedElement);>V delete V</BUTTON></DIV></DIV>
 <DIV id=sect0022 class=SECTION>
 <H1 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false>5 target</H1>
 <DIV class=SECTIONCONTAINER>
@@ -127,7 +130,7 @@
 <DIV id=sect0023 class=SECTION>
 <H1 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false>6 sdfgsdf</H1>
 <DIV class=SECTIONCONTAINER>
-<DIV onclick=jc.selectElement(this); id=rich0024 class=RICHTEXT contentEditable=false jQuery1510234951271020519="10">
+<DIV onclick=jc.selectElement(this); id=rich0024 class=RICHTEXT contentEditable=false jQuery15103178250476983002="10" jQuery1510234951271020519="10" jQuery151024243486173701562="11">
 <P>sdfgsdfg</P>
 <P>sdfg</P>
 <P>sd</P>

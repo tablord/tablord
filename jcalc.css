@@ -70,6 +70,14 @@ p {
   padding: 0px;
 }
 
+pre {
+  font-family: courier;
+  font-size: 14px;      
+  background-color: f2f9a8;
+  margin: 0px;
+  padding: 0px;
+}
+
 .SELECTED {
   border: 3px solid #909090;
 }
@@ -99,6 +107,7 @@ p {
   padding: 0px;
 }
 
+.CODEEXAMPLE,
 .CODE {
   font-family: courier;
   font-size: 14px;      
@@ -110,6 +119,7 @@ p {
   background-color: ffb848;
 }
 
+.OUTPUTEXAMPLE,
 .OUTPUT {
   background-color: b7b7b7;
   color: 828282;
@@ -117,6 +127,11 @@ p {
   padding: 0px;
 }
 
+.TESTEXAMPLE{
+  background-color: b6fff7;
+  border:solid blue 3px;
+  color: blue;
+}
 .TEST {
   background-color: b6fff7;
   border:solid blue 3px;

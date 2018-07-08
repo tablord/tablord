@@ -4,16 +4,17 @@
   
   // calcul ///////////////////
   function V(name,value) {
+    //constructor for a new instance of V
+    //rarely use it directly, but use the v() function instead that also register the variable
+    //in the v namespace
     this.setName(name);
-    if (typeof value == "function") {
-      this._func =value;
-    }
-    else {
-      this._value=value;
-    }
+    this.setValue(value);
   }
 
   V.prototype.setName = function(name) {
+    // for internal use only
+    // changes the name of the variable and also
+    // updates ._label and ._unit
     if (name == undefined) return;
 
     this._name =name;
@@ -24,15 +25,29 @@
     }
   }
 
+  V.prototype.setValue = function(value){
+    if (typeof value == "function") {
+      this._func =value;
+    }
+    else {
+      this._value=value;
+      this._func = undefined;
+    }
+  }
+
   V.prototype.label = function() {
+    // return the label (= variable name without the units)
     return '<var>'+(this._label || this._name)+'</var>';
   }
 
   V.prototype.unit = function() {
+    // return the units of the variable
     return this._unit?'<span class=UNIT>'+this._unit+'</span>':'';
   }
  
   V.prototype.valueOf = function () {
+    // return the value of the variable
+    // if the variable is in fact a function, executes the function and return its value
     if (this._func) {
       return this._func(this._row,this._col);
     }
@@ -44,15 +59,23 @@
   }
 
   V.prototype.toString = function() {
+    // return the summary of the variable
     return '[object V('+this._name+'):'+this.valueOf()+']';
   }
 
-  V.prototype.full = function() {
+  V.prototype.view = function() {
+    // returns an HTML object with VariableName = value
     return new HTML(this.label()+'= <span class=VALUE>'+this.valueOf()+'</span>'+this.unit());
   }
 
   function v(name,value) {
+    // v(name) returns the variable name: rarely used since name alone will represent the same as well as v[name]
+    // v(name,value) creates a new variable if it does not already exists and sets a new value
     if (value != undefined) {
+      if (v[name]) {
+        v[name].setValue(value);
+        return v[name]
+      }
       return v[name] = new V(name,value);
     }
     return v[name];
@@ -62,6 +85,10 @@
   /////////////////////////////////////////////////////////////////////////
 
   function f(jcFunc) {
+    // jcFunc can eiter be a true function (rare since in that case it just returns the function)
+    // or a string that is the body of a function that will be called with 2 parameters row and col 
+    // in case this function is used inside a table
+
     if (typeof jcFunc == "string") {
       try {
         if (jcFunc.search(/return/)== -1) {
@@ -143,17 +170,25 @@
 // Table //////////////////////////////////////////////////////////////
 
   function Table(name) {
+    // constructor of a new Table instance
     this._name = name;
     this._length = 0;
     this._cols = {};
   }
   
   Table.prototype.cols = function(cols) {
+    // set the columns that are displayed by default
+    // return the table for command chaining
+
     this._cols = cols;
     return this;
   }
 
   Table.prototype.updateCols = function(withRow) {
+    // updates the cols description with the fields found in withRow
+    // normally for internal use only
+    // return the table for command chaining
+
     for (var col in withRow) {
       if ((col != "_table") && withRow.hasOwnProperty(col) && (this._cols[col]==undefined)) {
         this._cols[col] = 1;
@@ -179,6 +214,9 @@
   }
   
   Table.prototype.addRows = function(rows) {
+    // add multiple rows
+    // rows must be an array or array-like of objects
+    // columns are ajusted automatically
     for (var i=0; i<rows.length; i++) {
       this.add(rows[i]);
     }
@@ -186,10 +224,13 @@
   }
 
   Table.prototype.forEachRow = function(func) {
+    // execute func for each row of the table
     // func must be function(i,row)
+    // return the table for command chaining
     for (var i=0; i<this._length; i++) {
       func(i,this[i])
     }
+    return this;
   }
 
   Table.prototype.sort = function(cols) {
@@ -198,6 +239,7 @@
     //   {  col1: 1    // 1 means ascending  alphabetic or numeric order
     //      col2:-1    //-1 means descending alphabetic or numeric order
     //      col3: function(a,b) {... // any function that compare a and b and returns >0 if a>b, <0 if a<b, 0 if a==b
+    // return the table for command chaining
     function order(a,b) {
       for (var col in cols) {
         if (typeof cols[col] == 'function') {
@@ -218,13 +260,16 @@
   }
 
   Table.prototype.toString = function() {
+    // return a string summarizing the table
     return '[object Table('+this._name+') of '+this._length+' rows]';
   }
 
   Table.prototype.span = function(options) {
+    // display the table without its name
+    // the span(options) method of table can take many option to customize the presentation of the table
     // options:{
     //    cols:{
-    //      col1:{head:1},  // any value make this col as <th>
+    //      col1:{head:1},  // any value make this col as head <th>
     //      col2:1          // any value make this col visible
             
     options = options || {};
@@ -248,11 +293,14 @@
   }
 
   Table.prototype.view = function(options) {
+    //display the table, including its name in a <div>
     return new HTML('<div><var>'+this._name+'</var>'+this.span(options)+'</div>');
   }
 
-  function table(name,local) {
-    // if local=true, do not put in v
+  table = function(name,local) {
+    // creates a new table
+    // - name is the name of the instance
+    // - if local=true, the instance is not registered in v
     if ((local == true) || (name == undefined)) {
       return new Table(name);
     }
@@ -379,7 +427,7 @@
 
   HTML.prototype.inspect = function(/*objects*/) {
     for (var i=0; i<arguments.length; i++) {
-      this._html += inspect(arguments[i]).span();
+      this._html += jc.inspect(arguments[i]).span();
     }
     return this;
   }
