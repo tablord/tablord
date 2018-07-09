@@ -5,18 +5,19 @@
             authors:['Marc Nicole'],
             codeElementBeingExecuted:undefined,
             selectedElement:undefined,
-            output:undefined,
-            codeElementBeingExecuted:undefined,
+            output: {}, //a new Output is created for each code. 
+                        //it hold both the code and output Elements as well as the htlm
+                        //at init an empty object so _codeElement and _outputElement are undefined
             traces:[],
             tracesMaxLength:100,
             localToolBar:undefined,
             htmlIndent:1,
             simulation:undefined, // will be set by StateMachine.js
             blockNumber:0,
-            finalizations:[],
+            finalizations:[],     // a stack of output to be finalized
 
             errorHandler:function(message,url,line) {
-                var out  = jc.outputElement(jc.codeElementBeingExecuted);
+                var out  = jc.output._outputElement;
                 if (out) {
                   if (url) {
                     out.innerHTML = message+'<br>'+url+' line:'+line+'<br>'+trace.span();
@@ -62,7 +63,7 @@
   // to be checked what could be done to improve
 
     jc.errorHandler.code = code;
-    code = 'var output = jc.output; with (v) {'+code+'};';
+    code = 'var output = jc.output; with (v) {'+code+'};';   //output becomes a closure, so finalize function can use it during finalizations
     return geval(code)
   }
 
@@ -642,7 +643,6 @@
   jc.execCode = function(element) {
     if ($(element).hasClass('DELETED')) return;
 
-    jc.codeElementBeingExecuted = element; 
     var out  = jc.outputElement(element);
     var test = jc.testElement(element)
     jc.output = newOutput(element,out);
@@ -662,7 +662,6 @@
   jc.finalize = function() {
     for (var i=0;i<jc.finalizations.length;i++) {
       var out = jc.finalizations[i];
-      jc.codeElementBeingExecuted = out._codeElement;
       jc.errorHandler.code = out._finalize+''; 
       out._finalize();
       out._finalize = undefined;  // so that displayResult will not show ... to be finalized...

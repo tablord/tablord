@@ -9,75 +9,68 @@
 </HEAD>
 <BODY designMode="on">
 
+<div contentEditable=true>
+ssdfg df sdf gs dfg sdf
+<pre class=CODE id=links style="display:none; position:absolute; left=-1000; border:solid grey 3px;" contentEditable=true>
+codeasdfasdf asdf as dfa sdf asd fa
+edfasdf asdf
+ced
+c
+</pre>
+
+<span id=display class=OUTPUT>display</span>
+
 coucou<br>
 truc<br>
-
-<h1 data-topic=link>1er lien</h1>
-<pre>
-sdfsdfg
-sdfg
-sdf
-g
-sdfg
-sdf
-gs
-df
-gsd
-fg
-sdf
-g
-sdf
-gsdf
-g
-sdf
-gsd
-fg
-</pre>
-<h1 data-topic=link>2em lien</h1>
-<pre>
-sdfsdfg
-sdfg
-sdf
-g
-sdfg
-sdf
-gs
-df
-gsd
-fg
-sdf
-g
-sdf
-gsdf
-g
-sdf
-gsd
-fg
-</pre><h1 data-topic=link>3em lien</h1>
-<pre>
-sdfsdfg
-sdfg
-sdf
-g
-sdfg
-sdf
-gs
-df
-gsd
-fg
-sdf
-g
-sdf
-gsdf
-g
-sdf
-gsd
-fg
-</pre>
-<div id=display>display
-  <div id=links style="display:none; position:absolute; left:5px; top:5px; border:blue solid 1px; background-color:cyan;">
-  </div>
 </div>
+<h1 data-topic=link>1er lien</h1>
+<pre class=CODE>
+sdfsdfg
+sdfg
+sdf
+g
+sdfg
+sdf
+gs
+df
+gsd
+fg
+sdf
+g
+sdf
+gsdf
+g
+sdf
+gsd
+fg
+</pre>
+
+<h1 data-topic=link>
+  <span>2em</span>
+  <span contentEditable=true style="width:70%;">lien</span>
+  <span contentEditable=true></span></h1>
+<div style="border:solid red 1px;">
+sdfsdfg
+sdfg
+sdf
+g
+sdfg
+sdf
+gs
+df
+gsd
+fg
+sdf
+g
+sdf
+gsdf
+g
+sdf
+gsd
+fg
+<h1 data-topic=link>3em lien</h1>
+asdasdfasdf asd asd f asd fds asdf 
+
 asdfasd<br>
 asdfasd<br>
 asdfasd
@@ -92,20 +85,16 @@ asdfasd
 
  $('#display').toggle(
    function show(event){
+     var top = $(event.target).offset().top-$('#links').height();
+     if (top < 0) top = $(event.target).offset().top+$(event.target).height();
      var links = $('#links')
-       .empty()
-       .css('top',$(event.target).offset().top+10)
-       .css('left',$(event.target).offset().left+50);
-     $('[data-topic=link]').each(
-       function(i,e){
-         var l$ = $('<div>'+$(e).text()+'</div>');
-         l$.click(function(){e.scrollIntoView()});
-         links.append(l$);
-       }
-     );
-     $('#links').slideDown()},
+       .css('top',top)
+       .css('left',$(event.target).offset().left);
+       $('#links').fadeTo(400,0.9);
+   },
    function hide(){
-     $('#links').slideUp()}
+     $('#links').fadeOut().css('left',-1000);
+   }
  );
 </script>
 </BODY></HTML>
