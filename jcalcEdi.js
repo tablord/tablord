@@ -176,13 +176,27 @@
     return result;
   }
 
-  jc.toHtml = function(htmlCode) {
+  jc.toString = function(html) {
+    // transform the content (from innerHTML) to a string as if this content is a text editor
+    // removes any tags other than <BR> and <P>
+    var res = html
+              .replace(/<BR>/g,'\n')
+              .replace(/<P>/g,'\n\n')
+              .replace(/<.+?>/g,"")
+              .replace(/&nbsp;/g," ")
+              .replace(/&lt;/g,"<")
+              .replace(/&gt;/g,">")
+              .replace(/&amp;/g,"&");
+    return res;
+  }
+
+  jc.toHtml = function(code) {
     // transform htmlCode in such a manner that the code can be visualised in a <code>...
-    return String(htmlCode)
+    return String(code)
              .replace(/&/g,"&amp;")
              .replace(/</g,"&lt;")
              .replace(/>/g,"&gt;")
-             .replace(/\\/g,'\\\\')
+             .replace(/ /g,"&nbsp;")
              .replace(/\r/g,'')
              .replace(/\n/g,"<br>");
   }
@@ -338,14 +352,6 @@
     return html.replace(/<SPAN class\=ERROR>(.+?)<\/SPAN>/g,"$1")
   }
                
-  jc.removeTags = function(html) {
-    var res = html.replace(/<.+?>/g,"")
-               .replace(/&nbsp;/g," ")
-               .replace(/&lt;/g,"<")
-               .replace(/&gt;/g,">")
-               .replace(/&amp;/g,"&");
-    return res;
-  }
 
   jc.outputElement = function(element) {
     // return the output element associated with element if any
@@ -605,11 +611,7 @@
       return jc.inspect(obj).span();
     }
     if (obj.valueOf) {
-      var v = obj.valueOf();
-      if ((typeof v == 'number') || (typeof v == 'string')) {
-        return v;
-      }
-      return jc.htmlView(obj.valueOf());    //as valueOf might be an object or a function let start the process again
+      return obj.valueOf();
     }
     return jc.toHtml(obj); 
   }
@@ -646,7 +648,7 @@
     var out  = jc.outputElement(element);
     var test = jc.testElement(element)
     jc.output = newOutput(element,out);
-    var res = jc.securedEval(jc.removeTags(element.innerHTML));
+    var res = jc.securedEval(jc.toString(element.innerHTML));
     jc.displayResult(res,out);
     // test
     if (test != undefined) {

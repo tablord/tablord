@@ -74,14 +74,20 @@ asdasdfasdf asd asd f asd fds asdf
 asdfasd<br>
 asdfasd<br>
 asdfasd
-<div id=testedit contentEditable=true>editor</div>
+<div id=testedit contentEditable=true >editor<span class=CODE>span</span> sdfgdf</div>
 <div id=testoutput>output</div>
 <div id=event>event</div>
 <script>
+ var count = 0;
  var handler = function(event){
    $('#testoutput')[0].innerHTML = jc.toHtml(event.target.outerHTML);
-   $('#event')[0].innerHTML = jc.inspect(event).span()};
- $('#testedit').keyup(handler).keydown(handler).keypress(handler);
+   $('#event')[0].innerHTML = (count++)+jc.inspect(event).span()
+a(event.target.tagName,event.currentTarget.tagName)
+   return true;
+ };
+ $('#testedit').keyup(handler).click(handler);
+ $('.CODE').keyup(handler).click(handler);
+ 
 
  $('#display').toggle(
    function show(event){
