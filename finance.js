@@ -29,9 +29,9 @@ jc.CashFlow.prototype.account = function(name,startDate,endDate,currency) {
   var f = function() {
     account.end();
     this._finalBalance = account._payments[account._payments.length-1].balance;
-    f.toString = function(){return 'account '+name};
     return account._payments;
   };
+  f.toString = function(){return jc.inspect(account._orders,'account ').toString()+account._payments.length+' payments'};
   this._orders.push(f);
   return account;
 }
@@ -47,9 +47,10 @@ jc.CashFlow.prototype.debt = function(name,startDate,endDate,currency) {
     if (balance != 0) {
       debt._payments.push({date:endDate,amount:-balance,subject:'final balance for '+name,balance:0});
     }
-    f.toString = function(){return 'debt '+name};
     return debt._payments;
   };
+  f.toString = function(){return jc.inspect(debt._orders,'debt').toString()+debt._payments.length+' payments'};
+  this.ended = false;
   this._orders.push(f);
   return debt;
 }
@@ -59,8 +60,9 @@ jc.CashFlow.prototype.recieve = function(subject,amount,date,currency) {
 
   // TODO does not handle currency conversion yet
   date= new Date(date);
-  this._orders.push(function() {return {date:date,amount:amount,subject:subject} });
-  this.ended = false;
+  var f = function () {return {date:date,amount:amount,subject:subject} };
+  f.toString = function(){return 'recieve/pay'}
+  this._orders.push(f);
   return this;
 }
 
@@ -79,7 +81,7 @@ jc.CashFlow.prototype.monthly = function(startDate,endDate) {
     }
     return payments;
   };
-  f.toString = function(){return 'monthly from '+startDate+' to '+endDate};
+  f.toString = function(){return jc.inspect(permanentOrders._orders,'monthly').toString()};
   this._orders.push(f);
   return permanentOrders;
 }
@@ -99,15 +101,13 @@ jc.CashFlow.prototype.end = function() {
   // updates the payments according to all previous orders
   // returns the PARENT cashFlow in order to continue method chainning
 
-  if (!this.ended){
-    this._payments = [];
-    for (var i=0;i<this._orders.length;i++) {
-      this._payments = this._payments.concat(this._orders[i](this));
-    }
-    this._payments.sort(function(a,b){return a.date-b.date});
+  this._payments = [];
+  for (var i=0;i<this._orders.length;i++) {
+    this._payments = this._payments.concat(this._orders[i](this));
+a(this._orders[i].toString(),this._payments)
   }
+  this._payments.sort(function(a,b){return a.date-b.date});
   this.updateBalance();
-  this.ended = true;
   return (this._parent || this); // return the parent or itself if no parent in order to enable span()
 }
 
@@ -122,7 +122,9 @@ jc.PermanentOrders = function(parent) {
 }
 
 jc.PermanentOrders.prototype.pay = function(subject,amount,currency){
-  this._orders.push(function(d){return {date:d,amount:-amount,subject:subject}})
+  var f = function(d){return {date:d,amount:-amount,subject:subject}};
+  f.toString = function(){return 'pay'};
+  this._orders.push(f)
   return this;
 }
 
@@ -136,4 +138,8 @@ jc.PermanentOrders.prototype.execute = function(date) {
 
 jc.PermanentOrders.prototype.end = function() {
   return this._parent;
+}
+
+jc.PermanentOrders.prototype.toString = function() {
+  return '[object PermanentOrders]';
 }

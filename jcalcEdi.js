@@ -111,8 +111,26 @@
     this.depth = depth || 1;
   }
   
+  jc.Inspector.prototype.legend = function(obj) {
+    // returns the legend for a given object
+    var l;
+    if ($.isPlainObject(this.obj)) {
+      l = '{}';
+    }
+    else if ($.isArray(this.obj)) {
+      l = '[]';
+    }
+    else if ($.isFunction(this.obj)) {
+      l = jc.signature(this.obj);
+    }
+    else {
+      l = this.obj.toString();
+    } 
+    return l;
+  }
+
   jc.Inspector.prototype.toString = function (){
-    var r = this.obj+' '+this.name+'\n';
+    var r = this.legend(this.obj)+' '+this.name+'\n';
     for (var k in this.obj) { r += k+':  '+this.obj[k]+'\n' };
     return r;
   }
@@ -122,7 +140,8 @@
     if (typeof this.obj == 'string') {
       return '<SPAN class=INSPECT>'+jc.toHtml(this.obj)+'</SPAN>';
     }
-    var r = '<DIV class=INSPECT><fieldset><legend>'+((this.obj != '[object Object]')?this.obj:'{}')+' '+this.name+'</legend>';
+      
+    var r = '<DIV class=INSPECT><fieldset><legend>'+this.legend(this.obj)+' '+this.name+'</legend>';
     r += '<table class=INSPECT>';
     for (var k in this.obj) {
       r += '<tr><th valign="top">'+k+'</th><td valign="top" style="text-align:left;">'+
@@ -253,6 +272,11 @@
       else break;
     }
     return new HTML('<b>'+signature+'</b><br>'+comments.join('<br>'));
+  }
+
+  jc.signature = function(func) {
+    // returns only the signature of the function
+    return func.toString().match(/(function.*\))/)[0];
   }
 
   // navigation within document ////////////////////////////////////////////////////////
