@@ -263,7 +263,7 @@
 
     var source = func.toString().split('\n');
     var comments = []
-    var signature = source[0].match(/(function.*\))/)[0];
+    var signature = source[0].match(/(function.*?\))/)[0];
     for (var i=1; i<source.length; i++) {
       var comment = source[i].match(/^\s*\/\/(.*)$/);
       if (comment && (comment.length ==2)) {
@@ -276,7 +276,7 @@
 
   jc.signature = function(func) {
     // returns only the signature of the function
-    return func.toString().match(/(function.*\))/)[0];
+    return func.toString().match(/(function.*?\))/)[0];
   }
 
   // navigation within document ////////////////////////////////////////////////////////
@@ -616,10 +616,10 @@
 
 
   jc.htmlView = function(obj) {
-    if (obj === undefined) {
+    if (obj == undefined) {
       return '<SPAN style=color:red;>undefined</SPAN>';
     }
-    if (obj === '') {
+    if (obj == '') {
       return '<SPAN style=color:red;>empty string</SPAN>';
     }
     if (typeof obj == 'function') {
@@ -641,14 +641,15 @@
   }
 
   jc.displayResult = function(result,out) {
-    try {
+//    try {
       out.innerHTML = trace.span()+jc.htmlView(result);
       $(out).removeClass('ERROR').addClass('SUCCESS');
-    }
+/*    }
     catch (e) {
       e.code='displayResult>'
       jc.displayError(e,out);
     }
+*/
   }
 
   jc.displayError = function(error,out) {
