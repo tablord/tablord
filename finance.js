@@ -105,12 +105,21 @@ jc.CashFlow.prototype.span = function(options) {
   return '<var>'+this._name+'</var>'+table().addRows(this._payments).span(options);
 }
 
+
+// PermanentOrders ///////////////////////////////////////////////////////////////
+
+//TODO: restructure PermanentOrders so that it is fully responsible for the execution
+// the monthly methods will set the parameters, including a .nextDate field that will be 
+// set to PermanentOrders.nextMonth or PermanentOrders.nextWeek or .nextYear
+
+
 jc.PermanentOrders = function(parent) {
   this._orders = [];
   this._parent = parent;
 }
 
-jc.PermanentOrders.prototype.pay = function(subject,amount,currency){
+jc.PermanentOrders.prototype.pay = function(subject,amount,day,currency){
+  // 
   var f = function pay (d){return {date:d,amount:-amount,subject:subject}};
   this._orders.push(f)
   return this;
