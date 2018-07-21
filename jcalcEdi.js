@@ -42,7 +42,7 @@
 
 
   jc.credits = {name:jc.name,version:jc.version,authors:jc.authors};
-  jc.helps = {credits:jc.credits};
+  jc.helps = {'jc.credits':jc.credits};
 
   //JQuery extentions /////////////////////////////////////////////////
   $.prototype.span = function() {
@@ -67,6 +67,29 @@
     return geval(code)
   }
 
+  // JSON ///////////////////////////////////////////////////////////
+
+    JSON = {};
+    JSON.stringify = function(obj){
+      if (typeof obj == 'number') {
+        return obj.toString();
+      }
+      else if (typeof obj == 'string') {
+        return '"'+obj.replace(/\\/g,'\\\\').replace(/"/g,"\\\"")+'"';
+      }
+      else if ($.isPlainObject(obj)) {
+        var sa=[]
+        $.each(obj, function(name,value) {sa.push(JSON.stringify(name)+':'+JSON.stringify(value))});
+        return '{'+sa.join(',\n')+'}';
+      }
+      else if ($.isArray(obj)) {
+        var sa=[];
+        $.each(obj, function(i,value) {sa.push(JSON.stringify(value))});
+        return '['+sa.join(',\n')+']';
+      }
+      else return obj.toJson();
+    }
+    
 
   // debug //////////////////////////////////////////////////////////
 
@@ -153,13 +176,16 @@
     return new HTML(r+'</table></fieldset></DIV>');
   }
 
+  // general purpose helpers ////////////////////////////////////////////
+
+
   jc.inspect = function(obj,name,depth){
     return new jc.Inspector(obj,name,depth);
   }
 
-  // general purpose helpers ////////////////////////////////////////////
 
   jc.keys = function(obj) {
+    // returns an Array with all keys (=properties) of an object
     var res = [];
     for (var k in obj) {
       res.push(k);
@@ -300,6 +326,12 @@
     );
   }
 
+  jc.helps.jc = {inspect:jc.inspect,
+                 keys:jc.keys,copy:jc.copy,pad:jc.pad,toString:jc.toString,toHtml:jc.toHtml,
+                 codeExample:jc.codeExample,findInArrayOfObject:jc.findInArrayOfObject,help:jc.help,testStatus:jc.testStatus,
+                 /*tableOfContent:jc.tableOfContent,*/link:jc.link
+  };
+
   
   // Table of Content //////////////////////////////////////////////////////////////////
   jc.tableOfContent = {
@@ -316,16 +348,18 @@
         var number = currentNumbers.join('.');
         var t = title.innerHTML.replace(/^[\d\.]*(\s|\&nbsp;)*/,'');
         title.innerHTML = number+' '+t;
-        jc.tableOfContent.toc.push({number:number,title:jc.textContent(t),sectionId:e.id});
+        jc.tableOfContent.toc.push({number:number,level:level,title:jc.textContent(t),sectionId:e.id});
       });
     },
     find : function(title) {
       return this.toc[jc.findInArrayOfObject({title:title},this.toc)];
     },
     span : function() {
-      var t = table();
-      t.addRows(this.toc);
-      return t.span();
+      var h = '';
+      $.each(this.toc,function(i,t){
+        h += '<div class=TOC'+t.level+'>'+t.number+' <a href="#'+t.sectionId+'">'+t.title+'</a></div>'
+      });
+      return new HTML(h);
     }
   };
     
@@ -462,7 +496,7 @@
     // save the sheet under fileName or the current name if fileName is not specified
     var fileName = window.prompt('save this sheet in this file?',window.location.pathname);
     if (fileName == undefined) return;
-
+    window.document.documentElement.APPLICATIONNAME = fileName;
     jc.removeDeletedBlocks();
     jc.selectElement(undefined);
     var fso = new ActiveXObject("Scripting.FileSystemObject");
@@ -631,7 +665,7 @@
     if (obj.outerHTML) { // an Element
       return 'DOM Element<SPAN class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(jc.purgeJQueryAttr(obj.outerHTML)))+'</SPAN>';
     }
-    if (obj == '[object Object]') {
+    if ($.isPlainObject(obj)) {
       return jc.inspect(obj).span();
     }
     if (obj.valueOf) {
@@ -641,19 +675,15 @@
   }
 
   jc.displayResult = function(result,out) {
-//    try {
       out.innerHTML = trace.span()+jc.htmlView(result);
       $(out).removeClass('ERROR').addClass('SUCCESS');
-/*    }
-    catch (e) {
-      e.code='displayResult>'
-      jc.displayError(e,out);
-    }
-*/
   }
 
   jc.displayError = function(error,out) {
     if (error.message) {
+      if (error.message == "Erreur d'execution inconnue") {
+        error.message += "this block can not be displayed in a {{ inline code}}; use a separate code block"
+      }
       var faults = error.message.match(/« (.+?) »/);
       if (faults != null) {
         var fault = faults[1];

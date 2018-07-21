@@ -42,7 +42,7 @@
 
   V.prototype.unit = function() {
     // return the units of the variable
-    return this._unit?'<span class=UNIT>'+this._unit+'</span>':'';
+    return this._unit?'<span class=UNIT>'+jc.Units.symbole(this._unit)+'</span>':'';
   }
  
   V.prototype.valueOf = function () {
@@ -56,6 +56,11 @@
       throw new Error(this._error);
     }
     return this._value;
+  }
+ 
+  V.prototype.to = function(unit) {
+    // return the value converted to unit
+    return jc.Units.convert(this.valueOf(),this._unit,unit);
   }
 
   V.prototype.toString = function() {

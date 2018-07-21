@@ -1,3 +1,13 @@
+// Date politics in jc.
+// dates must be considered as unmutable. so if a date variable has to be changed,
+// always make a v = new Date(v)
+// ok:    v = (new Date(v)).setDate(25);
+// wrong: v = v.setDate(25)   // or even v = new Date(v.setDate(25)) is wrong since it change v
+//                            // so any d = v previously will see the date change!!!
+//
+
+
+
 jc.cashFlow = function cashFlow(name,startDate,endDate,currency) {
   return new jc.CashFlow(name,startDate,endDate,currency,'main',undefined);
 }
@@ -49,21 +59,25 @@ jc.CashFlow.prototype.recieve = function(subject,amount,date,currency) {
 }
 
 jc.CashFlow.prototype.pay = function(subject,amount,date,currency) {
-  var f = function pay() {return {date:new Date(date),amount:-amount,subject:subject} };
+  currentcy = currency || this._currency;
+  var f = function pay() {
+    var p = {date:new Date(date),'amount$'+currency:-amount,subject:subject};
+    p['amount$'+this._currency] = jc.Units.convert(amount,currency,this._currency);
+    return p;
+  };
   this._orders.push(f);
   return this;
 }
 
 jc.CashFlow.prototype.monthly = function(startDate,endDate) {
+  // returns a PermanentOrder object configured to execute
+  // the associated payments every month starting with startDate and ending 
   startDate = new Date(startDate || this._startDate);
   endDate = new Date(endDate || this._endDate);
-  var permanentOrders = new jc.PermanentOrders(this);
+  var permanentOrders = new jc.PermanentOrders(startDate,endDate,this);
+  permanentOrders._nextDate = jc.PermanentOrders.nextMonth;
   var f = function monthly() {
-    var payments = [];
-    for (var date = new Date(startDate); date <= endDate; date.setMonth(date.getMonth()+1)) {
-      payments = payments.concat(permanentOrders.execute(new Date(date)));
-    }
-    return payments;
+    return permanentOrders.execute();
   };
   this._orders.push(f);
   return permanentOrders;
@@ -113,22 +127,42 @@ jc.CashFlow.prototype.span = function(options) {
 // set to PermanentOrders.nextMonth or PermanentOrders.nextWeek or .nextYear
 
 
-jc.PermanentOrders = function(parent) {
+jc.PermanentOrders = function(startDate,endDate,parent) {
   this._orders = [];
+  this._startDate = startDate;
+  this._endDate = endDate;
   this._parent = parent;
+}
+
+// some helpers functions
+
+jc.PermanentOrders.nextMonth = function(date,day) {
+  // return a date that is one month ahead than date
+  var d = new Date(date);
+  d.setMonth(date.getMonth()+1);
+  return d;
+}
+
+jc.PermanentOrders.adjustDay = function(date,day) {
+  // return a date that is the same month but different day if day is not undefined
+  var d = new Date(date);
+  if (day != undefined) d.setDate(day);
+  return d;
 }
 
 jc.PermanentOrders.prototype.pay = function(subject,amount,day,currency){
   // 
-  var f = function pay (d){return {date:d,amount:-amount,subject:subject}};
+  var f = function pay (d){return {date:jc.PermanentOrders.adjustDay(d,day),amount:-amount,subject:subject}};
   this._orders.push(f)
   return this;
 }
 
-jc.PermanentOrders.prototype.execute = function(date) {
+jc.PermanentOrders.prototype.execute = function() {
   var payments = [];
-  for (var i in this._orders) {
-    payments.push(this._orders[i](new Date(date)));  // make sure that every date are independent !! (*&&%ç@ of Date system in js)
+  for (var date = new Date(this._startDate);date <= this._endDate;date = this._nextDate(date)) {
+    for (var i in this._orders) {
+      payments.push(this._orders[i](date));
+    }
   }
   return payments;
 }
