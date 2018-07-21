@@ -31,6 +31,7 @@ jc.Units.convert = function(value,from,to) {
   if (jc.Units[from] == undefined) throw new Error("can't convert from an undefined unit");
   if (jc.Units[to] == undefined) throw new Error("can't convert to an undefined unit");
   if (jc.Units[from].type != jc.Units[to].type) throw new Error("can't convert "+from+' to '+to+' since they are not of the same type ('+jc.Units[from].type+' != '+jc.Units[to].type+')');
+  if (from == to) return value; // to avoid NaN (divide by zero) if not necessary
   return value * jc.Units[from].k / jc.Units[to].k;
 }
 

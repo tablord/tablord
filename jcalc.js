@@ -276,8 +276,8 @@
     //    cols:{
     //      col1:{head:1},  // any value make this col as head <th>
     //      col2:1          // any value make this col visible
-            
     options = options || {};
+    options.format = options.format || function(formatObj) {return formatObj.toString()};
     options.cols = options.cols || this._cols;
     options.rows = options.rows || range(0,this._length-1);
     var h = '<table border="1px"><thead><tr>';  // TODO modify to style
@@ -288,8 +288,9 @@
     for (var i in options.rows) {
       h += '<tr>';
       for (var col in options.cols) {
-        var cell = this[i][col];
-        h += ((col=="_id") || (options.cols[col].head))?'<th>'+cell+'</th>':'<td>'+cell+'</td>';
+        var cell = options.format(jc.format(this[i][col]));
+        var style = (options.cols[col].style)?'style="'+options.cols[col].style+'"':'';
+        h += ((col=="_id") || (options.cols[col].head))?'<th '+style+'>'+cell+'</th>':'<td '+style+'>'+cell+'</td>';
       }
       h += '</tr>';
     }
@@ -465,6 +466,46 @@
     window.alert(message);
     return this;
   }
+
+  // formaters ///////////////////////////////////////////
+  jc.format = function(obj) {
+    return new jc.Format(obj);
+  }
+
+  jc.Format = function(obj) {
+    // returns a format object that contains the reference to obj
+    this.obj = obj;
+  }
+
+  jc.Format.prototype.yyyymmdd = function() {
+    //returns this, with the .formatted set if the formating was successful
+    if ((this.formatted) || (this.obj == undefined) || (this.obj.getFullYear == undefined)) return this;
+    this.formatted = this.obj.getFullYear()+'-'+jc.pad(this.obj.getMonth()+1,2)+'-'+jc.pad(this.obj.getDate(),2);
+    return this;
+  }
+
+  jc.Format.prototype.fixed = function(decimals) {
+    // returns this, with .formatted set as a fixed decimal string format if obj was a number
+    if ((this.formatted) || (this.obj == undefined) || (typeof this.obj != 'number')) return this;
+    this.formatted = this.obj.toFixed(decimals)
+    return this;
+  }
+ 
+  jc.Format.prototype.undefinedToBlank = function() {
+    if (this.formatted) return this; 
+    if (this.obj == undefined) {
+      this.formatted = '';
+    }
+    return this;
+  }
+
+  jc.Format.prototype.toString = function() {
+    if (this.formatted != undefined) return this.formatted;
+    if (this.obj) return this.obj.toString();
+    return 'undefined';
+  }
+
+  
   // helpers /////////////////////////////////////////////
 
   function range(min,max) {    //TODO devrait être un itérateur, mais n'existe pas encore dans cette version

@@ -8,15 +8,17 @@
 
 
 
-jc.cashFlow = function cashFlow(name,startDate,endDate,currency) {
-  return new jc.CashFlow(name,startDate,endDate,currency,'main',undefined);
+jc.cashFlow = function cashFlow(name,currency,startDate,endDate) {
+  // returns a new CahFlow object of type 'main'
+  return new jc.CashFlow(name,currency,startDate,endDate,'main',undefined);
 }
 
-jc.CashFlow = function(name,startDate,endDate,currency,type,parent) {
+jc.CashFlow = function(name,currency,startDate,endDate,type,parent) {
   this._name = name;
   this._startDate = new Date(startDate);
   this._endDate   = new Date(endDate);
-  this._currency  = currency || (parent && parent._currency) || jc.CashFlow.defaults.currency;
+  if (jc.Units[currency] == undefined) throw new Error('a CashFlow object must have a valid currency: unknown '+currency);
+  this._currency  = currency;
   this._balanceField = name+'$'+this._currency;
   this._parent = parent; // if this cashFlow is included in another CashFlow
   this._type = type;
@@ -26,40 +28,46 @@ jc.CashFlow = function(name,startDate,endDate,currency,type,parent) {
 }
 
 jc.CashFlow.defaults = {
-  duration : {year:10}, // 10 year by default
-  currency : 'EUR'
 }
 
-jc.CashFlow.prototype.account = function(name,startDate,endDate,currency) {
+jc.CashFlow.prototype.account = function(name,currency,startDate,endDate) {
+  currency = currency || this._currency;
   startDate= new Date(startDate || this._startDate);
   endDate = new Date(endDate || this._endDate);
-  currency = currency || this.currency;
-  var account = new jc.CashFlow(name,startDate,endDate,currency,'account',this);
+  var account = new jc.CashFlow(name,currency,startDate,endDate,'account',this);
   var f = function account() {return account.execute()};
   this._orders.push(f);
   return account;
 }
 
-jc.CashFlow.prototype.debt = function(name,startDate,endDate,currency) {
+jc.CashFlow.prototype.debt = function(name,currency,startDate,endDate) {
+  currency = currency || this._currency;
   startDate= new Date(startDate || this._startDate);
   endDate = new Date(endDate || this._endDate);
-  currency = currency || this.currency;
-  var debt = new jc.CashFlow(name,startDate,endDate,currency,'debt',this);
+  var debt = new jc.CashFlow(name,currency,startDate,endDate,'debt',this);
   var f = function debt() {return debt.execute()};
   this._orders.push(f);
   return debt;
 }
 
-jc.CashFlow.prototype.recieve = function(subject,amount,date,currency) {
+jc.CashFlow.prototype.recieve = function(date,subject,amount,currency) {
   // add an order of receiving amount at date. 
-
-  // TODO does not handle currency conversion yet
-  var f = function recieve() {return {date:new Date(date),amount:amount,subject:subject} };
+  // currency is optional and uses by default this CashFlow currency
+  currency = currency || this._currency;
+  var cf = this;
+  var f = function recieve() {
+    var p = {date:new Date(date),subject:subject};
+    p['amount$'+currency] = amount,
+    p['amount$'+cf._currency] = jc.Units.convert(amount,currency,cf._currency);
+    return p;
+  };
   this._orders.push(f);
   return this;
 }
 
-jc.CashFlow.prototype.pay = function(subject,amount,date,currency) {
+jc.CashFlow.prototype.pay = function(date,subject,amount,currency) {
+  // add an order of payement of amount
+  // currency is optional and uses by default this CashFlow currency
   currency = currency || this._currency;
   var cf = this;
   var f = function pay() {
@@ -129,15 +137,13 @@ jc.CashFlow.prototype.convertToParentCurrency = function() {
 jc.CashFlow.prototype.span = function(options) {
   this.execute(); // finalize if needed this
   this.updateBalance();
-  return '<var>'+this._name+'</var>'+table().addRows(this._payments).span(options);
+  var t = table().addRows(this._payments).sort({date:1});
+  options = $.extend(true,{},{cols:t._cols,format:function(f){return f.yyyymmdd().fixed(2).undefinedToBlank()}},{cols:{subject:{style:"text-align:left;"}}},options);
+  return '<var>'+this._name+'</var>'+t.span(options);
 }
 
 
 // PermanentOrders ///////////////////////////////////////////////////////////////
-
-//TODO: restructure PermanentOrders so that it is fully responsible for the execution
-// the monthly methods will set the parameters, including a .nextDate field that will be 
-// set to PermanentOrders.nextMonth or PermanentOrders.nextWeek or .nextYear
 
 
 jc.PermanentOrders = function(startDate,endDate,parent) {
@@ -145,6 +151,7 @@ jc.PermanentOrders = function(startDate,endDate,parent) {
   this._startDate = startDate;
   this._endDate = endDate;
   this._parent = parent;
+  this._currency = parent._currency;
 }
 
 // some helpers functions
@@ -163,11 +170,21 @@ jc.PermanentOrders.adjustDay = function(date,day) {
   return d;
 }
 
-jc.PermanentOrders.prototype.pay = function(subject,amount,day,currency){
-  // 
-  var f = function pay (d){return {date:jc.PermanentOrders.adjustDay(d,day),amount:-amount,subject:subject}};
-  this._orders.push(f)
+jc.PermanentOrders.prototype.pay = function(subject,amount,currency,day){
+  // pays within the permanent odrer the amount for that subject
+  // currency is by default the currency of the permanent order
+
+  currency = currency || this._currency;
+  var cf = this;
+  var f = function pay(d) {
+    var p = {date:jc.PermanentOrders.adjustDay(d,day),subject:subject};
+    p['amount$'+currency] = -amount,
+    p['amount$'+cf._currency] = jc.Units.convert(-amount,currency,cf._currency);
+    return p;
+  };
+  this._orders.push(f);
   return this;
+
 }
 
 jc.PermanentOrders.prototype.execute = function() {
