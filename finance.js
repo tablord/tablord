@@ -16,7 +16,8 @@ jc.CashFlow = function(name,startDate,endDate,currency,type,parent) {
   this._name = name;
   this._startDate = new Date(startDate);
   this._endDate   = new Date(endDate);
-  this._currency  = currency;
+  this._currency  = currency || (parent && parent._currency) || jc.CashFlow.defaults.currency;
+  this._balanceField = name+'$'+this._currency;
   this._parent = parent; // if this cashFlow is included in another CashFlow
   this._type = type;
   this._orders = [];   // of object that generates payments
@@ -59,10 +60,12 @@ jc.CashFlow.prototype.recieve = function(subject,amount,date,currency) {
 }
 
 jc.CashFlow.prototype.pay = function(subject,amount,date,currency) {
-  currentcy = currency || this._currency;
+  currency = currency || this._currency;
+  var cf = this;
   var f = function pay() {
-    var p = {date:new Date(date),'amount$'+currency:-amount,subject:subject};
-    p['amount$'+this._currency] = jc.Units.convert(amount,currency,this._currency);
+    var p = {date:new Date(date),subject:subject};
+    p['amount$'+currency] = -amount,
+    p['amount$'+cf._currency] = jc.Units.convert(-amount,currency,cf._currency);
     return p;
   };
   this._orders.push(f);
@@ -88,9 +91,10 @@ jc.CashFlow.prototype.updateBalance = function() {
   // as records are shared between the different levels of cashFlow 
   // this function has to be called before reading any balance field
   var balance = 0;
+  var amountField = 'amount$'+this._currency;
   for (var i in this._payments) {
-    balance += this._payments[i].amount;
-    this._payments[i].balance = balance;
+    balance += this._payments[i][amountField];
+    this._payments[i][this._balanceField] = balance;
   }
 }  
   
@@ -109,9 +113,18 @@ jc.CashFlow.prototype.execute = function() {
   for (var i in this._orders){
     this._payments = this._payments.concat(this._orders[i]())
   }
-  return this._payments;
+  return this.convertToParentCurrency()._payments;
 }
-    
+
+jc.CashFlow.prototype.convertToParentCurrency = function() {
+  if ((this._parent == undefined) || (this._parent._currency == this._currency)) return this;
+  var amountField = 'amount$'+this._currency;
+  var parentAmountField = 'amount$'+this._parent._currency;
+  for (var i in this._payments) {
+    this._payments[i][parentAmountField] = jc.Units.convert(this._payments[i][amountField],this._currency,this._parent._currency);
+  }
+  return this;
+}
 
 jc.CashFlow.prototype.span = function(options) {
   this.execute(); // finalize if needed this

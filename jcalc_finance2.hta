@@ -1,0 +1,82 @@
+<HTML xmlns="http://www.w3.org/1999/xhtml" APPLICATIONNAME="D:\Documents\programmation\jcalc\jcalcV0\jcalc_finance2.hta" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SINGLEINSTANCE="yes" SCROLL="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
+<SCRIPT src="jquery-1.5.1.min.js"></SCRIPT>
+
+<SCRIPT src="jcalcEdi.js"></SCRIPT>
+
+<SCRIPT src="units.js"></SCRIPT>
+
+<SCRIPT src="jcalc.js"></SCRIPT>
+
+<SCRIPT src="axe.js"></SCRIPT>
+
+<SCRIPT src="stateMachine.js"></SCRIPT>
+
+<SCRIPT src="BOM.js"></SCRIPT>
+
+<SCRIPT src="sys.js"></SCRIPT>
+
+<SCRIPT src="ocrRdy.js"></SCRIPT>
+
+<SCRIPT src="finance.js"></SCRIPT>
+</HEAD>
+<BODY designMode="on">
+<DIV id=localToolBar class=HIDDEN><BUTTON onclick=jc.insertNewSection(jc.localToolBar);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(jc.localToolBar);>^ new richtext ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>^ new code ^</BUTTON><SPAN id=codeId>code0004</SPAN><INPUT onclick="$('.CODE').toggleClass('HIDDEN',this.checked);this.scrollIntoView();" type=checkbox>hide codes</INPUT><INPUT onclick="$('.DELETED').toggleClass('HIDDEN',this.checked);this.scrollIntoView();" type=checkbox>hide deleted</INPUT><INPUT onclick="$('.TEST').toggleClass('HIDDEN',this.checked);" type=checkbox>hide tests</INPUT><INPUT onclick="$('.TRACE').toggleClass('HIDDEN',this.checked);" type=checkbox>hide traces</INPUT><BUTTON onclick=jc.hideToolBars();>hide ToolBars</BUTTON>
+<DIV class=RICHEDITTOOLBAR style="FLOAT: left"><BUTTON onclick=jc.richedit.bold();><B>B</B></BUTTON><BUTTON onclick=jc.richedit.italic();><I>i</I></BUTTON><BUTTON onclick=jc.richedit.underline();><U>U</U></BUTTON><BUTTON onclick=jc.richedit.strike();><STRIKE>S</STRIKE></BUTTON><BUTTON onclick=jc.richedit.h1();><B>H1</B></BUTTON><BUTTON onclick=jc.richedit.h2();><B>H2</B></BUTTON><BUTTON onclick=jc.richedit.div();>div</BUTTON><BUTTON onclick=jc.richedit.p();>¶</BUTTON><BUTTON onclick=jc.richedit.ol();>#</BUTTON><BUTTON onclick=jc.richedit.ul();>•</BUTTON><BUTTON onclick=jc.richedit.pre();>{}</BUTTON></DIV>
+<DIV><BUTTON onclick=jc.execAutoExec();>run</BUTTON><BUTTON onclick=jc.execAll();>run all</BUTTON><BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this);>--&gt;test</BUTTON><BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON><BUTTON onclick=jc.save();>save</BUTTON><BUTTON onclick=jc.deleteBlock(jc.selectedElement);>V delete V</BUTTON></DIV></DIV><PRE onclick=jc.selectElement(this); id=code0004 class=CODE contentEditable=false jQuery15102631914599945053="1" jQuery151009061301127299065="1" jQuery15109634860293762635="2" jQuery151039874933243710414="1" jQuery1510985730031079037="1" jQuery151024416269063003904="1"><P>jc.Units.addUnit('devH','currency',95,'CHF').devH;</P></PRE>
+<DIV onclick=jc.outClick(this) id=out0004 class="OUTPUT OLD SUCCESS">
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE class=INSPECT>
+<TBODY>
+<TR>
+<TH vAlign=top>type</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>currency</TD></TR>
+<TR>
+<TH vAlign=top>k</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>82.65</TD></TR>
+<TR>
+<TH vAlign=top>symbole</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>devH</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE onclick=jc.selectElement(this); id=code0002 class=CODE contentEditable=false jQuery15102631914599945053="2" jQuery151009061301127299065="2" jQuery15109634860293762635="1" jQuery151039874933243710414="2" jQuery1510985730031079037="2" jQuery15109209771624623564="1" jQuery151024416269063003904="2"><P>jc.cashFlow('cf','2018/1/1','2019/1/1','CHF')</P><P>.pay('toto',100,'2019/1/1','EUR')</P><P>.account('devEffort',undefined,undefined,'devH')</P><P>  .pay('units',10,'2018/7/21')</P><P>.end()</P></PRE>
+<DIV onclick=jc.outClick(this) id=out0002 class="OUTPUT OLD SUCCESS"><VAR>cf</VAR>
+<TABLE border=1>
+<THEAD>
+<TR>
+<TH>date</TH>
+<TH>subject</TH>
+<TH>amount$EUR</TH>
+<TH>amount$CHF</TH>
+<TH>cf$CHF</TH>
+<TH>amount$devH</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>Tue Jan 1 00:00:00 UTC+0100 2019</TD>
+<TD>toto</TD>
+<TD>-100</TD>
+<TD>-114.94252873563218</TD>
+<TD>-114.94252873563218</TD>
+<TD>undefined</TD></TR>
+<TR>
+<TD>Sat Jul 21 00:00:00 UTC+0200 2018</TD>
+<TD>units</TD>
+<TD>undefined</TD>
+<TD>-950</TD>
+<TD>-1064.942528735632</TD>
+<TD>-10</TD></TR></TBODY></TABLE></DIV><PRE onclick=jc.selectElement(this); id=code0006 class=CODE contentEditable=false jQuery15102631914599945053="3" jQuery1510985730031079037="3" jQuery151024416269063003904="3">jc.inspect(cf.devEffort._payments[0])</PRE>
+<DIV onclick=jc.outClick(this) id=out0006 class="OUTPUT OLD">
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE class=INSPECT>
+<TBODY>
+<TR>
+<TH vAlign=top>date</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>Sat&nbsp;Jul&nbsp;21&nbsp;00:00:00&nbsp;UTC+0200&nbsp;2018</TD></TR>
+<TR>
+<TH vAlign=top>subject</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>units</TD></TR>
+<TR>
+<TH vAlign=top>amount$devH</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>-12</TD></TR>
+<TR>
+<TH vAlign=top>cf$CHF</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>NaN</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
+<DIV class="BOTTOMTOOLBAR HIDDEN"><BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON></DIV></BODY></HTML>

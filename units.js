@@ -28,8 +28,9 @@ jc.Units = {
 jc.Units.convert = function(value,from,to) {
   // convert the value from unit "from" to "to"
   // an error is thrown if the 2 units are not from the same type
+  if (jc.Units[from] == undefined) throw new Error("can't convert from an undefined unit");
+  if (jc.Units[to] == undefined) throw new Error("can't convert to an undefined unit");
   if (jc.Units[from].type != jc.Units[to].type) throw new Error("can't convert "+from+' to '+to+' since they are not of the same type ('+jc.Units[from].type+' != '+jc.Units[to].type+')');
-
   return value * jc.Units[from].k / jc.Units[to].k;
 }
 
@@ -38,6 +39,22 @@ jc.Units.symbole = function(unit) {
   var u = jc.Units[unit];
   if (u == undefined) return unit;
   return u.symbole;
+}
+
+jc.Units.addUnit = function (newUnit,type,k,unitOfK,symbole) {
+  // adds or replace newUnit of the type type
+  // the factor for this new unit is k expressed in unitOfK (which has to be previously defined)
+  // returns jc.Units in order to do method chaining
+  for (var u in this) {
+    if ((this[u].type == type) && (this[u].k == 1)) {
+      var ref = u;
+      break;
+    }
+  }
+  if (ref == undefined) throw new Error("can't add unit "+newUnit+" since the type "+type+" doesn't already exists");
+  symbole = symbole||newUnit;
+  this[newUnit] = {type:type,k:jc.Units.convert(k,unitOfK,u),symbole:symbole};
+  return jc.Units;
 }
 
 jc.helps['jc.Units'] = {converts:jc.Units.convert,symbole:jc.Units.symbole};
