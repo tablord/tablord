@@ -31,13 +31,20 @@ jc.CashFlow.defaults = {
 }
 
 jc.CashFlow.prototype.account = function(name,currency,startDate,endDate) {
-  currency = currency || this._currency;
-  startDate= new Date(startDate || this._startDate);
-  endDate = new Date(endDate || this._endDate);
-  var account = new jc.CashFlow(name,currency,startDate,endDate,'account',this);
-  var f = function account() {return account.execute()};
-  this._orders.push(f);
-  return account;
+  // create a new account inside a CashFlow object
+  try {
+    currency = currency || this._currency;
+    startDate= new Date(startDate || this._startDate);
+    endDate = new Date(endDate || this._endDate);
+    var account = new jc.CashFlow(name,currency,startDate,endDate,'account',this);
+    var f = function account() {return account.execute()};
+    this._orders.push(f);
+    return account;
+  }
+  catch (e) {
+    
+    throw new Error(e.message += '<br><u><b>account</b></u> '+jc.help(jc.CashFlow.prototype.account));
+  }
 }
 
 jc.CashFlow.prototype.debt = function(name,currency,startDate,endDate) {

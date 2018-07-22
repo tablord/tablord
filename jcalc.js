@@ -184,7 +184,9 @@
   Table.prototype.cols = function(cols) {
     // set the columns that are displayed by default
     // return the table for command chaining
-
+    // cols is an object like
+    // { colname: true,   // any value make the column visible
+    //   colname:{style:"css style"  // like 
     this._cols = cols;
     return this;
   }
@@ -501,8 +503,8 @@
 
   jc.Format.prototype.toString = function() {
     if (this.formatted != undefined) return this.formatted;
-    if (this.obj) return this.obj.toString();
-    return 'undefined';
+    if (this.obj == undefined) return 'undefined';
+    return this.obj.toString();
   }
 
   

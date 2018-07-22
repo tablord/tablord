@@ -1,4 +1,4 @@
-<HTML xmlns="http://www.w3.org/1999/xhtml" APPLICATIONNAME="D:\Documents\programmation\jcalc\jcalcV0\jcalc_finance.hta" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="JCalc: Finance Documentation" SINGLEINSTANCE="yes" SCROLL="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
+<HTML APPLICATIONNAME="D:\Documents\programmation\jcalc\jcalcV0\jcalc_finance.hta" xmlns="http://www.w3.org/1999/xhtml" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="JCalc: Finance Documentation" SCROLL="yes" SINGLEINSTANCE="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
 <SCRIPT src="jquery-1.5.1.min.js"></SCRIPT>
 
 <SCRIPT src="jcalcEdi.js"></SCRIPT>
@@ -19,495 +19,34 @@
 
 <SCRIPT src="finance.js"></SCRIPT>
 </HEAD>
-<BODY designMode="on" hideCode="false">
+<BODY hideCode="false" designMode="on">
 <DIV id=sect0012 class=SECTION>
 <H1 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false>1 Finance module</H1>
 <DIV class=SECTIONCONTAINER>
-<DIV onclick=jc.selectElement(this); id=rich0013 class=RICHTEXT contentEditable=false jQuery15105320685554018192="13" jQuery15109039988435292482="13" jQuery151039817934598419474="14" jQuery15108122780352593999="12" jQuery15108204301154601807="12" jQuery15109516664227620938="12" jQuery15107420532693318493="10" jQuery15105478714736071766="9" jQuery15101737747918576364="9" jQuery151044326599603771793="8" jQuery15106665571144262056="4" jQuery15108542791116371112="3" jQuery15105608160678483406="4" jQuery15109979635317510751="4" jQuery1510378875261315682="9" jQuery15108764633521380936="9" jQuery151047589795705268423="10" jQuery1510407297269392288="10" jQuery15103019024960127399="12" jQuery15106129550517257609="12" jQuery151021739577184945163="12" jQuery151016313901819376225="13" jQuery15106975583564809582="13" jQuery15107533189875581333="14">the purpose of the finance.js module is to help in business plan and the simulation of financial situations</DIV>
-<DIV id=localToolBar class=HIDDEN><BUTTON onclick=jc.insertNewSection(jc.localToolBar);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(jc.localToolBar);>^ new richtext ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>^ new code ^</BUTTON><SPAN id=codeId>code0047</SPAN><INPUT onclick=jc.hideCode(event) type=checkbox>hide codes</INPUT><INPUT onclick=jc.hideDeleted(event) CHECKED type=checkbox>hide deleted</INPUT><INPUT onclick=jc.hideTest(event) CHECKED type=checkbox>hide tests</INPUT><INPUT onclick=jc.hideTrace(event) CHECKED type=checkbox>hide traces</INPUT><BUTTON onclick=jc.hideToolBars();>hide ToolBars</BUTTON>
+<DIV onclick=jc.selectElement(this); id=rich0013 class=RICHTEXT contentEditable=false jQuery15107533189875581333="14" jQuery15106975583564809582="13" jQuery151016313901819376225="13" jQuery151021739577184945163="12" jQuery15106129550517257609="12" jQuery15103019024960127399="12" jQuery1510407297269392288="10" jQuery151047589795705268423="10" jQuery15108764633521380936="9" jQuery1510378875261315682="9" jQuery15109979635317510751="4" jQuery15105608160678483406="4" jQuery15108542791116371112="3" jQuery15106665571144262056="4" jQuery151044326599603771793="8" jQuery15101737747918576364="9" jQuery15105478714736071766="9" jQuery15107420532693318493="10" jQuery15109516664227620938="12" jQuery15108204301154601807="12" jQuery15108122780352593999="12" jQuery151039817934598419474="14" jQuery15109039988435292482="13" jQuery15105320685554018192="13" jQuery15103114037641908624="14">the purpose of the finance.js module is to help in business plan and the simulation of financial situations</DIV>
+<DIV id=localToolBar class=HIDDEN><BUTTON onclick=jc.insertNewSection(jc.localToolBar);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(jc.localToolBar);>^ new richtext ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>^ new code ^</BUTTON><SPAN id=codeId>code0047</SPAN><INPUT onclick=jc.hideCode(event) CHECKED type=checkbox>hide codes</INPUT><INPUT onclick=jc.hideDeleted(event) type=checkbox>hide deleted</INPUT><INPUT onclick=jc.hideTest(event) type=checkbox>hide tests</INPUT><INPUT onclick=jc.hideTrace(event) type=checkbox>hide traces</INPUT><BUTTON onclick=jc.hideToolBars();>hide ToolBars</BUTTON>
 <DIV class=RICHEDITTOOLBAR style="FLOAT: left"><BUTTON onclick=jc.richedit.bold();><B>B</B></BUTTON><BUTTON onclick=jc.richedit.italic();><I>i</I></BUTTON><BUTTON onclick=jc.richedit.underline();><U>U</U></BUTTON><BUTTON onclick=jc.richedit.strike();><STRIKE>S</STRIKE></BUTTON><BUTTON onclick=jc.richedit.h1();><B>H1</B></BUTTON><BUTTON onclick=jc.richedit.h2();><B>H2</B></BUTTON><BUTTON onclick=jc.richedit.div();>div</BUTTON><BUTTON onclick=jc.richedit.p();>¶</BUTTON><BUTTON onclick=jc.richedit.ol();>#</BUTTON><BUTTON onclick=jc.richedit.ul();>•</BUTTON><BUTTON onclick=jc.richedit.pre();>{}</BUTTON></DIV>
-<DIV><BUTTON onclick=jc.execAutoExec();>run</BUTTON><BUTTON onclick=jc.execAll();>run all</BUTTON><BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this);>--&gt;test</BUTTON><BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON><BUTTON onclick=jc.save();>save</BUTTON><BUTTON onclick=jc.deleteBlock(jc.selectedElement);>V delete V</BUTTON></DIV></DIV><PRE onclick=jc.selectElement(this); id=code0047 class=CODE contentEditable=false jQuery15105320685554018192="24" jQuery15107533189875581333="1">window.document.body.attributes</PRE>
-<DIV onclick=jc.outClick(this) id=out0047 class="OUTPUT OLD SUCCESS">
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE class=INSPECT>
-<TBODY>
-<TR>
-<TH vAlign=top>length</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>151</TD></TR>
-<TR>
-<TH vAlign=top>onmsanimationiteration</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onbeforeeditfocus</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-haspopup</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onbeforeactivate</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onbeforepaste</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>oncopy</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onmouseleave</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>ondragstart</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onmsanimationend</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>ondatasetcomplete</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-required</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-expanded</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onscroll</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onrowsdelete</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-grabbed</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onmouseup</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onbeforecut</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>implementation</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onclick</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>spellcheck</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onmoveend</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>role</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-disabled</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>tabIndex</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-label</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>lang</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onkeypress</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-valuenow</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-checked</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onmstransitionstart</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onlayoutcomplete</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onmsanimationstart</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-busy</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onmouseover</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onfocusin</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onmsmanipulationstatechanged</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onrowenter</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-describedby</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>ondblclick</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onmove</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-flowto</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onpage</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>dataFormatAs</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onmstransitionend</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>ondragleave</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>ondragend</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-orientation</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-multiline</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onresize</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onmouseenter</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onresizeend</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onmousemove</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onresizestart</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onerrorupdate</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-secret</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onkeyup</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-hidden</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onbeforedeactivate</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onmousedown</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-pressed</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>oncut</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onrowsinserted</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>oncellchange</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-readonly</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onfocus</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-posinset</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>dataSrc</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onmouseout</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>disabled</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-selected</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-dropeffect</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>ondragover</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>x-ms-aria-flowfrom</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onrowexit</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onfilterchange</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-controls</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onfocusout</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-relevant</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>x-ms-acceleratorkey</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-level</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onblur</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>ondragenter</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-setsize</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>ondrag</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>id</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>title</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>ondataavailable</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-live</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-valuetext</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onpropertychange</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-multiselectable</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onreadystatechange</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-sort</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>className</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>undefined</TD></TR>
-<TR>
-<TH vAlign=top>aria-invalid</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onselectstart</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-autocomplete</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onpaste</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onhelp</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onload</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>ondeactivate</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>hideFocus</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onbeforeupdate</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>contentEditable</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onafterupdate</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onkeydown</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-valuemin</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>language</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>style_Str</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>undefined</TD></TR>
-<TR>
-<TH vAlign=top>oncontrolselect</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>oncontextmenu</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-valuemax</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>dir</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-activedescendant</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onbeforecopy</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onmovestart</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onactivate</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>oninvalid</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>oncuechange</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onlosecapture</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>ondatasetchanged</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>ondrop</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>accessKey</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-owns</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onselect</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-atomic</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aria-labelledby</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>dataFld</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onmousewheel</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onunload</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>bottomMargin</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onbeforeprint</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>background</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>aLink</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>leftMargin</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>rightMargin</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>ononline</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>scroll</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onafterprint</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onoffline</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>link</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>bgProperties</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onhashchange</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>onbeforeunload</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>topMargin</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>noWrap</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>bgColor</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>text</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>vLink</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>designMode</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR>
-<TR>
-<TH vAlign=top>hideCode</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object]</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
+<DIV><BUTTON onclick=jc.execSelected();>run</BUTTON><BUTTON onclick=jc.execAll();>run all</BUTTON><BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this);>--&gt;test</BUTTON><BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON><BUTTON onclick=jc.save();>save</BUTTON><BUTTON onclick=jc.deleteBlock(jc.selectedElement);>V delete V</BUTTON></DIV></DIV>
 <DIV id=sect0014 class=SECTION>
 <H2 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false>1.1 Starting Example</H2>
 <DIV class=SECTIONCONTAINER>
-<DIV onclick=jc.selectElement(this); id=rich0015 class=RICHTEXT contentEditable=false jQuery15105320685554018192="14" jQuery15109039988435292482="14" jQuery151039817934598419474="15" jQuery15108122780352593999="13" jQuery15108204301154601807="13" jQuery15109516664227620938="13" jQuery15107420532693318493="11" jQuery15105478714736071766="10" jQuery15101737747918576364="10" jQuery151044326599603771793="9" jQuery15106665571144262056="5" jQuery15108542791116371112="4" jQuery15105608160678483406="5" jQuery15109979635317510751="5" jQuery1510378875261315682="10" jQuery15108764633521380936="10" jQuery151047589795705268423="11" jQuery1510407297269392288="11" jQuery15103019024960127399="13" jQuery15106129550517257609="13" jQuery151021739577184945163="13" jQuery151016313901819376225="14" jQuery15106975583564809582="14" jQuery15107533189875581333="15">
+<DIV onclick=jc.selectElement(this); id=rich0015 class=RICHTEXT contentEditable=false jQuery15107533189875581333="15" jQuery15106975583564809582="14" jQuery151016313901819376225="14" jQuery151021739577184945163="13" jQuery15106129550517257609="13" jQuery15103019024960127399="13" jQuery1510407297269392288="11" jQuery151047589795705268423="11" jQuery15108764633521380936="10" jQuery1510378875261315682="10" jQuery15109979635317510751="5" jQuery15105608160678483406="5" jQuery15108542791116371112="4" jQuery15106665571144262056="5" jQuery151044326599603771793="9" jQuery15101737747918576364="10" jQuery15105478714736071766="10" jQuery15107420532693318493="11" jQuery15109516664227620938="13" jQuery15108204301154601807="13" jQuery15108122780352593999="13" jQuery151039817934598419474="15" jQuery15109039988435292482="14" jQuery15105320685554018192="14" jQuery15103114037641908624="15">
 <P>the CashFlow class is the basic bloc of this module</P>
 <P>in order to instanciate a new CashFlow object just use the </P>
-<P><SPAN id=code0018 class="CODE AUTOEXEC" style="DISPLAY: none" jQuery15105320685554018192="1" jQuery15109039988435292482="1" jQuery151039817934598419474="1" jQuery15108122780352593999="1" jQuery15108204301154601807="1" jQuery15109516664227620938="1" jQuery15107420532693318493="1" jQuery15105478714736071766="1" jQuery15101737747918576364="1" jQuery151044326599603771793="1" jQuery15106665571144262056="1" jQuery15109979635317510751="1" jQuery1510378875261315682="1" jQuery15108764633521380936="1" jQuery151047589795705268423="1" jQuery1510407297269392288="1" jQuery15103019024960127399="1" jQuery15106129550517257609="1" jQuery151021739577184945163="1" jQuery151016313901819376225="1" jQuery15106975583564809582="1" jQuery15107533189875581333="2">jc.help(jc.cashFlow)</SPAN><SPAN id=out0018 class="OUTPUT SUCCESS" contentEditable=false><B>function cashFlow(name,currency,startDate,endDate)</B><BR>&nbsp;returns&nbsp;a&nbsp;new&nbsp;CahFlow&nbsp;object&nbsp;of&nbsp;type&nbsp;'main'</SPAN></P>
+<P><SPAN id=code0018 class="CODE AUTOEXEC" style="DISPLAY: none" jQuery15107533189875581333="2" jQuery15106975583564809582="1" jQuery151016313901819376225="1" jQuery151021739577184945163="1" jQuery15106129550517257609="1" jQuery15103019024960127399="1" jQuery1510407297269392288="1" jQuery151047589795705268423="1" jQuery15108764633521380936="1" jQuery1510378875261315682="1" jQuery15109979635317510751="1" jQuery15106665571144262056="1" jQuery151044326599603771793="1" jQuery15101737747918576364="1" jQuery15105478714736071766="1" jQuery15107420532693318493="1" jQuery15109516664227620938="1" jQuery15108204301154601807="1" jQuery15108122780352593999="1" jQuery151039817934598419474="1" jQuery15109039988435292482="1" jQuery15105320685554018192="1" jQuery15103114037641908624="2">jc.help(jc.cashFlow)</SPAN><SPAN id=out0018 class="OUTPUT SUCCESS" contentEditable=false jQuery15103114037641908624="26"><B>function cashFlow(name,currency,startDate,endDate)</B><BR>&nbsp;returns&nbsp;a&nbsp;new&nbsp;CahFlow&nbsp;object&nbsp;of&nbsp;type&nbsp;'main'</SPAN></P>
 <P>&nbsp;</P>
-<P>&nbsp;</P></DIV><PRE onclick=jc.selectElement(this); id=code0021 class=CODE contentEditable=false jQuery15105320685554018192="2" jQuery15109039988435292482="2" jQuery151039817934598419474="2" jQuery15108122780352593999="2" jQuery15108204301154601807="2" jQuery15109516664227620938="2" jQuery15107420532693318493="2" jQuery15105478714736071766="2" jQuery15101737747918576364="2" jQuery151044326599603771793="2" jQuery15109979635317510751="7" jQuery1510378875261315682="2" jQuery15108764633521380936="2" jQuery151047589795705268423="2" jQuery1510407297269392288="2" jQuery15103019024960127399="2" jQuery15106129550517257609="2" jQuery151021739577184945163="2" jQuery151016313901819376225="2" jQuery15106975583564809582="2" jQuery15107533189875581333="3"><P>jc.cashFlow('myBusiness','CHF','2019/1/1','2029/1/1')</P></PRE>
-<DIV onclick=jc.outClick(this) id=out0021 class="OUTPUT OLD"><VAR>myBusiness</VAR> 
+<P>&nbsp;</P></DIV><PRE onclick=jc.selectElement(this); id=code0021 class=CODE contentEditable=false jQuery15107533189875581333="3" jQuery15106975583564809582="2" jQuery151016313901819376225="2" jQuery151021739577184945163="2" jQuery15106129550517257609="2" jQuery15103019024960127399="2" jQuery1510407297269392288="2" jQuery151047589795705268423="2" jQuery15108764633521380936="2" jQuery1510378875261315682="2" jQuery15109979635317510751="7" jQuery151044326599603771793="2" jQuery15101737747918576364="2" jQuery15105478714736071766="2" jQuery15107420532693318493="2" jQuery15109516664227620938="2" jQuery15108204301154601807="2" jQuery15108122780352593999="2" jQuery151039817934598419474="2" jQuery15109039988435292482="2" jQuery15105320685554018192="2" jQuery15103114037641908624="3"><P>jc.cashFlow('myBusiness','CHF','2019/1/1','2029/1/1')</P></PRE>
+<DIV id=out0021 class="OUTPUT SUCCESS" jQuery15103114037641908624="27"><VAR>myBusiness</VAR>
 <TABLE border=1>
 <THEAD>
 <TR>
 <TH>subject</TH></TR></THEAD>
 <TBODY></TBODY></TABLE></DIV>
-<DIV onclick=jc.selectElement(this); id=rich0022 class=RICHTEXT contentEditable=false jQuery15105320685554018192="15" jQuery15109039988435292482="15" jQuery151039817934598419474="16" jQuery15108122780352593999="14" jQuery15108204301154601807="14" jQuery15109516664227620938="14" jQuery15107420532693318493="12" jQuery15105478714736071766="11" jQuery15101737747918576364="11" jQuery151044326599603771793="10" jQuery15109979635317510751="8" jQuery1510378875261315682="11" jQuery15108764633521380936="11" jQuery151047589795705268423="12" jQuery1510407297269392288="12" jQuery15103019024960127399="14" jQuery15106129550517257609="14" jQuery151021739577184945163="14" jQuery151016313901819376225="15" jQuery15106975583564809582="15" jQuery15107533189875581333="16">
+<DIV onclick=jc.selectElement(this); id=rich0022 class=RICHTEXT contentEditable=false jQuery15107533189875581333="16" jQuery15106975583564809582="15" jQuery151016313901819376225="15" jQuery151021739577184945163="14" jQuery15106129550517257609="14" jQuery15103019024960127399="14" jQuery1510407297269392288="12" jQuery151047589795705268423="12" jQuery15108764633521380936="11" jQuery1510378875261315682="11" jQuery15109979635317510751="8" jQuery151044326599603771793="10" jQuery15101737747918576364="11" jQuery15105478714736071766="11" jQuery15107420532693318493="12" jQuery15109516664227620938="14" jQuery15108204301154601807="14" jQuery15108122780352593999="14" jQuery151039817934598419474="16" jQuery15109039988435292482="15" jQuery15105320685554018192="15" jQuery15103114037641908624="16">
 <P>so far so good, but not much inside. like with table or variable, this CashFlow has a name and it has been added to v so it is accessible like a global variable</P>
 <P>&nbsp;</P>
-<P>let assume that the first thing is to inject some cash from your own savings</P></DIV><PRE onclick=jc.selectElement(this); id=code0023 class=CODE contentEditable=false jQuery15105320685554018192="3" jQuery15109039988435292482="3" jQuery151039817934598419474="3" jQuery15108122780352593999="3" jQuery15108204301154601807="3" jQuery15109516664227620938="3" jQuery15107420532693318493="3" jQuery15105478714736071766="3" jQuery15101737747918576364="3" jQuery151044326599603771793="3" jQuery15109979635317510751="9" jQuery1510378875261315682="3" jQuery15108764633521380936="3" jQuery151047589795705268423="3" jQuery1510407297269392288="3" jQuery15103019024960127399="3" jQuery15106129550517257609="3" jQuery151021739577184945163="3" jQuery151016313901819376225="3" jQuery15106975583564809582="3" jQuery15107533189875581333="4">myBusiness.recieve('2019/2/1','initial cash from my own savings',100000)</PRE>
-<DIV onclick=jc.outClick(this) id=out0023 class="OUTPUT OLD"><VAR>myBusiness</VAR> 
+<P>let assume that the first thing is to inject some cash from your own savings</P></DIV><PRE onclick=jc.selectElement(this); id=code0023 class=CODE contentEditable=false jQuery15107533189875581333="4" jQuery15106975583564809582="3" jQuery151016313901819376225="3" jQuery151021739577184945163="3" jQuery15106129550517257609="3" jQuery15103019024960127399="3" jQuery1510407297269392288="3" jQuery151047589795705268423="3" jQuery15108764633521380936="3" jQuery1510378875261315682="3" jQuery15109979635317510751="9" jQuery151044326599603771793="3" jQuery15101737747918576364="3" jQuery15105478714736071766="3" jQuery15107420532693318493="3" jQuery15109516664227620938="3" jQuery15108204301154601807="3" jQuery15108122780352593999="3" jQuery151039817934598419474="3" jQuery15109039988435292482="3" jQuery15105320685554018192="3" jQuery15103114037641908624="4">myBusiness.recieve('2019/2/1','initial cash from my own savings',100000)</PRE>
+<DIV id=out0023 class="OUTPUT SUCCESS" jQuery15103114037641908624="28"><VAR>myBusiness</VAR>
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -521,8 +60,8 @@
 <TD style="TEXT-ALIGN: left">initial cash from my own savings</TD>
 <TD>100000.00</TD>
 <TD>100000.00</TD></TR></TBODY></TABLE></DIV>
-<DIV onclick=jc.selectElement(this); id=rich0024 class=RICHTEXT contentEditable=false jQuery15105320685554018192="16" jQuery15109039988435292482="16" jQuery151039817934598419474="17" jQuery15108122780352593999="15" jQuery15108204301154601807="15" jQuery15109516664227620938="15" jQuery15107420532693318493="13" jQuery15105478714736071766="12" jQuery15101737747918576364="12" jQuery151044326599603771793="11" jQuery15109979635317510751="10" jQuery1510378875261315682="12" jQuery15108764633521380936="12" jQuery151047589795705268423="13" jQuery1510407297269392288="13" jQuery15103019024960127399="15" jQuery15106129550517257609="15" jQuery151021739577184945163="15" jQuery151016313901819376225="16" jQuery15106975583564809582="16" jQuery15107533189875581333="17">Wow now some cash is inside the company, but as usual, things start and you have to pay the first bills</DIV><PRE onclick=jc.selectElement(this); id=code0025 class=CODE contentEditable=false jQuery15105320685554018192="4" jQuery15109039988435292482="4" jQuery151039817934598419474="4" jQuery15108122780352593999="4" jQuery15108204301154601807="4" jQuery15109516664227620938="4" jQuery15107420532693318493="4" jQuery15105478714736071766="4" jQuery15101737747918576364="4" jQuery151044326599603771793="4" jQuery15109979635317510751="11" jQuery1510378875261315682="4" jQuery15108764633521380936="4" jQuery151047589795705268423="4" jQuery1510407297269392288="4" jQuery15103019024960127399="4" jQuery15106129550517257609="4" jQuery151021739577184945163="4" jQuery151016313901819376225="4" jQuery15106975583564809582="4" jQuery15107533189875581333="5"><P>myBusiness</P><P>.pay('2019/3/1','registration fees',20000)</P><P>.pay('2019/3/15','lawers status redaction',4000)</P></PRE>
-<DIV onclick=jc.outClick(this) id=out0025 class="OUTPUT OLD"><VAR>myBusiness</VAR> 
+<DIV onclick=jc.selectElement(this); id=rich0024 class=RICHTEXT contentEditable=false jQuery15107533189875581333="17" jQuery15106975583564809582="16" jQuery151016313901819376225="16" jQuery151021739577184945163="15" jQuery15106129550517257609="15" jQuery15103019024960127399="15" jQuery1510407297269392288="13" jQuery151047589795705268423="13" jQuery15108764633521380936="12" jQuery1510378875261315682="12" jQuery15109979635317510751="10" jQuery151044326599603771793="11" jQuery15101737747918576364="12" jQuery15105478714736071766="12" jQuery15107420532693318493="13" jQuery15109516664227620938="15" jQuery15108204301154601807="15" jQuery15108122780352593999="15" jQuery151039817934598419474="17" jQuery15109039988435292482="16" jQuery15105320685554018192="16" jQuery15103114037641908624="17">Wow now some cash is inside the company, but as usual, things start and you have to pay the first bills</DIV><PRE onclick=jc.selectElement(this); id=code0025 class=CODE contentEditable=false jQuery15107533189875581333="5" jQuery15106975583564809582="4" jQuery151016313901819376225="4" jQuery151021739577184945163="4" jQuery15106129550517257609="4" jQuery15103019024960127399="4" jQuery1510407297269392288="4" jQuery151047589795705268423="4" jQuery15108764633521380936="4" jQuery1510378875261315682="4" jQuery15109979635317510751="11" jQuery151044326599603771793="4" jQuery15101737747918576364="4" jQuery15105478714736071766="4" jQuery15107420532693318493="4" jQuery15109516664227620938="4" jQuery15108204301154601807="4" jQuery15108122780352593999="4" jQuery151039817934598419474="4" jQuery15109039988435292482="4" jQuery15105320685554018192="4" jQuery15103114037641908624="5"><P>myBusiness</P><P>.pay('2019/3/1','registration fees',20000)</P><P>.pay('2019/3/15','lawers status redaction',4000)</P></PRE>
+<DIV id=out0025 class="OUTPUT SUCCESS" jQuery15103114037641908624="29"><VAR>myBusiness</VAR>
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -546,10 +85,10 @@
 <TD style="TEXT-ALIGN: left">lawers status redaction</TD>
 <TD>-4000.00</TD>
 <TD>76000.00</TD></TR></TBODY></TABLE></DIV>
-<DIV onclick=jc.selectElement(this); id=rich0026 class=RICHTEXT contentEditable=false jQuery15105320685554018192="17" jQuery15109039988435292482="17" jQuery151039817934598419474="18" jQuery15108122780352593999="16" jQuery15108204301154601807="16" jQuery15109516664227620938="16" jQuery15107420532693318493="14" jQuery15105478714736071766="13" jQuery15101737747918576364="13" jQuery151044326599603771793="12" jQuery15109979635317510751="12" jQuery1510378875261315682="13" jQuery15108764633521380936="13" jQuery151047589795705268423="14" jQuery1510407297269392288="14" jQuery15103019024960127399="16" jQuery15106129550517257609="16" jQuery151021739577184945163="16" jQuery151016313901819376225="17" jQuery15106975583564809582="17" jQuery15107533189875581333="18">
-<P>As you see the methods receive or pay allow method chaining so you can simple call .pay in a serial manner. As usual in <SPAN id=code0027 class="CODE AUTOEXEC" style="DISPLAY: none" jQuery15105320685554018192="5" jQuery15109039988435292482="5" jQuery151039817934598419474="5" jQuery15108122780352593999="5" jQuery15108204301154601807="5" jQuery15109516664227620938="5" jQuery15107420532693318493="5" jQuery15105478714736071766="5" jQuery15101737747918576364="5" jQuery151044326599603771793="5" jQuery1510378875261315682="5" jQuery15108764633521380936="5" jQuery151047589795705268423="5" jQuery1510407297269392288="5" jQuery15103019024960127399="5" jQuery15106129550517257609="5" jQuery151021739577184945163="5" jQuery151016313901819376225="5" jQuery15106975583564809582="5" jQuery15107533189875581333="6">jc.name</SPAN><SPAN id=out0027 class="OUTPUT SUCCESS" contentEditable=false>JCalc</SPAN> if the result of a code block is an object, its .span() method will be called and so we can visualize the result.</P>
-<P>Now we just pay some bills without taking care to the structure or nature of the things. But now we will have some fixed cost since we just sign a rent contract for an office for 1 year. So let start to be a bit more structured, even if this is now mandatory</P></DIV><PRE onclick=jc.selectElement(this); id=code0028 class=CODE contentEditable=false jQuery15105320685554018192="6" jQuery15109039988435292482="6" jQuery151039817934598419474="6" jQuery15108122780352593999="6" jQuery15108204301154601807="6" jQuery15109516664227620938="6" jQuery15107420532693318493="6" jQuery15105478714736071766="6" jQuery15101737747918576364="6" jQuery151044326599603771793="6" jQuery15109979635317510751="13" jQuery1510378875261315682="6" jQuery15108764633521380936="6" jQuery151047589795705268423="6" jQuery1510407297269392288="6" jQuery15103019024960127399="6" jQuery15106129550517257609="6" jQuery151021739577184945163="6" jQuery151016313901819376225="6" jQuery15106975583564809582="6" jQuery15107533189875581333="7"><P>myBusiness.account('fixedCost')</P><P>  .pay('2019/3/30','initial down payment',2000)</P></PRE>
-<DIV onclick=jc.outClick(this) id=out0028 class="OUTPUT OLD"><VAR>fixedCost</VAR> 
+<DIV onclick=jc.selectElement(this); id=rich0026 class=RICHTEXT contentEditable=false jQuery15107533189875581333="18" jQuery15106975583564809582="17" jQuery151016313901819376225="17" jQuery151021739577184945163="16" jQuery15106129550517257609="16" jQuery15103019024960127399="16" jQuery1510407297269392288="14" jQuery151047589795705268423="14" jQuery15108764633521380936="13" jQuery1510378875261315682="13" jQuery15109979635317510751="12" jQuery151044326599603771793="12" jQuery15101737747918576364="13" jQuery15105478714736071766="13" jQuery15107420532693318493="14" jQuery15109516664227620938="16" jQuery15108204301154601807="16" jQuery15108122780352593999="16" jQuery151039817934598419474="18" jQuery15109039988435292482="17" jQuery15105320685554018192="17" jQuery15103114037641908624="18">
+<P>As you see the methods receive or pay allow method chaining so you can simple call .pay in a serial manner. As usual in <SPAN id=code0027 class="CODE AUTOEXEC" style="DISPLAY: none" jQuery15107533189875581333="6" jQuery15106975583564809582="5" jQuery151016313901819376225="5" jQuery151021739577184945163="5" jQuery15106129550517257609="5" jQuery15103019024960127399="5" jQuery1510407297269392288="5" jQuery151047589795705268423="5" jQuery15108764633521380936="5" jQuery1510378875261315682="5" jQuery151044326599603771793="5" jQuery15101737747918576364="5" jQuery15105478714736071766="5" jQuery15107420532693318493="5" jQuery15109516664227620938="5" jQuery15108204301154601807="5" jQuery15108122780352593999="5" jQuery151039817934598419474="5" jQuery15109039988435292482="5" jQuery15105320685554018192="5" jQuery15103114037641908624="6">jc.name</SPAN><SPAN id=out0027 class="OUTPUT SUCCESS" contentEditable=false jQuery15103114037641908624="30">JCalc</SPAN> if the result of a code block is an object, its .span() method will be called and so we can visualize the result.</P>
+<P>Now we just pay some bills without taking care to the structure or nature of the things. But now we will have some fixed cost since we just sign a rent contract for an office for 1 year. So let start to be a bit more structured, even if this is now mandatory</P></DIV><PRE onclick=jc.selectElement(this); id=code0028 class=CODE contentEditable=false jQuery15107533189875581333="7" jQuery15106975583564809582="6" jQuery151016313901819376225="6" jQuery151021739577184945163="6" jQuery15106129550517257609="6" jQuery15103019024960127399="6" jQuery1510407297269392288="6" jQuery151047589795705268423="6" jQuery15108764633521380936="6" jQuery1510378875261315682="6" jQuery15109979635317510751="13" jQuery151044326599603771793="6" jQuery15101737747918576364="6" jQuery15105478714736071766="6" jQuery15107420532693318493="6" jQuery15109516664227620938="6" jQuery15108204301154601807="6" jQuery15108122780352593999="6" jQuery151039817934598419474="6" jQuery15109039988435292482="6" jQuery15105320685554018192="6" jQuery15103114037641908624="7"><P>myBusiness.account('fixedCost')</P><P>  .pay('2019/3/30','initial down payment',2000)</P></PRE>
+<DIV id=out0028 class="OUTPUT SUCCESS" jQuery15103114037641908624="31"><VAR>fixedCost</VAR>
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -563,8 +102,8 @@
 <TD style="TEXT-ALIGN: left">initial down payment</TD>
 <TD>-2000.00</TD>
 <TD>-2000.00</TD></TR></TBODY></TABLE></DIV>
-<DIV onclick=jc.selectElement(this); id=rich0029 class=RICHTEXT contentEditable=false jQuery15105320685554018192="18" jQuery15109039988435292482="18" jQuery151039817934598419474="19" jQuery15108122780352593999="17" jQuery15108204301154601807="17" jQuery15109516664227620938="17" jQuery15107420532693318493="15" jQuery15105478714736071766="14" jQuery15101737747918576364="14" jQuery151044326599603771793="13" jQuery15109979635317510751="14" jQuery1510378875261315682="14" jQuery15108764633521380936="14" jQuery151047589795705268423="15" jQuery1510407297269392288="15" jQuery15103019024960127399="17" jQuery15106129550517257609="17" jQuery151021739577184945163="17" jQuery151016313901819376225="18" jQuery15106975583564809582="18" jQuery15107533189875581333="19">The beauty is that it is a sub cashFlow, that is still accessible from the main business plan and is fully part of the main one:</DIV><PRE onclick=jc.selectElement(this); id=code0030 class=CODE contentEditable=false jQuery15105320685554018192="7" jQuery15109039988435292482="7" jQuery151039817934598419474="7" jQuery15108122780352593999="7" jQuery15108204301154601807="7" jQuery15109516664227620938="7" jQuery15107420532693318493="7" jQuery15105478714736071766="7" jQuery15101737747918576364="7" jQuery151044326599603771793="7" jQuery15109979635317510751="15" jQuery1510378875261315682="7" jQuery15108764633521380936="7" jQuery151047589795705268423="7" jQuery1510407297269392288="7" jQuery15103019024960127399="7" jQuery15106129550517257609="7" jQuery151021739577184945163="7" jQuery151016313901819376225="7" jQuery15106975583564809582="7" jQuery15107533189875581333="8"><P>myBusiness</P></PRE>
-<DIV onclick=jc.outClick(this) id=out0030 class="OUTPUT OLD"><VAR>myBusiness</VAR> 
+<DIV onclick=jc.selectElement(this); id=rich0029 class=RICHTEXT contentEditable=false jQuery15107533189875581333="19" jQuery15106975583564809582="18" jQuery151016313901819376225="18" jQuery151021739577184945163="17" jQuery15106129550517257609="17" jQuery15103019024960127399="17" jQuery1510407297269392288="15" jQuery151047589795705268423="15" jQuery15108764633521380936="14" jQuery1510378875261315682="14" jQuery15109979635317510751="14" jQuery151044326599603771793="13" jQuery15101737747918576364="14" jQuery15105478714736071766="14" jQuery15107420532693318493="15" jQuery15109516664227620938="17" jQuery15108204301154601807="17" jQuery15108122780352593999="17" jQuery151039817934598419474="19" jQuery15109039988435292482="18" jQuery15105320685554018192="18" jQuery15103114037641908624="19">The beauty is that it is a sub cashFlow, that is still accessible from the main business plan and is fully part of the main one:</DIV><PRE onclick=jc.selectElement(this); id=code0030 class=CODE contentEditable=false jQuery15107533189875581333="8" jQuery15106975583564809582="7" jQuery151016313901819376225="7" jQuery151021739577184945163="7" jQuery15106129550517257609="7" jQuery15103019024960127399="7" jQuery1510407297269392288="7" jQuery151047589795705268423="7" jQuery15108764633521380936="7" jQuery1510378875261315682="7" jQuery15109979635317510751="15" jQuery151044326599603771793="7" jQuery15101737747918576364="7" jQuery15105478714736071766="7" jQuery15107420532693318493="7" jQuery15109516664227620938="7" jQuery15108204301154601807="7" jQuery15108122780352593999="7" jQuery151039817934598419474="7" jQuery15109039988435292482="7" jQuery15105320685554018192="7" jQuery15103114037641908624="8"><P>myBusiness</P></PRE>
+<DIV id=out0030 class="OUTPUT SUCCESS" jQuery15103114037641908624="32"><VAR>myBusiness</VAR>
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -593,10 +132,10 @@
 <TD style="TEXT-ALIGN: left">initial down payment</TD>
 <TD>-2000.00</TD>
 <TD>74000.00</TD></TR></TBODY></TABLE></DIV>
-<DIV onclick=jc.selectElement(this); id=rich0031 class=RICHTEXT contentEditable=false jQuery15105320685554018192="19" jQuery15109039988435292482="19" jQuery151039817934598419474="20" jQuery15108122780352593999="18" jQuery15108204301154601807="18" jQuery15109516664227620938="18" jQuery15107420532693318493="16" jQuery15105478714736071766="15" jQuery15101737747918576364="15" jQuery151044326599603771793="14" jQuery15109979635317510751="16" jQuery1510378875261315682="15" jQuery15108764633521380936="15" jQuery151047589795705268423="16" jQuery1510407297269392288="16" jQuery15103019024960127399="18" jQuery15106129550517257609="18" jQuery151021739577184945163="18" jQuery151016313901819376225="19" jQuery15106975583564809582="19" jQuery15107533189875581333="20">
+<DIV onclick=jc.selectElement(this); id=rich0031 class=RICHTEXT contentEditable=false jQuery15107533189875581333="20" jQuery15106975583564809582="19" jQuery151016313901819376225="19" jQuery151021739577184945163="18" jQuery15106129550517257609="18" jQuery15103019024960127399="18" jQuery1510407297269392288="16" jQuery151047589795705268423="16" jQuery15108764633521380936="15" jQuery1510378875261315682="15" jQuery15109979635317510751="16" jQuery151044326599603771793="14" jQuery15101737747918576364="15" jQuery15105478714736071766="15" jQuery15107420532693318493="16" jQuery15109516664227620938="18" jQuery15108204301154601807="18" jQuery15108122780352593999="18" jQuery151039817934598419474="20" jQuery15109039988435292482="19" jQuery15105320685554018192="19" jQuery15103114037641908624="20">
 <P>You can see that the initial down payment is also present at the upper level. So you can structure your cash flow in several accounts that are now accessible through the main cashFlow either through the . or [] notation .</P>
-<P>We can now add the monthly bill for the rental of the office. In order to do so we can use the <STRONG>.monthly</STRONG> method. this method returns a <STRONG>PermanentOrder</STRONG> object that has also a <STRONG>pay</STRONG> method, almost identical to the pay method of a CashFlow. like usual, pay allows method chainning, so if needed, several payements can be done in the same month. An <STRONG>.end</STRONG> method closes all payement that have to be done monthly.</P></DIV><PRE onclick=jc.selectElement(this); id=code0032 class=CODE contentEditable=false jQuery15105320685554018192="8" jQuery15109039988435292482="8" jQuery151039817934598419474="8" jQuery15108122780352593999="8" jQuery15108204301154601807="8" jQuery15109516664227620938="8" jQuery15107420532693318493="8" jQuery15105478714736071766="8" jQuery15101737747918576364="8" jQuery151044326599603771793="15" jQuery1510378875261315682="8" jQuery15108764633521380936="8" jQuery151047589795705268423="8" jQuery1510407297269392288="8" jQuery15103019024960127399="8" jQuery15106129550517257609="8" jQuery151021739577184945163="8" jQuery151016313901819376225="8" jQuery15106975583564809582="8" jQuery15107533189875581333="9"><P>myBusiness.fixedCost</P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">  .monthly('2019/3/30','2020/3/30')</FONT></P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">    .pay('office rental',1000)</FONT></P><P><FONT style="BACKGROUND-COLOR: #f2f9a8"></FONT>&nbsp; .end()</P></PRE>
-<DIV onclick=jc.outClick(this) id=out0032 class="OUTPUT OLD"><VAR>fixedCost</VAR> 
+<P>We can now add the monthly bill for the rental of the office. In order to do so we can use the <STRONG>.monthly</STRONG> method. this method returns a <STRONG>PermanentOrder</STRONG> object that has also a <STRONG>pay</STRONG> method, almost identical to the pay method of a CashFlow. like usual, pay allows method chainning, so if needed, several payements can be done in the same month. An <STRONG>.end</STRONG> method closes all payement that have to be done monthly.</P></DIV><PRE onclick=jc.selectElement(this); id=code0032 class=CODE contentEditable=false jQuery15107533189875581333="9" jQuery15106975583564809582="8" jQuery151016313901819376225="8" jQuery151021739577184945163="8" jQuery15106129550517257609="8" jQuery15103019024960127399="8" jQuery1510407297269392288="8" jQuery151047589795705268423="8" jQuery15108764633521380936="8" jQuery1510378875261315682="8" jQuery151044326599603771793="15" jQuery15101737747918576364="8" jQuery15105478714736071766="8" jQuery15107420532693318493="8" jQuery15109516664227620938="8" jQuery15108204301154601807="8" jQuery15108122780352593999="8" jQuery151039817934598419474="8" jQuery15109039988435292482="8" jQuery15105320685554018192="8" jQuery15103114037641908624="9"><P>myBusiness.fixedCost</P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">  .monthly('2019/3/30','2020/3/30')</FONT></P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">    .pay('office rental',1000)</FONT></P><P><FONT style="BACKGROUND-COLOR: #f2f9a8"></FONT>&nbsp; .end()</P></PRE>
+<DIV id=out0032 class="OUTPUT SUCCESS" jQuery15103114037641908624="33"><VAR>fixedCost</VAR>
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -670,8 +209,8 @@
 <TD style="TEXT-ALIGN: left">office rental</TD>
 <TD>-1000.00</TD>
 <TD>-14000.00</TD></TR></TBODY></TABLE></DIV>
-<DIV onclick=jc.selectElement(this); id=rich0039 class=RICHTEXT contentEditable=false jQuery15105320685554018192="20" jQuery15109039988435292482="20" jQuery151039817934598419474="21" jQuery151021739577184945163="19" jQuery151016313901819376225="20" jQuery15106975583564809582="20" jQuery15107533189875581333="21">As on the previous example we have written one <STRONG>.end()</STRONG>, we are still on the level of <EM>fixedCost</EM>. if we had put another <STRONG>.end()</STRONG> we would be on the level of <EM>myBusiness</EM>.</DIV><PRE onclick=jc.selectElement(this); id=code0034 class=CODE contentEditable=false jQuery15105320685554018192="9" jQuery15109039988435292482="9" jQuery151039817934598419474="9" jQuery15108122780352593999="9" jQuery15108204301154601807="9" jQuery15109516664227620938="9" jQuery15107420532693318493="9" jQuery15105478714736071766="16" jQuery151047589795705268423="9" jQuery1510407297269392288="9" jQuery15103019024960127399="9" jQuery15106129550517257609="9" jQuery151021739577184945163="9" jQuery151016313901819376225="9" jQuery15106975583564809582="9" jQuery15107533189875581333="10">myBusiness</PRE>
-<DIV onclick=jc.outClick(this) id=out0034 class="OUTPUT OLD"><VAR>myBusiness</VAR> 
+<DIV onclick=jc.selectElement(this); id=rich0039 class=RICHTEXT contentEditable=false jQuery15107533189875581333="21" jQuery15106975583564809582="20" jQuery151016313901819376225="20" jQuery151021739577184945163="19" jQuery151039817934598419474="21" jQuery15109039988435292482="20" jQuery15105320685554018192="20" jQuery15103114037641908624="21">As on the previous example we have written one <STRONG>.end()</STRONG>, we are still on the level of <EM>fixedCost</EM>. if we had put another <STRONG>.end()</STRONG> we would be on the level of <EM>myBusiness</EM>.</DIV><PRE onclick=jc.selectElement(this); id=code0034 class=CODE contentEditable=false jQuery15107533189875581333="10" jQuery15106975583564809582="9" jQuery151016313901819376225="9" jQuery151021739577184945163="9" jQuery15106129550517257609="9" jQuery15103019024960127399="9" jQuery1510407297269392288="9" jQuery151047589795705268423="9" jQuery15105478714736071766="16" jQuery15107420532693318493="9" jQuery15109516664227620938="9" jQuery15108204301154601807="9" jQuery15108122780352593999="9" jQuery151039817934598419474="9" jQuery15109039988435292482="9" jQuery15105320685554018192="9" jQuery15103114037641908624="10">myBusiness</PRE>
+<DIV id=out0034 class="OUTPUT SUCCESS" jQuery15103114037641908624="34"><VAR>myBusiness</VAR>
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -760,9 +299,120 @@
 <TD style="TEXT-ALIGN: left">office rental</TD>
 <TD>-1000.00</TD>
 <TD>62000.00</TD></TR></TBODY></TABLE></DIV>
-<DIV onclick=jc.selectElement(this); id=rich0047 class=RICHTEXT contentEditable=false jQuery15105320685554018192="21" jQuery15109039988435292482="23" jQuery15106975583564809582="21" jQuery15107533189875581333="22">CashFlow object can work this different currencies, so you can pay a bill in a differents currency</DIV><PRE onclick=jc.selectElement(this); id=code0036 class=CODE contentEditable=false jQuery15105320685554018192="10" jQuery15109039988435292482="10" jQuery151039817934598419474="10" jQuery15108122780352593999="10" jQuery15108204301154601807="10" jQuery15109516664227620938="10" jQuery1510407297269392288="17" jQuery15103019024960127399="10" jQuery15106129550517257609="10" jQuery151021739577184945163="10" jQuery151016313901819376225="10" jQuery15106975583564809582="10" jQuery15107533189875581333="11">myBusiness.pay('2019/3/1','consulting fees',1000,'EUR')</PRE>
-<DIV onclick=jc.outClick(this) id=out0036 class="OUTPUT OLD">Impossible d’obtenir la propriété « getFullYear » d’une référence null ou non définie<BR>file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc.js line:483<BR></DIV><PRE onclick=jc.selectElement(this); id=code0037 class=CODE contentEditable=false jQuery15105320685554018192="11" jQuery15109039988435292482="11" jQuery151039817934598419474="11" jQuery15108122780352593999="11" jQuery15108204301154601807="11" jQuery15109516664227620938="11" jQuery1510407297269392288="18" jQuery15103019024960127399="11" jQuery15106129550517257609="11" jQuery151021739577184945163="11" jQuery151016313901819376225="11" jQuery15106975583564809582="11" jQuery15107533189875581333="12">myBusiness.fixedCost</PRE>
-<DIV onclick=jc.outClick(this) id=out0037 class="OUTPUT OLD"><VAR>fixedCost</VAR> 
+<DIV onclick=jc.selectElement(this); id=rich0047 class=RICHTEXT contentEditable=false jQuery15107533189875581333="22" jQuery15106975583564809582="21" jQuery15109039988435292482="23" jQuery15105320685554018192="21" jQuery15103114037641908624="22">CashFlow object can work this different currencies, so you can pay a bill in a differents currency</DIV><PRE onclick=jc.selectElement(this); id=code0036 class=CODE contentEditable=false jQuery15107533189875581333="11" jQuery15106975583564809582="10" jQuery151016313901819376225="10" jQuery151021739577184945163="10" jQuery15106129550517257609="10" jQuery15103019024960127399="10" jQuery1510407297269392288="17" jQuery15109516664227620938="10" jQuery15108204301154601807="10" jQuery15108122780352593999="10" jQuery151039817934598419474="10" jQuery15109039988435292482="10" jQuery15105320685554018192="10" jQuery15103114037641908624="11">myBusiness.pay('2019/3/1','consulting fees',1000,'EUR')</PRE>
+<DIV id=out0036 class="OUTPUT SUCCESS" jQuery15103114037641908624="35"><VAR>myBusiness</VAR>
+<TABLE border=1>
+<THEAD>
+<TR>
+<TH>date</TH>
+<TH>subject</TH>
+<TH>amount$CHF</TH>
+<TH>myBusiness$CHF</TH>
+<TH>amount$EUR</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>2019-02-01</TD>
+<TD style="TEXT-ALIGN: left">initial cash from my own savings</TD>
+<TD>100000.00</TD>
+<TD>100000.00</TD>
+<TD></TD></TR>
+<TR>
+<TD>2019-03-01</TD>
+<TD style="TEXT-ALIGN: left">registration fees</TD>
+<TD>-20000.00</TD>
+<TD>80000.00</TD>
+<TD></TD></TR>
+<TR>
+<TD>2019-03-01</TD>
+<TD style="TEXT-ALIGN: left">consulting fees</TD>
+<TD>-1149.43</TD>
+<TD>60850.57</TD>
+<TD>-1000.00</TD></TR>
+<TR>
+<TD>2019-03-15</TD>
+<TD style="TEXT-ALIGN: left">lawers status redaction</TD>
+<TD>-4000.00</TD>
+<TD>76000.00</TD>
+<TD></TD></TR>
+<TR>
+<TD>2019-03-30</TD>
+<TD style="TEXT-ALIGN: left">initial down payment</TD>
+<TD>-2000.00</TD>
+<TD>74000.00</TD>
+<TD></TD></TR>
+<TR>
+<TD>2019-03-30</TD>
+<TD style="TEXT-ALIGN: left">office rental</TD>
+<TD>-1000.00</TD>
+<TD>73000.00</TD>
+<TD></TD></TR>
+<TR>
+<TD>2019-04-30</TD>
+<TD style="TEXT-ALIGN: left">office rental</TD>
+<TD>-1000.00</TD>
+<TD>72000.00</TD>
+<TD></TD></TR>
+<TR>
+<TD>2019-05-30</TD>
+<TD style="TEXT-ALIGN: left">office rental</TD>
+<TD>-1000.00</TD>
+<TD>71000.00</TD>
+<TD></TD></TR>
+<TR>
+<TD>2019-06-30</TD>
+<TD style="TEXT-ALIGN: left">office rental</TD>
+<TD>-1000.00</TD>
+<TD>70000.00</TD>
+<TD></TD></TR>
+<TR>
+<TD>2019-07-30</TD>
+<TD style="TEXT-ALIGN: left">office rental</TD>
+<TD>-1000.00</TD>
+<TD>69000.00</TD>
+<TD></TD></TR>
+<TR>
+<TD>2019-08-30</TD>
+<TD style="TEXT-ALIGN: left">office rental</TD>
+<TD>-1000.00</TD>
+<TD>68000.00</TD>
+<TD></TD></TR>
+<TR>
+<TD>2019-09-30</TD>
+<TD style="TEXT-ALIGN: left">office rental</TD>
+<TD>-1000.00</TD>
+<TD>67000.00</TD>
+<TD></TD></TR>
+<TR>
+<TD>2019-10-30</TD>
+<TD style="TEXT-ALIGN: left">office rental</TD>
+<TD>-1000.00</TD>
+<TD>66000.00</TD>
+<TD></TD></TR>
+<TR>
+<TD>2019-11-30</TD>
+<TD style="TEXT-ALIGN: left">office rental</TD>
+<TD>-1000.00</TD>
+<TD>65000.00</TD>
+<TD></TD></TR>
+<TR>
+<TD>2019-12-30</TD>
+<TD style="TEXT-ALIGN: left">office rental</TD>
+<TD>-1000.00</TD>
+<TD>64000.00</TD>
+<TD></TD></TR>
+<TR>
+<TD>2020-01-30</TD>
+<TD style="TEXT-ALIGN: left">office rental</TD>
+<TD>-1000.00</TD>
+<TD>63000.00</TD>
+<TD></TD></TR>
+<TR>
+<TD>2020-03-01</TD>
+<TD style="TEXT-ALIGN: left">office rental</TD>
+<TD>-1000.00</TD>
+<TD>62000.00</TD>
+<TD></TD></TR></TBODY></TABLE></DIV><PRE onclick=jc.selectElement(this); id=code0037 class=CODE contentEditable=false jQuery15107533189875581333="12" jQuery15106975583564809582="11" jQuery151016313901819376225="11" jQuery151021739577184945163="11" jQuery15106129550517257609="11" jQuery15103019024960127399="11" jQuery1510407297269392288="18" jQuery15109516664227620938="11" jQuery15108204301154601807="11" jQuery15108122780352593999="11" jQuery151039817934598419474="11" jQuery15109039988435292482="11" jQuery15105320685554018192="11" jQuery15103114037641908624="12">myBusiness.fixedCost</PRE>
+<DIV id=out0037 class="OUTPUT SUCCESS" jQuery15103114037641908624="36"><VAR>fixedCost</VAR>
 <TABLE border=1>
 <THEAD>
 <TR>
@@ -843,9 +493,9 @@
 <DIV id=sect0040 class=SECTION>
 <H3 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false>1.2.1 CashFlow</H3>
 <DIV class=SECTIONCONTAINER>
-<DIV onclick=jc.selectElement(this); id=rich0041 class=RICHTEXT contentEditable=false jQuery15105320685554018192="22" jQuery15109039988435292482="21" jQuery151039817934598419474="22" jQuery151021739577184945163="20" jQuery151016313901819376225="21" jQuery15106975583564809582="22" jQuery15107533189875581333="23">
-<P>The CashFlow class is the most important building bloc of this module.</P></DIV><PRE onclick=jc.selectElement(this); id=code0045 class=CODE contentEditable=false jQuery15105320685554018192="12" jQuery15109039988435292482="12" jQuery151039817934598419474="23" jQuery151016313901819376225="12" jQuery15106975583564809582="12" jQuery15107533189875581333="13">jc.inspect(jc.CashFlow.prototype,'CashFlow')</PRE>
-<DIV onclick=jc.outClick(this) id=out0045 class="OUTPUT OLD">
+<DIV onclick=jc.selectElement(this); id=rich0041 class=RICHTEXT contentEditable=false jQuery15107533189875581333="23" jQuery15106975583564809582="22" jQuery151016313901819376225="21" jQuery151021739577184945163="20" jQuery151039817934598419474="22" jQuery15109039988435292482="21" jQuery15105320685554018192="22" jQuery15103114037641908624="23">
+<P>The CashFlow class is the most important building bloc of this module.</P></DIV><PRE onclick=jc.selectElement(this); id=code0045 class=CODE contentEditable=false jQuery15107533189875581333="13" jQuery15106975583564809582="12" jQuery151016313901819376225="12" jQuery151039817934598419474="23" jQuery15109039988435292482="12" jQuery15105320685554018192="12" jQuery15103114037641908624="13">jc.inspect(jc.CashFlow.prototype,'CashFlow')</PRE>
+<DIV id=out0045 class="OUTPUT SUCCESS" jQuery15103114037641908624="37">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} CashFlow</LEGEND>
 <TABLE class=INSPECT>
@@ -884,7 +534,7 @@
 <DIV id=sect0046 class=SECTION>
 <H3 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false>1.2.2 PermanentOrders</H3>
 <DIV class=SECTIONCONTAINER>
-<DIV onclick=jc.selectElement(this); id=rich0047 class=RICHTEXT contentEditable=false jQuery15105320685554018192="23" jQuery15109039988435292482="22" jQuery151039817934598419474="24" jQuery151016313901819376225="22" jQuery15106975583564809582="23" jQuery15107533189875581333="24">PermanentOrders are created through CashFlow methods <STRONG>.permanantOrders .yearly .monthly&nbsp;</STRONG>and<STRONG> .weekly.</STRONG></DIV>
+<DIV onclick=jc.selectElement(this); id=rich0047 class=RICHTEXT contentEditable=false jQuery15107533189875581333="24" jQuery15106975583564809582="23" jQuery151016313901819376225="22" jQuery151039817934598419474="24" jQuery15109039988435292482="22" jQuery15105320685554018192="23" jQuery15103114037641908624="24">PermanentOrders are created through CashFlow methods <STRONG>.permanantOrders .yearly .monthly&nbsp;</STRONG>and<STRONG> .weekly.</STRONG></DIV>
 <DIV class="BOTTOMTOOLBAR HIDDEN"><BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON></DIV></DIV></DIV>
 <DIV class="BOTTOMTOOLBAR HIDDEN"><BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON></DIV></DIV></DIV>
 <DIV class="BOTTOMTOOLBAR HIDDEN"><BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON></DIV></DIV></DIV>
