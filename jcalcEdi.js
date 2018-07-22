@@ -44,6 +44,24 @@
   jc.credits = {name:jc.name,version:jc.version,authors:jc.authors};
   jc.helps = {'jc.credits':jc.credits};
 
+  jc.upgradeModules = function() {
+    // checks that this is the lastest modules and if not replaces what is needed
+    var modulesNeeded = ['jquery-1.5.1.min.js','jcalcEdi.js','units.js','jcalc.js','axe.js','stateMachine.js','BOM.js','sys.js','ocrRdy.js','finance.js'];
+    var allModules = modulesNeeded.concat('jquery.js'); // including deprecated modules
+    var modules = [];
+    var $script = $('SCRIPT').filter(function(){return $.inArray(this.src,allModules)!=-1});
+    $script.each(function(i,e){modules.push(e.src)});
+    if (modules.toString() == modulesNeeded.toString()) return; // everything is just as expected
+
+    // otherwise we have to upgrade
+    var h = '';
+    $.each(modulesNeeded,function(i,m){h+='<SCRIPT src="'+m+'"></SCRIPT>'});
+    window.prompt('your need to edit your scripts to upgrade',h);
+  }
+
+    
+    
+
   //JQuery extentions /////////////////////////////////////////////////
   $.prototype.span = function() {
     var s = [];
@@ -419,8 +437,8 @@
     var out = window.document.getElementById(outId);
     if (out == undefined) {
       var tag = (element.tagName=='SPAN'?'SPAN':'DIV');
-      out = $('<'+tag+' class=OUTPUT id='+outId+'>no output: created on the fly</'+tag+'>')[0];
-      $(out).insertAfter(element);
+      out = $('<'+tag+' class=OUTPUT id='+outId+'>no output</'+tag+'>')[0];
+      $(out).bind("click",undefined,jc.outClick).insertAfter(element);
     }
     return out;
   }
@@ -432,6 +450,34 @@
     return window.document.getElementById(element.id.replace(/code/,"test"));
   }
 
+  jc.hideCode = function(event) {
+    var button = event.target || window.event.srcElement; //IE7 compatibility
+    $('.CODE').toggleClass('HIDDEN',button.checked);
+    button.scrollIntoView();
+    window.document.body.hideCode=button.checked;
+  }
+
+  jc.hideDeleted = function(event) {
+    var button = event.target || window.event.srcElement; //IE7 compatibility
+    $('.DELETED').toggleClass('HIDDEN',button.checked);
+    button.scrollIntoView();
+    window.document.body.hideDeleted=button.checked;
+  }
+      
+  jc.hideTest = function(event) {
+    var button = event.target || window.event.srcElement; //IE7 compatibility
+    $('.TEST').toggleClass('HIDDEN',button.checked);
+    button.scrollIntoView();
+    window.document.body.hideTest=button.checked;
+  }
+      
+  jc.hideTrace = function(event) {
+    var button = event.target || window.event.srcElement; //IE7 compatibility
+    $('.TRACE').toggleClass('HIDDEN',button.checked);
+    button.scrollIntoView();
+    window.document.body.hideTrace=button.checked;
+  }
+      
   jc.initLocalToolBar = function() {
     jc.localToolBar = $('#localToolBar')[0];  // start with localToolBar hidden so that its position is irrelevent
     if (jc.localToolBar == undefined) {
@@ -445,10 +491,10 @@
       '<BUTTON onclick=jc.insertNewRichText(jc.localToolBar);>^ new richtext ^</BUTTON>'+
       '<BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>^ new code ^</BUTTON>'+
       '<SPAN id=codeId>no element</SPAN>'+
-      '<INPUT onclick="$(\'.CODE\').toggleClass(\'HIDDEN\',this.checked);this.scrollIntoView();" type=checkbox>hide codes</INPUT>'+
-      '<INPUT onclick="$(\'.DELETED\').toggleClass(\'HIDDEN\',this.checked);this.scrollIntoView();" type=checkbox>hide deleted</INPUT>'+
-      '<INPUT onclick="$(\'.TEST\').toggleClass(\'HIDDEN\',this.checked);" type=checkbox>hide tests</INPUT>'+
-      '<INPUT onclick="$(\'.TRACE\').toggleClass(\'HIDDEN\',this.checked);" type=checkbox>hide traces</INPUT>'+
+      '<INPUT onclick="jc.hideCode(event)"'+(window.document.body.hideCode?' checked':'')+' type=checkbox>hide codes</INPUT>'+
+      '<INPUT onclick="jc.hideDeleted(event)"'+(window.document.body.hideDeleted?' checked':'')+' type=checkbox>hide deleted</INPUT>'+
+      '<INPUT onclick="jc.hideTest(event)"'+(window.document.body.hideTest?' checked':'')+' type=checkbox>hide tests</INPUT>'+
+      '<INPUT onclick="jc.hideTrace(event)"'+(window.document.body.hideTrace?' checked':'')+' type=checkbox>hide traces</INPUT>'+
       '<BUTTON onclick=jc.hideToolBars();>hide ToolBars</BUTTON>'+
       '<DIV class=RICHEDITTOOLBAR style="float:left;">'+
         '<BUTTON onclick=jc.richedit.bold();><b>B</b></BUTTON>'+ 
@@ -464,7 +510,7 @@
         '<BUTTON onclick=jc.richedit.pre();>{}</BUTTON>'+ 
       '</DIV>'+
       '<DIV>'+
-        '<BUTTON onclick=jc.execAutoExec();>run</BUTTON>'+
+        '<BUTTON onclick=jc.execSelected();>run</BUTTON>'+
         '<BUTTON onclick=jc.execAll();>run all</BUTTON>'+
         '<BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON>'+
         '<BUTTON onclick=jc.copyOutputToTest(this);>--&gt;test</BUTTON>'+
@@ -538,8 +584,7 @@
 
     jc.blockNumber++;
     var newCode = window.document.createElement('<PRE onclick=jc.selectElement(this); class=CODE id='+jc.blockId('code')+' contentEditable=true>');
-    var newOutput = window.document.createElement('<DIV class="OUTPUT OLD" onclick=jc.outClick(this) id='+jc.blockId('out')+'>');
-    newOutput.innerHTML='no output';
+    var newOutput = jc.outputElement(newCode);
     beforeThatElement.parentNode.insertBefore(newCode,beforeThatElement);
     beforeThatElement.parentNode.insertBefore(newOutput,beforeThatElement);
     $(newCode).bind("keypress",undefined,jc.editorKeyPress);
@@ -585,14 +630,14 @@
     $(element.id.replace(/code/,"#out")).removeClass('SUCCESS').removeClass('ERROR');
     $(element.id.replace(/code/,"#test")).removeClass('SUCCESS').removeClass('ERROR');
     if (event.keyCode==10) {  //only IE
-      jc.execAutoExec(); 
+      jc.execSelected(); 
     }
   }
 
   jc.richTextKeyPress = function(event) {
     var element = event.srcElement;
     if (event.keyCode==10) {  //only IE
-      jc.execAutoExec(); 
+      jc.execSelected(); 
     }
   }
 
@@ -643,7 +688,8 @@
     $(window.document.body.lastChild).removeClass('HIDDEN');
   }
 
-  jc.outClick = function(element) {
+  jc.outClick = function(event) {
+    var element = event.currentTarget; // not target, since target can be an child element, not the div itself
     var code = window.document.getElementById(element.id.replace(/out/,"code"))
     jc.execCode(code);
   }
@@ -734,15 +780,19 @@
     jc.finalize();
   }
 
-  jc.execAutoExec = function() {
+  jc.execSelected = function() {
     jc.finalizations = [];
     jc.tableOfContent.updateSections();
     jc.$editables(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
-    $('.CODE').each(function(i,e) {
-      if ($(e).hasClass('AUTOEXEC') || (e==jc.selectedElement)) {
+    $('*').removeClass('SUCCESS').removeClass('ERROR')
+    if ($(jc.selectedElement).hasClass('CODE')){
+      jc.execCode(jc.selectedElement);
+    }
+    else {
+      $('.CODE',jc.selectedElement).each(function(i,e) {
         jc.execCode(e);
-      }
-    })
+      });
+    }
     jc.finalize();
   }
 
@@ -782,14 +832,22 @@
 
 
   window.attachEvent('onload',function () {
+    // upgrades ////////////////////////////////////////////////////
+    jc.upgradeModules();
+
+    $('*').removeClass('OLD');  // not in use anymore
+    $('.OUTPUT').removeAttr('onclick');  // no longer in the HTML but bound dynamically
+ 
+    // prepare the sheet ///////////////////////////////////////////
     $('.SELECTED').removeClass('SELECTED');
     $('.CODE').bind("keypress",undefined,jc.editorKeyPress);
     $('.RICHTEXT').bind("keypress",undefined,jc.richTextKeyPress);
-    $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR');
+    $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR').bind("click",undefined,jc.outClick);
     $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
     jc.findblockNumber();
     jc.initLocalToolBar();
     jc.initBottomToolBar();
+
   });  
   
   window.onerror = jc.errorHandler;
