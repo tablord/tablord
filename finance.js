@@ -46,7 +46,8 @@ jc.finance = {
 
 
 
-jc.finance.Order = function(date,subject,amount,currency){
+jc.finance.Order = function(date,subject,amount,currency,budgetAdjustment){
+  this._budgetAdjustment = budgetAdjustment || false;
   this._date = new Date(date);
   this._subject = subject;
   this._amount = amount;
@@ -54,12 +55,14 @@ jc.finance.Order = function(date,subject,amount,currency){
 }
 
 jc.finance.Order.prototype.initCurrency = function(currency) {
+  // for internal use only: prepare the order for currency
   if (jc.Units[currency] == undefined) throw new Error('an Order object must have a valid currency: unknown '+currency);
   this._currency = currency;
   this._amountField = 'amount$'+currency;
 }
 
 jc.finance.Order.prototype.convertTo = function(currency) {
+  // for internal use only: add a new amount$curency field to all ._payments if needed
   if ((currency == undefined) || (currency == this._currency)) return this;
   var amountField = 'amount$'+this._currency;
   var toAmountField = 'amount$'+currency;
@@ -82,6 +85,7 @@ jc.finance.Order.prototype.execute = function(currency,date) {
   // returns an array of one single payement
   var p = {date : date || this._date,subject : this._subject};
   p[this._amountField] = this._amount;
+  if (this._budgetAdjustment) p.budgetAdjustment = true;
   this._payments = [p];  // overkill to use an array for one single payment, but enables to use generic convertTo
   this.convertTo(currency);
   return this._payments;
@@ -143,28 +147,14 @@ jc.finance.Account.prototype.budget = function(name,currency,startDate,endDate) 
     startDate= new Date(startDate || this._startDate);
     endDate = new Date(endDate || this._endDate);
     var budget = new jc.finance.Budget(name,currency,startDate,endDate,this);
-    var f = function budget() {return budget.execute()};
-    this._orders.push(f);
+    this._orders.push(budget);
     this._budgetField = 'budget '+name+'$'+currency;
     return budget;
   }
   catch (e) {
-    throw new Error(e.message += '<br><u><b>budget</b></u> '+jc.finance.help(jc.finance.CashFlow.prototype.budget));
+    throw new Error(e.message += '<br><u><b>budget</b></u> '+jc.help(jc.finance.Account.prototype.budget));
   }
 }
-
-/*
-%%%%%%%%%%%%%% voir ce que l'on veut faire??
-jc.finance.CashFlow.prototype.debt = function(name,currency,startDate,endDate) {
-  currency = currency || this._currency;
-  startDate= new Date(startDate || this._startDate);
-  endDate = new Date(endDate || this._endDate);
-  var debt = new jc.finance.CashFlow(name,currency,startDate,endDate,this);
-  var f = function debt() {return debt.execute()};
-  this._orders.push(f);
-  return debt;
-}
-*/
 
 jc.finance.Account.prototype.recieve = function(date,subject,amount,currency) {
   // add an order of receiving amount at date. 
@@ -197,11 +187,14 @@ jc.finance.Account.prototype.updateBalance = function() {
   // update the balance field of each records
   // as records are shared between the different levels of cashFlow 
   // this function has to be called before reading any balance field
+  // as Account, it takes into account only true payments, not budgetAdjustments
   var balance = 0;
   var amountField = 'amount$'+this._currency;
   for (var i in this._payments) {
-    balance += this._payments[i][amountField];
-    this._payments[i][this._balanceField] = balance;
+    if (this._payments[i].budgetAdjustment==undefined) {
+      balance += this._payments[i][amountField];
+      this._payments[i][this._balanceField] = balance;
+    }
   }
 }  
   
@@ -228,8 +221,12 @@ jc.finance.Account.prototype.execute = function(currency) {
 jc.finance.Account.prototype.span = function(options) {
   this.execute(); 
   this.updateBalance();
-  var t = table().addRows(this._payments).sort({date:1});
-  options = $.extend(true,{},{cols:t._cols,format:jc.finance.defaults.format},{cols:{subject:{style:"text-align:left;"}}},options);
+  var p = this._payments;
+  if (!options || !options.showBudgetAdjustmentInAccount) {
+    p=$.grep(p,function(payment,i) {return !payment.budgetAdjustment});
+  }
+  var t = table().addRows(p).sort({date:1});
+  options = $.extend(true,{},{cols:t._cols,format:jc.finance.defaults.format},{cols:{date:1,subject:{style:"text-align:left;"}}},options);
   return '<var>'+this._name+'</var>'+t.span(options);
 }
 
@@ -237,6 +234,45 @@ jc.finance.Account.prototype.toString = function() {
   return '[object Account]';
 }
 
+
+// Budget ////////////////////////////////////////////////////////////////////////
+//   Budget is a special type of account
+
+jc.finance.Budget = function(name,currency,startDate,endDate,parent) {
+  jc.finance.Account.call(this,name,currency,startDate,endDate,parent);
+}
+
+$.extend(jc.finance.Budget.prototype,jc.finance.Account.prototype);
+
+jc.finance.Budget.prototype.updateBalance = function() {
+  // update the balance field of each records
+  // as records are shared between the different levels of cashFlow 
+  // this function has to be called before reading any balance field
+  // as Budget, it takes into account all payments and budgetAdjustments
+  var balance = 0;
+  var amountField = 'amount$'+this._currency;
+  for (var i in this._payments) {
+    balance += this._payments[i][amountField];
+    this._payments[i][this._balanceField] = balance;
+  }
+}  
+
+jc.finance.Budget.prototype.span = function(options) {
+  this.execute(); 
+  this.updateBalance();
+  var p = this._payments;
+  var t = table().addRows(p).sort({date:1});
+  options = $.extend(true,{},{cols:t._cols,format:jc.finance.defaults.format},{cols:{date:1,subject:{style:"text-align:left;"}}},options);
+  return '<var>'+this._name+'</var>'+t.span(options);
+}
+
+jc.finance.Budget.prototype.budgetAdjustment= function(date,subject,amount,currency){
+  // add an order of budjet adjustment at date. 
+  // currency is optional and uses by default this Budget currency
+  currency = currency || this._currency;
+  this._orders.push(new jc.finance.Order(date,subject,amount,currency,true));
+  return this;
+}
 
 // PermanentOrders ///////////////////////////////////////////////////////////////
 
@@ -263,6 +299,8 @@ jc.finance.PermanentOrders.prototype.pay = function(subject,amount,currency,day)
 }
 
 jc.finance.PermanentOrders.prototype.execute = function(currency) {
+  // execute all Orders of this PermanentOrders for every date of the PermanentOrders
+  // returns all resulting payments, adding an amount$currency field if necessary
   this._payments = [];
   for (var date = new Date(this._startDate);date <= this._endDate;date = this._nextDate.call(date)) {
     for (var i in this._orders) {

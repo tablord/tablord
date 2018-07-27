@@ -81,7 +81,7 @@
   // to be checked what could be done to improve
 
     jc.errorHandler.code = code;
-    code = 'var output = jc.output; with (v) {'+code+'};';   //output becomes a closure, so finalize function can use it during finalizations
+    code = 'var output = jc.output; with (v) {\n'+code+'\n};';   //output becomes a closure, so finalize function can use it during finalizations
     return geval(code)
   }
 
@@ -113,7 +113,7 @@
 
 
 
-  function a(/*messages*/) {
+  function a(/*objects*/) {
     var message = '';
     for (var i=0; i<arguments.length; i++){
       message += jc.inspect(arguments[i]);
@@ -122,18 +122,22 @@
   }
 
 
-  function trace(/*messages*/) {
-    var message = '';
-    for (var i=0; i<arguments.length; i++){
-      message += jc.htmlView(arguments[i]);
-    }
-    jc.traces.push(message);
-    if (jc.traces.length > jc.tracesMaxLength) {
-      jc.traces.pop();
-      jc.traces[0]='...';
+  function trace(/*objects*/) {
+    if (this.on) { 
+      var message = '';
+      for (var i=0; i<arguments.length; i++){
+        message += jc.inspect(arguments[i]);
+      }
+      jc.traces.push(message);
+      if (jc.traces.length > jc.tracesMaxLength) {
+        jc.traces.pop();
+        jc.traces[0]='...';
+      }
     }
   }
 
+  trace.on = true;  // user can disable trace with trace.on = false anywhere in its code
+  
   trace.span = function () {
     if (jc.traces.length > 0){
       var h = '<DIV class=TRACE>'+jc.traces.length+' traces:<table class=DEBUG><tr><td class=TRACE>'+jc.traces.join('</td></tr><tr><td class=TRACE>')+'</td></tr></table></DIV>';
@@ -254,7 +258,7 @@
   }
 
   jc.toHtml = function(code) {
-    // transform htmlCode in such a manner that the code can be visualised in a <code>...
+    // transform htmlCode in such a manner that the code can be visualised in a <pre>...
     return String(code)
              .replace(/&/g,"&amp;")
              .replace(/</g,"&lt;")
@@ -696,14 +700,17 @@
 
 
   jc.htmlView = function(obj) {
-    if (obj == undefined) {
+    if (obj === undefined) {
       return '<SPAN style=color:red;>undefined</SPAN>';
     }
-    if (obj == '') {
+    if (obj === '') {
       return '<SPAN style=color:red;>empty string</SPAN>';
     }
-    if (typeof obj == 'function') {
+    if (typeof obj === 'function') {
       return jc.help(obj);
+    }
+    if ($.isArray(obj)) {
+      return '['+obj.toString()+']';
     }
     if (obj.span) {
       return obj.span();
