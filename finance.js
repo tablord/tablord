@@ -137,7 +137,7 @@ jc.finance.Account.prototype.account = function(name,currency,startDate,endDate)
   }
 }
 
-jc.finance.Account.prototype.budget = function(name,currency,startDate,endDate) {
+jc.finance.Account.prototype.budget = function(name,initialBudget,currency,startDate,endDate) {
   // create a new budget inside a CashFlow object
   // a budget is like an account but it has a special field budget$currency
   // a .pay or .recieve changes the account$currency field and the budget field
@@ -146,9 +146,8 @@ jc.finance.Account.prototype.budget = function(name,currency,startDate,endDate) 
     currency = currency || this._currency;
     startDate= new Date(startDate || this._startDate);
     endDate = new Date(endDate || this._endDate);
-    var budget = new jc.finance.Budget(name,currency,startDate,endDate,this);
+    var budget = new jc.finance.Budget(name,initialBudget,currency,startDate,endDate,this);
     this._orders.push(budget);
-    this._budgetField = 'budget '+name+'$'+currency;
     return budget;
   }
   catch (e) {
@@ -190,6 +189,7 @@ jc.finance.Account.prototype.update = function() {
   // as Account, it takes into account only true payments, not budgetAdjustments
   var balance = 0;
   var amountField = 'amount$'+this._currency;
+  this._payments.sort(function(a,b){return a.date-b.date});
   for (var i in this._payments) {
     if (this._payments[i].budgetAdjustment==undefined) {
       balance += this._payments[i][amountField];
@@ -238,8 +238,9 @@ jc.finance.Account.prototype.toString = function() {
 // Budget ////////////////////////////////////////////////////////////////////////
 //   Budget is a special type of account
 
-jc.finance.Budget = function(name,currency,startDate,endDate,parent) {
+jc.finance.Budget = function(name,initialBudget,currency,startDate,endDate,parent) {
   jc.finance.Account.call(this,name,currency,startDate,endDate,parent);
+  if (initialBudget) this.adjustBudget(this._startDate,name,initialBudget);
 }
 
 $.extend(jc.finance.Budget.prototype,jc.finance.Account.prototype);
@@ -255,6 +256,7 @@ jc.finance.Budget.prototype.update = function() {
   var amountField = 'amount$'+this._currency;
   this._totalBudget = 0;
   this._totalPaid = 0;
+  this._payments.sort(function(a,b){return a.date-b.date});
   for (var i in this._payments) {
     var p = this._payments[i];
     balance += p[amountField];
