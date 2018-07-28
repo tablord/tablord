@@ -183,7 +183,7 @@ jc.finance.Account.prototype.monthly = function(startDate,endDate) {
   return permanentOrders;
 }
 
-jc.finance.Account.prototype.updateBalance = function() {
+jc.finance.Account.prototype.update = function() {
   // update the balance field of each records
   // as records are shared between the different levels of cashFlow 
   // this function has to be called before reading any balance field
@@ -220,7 +220,7 @@ jc.finance.Account.prototype.execute = function(currency) {
 
 jc.finance.Account.prototype.span = function(options) {
   this.execute(); 
-  this.updateBalance();
+  this.update();
   var p = this._payments;
   if (!options || !options.showBudgetAdjustmentInAccount) {
     p=$.grep(p,function(payment,i) {return !payment.budgetAdjustment});
@@ -244,29 +244,43 @@ jc.finance.Budget = function(name,currency,startDate,endDate,parent) {
 
 $.extend(jc.finance.Budget.prototype,jc.finance.Account.prototype);
 
-jc.finance.Budget.prototype.updateBalance = function() {
+jc.finance.Budget.prototype.update = function() {
   // update the balance field of each records
   // as records are shared between the different levels of cashFlow 
   // this function has to be called before reading any balance field
   // as Budget, it takes into account all payments and budgetAdjustments
+  // it also calculated the internal fields ._totalBudget and ._totalPaid
+
   var balance = 0;
   var amountField = 'amount$'+this._currency;
+  this._totalBudget = 0;
+  this._totalPaid = 0;
   for (var i in this._payments) {
-    balance += this._payments[i][amountField];
-    this._payments[i][this._balanceField] = balance;
+    var p = this._payments[i];
+    balance += p[amountField];
+    p[this._balanceField] = balance;
+    if (p.budgetAdjustment) {
+      this._totalBudget += p[amountField];
+    }
+    else {
+      this._totalPaid -= p[amountField];
+    }
   }
 }  
 
 jc.finance.Budget.prototype.span = function(options) {
   this.execute(); 
-  this.updateBalance();
+  this.update();
   var p = this._payments;
   var t = table().addRows(p).sort({date:1});
   options = $.extend(true,{},{cols:t._cols,format:jc.finance.defaults.format},{cols:{date:1,subject:{style:"text-align:left;"}}},options);
-  return '<var>'+this._name+'</var>'+t.span(options);
+  return '<var>'+this._name+'</var>'+t.span(options)+
+         '<table><tr><th>total Budget:</th><td>'+this._totalBudget+'</td></tr>'+
+                '<tr><th>total Paid:</th><td>'+this._totalPaid+'</td></tr>'+
+                '<tr><th>% Paid:</th><td>'+(this._totalPaid/this._totalBudget*100).toFixed(1)+'</td></tr></table>';
 }
 
-jc.finance.Budget.prototype.budgetAdjustment= function(date,subject,amount,currency){
+jc.finance.Budget.prototype.adjustBudget = function(date,subject,amount,currency){
   // add an order of budjet adjustment at date. 
   // currency is optional and uses by default this Budget currency
   currency = currency || this._currency;
@@ -274,6 +288,9 @@ jc.finance.Budget.prototype.budgetAdjustment= function(date,subject,amount,curre
   return this;
 }
 
+jc.finance.Budget.prototype.setCapacity = function(fromDate,capacity){
+  this._capacities.push({fromDate:fromDate,capacity:capacity});
+}
 // PermanentOrders ///////////////////////////////////////////////////////////////
 
 
