@@ -15,6 +15,8 @@
             simulation:undefined, // will be set by StateMachine.js
             blockNumber:0,
             finalizations:[],     // a stack of output to be finalized
+            
+            modified:false,       // file is modified
 
             errorHandler:function(message,url,line) {
                 var out  = jc.output._outputElement;
@@ -489,6 +491,11 @@
     button.scrollIntoView();
     window.document.body.hideTrace=button.checked;
   }
+
+  jc.autoRun = function(event) {
+    var button = event.target || window.event.srcElement; //IE7 compatibility
+    window.document.body.autoRun=button.checked;
+  }
       
   jc.initLocalToolBar = function() {
     jc.localToolBar = $('#localToolBar')[0];  // start with localToolBar hidden so that its position is irrelevent
@@ -499,16 +506,21 @@
     }
     $(jc.localToolBar).addClass('HIDDEN');
     jc.localToolBar.innerHTML = 
-      '<BUTTON onclick=jc.insertNewSection(jc.localToolBar);>^ new section ^</BUTTON>'+
-      '<BUTTON onclick=jc.insertNewRichText(jc.localToolBar);>^ new richtext ^</BUTTON>'+
-      '<BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>^ new code ^</BUTTON>'+
-      '<SPAN id=codeId>no element</SPAN>'+
-      '<INPUT onclick="jc.hideCode(event)"'+(window.document.body.hideCode?' checked':'')+' type=checkbox>hide codes</INPUT>'+
-      '<INPUT onclick="jc.hideDeleted(event)"'+(window.document.body.hideDeleted?' checked':'')+' type=checkbox>hide deleted</INPUT>'+
-      '<INPUT onclick="jc.hideTest(event)"'+(window.document.body.hideTest?' checked':'')+' type=checkbox>hide tests</INPUT>'+
-      '<INPUT onclick="jc.hideTrace(event)"'+(window.document.body.hideTrace?' checked':'')+' type=checkbox>hide traces</INPUT>'+
-      '<BUTTON onclick=jc.hideToolBars();>hide ToolBars</BUTTON>'+
-      '<DIV class=RICHEDITTOOLBAR style="float:left;">'+
+      '<DIV>'+
+        '<BUTTON onclick=jc.insertNewSection(jc.localToolBar);>&#8593; new section &#8593;</BUTTON>'+
+        '<BUTTON onclick=jc.insertNewRichText(jc.localToolBar);>&#8593; new richtext &#8593;</BUTTON>'+
+        '<BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>&#8593; new code &#8593;</BUTTON>'+
+      '</DIV>'+
+      '<DIV>'+
+        '<SPAN id=codeId>no element</SPAN>'+
+        '<INPUT onclick="jc.hideCode(event)"'+(window.document.body.hideCode===true?' checked':'')+' type=checkbox>hide codes</INPUT>'+
+        '<INPUT onclick="jc.hideDeleted(event)"'+(window.document.body.hideDeleted===true?' checked':'')+' type=checkbox>hide deleted</INPUT>'+
+        '<INPUT onclick="jc.hideTest(event)"'+(window.document.body.hideTest===true?' checked':'')+' type=checkbox>hide tests</INPUT>'+
+        '<INPUT onclick="jc.hideTrace(event)"'+(window.document.body.hideTrace===true?' checked':'')+' type=checkbox>hide traces</INPUT>'+
+        '<INPUT onclick="jc.autoRun(event)"'+(window.document.body.autoRun!==false?' checked':'')+' type=checkbox>auto run</INPUT>'+
+        '<BUTTON onclick=jc.hideToolBars();>hide ToolBars</BUTTON>'+
+      '</DIV>'+
+      '<DIV class=RICHEDITTOOLBAR>'+
         '<BUTTON onclick=jc.richedit.bold();><b>B</b></BUTTON>'+ 
         '<BUTTON onclick=jc.richedit.italic();><i>i</i></BUTTON>'+ 
         '<BUTTON onclick=jc.richedit.underline();><U>U</U></BUTTON>'+ 
@@ -520,15 +532,13 @@
         '<BUTTON onclick=jc.richedit.ol();>#</BUTTON>'+ 
         '<BUTTON onclick=jc.richedit.ul();>&#8226;</BUTTON>'+ 
         '<BUTTON onclick=jc.richedit.pre();>{}</BUTTON>'+ 
-      '</DIV>'+
-      '<DIV>'+
-        '<BUTTON onclick=jc.execSelected();>run</BUTTON>'+
-        '<BUTTON onclick=jc.execAll();>run all</BUTTON>'+
+        '<BUTTON onclick=jc.execSelected(); style=color:green;>&#9658;|</BUTTON>'+
+        '<BUTTON onclick=jc.execAll(); style=color:green;>&#9658;&#9658;</BUTTON>'+
         '<BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON>'+
-        '<BUTTON onclick=jc.copyOutputToTest(this);>--&gt;test</BUTTON>'+
+        '<BUTTON onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON>'+
         '<BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON>'+
-        '<BUTTON onclick=jc.save();>save</BUTTON>'+
-        '<BUTTON onclick=jc.deleteBlock(jc.selectedElement);>V delete V</BUTTON>'+
+        '<BUTTON id="saveBtn" disabled="true" onclick="jc.save();">save</BUTTON>'+
+        '<BUTTON onclick=jc.deleteBlock(jc.selectedElement);>&#8595; delete &#8595;</BUTTON>'+
       '</DIV>';
   }
 
@@ -550,6 +560,11 @@
       '<BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON>';
   }
 
+  jc.setModified = function(state) {
+    jc.modified = state;
+    $('#saveBtn').attr('disabled',!state);
+  }
+
   jc.save = function() {
     // save the sheet under fileName or the current name if fileName is not specified
     var fileName = window.prompt('save this sheet in this file?',window.location.pathname);
@@ -559,9 +574,19 @@
     jc.selectElement(undefined);
     var fso = new ActiveXObject("Scripting.FileSystemObject");
     var file = fso.OpenTextFile(fileName,2,true);
-    file.Write(window.document.documentElement.outerHTML);
+    var html = new HTML(window.document.documentElement.outerHTML)
+    file.Write(html.toAscii());
     file.Close();
     window.alert(fileName+' saved');
+  }
+
+
+  jc.beforeUnload = function() {  //TODO avec hta, ne fonctionne pas bien
+    if (jc.modified) {
+      if (window.confirm('your file has been modified since last save\n;save it now?')) {
+        jc.save();
+      }
+    }
   }
 
   jc.copyOutputToTest = function() {
@@ -584,6 +609,7 @@
     .find('*')
     .andSelf()
     .toggleClass('DELETED',del);
+    jc.setModified(true);
   }
 
   jc.removeDeletedBlocks = function() {
@@ -601,6 +627,7 @@
     beforeThatElement.parentNode.insertBefore(newOutput,beforeThatElement);
     $(newCode).bind("keypress",undefined,jc.editorKeyPress);
     jc.selectElement(newCode);
+    jc.setModified(true);
   }
 
   jc.insertNewRichText = function(beforeThatElement) {
@@ -611,6 +638,7 @@
     $(newRichText).bind("keypress",undefined,jc.richTextKeyPress);
     beforeThatElement.parentNode.insertBefore(newRichText,beforeThatElement);
     jc.selectElement(newRichText);
+    jc.setModified(true);
   }
 
   jc.insertNewSection = function(beforeThatElement) {
@@ -630,14 +658,17 @@
     var title = window.document.createElement('<H'+currentLevel+' class=SECTIONTITLE onclick=jc.selectElement(this.parentNode); contentEditable=true>');
     var container = window.document.createElement('<DIV class=SECTIONCONTAINER>');
     newSection.appendChild(title);
+    $(title).bind("keypress",undefined,jc.richTextKeyPress);
     newSection.appendChild(container);
     beforeThatElement.parentNode.insertBefore(newSection,beforeThatElement);
     jc.initBottomToolBar(container);
     jc.tableOfContent.updateSections();
     jc.selectElement(newSection);
+    jc.setModified(true);
   }
 
   jc.editorKeyPress = function(event) {
+    jc.setModified(true);
     var element = event.srcElement;
     $(element.id.replace(/code/,"#out")).removeClass('SUCCESS').removeClass('ERROR');
     $(element.id.replace(/code/,"#test")).removeClass('SUCCESS').removeClass('ERROR');
@@ -647,6 +678,7 @@
   }
 
   jc.richTextKeyPress = function(event) {
+    jc.setModified(true);
     var element = event.srcElement;
     if (event.keyCode==10) {  //only IE
       jc.execSelected(); 
@@ -667,6 +699,7 @@
 
   jc.hideToolBars = function() {
     $('.BOTTOMTOOLBAR').add(jc.localToolBar).addClass('HIDDEN');
+    jc.selectElement(undefined);
   }
 
   jc.selectElement = function(element) {
@@ -703,6 +736,7 @@
   jc.outClick = function(event) {
     var element = event.currentTarget; // not target, since target can be an child element, not the div itself
     var code = window.document.getElementById(element.id.replace(/out/,"code"))
+    jc.selectElement(code);
     jc.execCode(code);
   }
 
@@ -863,7 +897,8 @@
     jc.findblockNumber();
     jc.initLocalToolBar();
     jc.initBottomToolBar();
-
+    window.onbeforeunload = jc.beforeUnload;
+    if (window.document.body.autoRun!==false) jc.execAll();
   });  
   
   window.onerror = jc.errorHandler;

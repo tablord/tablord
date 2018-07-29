@@ -77,6 +77,9 @@
     // v(name) returns the variable name: rarely used since name alone will represent the same as well as v[name]
     // v(name,value) creates a new variable if it does not already exists and sets a new value
     if (value != undefined) {
+      if (value.toUTCString) { // a Date: v stors a Date as this
+        return v[name]=value;
+      }
       if (v[name]) {
         v[name].setValue(value);
         return v[name]
@@ -343,6 +346,25 @@
     return this._html+this._tagsEnd.join('');
   }
 
+  HTML.prototype.toAscii = function() {
+    // same as toString(), but no character is bigger than &#255; every such a character is transformed into &#xxx;
+    // Needed for this /&ç&"@ activeX of FileSystem
+    var h = this.toString();
+    var asciiH = '';
+    var i = 0;
+    var last = 0;
+    while (i <= h.length) {
+      c = h.charCodeAt(i);
+      if (c> 255) {
+        asciiH += h.slice(last,i)+'&#'+c+';';
+        last = i+1;
+      }
+      i++;
+    }
+    asciiH += h.slice(last);
+    return asciiH;
+  }
+    
   HTML.prototype.span = HTML.prototype.toString;
 
   HTML.prototype.html = function (html) {

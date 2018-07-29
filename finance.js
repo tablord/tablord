@@ -295,7 +295,17 @@ jc.finance.Budget.prototype.adjustBudget = function(date,subject,amount,currency
   return this;
 }
 
+jc.finance.Budget.prototype.done = function(date) {
+  date = new Date(date);
+  this.execute();
+  this.update();
+  this.adjustBudget(date,'done',-(this._totalBudget - this._totalPaid));
+  this._doneDate = date;
+  return this;
+}
+
 jc.finance.Budget.prototype._estimatedEndDate = function() {
+  if (this._doneDate) return this._doneDate;
   if ((this._firstPayment === undefined) || (this._firstPayment === this._lastPayment)) return NaN;
   var deltaP = this._totalPaid + this._firstPayment[this._amountField];
   var stillToBePaid = this._totalBudget - this._totalPaid;

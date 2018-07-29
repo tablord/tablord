@@ -93,6 +93,9 @@ pre {
 .HIDDEN {
   display: none;
 }
+.HIDDEN.SELECTED {
+  display:inline-block;
+}
 
 .FLOATLEFT {
   float:left;
