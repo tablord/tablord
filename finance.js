@@ -27,7 +27,7 @@ Date.prototype.adjustDay = function AdjustDay(day) {
 
 jc.finance = {
   defaults:{
-    format:function(f){return f.yyyymmdd().fixed(2).undefinedToBlank()}
+    format:function(val){return jc.format(val).yyyymmdd().fixed(2).undefinedToBlank()}
   }
 }
 
@@ -37,7 +37,7 @@ jc.finance = {
 // an Order is the basic class of all finance module and must have the 2 following functions
 // .execute(currency)  recalculate its internal state and returns an array of events
 //                     which are simple objects {date,subject,
-//                                       [amount$currency if a payement/receivable],
+//                                       [amount$currency if a payment/receivable],
 //                                       [budget$currency if budget adjusment],
 //                                       name$currency the total off the account after this event if account
 //                                                     the remaining budget if budget
@@ -82,7 +82,7 @@ jc.finance.Order.prototype.setDate = function(date) {
 jc.finance.Order.prototype.execute = function(currency,date) {
   // if currency != undefined, also creates a field for that currency if needed
   // if date != undefined calls .setDate(date) to change the date
-  // returns an array of one single payement
+  // returns an array of one single payment
   var p = {date : date || this._date,subject : this._subject};
   p[this._amountField] = this._amount;
   if (this._budgetAdjustment) p.budgetAdjustment = true;
@@ -92,7 +92,7 @@ jc.finance.Order.prototype.execute = function(currency,date) {
 }
 
 jc.finance.Order.prototype.span = function() {
-  return jc.finance.defaults.format(jc.format(this._date))+' '+ this._subject+' '+this._amount+' '+this._currency;
+  return jc.finance.defaults.format(this._date)+' '+ this._subject+' '+this._amount+' '+this._currency;
 }
 
 jc.finance.Order.prototype.toString = function() {
@@ -164,7 +164,7 @@ jc.finance.Account.prototype.recieve = function(date,subject,amount,currency) {
 }
 
 jc.finance.Account.prototype.pay = function(date,subject,amount,currency) {
-  // add an order of payement of amount
+  // add an order of payment of amount
   // currency is optional and uses by default this CashFlow currency
   this.recieve(date,subject,-amount,currency);
   return this;
@@ -253,9 +253,11 @@ jc.finance.Budget.prototype.update = function() {
   // it also calculated the internal fields ._totalBudget and ._totalPaid
 
   var balance = 0;
-  var amountField = 'amount$'+this._currency;
+  var amountField = this._amountField;
   this._totalBudget = 0;
   this._totalPaid = 0;
+  this._firstPayment = undefined;
+  this._lastPayment = undefined;
   this._payments.sort(function(a,b){return a.date-b.date});
   for (var i in this._payments) {
     var p = this._payments[i];
@@ -265,6 +267,8 @@ jc.finance.Budget.prototype.update = function() {
       this._totalBudget += p[amountField];
     }
     else {
+      if (!this._firstPayment) this._firstPayment = p;
+      this._lastPayment = p;
       this._totalPaid -= p[amountField];
     }
   }
@@ -279,7 +283,8 @@ jc.finance.Budget.prototype.span = function(options) {
   return '<var>'+this._name+'</var>'+t.span(options)+
          '<table><tr><th>total Budget:</th><td>'+this._totalBudget+'</td></tr>'+
                 '<tr><th>total Paid:</th><td>'+this._totalPaid+'</td></tr>'+
-                '<tr><th>% Paid:</th><td>'+(this._totalPaid/this._totalBudget*100).toFixed(1)+'</td></tr></table>';
+                '<tr><th>% Paid:</th><td>'+(this._totalPaid/this._totalBudget*100).toFixed(1)+'</td></tr>'+
+                '<tr><th>estimated end Date:</th><td>'+options.format(this._estimatedEndDate())+'</td></tr></table>';
 }
 
 jc.finance.Budget.prototype.adjustBudget = function(date,subject,amount,currency){
@@ -290,9 +295,14 @@ jc.finance.Budget.prototype.adjustBudget = function(date,subject,amount,currency
   return this;
 }
 
-jc.finance.Budget.prototype.setCapacity = function(fromDate,capacity){
-  this._capacities.push({fromDate:fromDate,capacity:capacity});
+jc.finance.Budget.prototype._estimatedEndDate = function() {
+  if ((this._firstPayment === undefined) || (this._firstPayment === this._lastPayment)) return NaN;
+  var deltaP = this._totalPaid + this._firstPayment[this._amountField];
+  var stillToBePaid = this._totalBudget - this._totalPaid;
+  var deltaT = this._lastPayment.date - this._firstPayment.date;
+  return new Date(this._lastPayment.date.valueOf() + (stillToBePaid/deltaP*deltaT));
 }
+  
 // PermanentOrders ///////////////////////////////////////////////////////////////
 
 

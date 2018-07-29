@@ -93,7 +93,7 @@
         return obj.toString();
       }
       else if (typeof obj == 'string') {
-        return '"'+obj.replace(/\\/g,'\\\\').replace(/"/g,"\\\"")+'"';
+        return '"'+obj.replace(/\\/g,'\\\\').replace(/"/g,"\\\"").replace(/\n/g,"\\n")+'"';
       }
       else if ($.isPlainObject(obj)) {
         var sa=[]
@@ -123,10 +123,10 @@
 
 
   function trace(/*objects*/) {
-    if (this.on) { 
+    if (trace.on) { 
       var message = '';
       for (var i=0; i<arguments.length; i++){
-        message += jc.inspect(arguments[i]);
+        message += jc.inspect(arguments[i]).span();
       }
       jc.traces.push(message);
       if (jc.traces.length > jc.tracesMaxLength) {
@@ -182,10 +182,18 @@
 
   jc.Inspector.prototype.span = function (depth){
     depth = depth || this.depth;
-    if (typeof this.obj == 'string') {
-      return '<SPAN class=INSPECT>'+jc.toHtml(this.obj)+'</SPAN>';
+    if (this.obj === undefined) {
+      return '<SPAN style=color:red;>undefined</SPAN>';
     }
-      
+    if (this.obj === '') {
+      return '<SPAN style=color:red;>empty string</SPAN>';
+    }
+    if (typeof this.obj === 'string') {
+      return '<SPAN class=INSPECT>'+jc.toHtml(JSON.stringify(this.obj))+'</SPAN>';
+    }
+    if (this.obj.toGMTString !== undefined) {
+      return '<SPAN style=color:red;>'+this.obj.toString()+' (ms:'+this.obj.valueOf()+')</SPAN>';
+    }
     var r = '<DIV class=INSPECT><fieldset><legend>'+this.legend(this.obj)+' '+this.name+'</legend>';
     r += '<table class=INSPECT>';
     for (var k in this.obj) {
@@ -710,7 +718,7 @@
       return jc.help(obj);
     }
     if ($.isArray(obj)) {
-      return '['+obj.toString()+']';
+      return obj.toString();
     }
     if (obj.span) {
       return obj.span();
@@ -728,7 +736,8 @@
   }
 
   jc.displayResult = function(result,out) {
-      out.innerHTML = trace.span()+jc.htmlView(result);
+      var h = jc.htmlView(result);    // result has to be calculated first, since programmer can use trace in functions like span()
+      out.innerHTML = trace.span()+h;
       $(out).removeClass('ERROR').addClass('SUCCESS');
   }
 

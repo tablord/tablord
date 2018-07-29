@@ -279,7 +279,7 @@
     //      col1:{head:1},  // any value make this col as head <th>
     //      col2:1          // any value make this col visible
     options = options || {};
-    options.format = options.format || function(formatObj) {return formatObj.toString()};
+    options.format = options.format || function(obj) {return jc.format(obj).toString()};
     options.cols = options.cols || this._cols;
     options.rows = options.rows || range(0,this._length-1);
     var h = '<table border="1px"><thead><tr>';  // TODO modify to style
@@ -290,7 +290,7 @@
     for (var i in options.rows) {
       h += '<tr>';
       for (var col in options.cols) {
-        var cell = options.format(jc.format(this[i][col]));
+        var cell = options.format(this[i][col]);
         var style = (options.cols[col].style)?'style="'+options.cols[col].style+'"':'';
         h += ((col=="_id") || (options.cols[col].head))?'<th '+style+'>'+cell+'</th>':'<td '+style+'>'+cell+'</td>';
       }
