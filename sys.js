@@ -47,7 +47,9 @@ jc.fso = {
   readFile: function(fileName) {
     var fso = new ActiveXObject("Scripting.FileSystemObject");
     var stream = fso.OpenTextFile(fileName,1,true);
-    return stream.ReadAll();
+    var text = stream.ReadAll().toString();
+    stream.Close();
+    return text;
   }
 }
 

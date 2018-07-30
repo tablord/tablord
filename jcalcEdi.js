@@ -562,7 +562,7 @@
 
   jc.setModified = function(state) {
     jc.modified = state;
-    $('#saveBtn').attr('disabled',!state);
+    //$('#saveBtn').attr('disabled',!state);
   }
 
   jc.save = function() {
@@ -644,6 +644,7 @@
   jc.insertNewSection = function(beforeThatElement) {
     //insert a new section that consist of one title and one div as futur container of embeeded elements
     //a bottomToolBar is added in the container
+    jc.setModified(true);
     
     jc.blockNumber++;
     var currentLevel = 1;
@@ -658,13 +659,12 @@
     var title = window.document.createElement('<H'+currentLevel+' class=SECTIONTITLE onclick=jc.selectElement(this.parentNode); contentEditable=true>');
     var container = window.document.createElement('<DIV class=SECTIONCONTAINER>');
     newSection.appendChild(title);
-    $(title).bind("keypress",undefined,jc.richTextKeyPress);
+    //$(title).bind("keypress",undefined,jc.sectionTitleKeyPress);
     newSection.appendChild(container);
     beforeThatElement.parentNode.insertBefore(newSection,beforeThatElement);
     jc.initBottomToolBar(container);
     jc.tableOfContent.updateSections();
     jc.selectElement(newSection);
-    jc.setModified(true);
   }
 
   jc.editorKeyPress = function(event) {
@@ -683,6 +683,10 @@
     if (event.keyCode==10) {  //only IE
       jc.execSelected(); 
     }
+  }
+
+  jc.sectionTitleKeyPress = function(event) {
+    jc.setModified(true);
   }
 
   jc.moveLocalToolBar = function(element) {
@@ -736,7 +740,7 @@
   jc.outClick = function(event) {
     var element = event.currentTarget; // not target, since target can be an child element, not the div itself
     var code = window.document.getElementById(element.id.replace(/out/,"code"))
-    jc.selectElement(code);
+//??    jc.selectElement(code);
     jc.execCode(code);
   }
 
@@ -892,6 +896,7 @@
     $('.SELECTED').removeClass('SELECTED');
     $('.CODE').bind("keypress",undefined,jc.editorKeyPress);
     $('.RICHTEXT').bind("keypress",undefined,jc.richTextKeyPress);
+//    $('.SECTIONTITLE').bind("keypress",undefined,jc.sectionTitleKeyPress);
     $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR').bind("click",undefined,jc.outClick);
     $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
     jc.findblockNumber();

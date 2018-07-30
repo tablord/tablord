@@ -216,6 +216,18 @@ pre {
   color:red;
 }
 
+.DIFF.EQUAL {
+  background-color: 8dff60;
+}
+.DIFF.DEL {
+  background-color: ffb848;
+  color: red;
+}
+.DIFF.ADD {
+  background-color: ffb848;
+  color: green;
+}
+
 #localToolBar,
 button {
   background-color: 909090;
