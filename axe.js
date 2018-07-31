@@ -71,10 +71,10 @@ Axe.prototype.move = function(init){
     if (tc < 0) {
       v1 = 0.9*v1; // ***** dirty and stupid
     }
-//a(inspect({t:t,t1:t1,tc:tc,t2:t2,t3:t3,tf:tf,ts:ts,a1:a1,a2:a2,a3:a3,v:v,v1:v1,v2:v2,v3:v3,d:d,d1:d1,d2:d2,d3:d3,dc:dc,df:df}))
+//a(jc.inspect({t:t,t1:t1,tc:tc,t2:t2,t3:t3,tf:tf,ts:ts,a1:a1,a2:a2,a3:a3,v:v,v1:v1,v2:v2,v3:v3,d:d,d1:d1,d2:d2,d3:d3,dc:dc,df:df}))
   }
   while (tc < 0);
-  this.appendFunction(Axe.prototype.faccelerate,{t:t,a:a1,comment:inspect({t1:t1,tc:tc,t2:t2,t3:t3,tf:tf,ts:ts,a:init.a,a1:a1,a2:a2,a3:a3,v:v,v1:v1,v2:v2,v3:v3,d:d,d1:d1,d2:d2,d3:d3,dc:dc,df:df})});
+  this.appendFunction(Axe.prototype.faccelerate,{t:t,a:a1,comment:jc.inspect({t1:t1,tc:tc,t2:t2,t3:t3,tf:tf,ts:ts,a:init.a,a1:a1,a2:a2,a3:a3,v:v,v1:v1,v2:v2,v3:v3,d:d,d1:d1,d2:d2,d3:d3,dc:dc,df:df})});
   this.appendFunction(Axe.prototype.faccelerate,{t:t+t1,a:0});
   this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc,a:a2});
   this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2,a:0});

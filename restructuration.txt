@@ -1,0 +1,9 @@
+idée:
+
+- renommer HTML en Output (reste identique)
+
+- créer une classe Html qui n'est rien d'autre qu'un wrapper d'un string qui indique que le string est du HTML
+   .prototype.isHtml
+             .span return ._html
+
+- en règle générale 
