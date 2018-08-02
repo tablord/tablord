@@ -1,6 +1,11 @@
 jc.diff = function (t1,t2) {
-  
   return (new jc.Diff(t1,t2)).execute()
+}
+
+jc.diffFiles = function (fileName1,fileName2) {
+  var t1 = jc.fso.readFile(fileName1);
+  var t2 = jc.fso.readFile(fileName2);
+  return jc.diff(t1,t2);
 }
 
 jc.Diff = function (t1,t2) {
@@ -14,9 +19,10 @@ jc.Diff = function (t1,t2) {
 
 jc.Diff.prototype.markIdentical = function () {
   // mark identical lines using the 2 indexes this.i1 and this.i2
-trace('markIdentical',this.i1,this.i2)
+trace('markIdentical start @',this.l1[this.i1],this.l2[this.i2])
   while ((this.i1 < this.l1.length) && (this.i2 < this.l2.length)) {
     if (this.l1[this.i1].line != this.l2[this.i2].line) {
+trace('...found diff',this.l1[this.i1],this.l2[this.i2])
       return this;
     }
     this.l1[this.i1].status = '=';
@@ -24,6 +30,7 @@ trace('markIdentical',this.i1,this.i2)
     this.i1++;
     this.i2++;
   }
+trace('...end of 1 text')
   return this;
 }
   
@@ -35,7 +42,6 @@ jc.Diff.prototype.resynchronize = function () {
     // search line in lines[start...]
     // returns the index where line was found or -1 if not found
     for (var i = start; i < lines.length;i++) {
-trace('searching..',line,lines[i],i)
       if (line.line === lines[i].line) return i;
     }
     return -1;
@@ -45,25 +51,35 @@ trace('resynchronize',this.i1,this.i2)
   var lost1 = this.i1;
   var lost2 = this.i2;
   while ((this.i1 < this.l1.length) && (this.i2 < this.l2.length)) {
-trace('before search',this.i1,this.i2,this.l1[this.i1],this.l2[this.i2],lost1,lost2)
+trace('resynchronize; before search',this.l1[this.i1],this.l2[this.i2])
 
     var s2 = search(this.l1[this.i1],this.l2,lost2);
     var s1 = search(this.l2[this.i2],this.l1,lost1);
+trace('  after search s1='+s1+' s2='+s2)
     if ((s1 === -1) && (s2 === -1)) {
 trace('  no match')
       this.i1++;
       this.i2++;
       continue;
     }
+    if ((s1 != -1) & (s2 != -1)) {
+trace('  2 matches. get the shortest path')
+      if ((s1-lost1) > (s2-lost2)) {
+        s1 = -1; // just to make s2 win
+      }
+      else {
+        s2 = -1;
+      }
+    }
     if (s2 !== -1) {
-trace('  s2',s2)
       this.i2 = s2;
+trace('  s2',this.l1[this.i1],this.l2[this.i2])
       this.markDiff(lost1,this.i1,lost2,this.i2);
       return this;
     }
     if (s1 !== -1) {
-trace('  s1',s1)
       this.i1 = s1;
+trace('  s1',this.l1[this.i1],this.l2[this.i2])
       this.markDiff(lost1,this.i1,lost2,this.i2);
       return this;
     }
@@ -78,7 +94,8 @@ trace('NEVER BE HERE')
 jc.Diff.prototype.markDiff = function (begin1,end1,begin2,end2) {
   // mark the lines of 1 as '-' (deleted) between begin1(included) and end1(not included)
   //  and the lines of 2 as '+' (aded) between begin2(included) and end2(notincluded)
-trace('markDiff',begin1,end1,begin2,end2)
+trace('....markDiff('+begin1+','+end1+','+begin2+','+end2+')');
+
   for (var i=begin1; i<end1;i++) {
     this.l1[i].status='-';
   }
@@ -107,12 +124,14 @@ jc.Diff.prototype.span = function () {
   var i2=0;
 
   while ((i1 < this.l1.length) && (i2 < this.l2.length)) {
-    while ((i1 < this.l1.length) && (this.l1[i1].status==='=')) {
+    while ((i1 < this.l1.length) && (this.l1[i1].status==='=') &&
+           (i2 < this.l2.length) && (this.l2[i2].status==='=')) {
       i1++;
       i2++;
     }    
     h += '<pre class="DIFF EQUAL">';
-    $.each(this.l1.slice(s1,i1),function(i,e) {h += e.line+'\n'});
+    $.each(this.l1.slice(s1,i1),
+        function(i,e) {h +='='+jc.pad(s1+i,4)+','+jc.pad(s2+i,4)+' '+jc.toHtml(e.line)+'<br>'});
     h +='</pre>';
     s1 = i1;
     s2 = i2;
@@ -121,7 +140,7 @@ jc.Diff.prototype.span = function () {
       i1++;
     }
     h += '<pre class="DIFF DEL">';
-    $.each(this.l1.slice(s1,i1),function(i,e) {h += e.line+'\n'});
+    $.each(this.l1.slice(s1,i1),function(i,e) {h += '-'+jc.pad(s1+i,4)+',     '+jc.toHtml(e.line)+'<br>'});
     h +='</pre>';
     s1 = i1;
     
@@ -129,7 +148,7 @@ jc.Diff.prototype.span = function () {
       i2++;
     }
     h += '<pre class="DIFF ADD">';
-    $.each(this.l2.slice(s2,i2),function(i,e) {h += e.line+'\n'});
+    $.each(this.l2.slice(s2,i2),function(i,e) {h += '+    ,'+jc.pad(s2+i,4)+' '+jc.toHtml(e.line)+'<br>'});
     h +='</pre>';
     s2 = i2;
   }

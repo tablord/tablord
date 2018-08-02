@@ -5,7 +5,7 @@ body {
 }
 tbody {
   font-family: Arial;
-  font-size: 10pt;
+  font-size: 8pt;
 }
 thead {
   font-family: Arial;
@@ -45,6 +45,9 @@ dt {
   font-weight: bold;
 }
 
+table {
+  border: 0px solid black;
+}
 
 th {
   text-align: left;
@@ -55,6 +58,7 @@ td {
   text-align: right;
   text-valign: top;
 }
+
 td.LEFT {
   text-align: left;
   text-valign: top;
@@ -94,7 +98,7 @@ pre {
   display: none;
 }
 .HIDDEN.SELECTED {
-  display:inline-block;
+  display:block;
 }
 
 .FLOATLEFT {
@@ -226,6 +230,10 @@ pre {
 .DIFF.ADD {
   background-color: ffb848;
   color: green;
+}
+
+.MODIFIED {
+  background-color:red;
 }
 
 #localToolBar,

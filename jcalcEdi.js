@@ -17,6 +17,9 @@
             finalizations:[],     // a stack of output to be finalized
             
             modified:false,       // file is modified
+            options:{
+              format:function(val){return jc.format(val).yyyymmdd().fixed(2).undefinedToBlank()}
+            },
 
             errorHandler:function(message,url,line) {
                 var out  = jc.output._outputElement;
@@ -537,7 +540,7 @@
         '<BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON>'+
         '<BUTTON onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON>'+
         '<BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON>'+
-        '<BUTTON id="saveBtn" disabled="true" onclick="jc.save();">save</BUTTON>'+
+        '<BUTTON id="saveBtn" onclick="jc.save();">save</BUTTON>'+
         '<BUTTON onclick=jc.deleteBlock(jc.selectedElement);>&#8595; delete &#8595;</BUTTON>'+
       '</DIV>';
   }
@@ -562,7 +565,7 @@
 
   jc.setModified = function(state) {
     jc.modified = state;
-    //$('#saveBtn').attr('disabled',!state);
+    $('#saveBtn').toggleClass('MODIFIED',state);
   }
 
   jc.save = function() {
@@ -575,9 +578,10 @@
     var fso = new ActiveXObject("Scripting.FileSystemObject");
     var file = fso.OpenTextFile(fileName,2,true);
     var html = new HTML(window.document.documentElement.outerHTML)
-    file.Write(html.toAscii());
+    file.Write(html.removeJQueryAttr().toAscii());
     file.Close();
-    window.alert(fileName+' saved');
+    jc.setModified(false);
+    window.alert('file saved');
   }
 
 
@@ -659,7 +663,7 @@
     var title = window.document.createElement('<H'+currentLevel+' class=SECTIONTITLE onclick=jc.selectElement(this.parentNode); contentEditable=true>');
     var container = window.document.createElement('<DIV class=SECTIONCONTAINER>');
     newSection.appendChild(title);
-    //$(title).bind("keypress",undefined,jc.sectionTitleKeyPress);
+    $(title).bind("keypress",undefined,jc.sectionTitleKeyPress);
     newSection.appendChild(container);
     beforeThatElement.parentNode.insertBefore(newSection,beforeThatElement);
     jc.initBottomToolBar(container);
@@ -740,7 +744,7 @@
   jc.outClick = function(event) {
     var element = event.currentTarget; // not target, since target can be an child element, not the div itself
     var code = window.document.getElementById(element.id.replace(/out/,"code"))
-//??    jc.selectElement(code);
+    jc.selectElement(code);
     jc.execCode(code);
   }
 
@@ -896,7 +900,7 @@
     $('.SELECTED').removeClass('SELECTED');
     $('.CODE').bind("keypress",undefined,jc.editorKeyPress);
     $('.RICHTEXT').bind("keypress",undefined,jc.richTextKeyPress);
-//    $('.SECTIONTITLE').bind("keypress",undefined,jc.sectionTitleKeyPress);
+    $('.SECTIONTITLE').bind("keypress",undefined,jc.sectionTitleKeyPress);
     $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR').bind("click",undefined,jc.outClick);
     $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
     jc.findblockNumber();

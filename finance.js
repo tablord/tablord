@@ -22,6 +22,10 @@ Date.prototype.adjustDay = function AdjustDay(day) {
   return d;
 }
 
+Date.prototype.yyyymmdd = function () {
+  // return the date in yyyy-mm-dd format
+  return this.getFullYear()+'-'+jc.pad(this.getMonth()+1,2)+'-'+jc.pad(this.getDate(),2);
+}
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -59,6 +63,20 @@ jc.finance.Order.prototype.initCurrency = function(currency) {
   if (jc.Units[currency] == undefined) throw new Error('an Order object must have a valid currency: unknown '+currency);
   this._currency = currency;
   this._amountField = 'amount$'+currency;
+}
+
+jc.finance.Order.prototype.name = function(name) {
+  // adds this object to v either under name or if omitted under this._name
+  // this makes an embeeded object directly accessible.
+  // throw an error if name already exists
+  // return this for method chaining.
+
+  name = name || this._name;
+//  if (v[name] !== undefined) {   *** TODO: ne fonctionne pas car v n'est pas vidé à chaque execution: à réflechir pour vider v
+//    throw new Error('impossible to register an object with .name("'+name+'") since such a name already exists');
+//  }
+  v[name] = this;
+  return this;
 }
 
 jc.finance.Order.prototype.convertTo = function(currency) {
@@ -226,7 +244,7 @@ jc.finance.Account.prototype.span = function(options) {
     p=$.grep(p,function(payment,i) {return !payment.budgetAdjustment});
   }
   var t = table().addRows(p).sort({date:1});
-  options = $.extend(true,{},{cols:t._cols,format:jc.finance.defaults.format},{cols:{date:1,subject:{style:"text-align:left;"}}},options);
+  options = $.extend(true,{},jc.options,{cols:t._cols,format:jc.finance.defaults.format},{cols:{date:1,subject:{style:"text-align:left;"}}},options);
   return '<var>'+this._name+'</var>'+t.span(options);
 }
 
@@ -281,10 +299,23 @@ jc.finance.Budget.prototype.span = function(options) {
   var t = table().addRows(p).sort({date:1});
   options = $.extend(true,{},{cols:t._cols,format:jc.finance.defaults.format},{cols:{date:1,subject:{style:"text-align:left;"}}},options);
   return '<var>'+this._name+'</var>'+t.span(options)+
-         '<table><tr><th>total Budget:</th><td>'+this._totalBudget+'</td></tr>'+
-                '<tr><th>total Paid:</th><td>'+this._totalPaid+'</td></tr>'+
-                '<tr><th>% Paid:</th><td>'+(this._totalPaid/this._totalBudget*100).toFixed(1)+'</td></tr>'+
-                '<tr><th>estimated end Date:</th><td>'+options.format(this._estimatedEndDate())+'</td></tr></table>';
+         '<fieldset><legend>spending summary</legend>'+
+           '<table><tr><th>total Budget:</th><td>'+this._totalBudget+'</td></tr>'+
+                  '<tr><th>total Paid:</th><td>'+this._totalPaid+'</td></tr>'+
+                  '<tr><th>% Paid:</th><td>'+(this._totalPaid/this._totalBudget*100).toFixed(1)+'</td></tr></table></fieldset>'+
+         '<fieldset><legend>calendar</legend>'+
+           '<table><tr><th>start:</th><td>'+options.format(this._startDate)+'</td></tr>'+
+                  '<tr><th>estimated end Date:</th><td '+(this._estimatedEndDate().valueOf() > this._endDate.valueOf()?'class=ERROR ':'')+'>'+options.format(this._estimatedEndDate())+'</td></tr>'+
+                  '<tr><th>declared end date:</th><td>'+options.format(this._endDate)+'</td></tr></table></fieldset>';
+
+              
+}
+
+jc.finance.Budget.prototype.setBurningRate = function(burningPerWeek,currency){
+  // set the estimated burning rate. 
+  // if no real payment is availlable to calculate a realBurningRate, it will use this instead
+  this._burning$_ms = burningPerWeek/(7*24*3600*1000);
+  return this;
 }
 
 jc.finance.Budget.prototype.adjustBudget = function(date,subject,amount,currency){
@@ -295,7 +326,11 @@ jc.finance.Budget.prototype.adjustBudget = function(date,subject,amount,currency
   return this;
 }
 
+
 jc.finance.Budget.prototype.done = function(date) {
+  // set this budget to done
+  // 1) the expected termination date is set to this real date
+  // 2) the budjet is adjusted so that the final balance is 0
   date = new Date(date);
   this.execute();
   this.update();
@@ -304,13 +339,27 @@ jc.finance.Budget.prototype.done = function(date) {
   return this;
 }
 
-jc.finance.Budget.prototype._estimatedEndDate = function() {
-  if (this._doneDate) return this._doneDate;
-  if ((this._firstPayment === undefined) || (this._firstPayment === this._lastPayment)) return NaN;
+jc.finance.Budget.prototype._burningRate$_ms = function() {
+  if ((this._firstPayment === undefined) || (this._firstPayment === this._lastPayment)) {
+    return this._burning$_ms || NaN;
+  }
   var deltaP = this._totalPaid + this._firstPayment[this._amountField];
-  var stillToBePaid = this._totalBudget - this._totalPaid;
   var deltaT = this._lastPayment.date - this._firstPayment.date;
-  return new Date(this._lastPayment.date.valueOf() + (stillToBePaid/deltaP*deltaT));
+  var burnrate = deltaP/deltaT;
+  return burnrate;
+}
+
+jc.finance.Budget.prototype._estimatedEndDate = function() {
+  if (this._doneDate){
+    return this._doneDate;
+  }
+  if ((this._firstPayment === undefined) || (this._firstPayment === this._lastPayment)) {
+    var estDate = new Date(this._startDate.valueOf() + (this._totalBudget/this._burningRate$_ms()));
+    return estDate;
+  }
+  var stillToBePaid = this._totalBudget - this._totalPaid;
+  var estDate = new Date(this._lastPayment.date.valueOf() + (stillToBePaid/this._burningRate$_ms()));
+  return estDate;
 }
   
 // PermanentOrders ///////////////////////////////////////////////////////////////
@@ -358,3 +407,4 @@ jc.finance.PermanentOrders.prototype.end = function() {
 jc.finance.PermanentOrders.prototype.toString = function() {
   return '[object PermanentOrders]';
 }
+

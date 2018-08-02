@@ -151,7 +151,7 @@
         options.cols[col]=1;
       });
     }
-    var h = '<table border="1px"><thead><tr>';  // TODO modify to style
+    var h = '<table cellpadding="4" cellspacing="0"><thead><tr>';  // TODO modify to style
     for (var col in options.cols) {
       h += '<th>'+col+'</th>';
     }
@@ -281,11 +281,10 @@
     //    cols:{
     //      col1:{head:1},  // any value make this col as head <th>
     //      col2:1          // any value make this col visible
-    options = options || {};
-    options.format = options.format || function(obj) {return jc.format(obj).toString()};
+    options = $.extend(true,{},jc.options,options);
     options.cols = options.cols || this._cols;
     options.rows = options.rows || range(0,this._length-1);
-    var h = '<table border="1px"><thead><tr>';  // TODO modify to style
+    var h = '<table><thead><tr>';  // TODO modify to style
     for (var col in options.cols) {
       h += '<th>'+col+'</th>';
     }
@@ -346,6 +345,11 @@
     return this._html+this._tagsEnd.join('');
   }
 
+  HTML.prototype.removeJQueryAttr = function() {
+    this._html = this._html.replace(/jQuery\d+="\d+"/g,'');
+    return this;
+  }
+  
   HTML.prototype.toAscii = function() {
     // same as toString(), but no character is bigger than &#255; every such a character is transformed into &#xxx;
     // Needed for this /&ç&"@ activeX of FileSystem
@@ -504,7 +508,7 @@
   jc.Format.prototype.yyyymmdd = function() {
     //returns this, with the .formatted set if the formating was successful
     if ((this.formatted) || (this.obj == undefined) || (this.obj.getFullYear == undefined)) return this;
-    this.formatted = this.obj.getFullYear()+'-'+jc.pad(this.obj.getMonth()+1,2)+'-'+jc.pad(this.obj.getDate(),2);
+    this.formatted = this.obj.yyyymmdd();
     return this;
   }
 
@@ -516,7 +520,7 @@
   }
  
   jc.Format.prototype.undefinedToBlank = function() {
-    if (this.formatted) return this; 
+    if (this.formatted !== undefined) return this; 
     if (this.obj == undefined) {
       this.formatted = '';
     }
@@ -524,7 +528,7 @@
   }
 
   jc.Format.prototype.toString = function() {
-    if (this.formatted != undefined) return this.formatted;
+    if (this.formatted !== undefined) return this.formatted;
     if (this.obj == undefined) return 'undefined';
     return this.obj.toString();
   }

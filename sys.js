@@ -45,10 +45,18 @@ jc.fso = {
     stream.Close();
   },
   readFile: function(fileName) {
-    var fso = new ActiveXObject("Scripting.FileSystemObject");
-    var stream = fso.OpenTextFile(fileName,1,true);
-    var text = stream.ReadAll().toString();
-    stream.Close();
+    try {
+      var fso = new ActiveXObject("Scripting.FileSystemObject");
+      var stream = fso.OpenTextFile(fileName,1,true);
+      var text = stream.ReadAll().toString();
+    }
+    catch (e) {
+      var err = new Error('readFile("'+fileName+'") Error '+ e.message);
+    }
+    finally {
+      if (stream) stream.Close();
+      if (err) throw err;
+    }
     return text;
   }
 }
