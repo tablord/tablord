@@ -3,7 +3,6 @@
   var jc = {name:'JCalc',
             version:'0.1',
             authors:['Marc Nicole'],
-            codeElementBeingExecuted:undefined,
             selectedElement:undefined,
             output: {}, //a new Output is created for each code. 
                         //it hold both the code and output Elements as well as the htlm
