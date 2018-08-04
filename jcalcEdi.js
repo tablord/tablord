@@ -25,7 +25,7 @@
                 emptStr:function(){return '<SPAN style=color:red;>empty string</SPAN>'},
                 func:function(f){return jc.help(f)},
                 array:function(a){return a.toString()},              
-                domElement:function(element){return 'DOM Element<SPAN class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(jc.purgeJQueryAttr(obj.outerHTML)))+'</SPAN>'},
+                domElement:function(element){return 'DOM Element<SPAN class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(jc.purgeJQueryAttr(element.outerHTML)))+'</SPAN>'},
                 obj:function(obj){return jc.inspect(obj).span()},
                 date:function(date){return date.yyyymmdd()},
                 number:function(n){return n.toString()}
@@ -472,7 +472,7 @@
     if (out == undefined) {
       var tag = (element.tagName=='SPAN'?'SPAN':'DIV');
       out = $('<'+tag+' class=OUTPUT id='+outId+'>no output</'+tag+'>')[0];
-      $(out).bind("click",undefined,jc.outClick).insertAfter(element);
+      $(out).insertAfter(element);
     }
     return out;
   }
@@ -517,14 +517,14 @@
     window.document.body.autoRun=button.checked;
   }
       
-  jc.initLocalToolBar = function() {
+  jc.initLocalToolBars = function() {
     jc.localToolBar = $('#localToolBar')[0];  // start with localToolBar hidden so that its position is irrelevent
     if (jc.localToolBar == undefined) {
       jc.localToolBar = window.document.createElement('DIV');
       jc.localToolBar.id='localToolBar';
-      window.document.body.insertBefore(jc.localToolBar,window.document.body.lastChild);
+//*****      window.document.body.insertBefore(jc.localToolBar,window.document.body.lastChild);
     }
-    $(jc.localToolBar).addClass('HIDDEN');
+    $(jc.localToolBar).addClass('TOOLBAR HIDDEN');
     jc.localToolBar.innerHTML = 
       '<DIV>'+
         '<BUTTON onclick=jc.insertNewSection(jc.localToolBar);>&#8593; new section &#8593;</BUTTON>'+
@@ -556,25 +556,29 @@
         '<BUTTON id=runAllBtn onclick=jc.execAll(); style=color:green;>&#9658;&#9658;</BUTTON>'+
         '<BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON>'+
         '<BUTTON onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON>'+
-        '<BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON>'+
         '<BUTTON id="saveBtn" onclick="jc.save();">save</BUTTON>'+
         '<BUTTON onclick=jc.deleteBlock(jc.selectedElement);>&#8595; delete &#8595;</BUTTON>'+
       '</DIV>';
-  }
 
-  jc.initBottomToolBar = function (section) {
-    // makes sure that the last element of the section is a bottom tool bar
-    // if section is undefined, the document body is used 
-    // if needed a new bottomToolBar is created
-
-    section = section || window.document.body
-    var bottomToolBar = section.lastChild;
-    if ((bottomToolBar == undefined) || (! $(bottomToolBar).hasClass('BOTTOMTOOLBAR'))) {
-      bottomToolBar = window.document.createElement('DIV');
-      bottomToolBar.className = 'BOTTOMTOOLBAR';
-      section.appendChild(bottomToolBar);
+    jc.insideToolBar = $('#insideToolBar')[0];  // start with localToolBar hidden so that its position is irrelevent
+    if (jc.bottomToolBar == undefined) {
+      jc.insideToolBar = window.document.createElement('DIV');
+      jc.insideToolBar.id='insideToolBar';
     }
-    bottomToolBar.innerHTML = 
+    $(jc.insideToolBar).addClass('TOOLBAR HIDDEN');
+    jc.insideToolBar.innerHTML = 
+      '<BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON>'+
+      '<BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON>'+
+      '<BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON>';
+
+
+    jc.bottomToolBar = $('#bottomToolBar')[0];  // start with localToolBar hidden so that its position is irrelevent
+    if (jc.bottomToolBar == undefined) {
+      jc.bottomToolBar = window.document.createElement('DIV');
+      jc.bottomToolBar.id='bottomToolBar';
+    }
+    $(jc.bottomToolBar).addClass('TOOLBAR HIDDEN');
+    jc.bottomToolBar.innerHTML = 
       '<BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON>'+
       '<BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON>'+
       '<BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON>';
@@ -591,6 +595,7 @@
     if (fileName == undefined) return;
     window.document.documentElement.APPLICATIONNAME = fileName;
     jc.removeDeletedBlocks();
+    $('.TOOLBAR').remove();
     jc.selectElement(undefined);
     var fso = new ActiveXObject("Scripting.FileSystemObject");
     var file = fso.OpenTextFile(fileName,2,true);
@@ -639,14 +644,13 @@
 
   jc.insertNewCodeBlock = function(beforeThatElement) {
     // insert a new code and output DIV 
-    // -beforeThatElement is where it must be inserted (usually the localToolBox, but can be any Element)
+    // -beforeThatElement is where it must be inserted (usually the localToolBar, but can be any Element)
 
     jc.blockNumber++;
-    var newCode = window.document.createElement('<PRE onclick=jc.selectElement(this); class=CODE id='+jc.blockId('code')+' contentEditable=true>');
+    var newCode = window.document.createElement('<PRE class=CODE id='+jc.blockId('code')+' contentEditable=true>');
     var newOutput = jc.outputElement(newCode);
     beforeThatElement.parentNode.insertBefore(newCode,beforeThatElement);
     beforeThatElement.parentNode.insertBefore(newOutput,beforeThatElement);
-    $(newCode).bind("keypress",undefined,jc.editorKeyPress);
     jc.selectElement(newCode);
     jc.setModified(true);
   }
@@ -656,7 +660,6 @@
     // -beforeThatElement is where it must be inserted (usually the localToolBox, but can be any Element)
     jc.blockNumber++;
     var newRichText = window.document.createElement('<DIV id='+jc.blockId('rich')+' class=RICHTEXT onclick=jc.selectElement(this); contentEditable=false>');
-    $(newRichText).bind("keypress",undefined,jc.richTextKeyPress);
     beforeThatElement.parentNode.insertBefore(newRichText,beforeThatElement);
     jc.selectElement(newRichText);
     jc.setModified(true);
@@ -680,10 +683,8 @@
     var title = window.document.createElement('<H'+currentLevel+' class=SECTIONTITLE onclick=jc.selectElement(this.parentNode); contentEditable=true>');
     var container = window.document.createElement('<DIV class=SECTIONCONTAINER>');
     newSection.appendChild(title);
-    $(title).bind("keypress",undefined,jc.sectionTitleKeyPress);
     newSection.appendChild(container);
     beforeThatElement.parentNode.insertBefore(newSection,beforeThatElement);
-    jc.initBottomToolBar(container);
     jc.tableOfContent.updateSections();
     jc.selectElement(newSection);
   }
@@ -694,7 +695,7 @@
     $(element.id.replace(/code/,"#out")).removeClass('SUCCESS').removeClass('ERROR');
     $(element.id.replace(/code/,"#test")).removeClass('SUCCESS').removeClass('ERROR');
     if (event.keyCode==10) {  //only IE
-      jc.execUntilSelected(); 
+      jc.execAll(); 
     }
   }
 
@@ -702,7 +703,7 @@
     jc.setModified(true);
     var element = event.srcElement;
     if (event.keyCode==10) {  //only IE
-      jc.execUntilSelected(); 
+      jc.execAll(); 
     }
   }
 
@@ -711,9 +712,25 @@
   }
 
   jc.moveLocalToolBar = function(element) {
-    var localToolBar = $(jc.localToolBar).removeClass("HIDDEN")[0];
-    element.parentNode.insertBefore(localToolBar,element);
+    if (element === undefined) {
+      $([jc.localToolBar,jc.bottomToolBar]).remove();
+a('move toolbar to undefined')
+      return;
+    }
+
+    $([jc.localToolBar,jc.bottomToolBar]).removeClass("HIDDEN");
+    element.parentNode.insertBefore(jc.localToolBar,element);
+    lastElementOfBlock = jc.testElement(element) || jc.outputElement(element) || element;
+    element.parentNode.insertBefore(jc.bottomToolBar,lastElementOfBlock.nextSibling);
+    if ($(element).hasClass('SECTION')) {
+      element.lastChild.appendChild(jc.insideToolBar);
+      $(jc.insideToolBar).removeClass('HIDDEN');
+    }
+    else {
+      $(jc.insideToolBar).addClass('HIDDEN');
+    }
     window.document.getElementById('codeId').innerHTML = element.id;
+    
   }
 
   jc.$editables = function(element) {
@@ -737,25 +754,22 @@
     jc.$editables(e)
     .attr('contentEditable',false)
     .each(function(i,e){jc.reformatRichText(e)});
-    $('.BOTTOMTOOLBAR').addClass('HIDDEN');
     jc.selectedElement = element;
     if (element == undefined){
       $(jc.localToolBar).addClass('HIDDEN');
       return;
     }
-
+    if ($(element).hasClass('EMBEDDED')) element = element.parentNode;
     jc.moveLocalToolBar(element);
     $(element).addClass('SELECTED');
     jc.$editables(jc.selectedElement).attr('contentEditable',true);
     element.focus();
-    //show only the necessary BottomToolBars
-    while (element != null) {
-      if ($(element).hasClass('SECTION')){
-        $(element.lastChild.lastChild).removeClass('HIDDEN');
-      }
-      element = element.parentNode;
-    }
-    $(window.document.body.lastChild).removeClass('HIDDEN');
+  }
+
+  jc.codeClick = function(event) {
+    var code = event.currentTarget; // not target, since target can be an child element, not the div itself
+    jc.selectElement(code);
+    return false;  // prevent bubbling
   }
 
   jc.outClick = function(event) {
@@ -763,6 +777,13 @@
     var code = window.document.getElementById(element.id.replace(/out/,"code"))
     jc.selectElement(code);
     jc.execUntilSelected(code);
+    return false;  // prevent bubbling
+  }
+
+  jc.sectionClick = function(event) {
+    var section = event.currentTarget; // not target, since target can be an child element, not the div itself
+    jc.selectElement(section);
+    return false;  // prevent bubbling
   }
 
   jc.format = function(obj,options) {
@@ -905,9 +926,9 @@
     while ((idx=h.search(mark))!=-1) {
       jc.blockNumber++;
       if (h.charAt(idx+2) == '#') {
-        h = h.replace(mark,'<SPAN class="CODE AUTOEXEC" id='+ jc.blockId('code')+' style="DISPLAY: none;">jc.link("$1")</SPAN><SPAN class=OUTPUT contentEditable=false id='+ jc.blockId('out')+'>no output</SPAN>');
+        h = h.replace(mark,'<SPAN class="CODE EMBEDDED" id='+ jc.blockId('code')+' style="DISPLAY: none;">jc.link("$1")</SPAN><SPAN class=OUTPUT contentEditable=false id='+ jc.blockId('out')+'>no output</SPAN>');
       }
-      h = h.replace(mark,'<SPAN class="CODE AUTOEXEC" id='+ jc.blockId('code')+' style="DISPLAY: none;">$1</SPAN><SPAN class=OUTPUT contentEditable=false id='+ jc.blockId('out')+'>no output</SPAN>');
+      h = h.replace(mark,'<SPAN class="CODE EMBEDDED" id='+ jc.blockId('code')+' style="DISPLAY: none;">$1</SPAN><SPAN class=OUTPUT contentEditable=false id='+ jc.blockId('out')+'>no output</SPAN>');
     }
     element.innerHTML = h;
   }
@@ -926,29 +947,29 @@
     outHtml.innerHTML = jc.toHtml(out.innerHTML);
   }
 
-  jc.toggleAutoExec = function() {
-    $(jc.selectedElement).toggleClass("AUTOEXEC");
-  }
-
-
 
   window.attachEvent('onload',function () {
     // upgrades ////////////////////////////////////////////////////
     jc.upgradeModules();
 
-    $('*').removeClass('OLD');  // not in use anymore
-    $('.OUTPUT').removeAttr('onclick');  // no longer in the HTML but bound dynamically
+    $('*').removeClass('OLD').removeClass('AUTOEXEC');// not in use anymore
+    $('.OUTPUT').add('.CODE').removeAttr('onclick');  // no longer in the HTML but bound dynamically
+    $('.RICHTEXT .CODE').add('.SECTIONTITLE .CODE').addClass('EMBEDDED');        // reserved for code inside another element
+  
  
     // prepare the sheet ///////////////////////////////////////////
     $('.SELECTED').removeClass('SELECTED');
-    $('.CODE').bind("keypress",undefined,jc.editorKeyPress);
-    $('.RICHTEXT').bind("keypress",undefined,jc.richTextKeyPress);
-    $('.SECTIONTITLE').bind("keypress",undefined,jc.sectionTitleKeyPress);
-    $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR').bind("click",undefined,jc.outClick);
+    $('.CODE').live("click",jc.codeClick).live("keypress",jc.editorKeyPress);
+    $('.RICHTEXT').live("keypress",jc.richTextKeyPress);
+    $('.SECTIONTITLE').live("keypress",jc.sectionTitleKeyPress);
+    $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR').live("click",jc.outClick);
+    $('.SECTION').live("click",jc.sectionClick);
     $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
     jc.findblockNumber();
-    jc.initLocalToolBar();
-    jc.initBottomToolBar();
+    jc.initLocalToolBars();
+    if ($('.CODE').add('.SECTION').add('.RICHTEXT').length == 0) {  // if really empty sheet
+      $('BODY').append($(jc.bottomToolBar).removeClass('HIDDEN'))
+    }
     window.onbeforeunload = jc.beforeUnload;
 
     if (window.document.body.autoRun!==false) jc.execAll();
