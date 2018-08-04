@@ -16,8 +16,20 @@
             finalizations:[],     // a stack of output to be finalized
             
             modified:false,       // file is modified
-            options:{
-              format:function(val){return jc.format(val).yyyymmdd().fixed(2).undefinedToBlank()}
+
+            vars:{},              // where all user variables are stored
+
+            defaults:{
+              format:{            // default formating methods  this can be redefined in some JCalc objects like v table... in options.
+                undef:function(){return '<SPAN style=color:red;>undefined</SPAN>'},
+                emptStr:function(){return '<SPAN style=color:red;>empty string</SPAN>'},
+                func:function(f){return jc.help(f)},
+                array:function(a){return a.toString()},              
+                domElement:function(element){return 'DOM Element<SPAN class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(jc.purgeJQueryAttr(obj.outerHTML)))+'</SPAN>'},
+                obj:function(obj){return jc.inspect(obj).span()},
+                date:function(date){return date.yyyymmdd()},
+                number:function(n){return n.toString()}
+              }
             },
 
             errorHandler:function(message,url,line) {
@@ -48,6 +60,12 @@
   jc.credits = {name:jc.name,version:jc.version,authors:jc.authors};
   jc.helps = {'jc.credits':jc.credits};
 
+  // classical formating functions
+  jc.toFixed = function(decimals) {
+    // returns a fomating function(obj) that formats the number with fixed decimals
+    return function (n) {return n.toFixed(decimals)};
+  }
+
   jc.upgradeModules = function() {
     // checks that this is the lastest modules and if not replaces what is needed
     var modulesNeeded = ['jquery-1.5.1.min.js','jcalcEdi.js','units.js','jcalc.js','axe.js','stateMachine.js','BOM.js','sys.js','ocrRdy.js','finance.js'];
@@ -72,7 +90,7 @@
     for (var i=0; i < this.length; i++) {
       s.push(i+': <code class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(jc.purgeJQueryAttr(this[i].outerHTML)))+'</code>');
     }
-    return new HTML('JQuery of '+this.length+' elements<br>'+s.join('<br>'));
+    return new jc.HTML('JQuery of '+this.length+' elements<br>'+s.join('<br>'));
   }  
 
   // edi related functions ////////////////////////////////////////////
@@ -81,11 +99,11 @@
   jc.securedEval = function(code) {
   // NRT0001
   // a bit more secured: since IE<9 executes localy, it was possible do destroy local variable by defining functions or var
-  // with this trick, one can still create global variables by just assigning (eg: v='toto' destroys the global variable v
+  // with this trick, one can still create global variables by just assigning (eg: jc.vars='toto' destroys the global variable jc.vars)
   // to be checked what could be done to improve
 
     jc.errorHandler.code = code;
-    code = 'var output = jc.output; with (v) {\n'+code+'\n};';   //output becomes a closure, so finalize function can use it during finalizations
+    code = 'var output = jc.output; with (jc.vars) {\n'+code+'\n};';   //output becomes a closure, so finalize function can use it during finalizations
     return geval(code)
   }
 
@@ -146,7 +164,7 @@
     if (jc.traces.length > 0){
       var h = '<DIV class=TRACE>'+jc.traces.length+' traces:<table class=DEBUG><tr><td class=TRACE>'+jc.traces.join('</td></tr><tr><td class=TRACE>')+'</td></tr></table></DIV>';
       jc.traces = [];
-      return new HTML(h);
+      return new jc.HTML(h);
     }
     return '';
   }
@@ -207,7 +225,7 @@
            )
           +'</td></tr>'; 
     };
-    return new HTML(r+'</table></fieldset></DIV>');
+    return new jc.HTML(r+'</table></fieldset></DIV>');
   }
 
   // general purpose helpers ////////////////////////////////////////////
@@ -281,7 +299,7 @@
   }
 
   jc.codeExample = function(example) {
-    return new HTML('<span class=CODEEXAMPLE>'+example+'</span>');
+    return jc.html('<span class=CODEEXAMPLE>'+example+'</span>');
   }
 
   jc.trimHtml = function(html) {
@@ -318,7 +336,7 @@
       for (var module in jc.helps) {
         h += jc.inspect(jc.helps[module],module).span();
       }
-      return new HTML(h);
+      return new jc.HTML(h);
     }
 
     var source = func.toString().split('\n');
@@ -331,7 +349,7 @@
       }
       else break;
     }
-    return new HTML('<b>'+signature+'</b><br>'+comments.join('<br>'));
+    return new jc.HTML('<b>'+signature+'</b><br>'+comments.join('<br>'));
   }
 
   jc.signature = function(func) {
@@ -393,7 +411,7 @@
       $.each(this.toc,function(i,t){
         h += '<div class=TOC'+t.level+'>'+t.number+' <a href="#'+t.sectionId+'">'+t.title+'</a></div>'
       });
-      return new HTML(h);
+      return new jc.HTML(h);
     }
   };
     
@@ -403,9 +421,9 @@
     url = url || text;
     var entry = jc.tableOfContent.find(url);
     if (entry) {
-      return new HTML('<a href="#'+entry.sectionId+'">'+text+'</a>');
+      return new jc.HTML('<a href="#'+entry.sectionId+'">'+text+'</a>');
     }
-    return new HTML('<span class=INVALIDLINK title="#'+url+' is not found in the table of content">'+text+'</span>');
+    return new jc.HTML('<span class=INVALIDLINK title="#'+url+' is not found in the table of content">'+text+'</span>');
   }
 
 
@@ -534,8 +552,8 @@
         '<BUTTON onclick=jc.richedit.ol();>#</BUTTON>'+ 
         '<BUTTON onclick=jc.richedit.ul();>&#8226;</BUTTON>'+ 
         '<BUTTON onclick=jc.richedit.pre();>{}</BUTTON>'+ 
-        '<BUTTON onclick=jc.execSelected(); style=color:green;>&#9658;|</BUTTON>'+
-        '<BUTTON onclick=jc.execAll(); style=color:green;>&#9658;&#9658;</BUTTON>'+
+        '<BUTTON id=runUntilSelectedBtn onclick=jc.execUntilSelected(); style=color:green;>&#9658;|</BUTTON>'+
+        '<BUTTON id=runAllBtn onclick=jc.execAll(); style=color:green;>&#9658;&#9658;</BUTTON>'+
         '<BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON>'+
         '<BUTTON onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON>'+
         '<BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON>'+
@@ -576,7 +594,7 @@
     jc.selectElement(undefined);
     var fso = new ActiveXObject("Scripting.FileSystemObject");
     var file = fso.OpenTextFile(fileName,2,true);
-    var html = new HTML(window.document.documentElement.outerHTML)
+    var html = new jc.HTML(window.document.documentElement.outerHTML)
     file.Write(html.removeJQueryAttr().toAscii());
     file.Close();
     jc.setModified(false);
@@ -676,7 +694,7 @@
     $(element.id.replace(/code/,"#out")).removeClass('SUCCESS').removeClass('ERROR');
     $(element.id.replace(/code/,"#test")).removeClass('SUCCESS').removeClass('ERROR');
     if (event.keyCode==10) {  //only IE
-      jc.execSelected(); 
+      jc.execUntilSelected(); 
     }
   }
 
@@ -684,7 +702,7 @@
     jc.setModified(true);
     var element = event.srcElement;
     if (event.keyCode==10) {  //only IE
-      jc.execSelected(); 
+      jc.execUntilSelected(); 
     }
   }
 
@@ -747,37 +765,51 @@
     jc.execCode(code);
   }
 
-
-  jc.htmlView = function(obj) {
+  jc.format = function(obj,options) {
+    if (options) {
+      var format = $.extend(true,{},jc.defaults.format,options.format);
+    }
+    else {
+      var format = jc.defaults.format;
+    }
+    if (typeof obj === 'number') {
+      return format.number(obj)
+    }
     if (obj === undefined) {
-      return '<SPAN style=color:red;>undefined</SPAN>';
+      return format.undef();
     }
     if (obj === '') {
-      return '<SPAN style=color:red;>empty string</SPAN>';
+      return format.emptStr();
     }
     if (typeof obj === 'function') {
-      return jc.help(obj);
+      return format.func(obj);
     }
     if ($.isArray(obj)) {
-      return obj.toString();
+      return format.array(obj);
     }
     if (obj.span) {
       return obj.span();
     }
     if (obj.outerHTML) { // an Element
-      return 'DOM Element<SPAN class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(jc.purgeJQueryAttr(obj.outerHTML)))+'</SPAN>';
+      return format.domElement(obj);
     }
     if ($.isPlainObject(obj)) {
-      return jc.inspect(obj).span();
+      return format.obj(obj);
+    }
+    if (obj.getUTCDate) {
+      return format.date(obj)
     }
     if (obj.valueOf) {
-      return obj.valueOf();
+      var val = obj.valueOf();   // typicall the case of v() where valueOf return whatever has been stored in the V object
+      if (val !== obj) {         // if the valueOf is not itself
+        return jc.format(val,options);   // format the result of valueOf
+      }
     }
-    return jc.toHtml(obj); 
+    return jc.toHtml(obj);       // fallback is to let display either valueOf or toString
   }
 
   jc.displayResult = function(result,out) {
-      var h = jc.htmlView(result);    // result has to be calculated first, since programmer can use trace in functions like span()
+      var h = jc.format(result);    // result has to be calculated first, since programmer can use trace in functions like span()
       out.innerHTML = trace.span()+h;
       $(out).removeClass('ERROR').addClass('SUCCESS');
   }
@@ -831,25 +863,37 @@
 
   jc.execAll = function() {
     jc.finalizations = [];
+    jc.vars = {}; // run from fresh
     jc.tableOfContent.updateSections();
     jc.$editables(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
     $('.CODE').each(function(i,e) {jc.execCode(e);});
     jc.finalize();
   }
 
-  jc.execSelected = function() {
+  jc.execUntilSelected = function() {
     jc.finalizations = [];
+    jc.vars = {}; // run from fresh
     jc.tableOfContent.updateSections();
     jc.$editables(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
     $('*').removeClass('SUCCESS').removeClass('ERROR')
+    var $codes = $('.CODE');
     if ($(jc.selectedElement).hasClass('CODE')){
-      jc.execCode(jc.selectedElement);
+      var last = jc.selectedElement;
     }
     else {
-      $('.CODE',jc.selectedElement).each(function(i,e) {
-        jc.execCode(e);
-      });
+      var $last = $('.CODE',jc.selectedElement).last();
+      if ($last.length === 0) { // selected element is a section or rich text that has no internal CODE element
+        $codes.add(jc.selectedElement); // we add this element (even if not a code) just to know where to stop
+        var lastI = $codes.index(jc.selectedElement)-1;
+      }
+      else {
+        var lastI = $codes.index($last);
+      }
     }
+    $('.CODE').each(function(i,e) {
+      if (i>lastI) return false;
+      jc.execCode(e);
+    });
     jc.finalize();
   }
 
@@ -906,6 +950,7 @@
     jc.initLocalToolBar();
     jc.initBottomToolBar();
     window.onbeforeunload = jc.beforeUnload;
+
     if (window.document.body.autoRun!==false) jc.execAll();
   });  
   

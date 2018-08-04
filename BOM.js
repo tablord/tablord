@@ -365,7 +365,7 @@ function product(name /*,boms*/) {
   for (var i=1; i< arguments.length; i++){
     p.addBom(arguments[i]);
   }
-  return v[name] = p;
+  return jc.vars[name] = p;
 }
 
 

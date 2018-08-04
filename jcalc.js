@@ -51,10 +51,6 @@
     if (this._func) {
       return this._func(this._row,this._col);
     }
-    if (this._value == undefined) {
-      this._error = "Error in "+this._name+'> _value is undefined';
-      throw new Error(this._error);
-    }
     return this._value;
   }
  
@@ -70,23 +66,23 @@
 
   V.prototype.view = function() {
     // returns an HTML object with VariableName = value
-    return new HTML(this.label()+'= <span class=VALUE>'+this.valueOf()+'</span>'+this.unit());
+    return jc.html(this.label()+'= <span class=VALUE>'+this.valueOf()+'</span>'+this.unit());
   }
 
   function v(name,value) {
-    // v(name) returns the variable name: rarely used since name alone will represent the same as well as v[name]
+    // v(name) returns the variable name: rarely used since name alone will represent the same as well as jc.vars[name]
     // v(name,value) creates a new variable if it does not already exists and sets a new value
     if (value != undefined) {
       if (value.toUTCString) { // a Date: v stors a Date as this
-        return v[name]=value;
+        return jc.vars[name]=value;
       }
-      if (v[name]) {
-        v[name].setValue(value);
-        return v[name]
+      if (jc.vars[name]) {
+        jc.vars[name].setValue(value);
+        return jc.vars[name]
       }
-      return v[name] = new V(name,value);
+      return jc.vars[name] = new V(name,value);
     }
-    return v[name];
+    return jc.vars[name];
   }
 
 
@@ -102,7 +98,7 @@
         if (jcFunc.search(/return/)== -1) {
           jcFunc = 'return '+jcFunc;
         }
-        return new Function('row','col','with (v){with(row||{}) {'+jcFunc+'}}');
+        return new Function('row','col','with (jc.vars){with(row||{}) {'+jcFunc+'}}');
       }
       catch (e) {
         e.message = 'Error while compiling jcFunc\n'+jcFunc+'\n'+e.message;
@@ -159,10 +155,10 @@
     h += '<tr>';
     for (var col in options.cols) {
       var cell = this[col];
-      h += (col=="_id")?'<th>'+cell+'</th>':'<td>'+cell+'</td>';
+      h += (col=="_id")?'<th>'+cell+'</th>':'<td>'+cell+'</td>';  //******************** format???
     }
     h += '</tr></tbody></table>';
-    return new HTML(h);
+    return jc.html(h);
   }
 
   Row.prototype.list = function() {
@@ -281,7 +277,7 @@
     //    cols:{
     //      col1:{head:1},  // any value make this col as head <th>
     //      col2:1          // any value make this col visible
-    options = $.extend(true,{},jc.options,options);
+    options = $.extend(true,{},jc.defaults,options);
     options.cols = options.cols || this._cols;
     options.rows = options.rows || range(0,this._length-1);
     var h = '<table><thead><tr>';  // TODO modify to style
@@ -292,19 +288,19 @@
     for (var i in options.rows) {
       h += '<tr>';
       for (var col in options.cols) {
-        var cell = options.format(this[i][col]);
+        var cell = jc.format(this[i][col],options);
         var style = (options.cols[col].style)?'style="'+options.cols[col].style+'"':'';
         h += ((col=="_id") || (options.cols[col].head))?'<th '+style+'>'+cell+'</th>':'<td '+style+'>'+cell+'</td>';
       }
       h += '</tr>';
     }
     h += '</tbody></table>';
-    return new HTML(h);
+    return jc.html(h);
   }
 
   Table.prototype.view = function(options) {
     //display the table, including its name in a <div>
-    return new HTML('<div><var>'+this._name+'</var>'+this.span(options)+'</div>');
+    return jc.html('<div><var>'+this._name+'</var>'+this.span(options)+'</div>');
   }
 
   table = function(name,local) {
@@ -314,7 +310,7 @@
     if ((local == true) || (name == undefined)) {
       return new Table(name);
     }
-    return v[name] = new Table(name);
+    return jc.vars[name] = new Table(name);
   }
 
 
@@ -324,7 +320,7 @@
   function newOutput (codeElement,outputElement) {
     // outputElement is, if specified, the Element where HTML will be dumped
     //         element is essential if HTML uses the finalize() method
-    h = new HTML();
+    h = new jc.HTML();
     h._codeElement = codeElement;
     h._outputElement = outputElement;
     return h;
@@ -335,22 +331,22 @@
 
 
 
-  function HTML(html) {
+  function jc.HTML(html) {
     this._html = html || '';
     this._tagsEnd = [];
   }
 
 
-  HTML.prototype.toString = function() {
+  jc.HTML.prototype.toString = function() {
     return this._html+this._tagsEnd.join('');
   }
 
-  HTML.prototype.removeJQueryAttr = function() {
+  jc.HTML.prototype.removeJQueryAttr = function() {
     this._html = this._html.replace(/jQuery\d+="\d+"/g,'');
     return this;
   }
   
-  HTML.prototype.toAscii = function() {
+  jc.HTML.prototype.toAscii = function() {
     // same as toString(), but no character is bigger than &#255; every such a character is transformed into &#xxx;
     // Needed for this /&ç&"@ activeX of FileSystem
     var h = this.toString();
@@ -369,21 +365,21 @@
     return asciiH;
   }
     
-  HTML.prototype.span = HTML.prototype.toString;
+  jc.HTML.prototype.span = jc.HTML.prototype.toString;
 
-  HTML.prototype.html = function (html) {
+  jc.HTML.prototype.html = function (html) {
   // insert any html
     this._html += html;
     return this;
   }
 
-  HTML.prototype.showHtml = function (html) {
+  jc.HTML.prototype.showHtml = function (html) {
   // show html as html code
     this._html += '<span class=INSPECTHTML>'+jc.toHtml(html)+'</span>';
     return this;
   }
 
-  HTML.prototype.showDiff = function(e1,e2) {
+  jc.HTML.prototype.showDiff = function(e1,e2) {
     if (e1.length != e2.length) {
       this._html += '<span class=ERROR>e1.length=='+e1.length+' != e2.length=='+e2.length+'</span>';
     }
@@ -394,7 +390,7 @@
     return this;
   }
 
-  HTML.prototype.showHtmlDiff = function(e1,e2) {
+  jc.HTML.prototype.showHtmlDiff = function(e1,e2) {
     if (e1.length != e2.length) {
       this._html += '<span class=ERROR>e1.length=='+e1.length+' != e2.length=='+e2.length+'</span>';
     }
@@ -405,38 +401,38 @@
     return this;
   }
     
-  HTML.prototype.p = function (/*elements*/) {
+  jc.HTML.prototype.p = function (/*elements*/) {
     this.tag('P',arguments);
     return this;
   }
-  HTML.prototype.ul = function (/*elements*/) {
+  jc.HTML.prototype.ul = function (/*elements*/) {
     this.tag('UL',arguments);
     return this;
   }
-  HTML.prototype.li = function (/*elements*/) {
+  jc.HTML.prototype.li = function (/*elements*/) {
     this.tag('LI',arguments);
     return this;
   }
-  HTML.prototype.pre = function (/*elements*/) {
+  jc.HTML.prototype.pre = function (/*elements*/) {
     this.tag('PRE',arguments);
     return this;
   }
-  HTML.prototype.hr = function (){
+  jc.HTML.prototype.hr = function (){
     this.tag('HR',[]);
     return this
   }
-  HTML.prototype.h = function (/*elements*/) {
+  jc.HTML.prototype.h = function (/*elements*/) {
     this.tag('H'+jc.htmlIndent,arguments);
     return this;
   }
 
-  HTML.prototype.indent = function(levels) {
+  jc.HTML.prototype.indent = function(levels) {
     levels = levels || 1;
     jc.htmlIndent += levels;
     return this;
   }
 
-  HTML.prototype.tag = function(tagName,elements) {
+  jc.HTML.prototype.tag = function(tagName,elements) {
     this._html += '<'+tagName+'>';
     var tagEnd = '</'+tagName+'>';
     if (elements.length == 0) {
@@ -459,25 +455,25 @@
     return this;
   }
 
-  HTML.prototype.inspect = function(/*objects*/) {
+  jc.HTML.prototype.inspect = function(/*objects*/) {
     for (var i=0; i<arguments.length; i++) {
       this._html += jc.inspect(arguments[i]).span();
     }
     return this;
   }
 
-  HTML.prototype.end = function() {
+  jc.HTML.prototype.end = function() {
     this._html += this._tagsEnd.pop();
     return this;
   }  
     
-  HTML.prototype.sendTo = function(jquerySelector){
+  jc.HTML.prototype.sendTo = function(jquerySelector){
     var that = this;
     $(jquerySelector).each(function(i,e){e.innerHTML = that._html});
     return this
   }
 
-  HTML.prototype.finalize = function(finalizationFunc) {
+  jc.HTML.prototype.finalize = function(finalizationFunc) {
     // finalizationFunc must be a function() {...}
     // note that as this function is defined within a code that will be created in secureEval, we are
     // also inside with(v) so any user variable is availlable as well as output is availlable because of the closure mecanism
@@ -490,11 +486,16 @@
     return this;
   }
     
-  HTML.prototype.alert = function(message) {
+  jc.HTML.prototype.alert = function(message) {
     window.alert(message);
     return this;
   }
 
+  jc.html = function(htmlcode) {
+    return new jc.HTML(htmlcode);
+  }
+
+/*
   // formaters ///////////////////////////////////////////
   jc.format = function(obj) {
     return new jc.Format(obj);
@@ -532,7 +533,7 @@
     if (this.obj == undefined) return 'undefined';
     return this.obj.toString();
   }
-
+*/
   
   // helpers /////////////////////////////////////////////
 

@@ -31,7 +31,10 @@ Date.prototype.yyyymmdd = function () {
 
 jc.finance = {
   defaults:{
-    format:function(val){return jc.format(val).yyyymmdd().fixed(2).undefinedToBlank()}
+    format:{
+      number:function(n) {return n.toFixed(2)},
+      undef:function() {return ''}
+    }
   }
 }
 
@@ -72,10 +75,10 @@ jc.finance.Order.prototype.name = function(name) {
   // return this for method chaining.
 
   name = name || this._name;
-//  if (v[name] !== undefined) {   *** TODO: ne fonctionne pas car v n'est pas vidé à chaque execution: à réflechir pour vider v
+//  if (jc.vars[name] !== undefined) {   *** TODO: ne fonctionne pas car v n'est pas vidé à chaque execution: à réflechir pour vider v
 //    throw new Error('impossible to register an object with .name("'+name+'") since such a name already exists');
 //  }
-  v[name] = this;
+  jc.vars[name] = this;
   return this;
 }
 
@@ -110,7 +113,7 @@ jc.finance.Order.prototype.execute = function(currency,date) {
 }
 
 jc.finance.Order.prototype.span = function() {
-  return jc.finance.defaults.format(this._date)+' '+ this._subject+' '+this._amount+' '+this._currency;
+  return jc.finance.defaults.format.date(this._date)+' '+ this._subject+' '+this._amount+' '+this._currency;
 }
 
 jc.finance.Order.prototype.toString = function() {
@@ -133,7 +136,7 @@ jc.finance.Account = function(name,currency,startDate,endDate,parent) {
   this._parent = parent; // if this cashFlow is included in another CashFlow
   this._orders = [];   // of object that generates payments
   this._payments = []; // of {date,amount$currency...,subject}
-  (parent || v)[name]=this;
+  (parent || jc.vars)[name]=this;
 }
 
 $.extend(jc.finance.Account.prototype,jc.finance.Order.prototype);
@@ -244,7 +247,7 @@ jc.finance.Account.prototype.span = function(options) {
     p=$.grep(p,function(payment,i) {return !payment.budgetAdjustment});
   }
   var t = table().addRows(p).sort({date:1});
-  options = $.extend(true,{},jc.options,{cols:t._cols,format:jc.finance.defaults.format},{cols:{date:1,subject:{style:"text-align:left;"}}},options);
+  options = $.extend(true,{},jc.defaults,{cols:t._cols,format:jc.finance.defaults.format},{cols:{date:1,subject:{style:"text-align:left;"}}},options);
   return '<var>'+this._name+'</var>'+t.span(options);
 }
 
@@ -297,16 +300,16 @@ jc.finance.Budget.prototype.span = function(options) {
   this.update();
   var p = this._payments;
   var t = table().addRows(p).sort({date:1});
-  options = $.extend(true,{},{cols:t._cols,format:jc.finance.defaults.format},{cols:{date:1,subject:{style:"text-align:left;"}}},options);
+  options = $.extend(true,{},jc.defaults,{cols:t._cols,format:jc.finance.defaults.format},{cols:{date:1,subject:{style:"text-align:left;"}}},options);
   return '<var>'+this._name+'</var>'+t.span(options)+
          '<fieldset><legend>spending summary</legend>'+
            '<table><tr><th>total Budget:</th><td>'+this._totalBudget+'</td></tr>'+
                   '<tr><th>total Paid:</th><td>'+this._totalPaid+'</td></tr>'+
                   '<tr><th>% Paid:</th><td>'+(this._totalPaid/this._totalBudget*100).toFixed(1)+'</td></tr></table></fieldset>'+
          '<fieldset><legend>calendar</legend>'+
-           '<table><tr><th>start:</th><td>'+options.format(this._startDate)+'</td></tr>'+
-                  '<tr><th>estimated end Date:</th><td '+(this._estimatedEndDate().valueOf() > this._endDate.valueOf()?'class=ERROR ':'')+'>'+options.format(this._estimatedEndDate())+'</td></tr>'+
-                  '<tr><th>declared end date:</th><td>'+options.format(this._endDate)+'</td></tr></table></fieldset>';
+           '<table><tr><th>start:</th><td>'+options.format.date(this._startDate)+'</td></tr>'+
+                  '<tr><th>estimated end Date:</th><td '+(this._estimatedEndDate().valueOf() > this._endDate.valueOf()?'class=ERROR ':'')+'>'+options.format.date(this._estimatedEndDate())+'</td></tr>'+
+                  '<tr><th>declared end date:</th><td>'+options.format.date(this._endDate)+'</td></tr></table></fieldset>';
 
               
 }

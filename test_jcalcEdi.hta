@@ -3,6 +3,8 @@
 
 <SCRIPT src="jcalcEdi.js"></SCRIPT>
 
+<SCRIPT src="units.js"></SCRIPT>
+
 <SCRIPT src="jcalc.js"></SCRIPT>
 
 <SCRIPT src="axe.js"></SCRIPT>
@@ -19,22 +21,91 @@
 </HEAD>
 <BODY designMode="on">
 <DIV id=sect0002 class=SECTION>
-<H1 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false>1 tests of JcalcEdi <SPAN id=code0015 class="CODE AUTOEXEC" style="DISPLAY: none">jc.testStatus()</SPAN><SPAN id=out0015 class="OUTPUT SUCCESS" contentEditable=false><SPAN class=SUCCESS>tests passed:8 failed:0</SPAN></SPAN>&nbsp;</H1>
+<H1 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false >1 tests of JcalcEdi <SPAN id=code0015 class="CODE AUTOEXEC" style="DISPLAY: none" >jc.testStatus()</SPAN><SPAN id=out0015 class="OUTPUT SUCCESS" contentEditable=false ><SPAN class=SUCCESS>tests passed:17 failed:0</SPAN></SPAN>&nbsp;</H1>
 <DIV class=SECTIONCONTAINER>
+<DIV id=sect0017 class=SECTION>
+<H2 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false >1.1 Consitence of rendering results</H2>
+<DIV class=SECTIONCONTAINER>
+<DIV id=sect0018 class=SECTION>
+<H3 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false >1.1.1 numbers</H3>
+<DIV class=SECTIONCONTAINER><PRE onclick=jc.selectElement(this); id=code0019 class=CODE contentEditable=false >5</PRE>
+<DIV id=out0019 class="OUTPUT SUCCESS" >5</DIV>
+<DIV id=test0019 class="TEST SUCCESS">5</DIV><PRE onclick=jc.selectElement(this); id=code0020 class=CODE contentEditable=false >v('toto',6)</PRE>
+<DIV id=out0020 class="OUTPUT SUCCESS" >6</DIV>
+<DIV id=test0020 class="TEST SUCCESS">6</DIV>
+<DIV class="BOTTOMTOOLBAR HIDDEN"><BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON></DIV></DIV></DIV>
+<DIV id=sect0022 class=SECTION>
+<H3 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false >1.1.2 Dates</H3>
+<DIV class=SECTIONCONTAINER><PRE onclick=jc.selectElement(this); id=code0023 class=CODE contentEditable=false >new Date('2018/8/30')</PRE>
+<DIV id=out0023 class="OUTPUT SUCCESS" >2018-08-30</DIV>
+<DIV id=test0023 class="TEST SUCCESS">2018-08-30</DIV><PRE onclick=jc.selectElement(this); id=code0024 class=CODE contentEditable=false >v('startDate',new Date('2018/7/1'))</PRE>
+<DIV id=out0024 class="OUTPUT SUCCESS" >2018-07-01</DIV>
+<DIV id=test0024 class="TEST SUCCESS">2018-07-01</DIV><PRE onclick=jc.selectElement(this); id=code0025 class=CODE contentEditable=false >startDate.valueOf()</PRE>
+<DIV id=out0025 class="OUTPUT SUCCESS" >1530396000000</DIV>
+<DIV id=test0025 class="TEST SUCCESS">1530396000000</DIV><PRE onclick=jc.selectElement(this); id=code0026 class=CODE contentEditable=false >startDate.toUTCString()</PRE>
+<DIV id=out0026 class="OUTPUT SUCCESS" >Sat,&nbsp;30&nbsp;Jun&nbsp;2018&nbsp;22:00:00&nbsp;UTC</DIV>
+<DIV id=test0026 class="TEST SUCCESS">Sat,&nbsp;30&nbsp;Jun&nbsp;2018&nbsp;22:00:00&nbsp;UTC</DIV>
+<DIV class="BOTTOMTOOLBAR HIDDEN"><BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON></DIV></DIV></DIV>
+<DIV id=sect0034 class=SECTION>
+<H3 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false >1.1.3 Strings</H3>
+<DIV class=SECTIONCONTAINER><PRE onclick=jc.selectElement(this); id=code0035 class=CODE contentEditable=false >"guns an' roses"</PRE>
+<DIV id=out0035 class="OUTPUT SUCCESS" >guns&nbsp;an'&nbsp;roses</DIV><PRE onclick=jc.selectElement(this); id=code0036 class=CODE contentEditable=false >"multi line\nstring\nshould display\non several lines\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and spaces should be preserved &lt;b&gt;and no tag should become a tag&lt;/b&gt;"</PRE>
+<DIV id=out0036 class="OUTPUT SUCCESS" >multi&nbsp;line<BR>string<BR>should&nbsp;display<BR>on&nbsp;several&nbsp;lines<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;spaces&nbsp;should&nbsp;be&nbsp;preserved&nbsp;&lt;b&gt;and&nbsp;no&nbsp;tag&nbsp;should&nbsp;become&nbsp;a&nbsp;tag&lt;/b&gt;</DIV>
+<DIV id=localToolBar class=HIDDEN>
+<DIV><BUTTON onclick=jc.insertNewSection(jc.localToolBar);>&#8593; new section &#8593;</BUTTON><BUTTON onclick=jc.insertNewRichText(jc.localToolBar);>&#8593; new richtext &#8593;</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>&#8593; new code &#8593;</BUTTON></DIV>
+<DIV><SPAN id=codeId>code0037</SPAN><INPUT onclick=jc.hideCode(event) type=checkbox>hide codes</INPUT><INPUT onclick=jc.hideDeleted(event) type=checkbox>hide deleted</INPUT><INPUT onclick=jc.hideTest(event) type=checkbox>hide tests</INPUT><INPUT onclick=jc.hideTrace(event) type=checkbox>hide traces</INPUT><INPUT onclick=jc.autoRun(event) CHECKED type=checkbox>auto run</INPUT><BUTTON onclick=jc.hideToolBars();>hide ToolBars</BUTTON></DIV>
+<DIV class=RICHEDITTOOLBAR><BUTTON onclick=jc.richedit.bold();><B>B</B></BUTTON><BUTTON onclick=jc.richedit.italic();><I>i</I></BUTTON><BUTTON onclick=jc.richedit.underline();><U>U</U></BUTTON><BUTTON onclick=jc.richedit.strike();><STRIKE>S</STRIKE></BUTTON><BUTTON onclick=jc.richedit.h1();><B>H1</B></BUTTON><BUTTON onclick=jc.richedit.h2();><B>H2</B></BUTTON><BUTTON onclick=jc.richedit.div();>div</BUTTON><BUTTON onclick=jc.richedit.p();>¶</BUTTON><BUTTON onclick=jc.richedit.ol();>#</BUTTON><BUTTON onclick=jc.richedit.ul();>&#8226;</BUTTON><BUTTON onclick=jc.richedit.pre();>{}</BUTTON><BUTTON onclick=jc.execSelected(); style="COLOR: green">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); style="COLOR: green">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON><BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=MODIFIED>save</BUTTON><BUTTON onclick=jc.deleteBlock(jc.selectedElement);>&#8595; delete &#8595;</BUTTON></DIV></DIV><PRE onclick=jc.selectElement(this); id=code0037 class=CODE contentEditable=false >jc.html('if you &lt;b style="color:red;"&gt;want&lt;/b&gt; to format a string as html')</PRE>
+<DIV id=out0037 class="OUTPUT SUCCESS" >if you <B style="COLOR: red">want</B> to format a string as html</DIV>
+<DIV class="BOTTOMTOOLBAR HIDDEN"><BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON></DIV></DIV></DIV>
+<DIV id=sect0027 class=SECTION>
+<H3 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false >1.1.4 Arrays</H3>
+<DIV class=SECTIONCONTAINER><PRE onclick=jc.selectElement(this); id=code0028 class=CODE contentEditable=false >[1,2,3]</PRE>
+<DIV id=out0028 class="OUTPUT SUCCESS" >1,2,3</DIV>
+<DIV id=test0028 class="TEST SUCCESS">1,2,3</DIV><PRE onclick=jc.selectElement(this); id=code0032 class=CODE contentEditable=false >v('array',[1,2,3])</PRE>
+<DIV id=out0032 class="OUTPUT SUCCESS" >1,2,3</DIV>
+<DIV id=test0032 class="TEST SUCCESS">1,2,3</DIV>
+<DIV class="BOTTOMTOOLBAR HIDDEN"><BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON></DIV></DIV></DIV>
+<DIV id=sect0029 class=SECTION>
+<H3 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false >1.1.5 plain objects</H3>
+<DIV class=SECTIONCONTAINER><PRE onclick=jc.selectElement(this); id=code0030 class=CODE contentEditable=false ><P>v('o',{toto:1,tutu:2})</P><P>o</P></PRE>
+<DIV id=out0030 class="OUTPUT SUCCESS" >
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE class=INSPECT>
+<TBODY>
+<TR>
+<TH vAlign=top>toto</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR>
+<TR>
+<TH vAlign=top>tutu</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
+<DIV id=test0030 class="TEST SUCCESS">
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE class=INSPECT>
+<TBODY>
+<TR>
+<TH vAlign=top>toto</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR>
+<TR>
+<TH vAlign=top>tutu</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
+<DIV class="BOTTOMTOOLBAR HIDDEN"><BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON></DIV></DIV></DIV>
+<DIV class="BOTTOMTOOLBAR HIDDEN"><BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON></DIV></DIV></DIV>
 <DIV id=sect0003 class=SECTION>
-<H2 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false>1.1 JSON</H2>
-<DIV class=SECTIONCONTAINER><PRE onclick=jc.selectElement(this); id=code0004 class=CODE contentEditable=false jQuery151048730858457965786="1" jQuery15107730863779909638="1">JSON.stringify('myString is "stupid"')</PRE>
-<DIV onclick=jc.outClick(this) id=out0004 class="OUTPUT OLD SUCCESS">"myString is \"stupid\""</DIV>
-<DIV id=test0004 class="TEST SUCCESS">"myString is \"stupid\""</DIV><PRE onclick=jc.selectElement(this); id=code0005 class=CODE contentEditable=false jQuery151048730858457965786="2" jQuery15107730863779909638="2">JSON.stringify([1,2,3,4])</PRE>
-<DIV onclick=jc.outClick(this) id=out0005 class="OUTPUT OLD SUCCESS">[1, 2, 3, 4]</DIV>
-<DIV id=test0005 class="TEST SUCCESS">[1, 2, 3, 4]</DIV><PRE onclick=jc.selectElement(this); id=code0006 class=CODE contentEditable=false jQuery151048730858457965786="3" jQuery15107730863779909638="3">JSON.stringify({one:1,two:2})</PRE>
-<DIV onclick=jc.outClick(this) id=out0006 class="OUTPUT OLD SUCCESS">{"one":1, "two":2}</DIV>
-<DIV id=test0006 class="TEST SUCCESS">{"one":1, "two":2}</DIV>
+<H2 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false >1.2 JSON</H2>
+<DIV class=SECTIONCONTAINER><PRE onclick=jc.selectElement(this); id=code0004 class=CODE contentEditable=false >JSON.stringify('myString is "stupid"')</PRE>
+<DIV id=out0004 class="OUTPUT SUCCESS" >"myString&nbsp;is&nbsp;\"stupid\""</DIV>
+<DIV id=test0004 class="TEST SUCCESS">"myString&nbsp;is&nbsp;\"stupid\""</DIV><PRE onclick=jc.selectElement(this); id=code0005 class=CODE contentEditable=false >JSON.stringify([1,2,3,4])</PRE>
+<DIV id=out0005 class="OUTPUT SUCCESS" >[1,<BR>2,<BR>3,<BR>4]</DIV>
+<DIV id=test0005 class="TEST SUCCESS">[1,<BR>2,<BR>3,<BR>4]</DIV><PRE onclick=jc.selectElement(this); id=code0006 class=CODE contentEditable=false >JSON.stringify({one:1,two:2})</PRE>
+<DIV id=out0006 class="OUTPUT SUCCESS" >{"one":1,<BR>"two":2}</DIV>
+<DIV id=test0006 class="TEST SUCCESS">{"one":1,<BR>"two":2}</DIV>
 <DIV class="BOTTOMTOOLBAR HIDDEN"><BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON></DIV></DIV></DIV>
 <DIV id=sect0007 class=SECTION>
-<H2 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false>1.2 jc.inspect</H2>
-<DIV class=SECTIONCONTAINER><PRE onclick=jc.selectElement(this); id=code0008 class=CODE contentEditable=false jQuery151048730858457965786="4" jQuery15107730863779909638="4">jc.inspect({one:1,two:2},'my label')</PRE>
-<DIV onclick=jc.outClick(this) id=out0008 class="OUTPUT OLD SUCCESS">
+<H2 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false >1.3 jc.inspect</H2>
+<DIV class=SECTIONCONTAINER><PRE onclick=jc.selectElement(this); id=code0008 class=CODE contentEditable=false >jc.inspect({one:1,two:2},'my label')</PRE>
+<DIV id=out0008 class="OUTPUT SUCCESS" >
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} my label</LEGEND>
 <TABLE class=INSPECT>
@@ -58,31 +129,22 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
 <DIV class="BOTTOMTOOLBAR HIDDEN"><BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON></DIV></DIV></DIV>
 <DIV id=sect0009 class=SECTION>
-<H2 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false>1.3 jc helpers</H2>
-<DIV class=SECTIONCONTAINER><PRE onclick=jc.selectElement(this); id=code0010 class=CODE contentEditable=false jQuery151048730858457965786="5" jQuery15107730863779909638="5">jc.keys({one:1,two:2})</PRE>
-<DIV onclick=jc.outClick(this) id=out0010 class="OUTPUT OLD SUCCESS">one,two</DIV>
-<DIV id=test0010 class="TEST SUCCESS">one,two</DIV><PRE onclick=jc.selectElement(this); id=code0011 class=CODE contentEditable=false jQuery151048730858457965786="6" jQuery15107730863779909638="6"><P>var a = {one:1,two:2};</P><P>var b = jc.copy(a);</P><P>output</P><P>.p(a===b)</P><P>.p(JSON.stringify(a))</P><P>.p(JSON.stringify(b))</P></PRE>
-<DIV onclick=jc.outClick(this) id=out0011 class="OUTPUT OLD SUCCESS">
+<H2 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false >1.4 jc helpers</H2>
+<DIV class=SECTIONCONTAINER><PRE onclick=jc.selectElement(this); id=code0010 class=CODE contentEditable=false >jc.keys({one:1,two:2})</PRE>
+<DIV id=out0010 class="OUTPUT SUCCESS" >one,two</DIV>
+<DIV id=test0010 class="TEST SUCCESS">one,two</DIV><PRE onclick=jc.selectElement(this); id=code0011 class=CODE contentEditable=false ><P>var a = {one:1,two:2};</P><P>var b = jc.copy(a);</P><P>output</P><P>.p(a===b)</P><P>.p(JSON.stringify(a))</P><P>.p(JSON.stringify(b))</P></PRE>
+<DIV id=out0011 class="OUTPUT SUCCESS" >
 <P>false</P>
 <P>{"one":1, "two":2}</P>
 <P>{"one":1, "two":2}</P></DIV>
 <DIV id=test0011 class="TEST SUCCESS">
 <P>false</P>
 <P>{"one":1, "two":2}</P>
-<P>{"one":1, "two":2}</P></DIV><PRE onclick=jc.selectElement(this); id=code0012 class=CODE contentEditable=false jQuery151048730858457965786="7" jQuery15107730863779909638="7">jc.pad(15,5)</PRE>
-<DIV onclick=jc.outClick(this) id=out0012 class="OUTPUT OLD SUCCESS">00015</DIV>
-<DIV id=test0012 class="TEST SUCCESS">00015</DIV>
-<DIV id=localToolBar class=HIDDEN><BUTTON onclick=jc.insertNewSection(jc.localToolBar);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(jc.localToolBar);>^ new richtext ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>^ new code ^</BUTTON><SPAN id=codeId>code0013</SPAN><INPUT onclick="$('.CODE').toggleClass('HIDDEN',this.checked);this.scrollIntoView();" type=checkbox>hide codes</INPUT><INPUT onclick="$('.DELETED').toggleClass('HIDDEN',this.checked);this.scrollIntoView();" type=checkbox>hide deleted</INPUT><INPUT onclick="$('.TEST').toggleClass('HIDDEN',this.checked);" type=checkbox>hide tests</INPUT><INPUT onclick="$('.TRACE').toggleClass('HIDDEN',this.checked);" type=checkbox>hide traces</INPUT><BUTTON onclick=jc.hideToolBars();>hide ToolBars</BUTTON>
-<DIV class=RICHEDITTOOLBAR style="FLOAT: left"><BUTTON onclick=jc.richedit.bold();><B>B</B></BUTTON><BUTTON onclick=jc.richedit.italic();><I>i</I></BUTTON><BUTTON onclick=jc.richedit.underline();><U>U</U></BUTTON><BUTTON onclick=jc.richedit.strike();><STRIKE>S</STRIKE></BUTTON><BUTTON onclick=jc.richedit.h1();><B>H1</B></BUTTON><BUTTON onclick=jc.richedit.h2();><B>H2</B></BUTTON><BUTTON onclick=jc.richedit.div();>div</BUTTON><BUTTON onclick=jc.richedit.p();>¶</BUTTON><BUTTON onclick=jc.richedit.ol();>#</BUTTON><BUTTON onclick=jc.richedit.ul();>•</BUTTON><BUTTON onclick=jc.richedit.pre();>{}</BUTTON></DIV>
-<DIV><BUTTON onclick=jc.execAutoExec();>run</BUTTON><BUTTON onclick=jc.execAll();>run all</BUTTON><BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this);>--&gt;test</BUTTON><BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON><BUTTON onclick=jc.save();>save</BUTTON><BUTTON onclick=jc.deleteBlock(jc.selectedElement);>V delete V</BUTTON></DIV></DIV><PRE onclick=jc.selectElement(this); id=code0013 class=CODE contentEditable=false jQuery151048730858457965786="8" jQuery15107730863779909638="8">'&lt;pre&gt;'+jc.toString('one paragraph&lt;P&gt;one line break&lt;BR&gt;3&amp;lt;5 8&amp;gt;5 guns &amp;amp; roses')+'&lt;/pre&gt;';</PRE>
-<DIV onclick=jc.outClick(this) id=out0013 class="OUTPUT OLD SUCCESS"><PRE>one paragraph
-
-one line break
-3&lt;5 8&gt;5 guns &amp; roses</PRE></DIV>
-<DIV id=test0013 class="TEST SUCCESS"><PRE>one paragraph
-
-one line break
-3&lt;5 8&gt;5 guns &amp; roses</PRE></DIV>
+<P>{"one":1, "two":2}</P></DIV><PRE onclick=jc.selectElement(this); id=code0012 class=CODE contentEditable=false >jc.pad(15,5)</PRE>
+<DIV id=out0012 class="OUTPUT SUCCESS" >00015</DIV>
+<DIV id=test0012 class="TEST SUCCESS">00015</DIV><PRE onclick=jc.selectElement(this); id=code0013 class=CODE contentEditable=false >'&lt;pre&gt;'+jc.toString('one paragraph&lt;P&gt;one line break&lt;BR&gt;3&amp;lt;5 8&amp;gt;5 guns &amp;amp; roses')+'&lt;/pre&gt;';</PRE>
+<DIV id=out0013 class="OUTPUT SUCCESS" >&lt;pre&gt;one&nbsp;paragraph<BR><BR>one&nbsp;line&nbsp;break<BR>3&lt;5&nbsp;8&gt;5&nbsp;guns&nbsp;&amp;&nbsp;roses&lt;/pre&gt;</DIV>
+<DIV id=test0013 class="TEST SUCCESS">&lt;pre&gt;one&nbsp;paragraph<BR><BR>one&nbsp;line&nbsp;break<BR>3&lt;5&nbsp;8&gt;5&nbsp;guns&nbsp;&amp;&nbsp;roses&lt;/pre&gt;</DIV>
 <DIV class="BOTTOMTOOLBAR HIDDEN"><BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON></DIV></DIV></DIV>
 <DIV class="BOTTOMTOOLBAR HIDDEN"><BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON></DIV></DIV></DIV>
 <DIV class="BOTTOMTOOLBAR HIDDEN"><BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON><BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON></DIV></BODY></HTML>

@@ -42,7 +42,7 @@ Simulation.prototype.toString = function(options) {
 }
 
 function simulation(name) {
-  return v[name] = new Simulation(name);
+  return jc.vars[name] = new Simulation(name);
 }
 
 jc.simulation = simulation('_simulation');
@@ -111,7 +111,7 @@ StateMachine.prototype.toString = function() {
 }
 
 function stateMachine(name) {
-  return v[name] = new StateMachine(name);
+  return jc.vars[name] = new StateMachine(name);
 }
 
 

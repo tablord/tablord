@@ -150,6 +150,6 @@ Axe.prototype.view = function() {
 }
   
 function axe(name) {
-  return v[name] = new Axe(name);
+  return jc.vars[name] = new Axe(name);
 }
 
