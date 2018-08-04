@@ -762,7 +762,7 @@
     var element = event.currentTarget; // not target, since target can be an child element, not the div itself
     var code = window.document.getElementById(element.id.replace(/out/,"code"))
     jc.selectElement(code);
-    jc.execCode(code);
+    jc.execUntilSelected(code);
   }
 
   jc.format = function(obj,options) {
@@ -878,7 +878,7 @@
     $('*').removeClass('SUCCESS').removeClass('ERROR')
     var $codes = $('.CODE');
     if ($(jc.selectedElement).hasClass('CODE')){
-      var last = jc.selectedElement;
+      var lastI = $codes.index(jc.selectedElement);
     }
     else {
       var $last = $('.CODE',jc.selectedElement).last();

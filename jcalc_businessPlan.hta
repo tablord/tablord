@@ -1,4 +1,4 @@
-<HTML APPLICATIONNAME="D:\Documents\programmation\jcalc\jcalcV0\jcalc_businessPlan.hta" xmlns="http://www.w3.org/1999/xhtml" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SCROLL="yes" SINGLEINSTANCE="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
+<HTML xmlns="http://www.w3.org/1999/xhtml" APPLICATIONNAME="D:\Documents\programmation\jcalc\jcalcV0\jcalc_businessPlan.hta" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SINGLEINSTANCE="yes" SCROLL="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
 <SCRIPT src="jquery-1.5.1.min.js"></SCRIPT>
 
 <SCRIPT src="jcalcEdi.js"></SCRIPT>
@@ -19,7 +19,7 @@
 
 <SCRIPT src="finance.js"></SCRIPT>
 </HEAD>
-<BODY hideTest="false" hideCode="true" designMode="on">
+<BODY designMode="on" hideCode="true" hideTest="false">
 <DIV onclick=jc.selectElement(this); id=rich0006 class=RICHTEXT contentEditable=false style="FONT-SIZE: 12pt" >
 <P>Marc NICOLE</P>
 <P>colonie ouverte </P>
@@ -79,41 +79,41 @@
 <TH>fin prévisible</TH></TR></THEAD>
 <TBODY>
 <TR>
-<TD style="TEXT-ALIGN: left">développer en cellule comme actuellement</TD>
-<TD style="TEXT-ALIGN: left">avoir une première version très limitée mais fonctionnelle</TD>
-<TD>30.00</TD>
+<TD style="TEXT-ALIGN: left">développer&nbsp;en&nbsp;cellule&nbsp;comme&nbsp;actuellement</TD>
+<TD style="TEXT-ALIGN: left">avoir&nbsp;une&nbsp;première&nbsp;version&nbsp;très&nbsp;limitée&nbsp;mais&nbsp;fonctionnelle</TD>
+<TD>30</TD>
 <TD>ok</TD>
 <TD>x</TD>
 <TD>x</TD>
 <TD>x</TD>
-<TD>2018-11-21</TD></TR>
+<TD>2018-12-01</TD></TR>
 <TR>
-<TD style="TEXT-ALIGN: left">pouvoir envoyer des fichiers à l'exterieur</TD>
-<TD style="TEXT-ALIGN: left">permettre d'avoir un premier feed back utilisateur rapidement</TD>
-<TD>20.00</TD>
-<TD></TD>
-<TD></TD>
+<TD style="TEXT-ALIGN: left">pouvoir&nbsp;envoyer&nbsp;des&nbsp;fichiers&nbsp;à&nbsp;l'exterieur</TD>
+<TD style="TEXT-ALIGN: left">permettre&nbsp;d'avoir&nbsp;un&nbsp;premier&nbsp;feed&nbsp;back&nbsp;utilisateur&nbsp;rapidement</TD>
+<TD>20</TD>
+<TD>&nbsp;</TD>
+<TD>&nbsp;</TD>
 <TD>x</TD>
 <TD>x</TD>
-<TD>2019-02-17</TD></TR>
+<TD>2019-02-26</TD></TR>
 <TR>
-<TD style="TEXT-ALIGN: left">pouvoir recevoir des fichiers (téléchargeable car libre de droits)</TD>
-<TD style="TEXT-ALIGN: left">permettre de développer les fonctionnalités graphiques</TD>
-<TD>30.00</TD>
-<TD></TD>
-<TD></TD>
-<TD></TD>
+<TD style="TEXT-ALIGN: left">pouvoir&nbsp;recevoir&nbsp;des&nbsp;fichiers&nbsp;(téléchargeable&nbsp;car&nbsp;libre&nbsp;de&nbsp;droits)</TD>
+<TD style="TEXT-ALIGN: left">permettre&nbsp;de&nbsp;développer&nbsp;les&nbsp;fonctionnalités&nbsp;graphiques</TD>
+<TD>30</TD>
+<TD>&nbsp;</TD>
+<TD>&nbsp;</TD>
+<TD>&nbsp;</TD>
 <TD>x</TD>
-<TD>2019-05-12</TD></TR>
+<TD>2019-05-21</TD></TR>
 <TR>
-<TD style="TEXT-ALIGN: left">pouvoir travailler à l'exterieur</TD>
-<TD style="TEXT-ALIGN: left">développer les fonctionnalités nécessitant un serveur internet</TD>
-<TD>20.00</TD>
-<TD></TD>
-<TD></TD>
-<TD></TD>
-<TD></TD>
-<TD>2019-07-07</TD></TR></TBODY></TABLE></P></DIV>
+<TD style="TEXT-ALIGN: left">pouvoir&nbsp;travailler&nbsp;à&nbsp;l'exterieur</TD>
+<TD style="TEXT-ALIGN: left">développer&nbsp;les&nbsp;fonctionnalités&nbsp;nécessitant&nbsp;un&nbsp;serveur&nbsp;internet</TD>
+<TD>20</TD>
+<TD>&nbsp;</TD>
+<TD>&nbsp;</TD>
+<TD>&nbsp;</TD>
+<TD>&nbsp;</TD>
+<TD>2019-07-16</TD></TR></TBODY></TABLE></P></DIV>
 <DIV onclick=jc.selectElement(this); id=rich0053 class=RICHTEXT contentEditable=false >
 <P>&nbsp;</P>
 <P>&nbsp;</P>
@@ -171,7 +171,11 @@
 <DIV class=SECTIONCONTAINER>
 <DIV onclick=jc.selectElement(this); id=rich0010 class=RICHTEXT contentEditable=false >
 <P>L'effort de développement initial est réalisé durant ma détention et vu, du business model, ne coûte&nbsp;rien. Il est néanmoins chiffré pour mémoire, essentiellement dans le but de pouvoir être valorisé par la suite.</P>
-<P>&nbsp;</P></DIV><PRE onclick=jc.selectElement(this); id=code0011 class="CODE HIDDEN" contentEditable=false ><P>jc.Units.addUnit('devH','currency',85,'CHF')</P><P>        .addUnit('prisonH','currency',0,'CHF');</P><P>&nbsp;</P><P>jc.cashFlow('JCalcBusinessPlan','CHF','2018/7/1','2020/12/31')</P><P>.budget('JCalc V0.0',0,'prisonH').name('phase1')</P><P>  .budget('feasability loop (V0.0087)')</P><P>    .budget('first feasibility prototype',30*2)</P><P>      .pay('2018/7/1','start of job',0)</P><P>      .pay('2018/7/28','july hours',60)</P><P>    .end()</P><P>  .end()</P><P>  .budget('EDI')</P><P>    .budget('better save/warning before close..',20)</P><P>      .pay('2018/7/29','added setModified and onbeforeunload event',3)</P><P>      .done('2018/7/29')</P><P>    .end()</P><P>    .budget('reorganize block (mask as cut + ^paste^ button (??)',20).end()</P><P>    .budget('hide code individually',2).end()</P><P>    .budget('run until the code and not only this code',2).end()</P><P>    .budget('interactive editors of objects',50).end()</P><P>    .budget('animation.. how to loop through code',50).end()</P><P>  .end()</P><P>  .budget('finance')</P><P>    .budget('budget dashboard..(text only)',30)</P><P>      .pay('2018/8/1','burning rate...',2)</P><P>    .end()</P><P>    .budget('agile support (task, sprint..)',30).end()</P><P>  .end()</P><P>  .budget('simulation')</P><P>    .budget('simulation object',30).end()</P><P>  .end()</P><P>  .budget('unplanned evolution needed by use case',50)</P><P>    .pay('2018/7/29','v(name,Date) stores the native Date instead of embeeding it in a V object',1)</P><P>    .pay('2018/7/29','corrected the save bug, fso did not accept all char &gt; 255',1)</P><P>    .pay('2018/7/30','start of diff.js',2)</P><P>    .pay('2018/7/31','finalized diff.js',2)</P><P>    .budget('put bottom buttons V new section... at the end of the current selection only',2).end()</P><P>  .end()</P><P>      </P></PRE>
+<P>&nbsp;</P></DIV>
+<DIV id=localToolBar class=HIDDEN>
+<DIV><BUTTON onclick=jc.insertNewSection(jc.localToolBar);>&#8593; new section &#8593;</BUTTON><BUTTON onclick=jc.insertNewRichText(jc.localToolBar);>&#8593; new richtext &#8593;</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>&#8593; new code &#8593;</BUTTON></DIV>
+<DIV><SPAN id=codeId>code0011</SPAN><INPUT onclick=jc.hideCode(event) type=checkbox>hide codes</INPUT><INPUT onclick=jc.hideDeleted(event) type=checkbox>hide deleted</INPUT><INPUT onclick=jc.hideTest(event) type=checkbox>hide tests</INPUT><INPUT onclick=jc.hideTrace(event) type=checkbox>hide traces</INPUT><INPUT onclick=jc.autoRun(event) CHECKED type=checkbox>auto run</INPUT><BUTTON onclick=jc.hideToolBars();>hide ToolBars</BUTTON></DIV>
+<DIV class=RICHEDITTOOLBAR><BUTTON onclick=jc.richedit.bold();><B>B</B></BUTTON><BUTTON onclick=jc.richedit.italic();><I>i</I></BUTTON><BUTTON onclick=jc.richedit.underline();><U>U</U></BUTTON><BUTTON onclick=jc.richedit.strike();><STRIKE>S</STRIKE></BUTTON><BUTTON onclick=jc.richedit.h1();><B>H1</B></BUTTON><BUTTON onclick=jc.richedit.h2();><B>H2</B></BUTTON><BUTTON onclick=jc.richedit.div();>div</BUTTON><BUTTON onclick=jc.richedit.p();>¶</BUTTON><BUTTON onclick=jc.richedit.ol();>#</BUTTON><BUTTON onclick=jc.richedit.ul();>&#8226;</BUTTON><BUTTON onclick=jc.richedit.pre();>{}</BUTTON><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="COLOR: green">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="COLOR: green">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON><BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=MODIFIED>save</BUTTON><BUTTON onclick=jc.deleteBlock(jc.selectedElement);>&#8595; delete &#8595;</BUTTON></DIV></DIV><PRE onclick=jc.selectElement(this); id=code0011 class="CODE HIDDEN" contentEditable=false ><P>jc.Units.addUnit('devH','currency',85,'CHF')</P><P>        .addUnit('prisonH','currency',0,'CHF');</P><P>&nbsp;</P><P>jc.cashFlow('JCalcBusinessPlan','CHF','2018/7/1','2020/12/31')</P><P>.budget('JCalc V0.0',0,'prisonH').name('phase1')</P><P>  .budget('feasability loop (V0.0087)')</P><P>    .budget('first feasibility prototype',30*2)</P><P>      .pay('2018/7/1','start of job',0)</P><P>      .pay('2018/7/28','july hours',60)</P><P>    .end()</P><P>  .end()</P><P>  .budget('EDI')</P><P>    .budget('better save/warning before close..',20)</P><P>      .pay('2018/7/29','added setModified and onbeforeunload event',3)</P><P>      .done('2018/7/29')</P><P>    .end()</P><P>    .budget('reorganize block (mask as cut + ^paste^ button (??)',20).end()</P><P>    .budget('hide code individually',2).end()</P><P>    .budget('run until the code and not only this code',2)</P><P>      .pay('2018/8/4','refactor run until + jc.vars',2)</P><P>    .end()</P><P>    .budget('interactive editors of objects',50).end()</P><P>    .budget('animation.. how to loop through code',50).end()</P><P>  .end()</P><P>  .budget('finance')</P><P>    .budget('budget dashboard..(text only)',30)</P><P>      .pay('2018/8/1','burning rate...',2)</P><P>    .end()</P><P>    .budget('agile support (task, sprint..)',30).end()</P><P>  .end()</P><P>  .budget('simulation')</P><P>    .budget('simulation object',30).end()</P><P>  .end()</P><P>  .budget('unplanned evolution needed by use case',50)</P><P>    .pay('2018/7/29','v(name,Date) stores the native Date instead of embeeding it in a V object',1)</P><P>    .pay('2018/7/29','corrected the save bug, fso did not accept all char &gt; 255',1)</P><P>    .pay('2018/7/30','start of diff.js',2)</P><P>    .pay('2018/7/31','finalized diff.js',2)</P><P>    .budget('put bottom buttons V new section... at the end of the current selection only',2).end()</P><P>  .end()</P><P>      </P></PRE>
 <DIV id=out0011 class="OUTPUT SUCCESS" ><VAR>JCalc V0.0</VAR>
 <TABLE>
 <THEAD>
@@ -184,91 +188,91 @@
 <TBODY>
 <TR>
 <TD>2018-07-01</TD>
-<TD style="TEXT-ALIGN: left">first feasibility prototype</TD>
+<TD style="TEXT-ALIGN: left">first&nbsp;feasibility&nbsp;prototype</TD>
 <TD>60.00</TD>
 <TD>true</TD>
 <TD>60.00</TD></TR>
 <TR>
 <TD>2018-07-01</TD>
-<TD style="TEXT-ALIGN: left">start of job</TD>
+<TD style="TEXT-ALIGN: left">start&nbsp;of&nbsp;job</TD>
 <TD>0.00</TD>
 <TD></TD>
 <TD>60.00</TD></TR>
 <TR>
 <TD>2018-07-01</TD>
-<TD style="TEXT-ALIGN: left">better save/warning before close..</TD>
+<TD style="TEXT-ALIGN: left">better&nbsp;save/warning&nbsp;before&nbsp;close..</TD>
 <TD>20.00</TD>
 <TD>true</TD>
 <TD>80.00</TD></TR>
 <TR>
 <TD>2018-07-01</TD>
-<TD style="TEXT-ALIGN: left">reorganize block (mask as cut + ^paste^ button (??)</TD>
+<TD style="TEXT-ALIGN: left">reorganize&nbsp;block&nbsp;(mask&nbsp;as&nbsp;cut&nbsp;+&nbsp;^paste^&nbsp;button&nbsp;(??)</TD>
 <TD>20.00</TD>
 <TD>true</TD>
 <TD>100.00</TD></TR>
 <TR>
 <TD>2018-07-01</TD>
-<TD style="TEXT-ALIGN: left">hide code individually</TD>
+<TD style="TEXT-ALIGN: left">hide&nbsp;code&nbsp;individually</TD>
 <TD>2.00</TD>
 <TD>true</TD>
 <TD>102.00</TD></TR>
 <TR>
 <TD>2018-07-01</TD>
-<TD style="TEXT-ALIGN: left">run until the code and not only this code</TD>
+<TD style="TEXT-ALIGN: left">run&nbsp;until&nbsp;the&nbsp;code&nbsp;and&nbsp;not&nbsp;only&nbsp;this&nbsp;code</TD>
 <TD>2.00</TD>
 <TD>true</TD>
 <TD>104.00</TD></TR>
 <TR>
 <TD>2018-07-01</TD>
-<TD style="TEXT-ALIGN: left">interactive editors of objects</TD>
+<TD style="TEXT-ALIGN: left">interactive&nbsp;editors&nbsp;of&nbsp;objects</TD>
 <TD>50.00</TD>
 <TD>true</TD>
 <TD>154.00</TD></TR>
 <TR>
 <TD>2018-07-01</TD>
-<TD style="TEXT-ALIGN: left">animation.. how to loop through code</TD>
+<TD style="TEXT-ALIGN: left">animation..&nbsp;how&nbsp;to&nbsp;loop&nbsp;through&nbsp;code</TD>
 <TD>50.00</TD>
 <TD>true</TD>
 <TD>204.00</TD></TR>
 <TR>
 <TD>2018-07-01</TD>
-<TD style="TEXT-ALIGN: left">budget dashboard..(text only)</TD>
+<TD style="TEXT-ALIGN: left">budget&nbsp;dashboard..(text&nbsp;only)</TD>
 <TD>30.00</TD>
 <TD>true</TD>
 <TD>234.00</TD></TR>
 <TR>
 <TD>2018-07-01</TD>
-<TD style="TEXT-ALIGN: left">agile support (task, sprint..)</TD>
+<TD style="TEXT-ALIGN: left">agile&nbsp;support&nbsp;(task,&nbsp;sprint..)</TD>
 <TD>30.00</TD>
 <TD>true</TD>
 <TD>264.00</TD></TR>
 <TR>
 <TD>2018-07-01</TD>
-<TD style="TEXT-ALIGN: left">simulation object</TD>
+<TD style="TEXT-ALIGN: left">simulation&nbsp;object</TD>
 <TD>30.00</TD>
 <TD>true</TD>
 <TD>294.00</TD></TR>
 <TR>
 <TD>2018-07-01</TD>
-<TD style="TEXT-ALIGN: left">unplanned evolution needed by use case</TD>
+<TD style="TEXT-ALIGN: left">unplanned&nbsp;evolution&nbsp;needed&nbsp;by&nbsp;use&nbsp;case</TD>
 <TD>50.00</TD>
 <TD>true</TD>
 <TD>344.00</TD></TR>
 <TR>
 <TD>2018-07-01</TD>
-<TD style="TEXT-ALIGN: left">put bottom buttons V new section... at the end of the current selection only</TD>
+<TD style="TEXT-ALIGN: left">put&nbsp;bottom&nbsp;buttons&nbsp;V&nbsp;new&nbsp;section...&nbsp;at&nbsp;the&nbsp;end&nbsp;of&nbsp;the&nbsp;current&nbsp;selection&nbsp;only</TD>
 <TD>2.00</TD>
 <TD>true</TD>
 <TD>346.00</TD></TR>
 <TR>
 <TD>2018-07-28</TD>
-<TD style="TEXT-ALIGN: left">july hours</TD>
+<TD style="TEXT-ALIGN: left">july&nbsp;hours</TD>
 <TD>-60.00</TD>
 <TD></TD>
 <TD>286.00</TD></TR>
 <TR>
 <TD>2018-07-29</TD>
-<TD style="TEXT-ALIGN: left">added setModified and onbeforeunload event</TD>
+<TD style="TEXT-ALIGN: left">added&nbsp;setModified&nbsp;and&nbsp;onbeforeunload&nbsp;event</TD>
 <TD>-3.00</TD>
 <TD></TD>
 <TD>283.00</TD></TR>
@@ -280,34 +284,40 @@
 <TD>266.00</TD></TR>
 <TR>
 <TD>2018-07-29</TD>
-<TD style="TEXT-ALIGN: left">v(name,Date) stores the native Date instead of embeeding it in a V object</TD>
+<TD style="TEXT-ALIGN: left">v(name,Date)&nbsp;stores&nbsp;the&nbsp;native&nbsp;Date&nbsp;instead&nbsp;of&nbsp;embeeding&nbsp;it&nbsp;in&nbsp;a&nbsp;V&nbsp;object</TD>
 <TD>-1.00</TD>
 <TD></TD>
 <TD>265.00</TD></TR>
 <TR>
 <TD>2018-07-29</TD>
-<TD style="TEXT-ALIGN: left">corrected the save bug, fso did not accept all char &gt; 255</TD>
+<TD style="TEXT-ALIGN: left">corrected&nbsp;the&nbsp;save&nbsp;bug,&nbsp;fso&nbsp;did&nbsp;not&nbsp;accept&nbsp;all&nbsp;char&nbsp;&gt;&nbsp;255</TD>
 <TD>-1.00</TD>
 <TD></TD>
 <TD>264.00</TD></TR>
 <TR>
 <TD>2018-07-30</TD>
-<TD style="TEXT-ALIGN: left">start of diff.js</TD>
+<TD style="TEXT-ALIGN: left">start&nbsp;of&nbsp;diff.js</TD>
 <TD>-2.00</TD>
 <TD></TD>
 <TD>262.00</TD></TR>
 <TR>
 <TD>2018-07-31</TD>
-<TD style="TEXT-ALIGN: left">finalized diff.js</TD>
+<TD style="TEXT-ALIGN: left">finalized&nbsp;diff.js</TD>
 <TD>-2.00</TD>
 <TD></TD>
 <TD>260.00</TD></TR>
 <TR>
 <TD>2018-08-01</TD>
-<TD style="TEXT-ALIGN: left">burning rate...</TD>
+<TD style="TEXT-ALIGN: left">burning&nbsp;rate...</TD>
 <TD>-2.00</TD>
 <TD></TD>
-<TD>258.00</TD></TR></TBODY></TABLE>
+<TD>258.00</TD></TR>
+<TR>
+<TD>2018-08-04</TD>
+<TD style="TEXT-ALIGN: left">refactor&nbsp;run&nbsp;until&nbsp;+&nbsp;jc.vars</TD>
+<TD>-2.00</TD>
+<TD></TD>
+<TD>256.00</TD></TR></TBODY></TABLE>
 <FIELDSET><LEGEND>spending summary</LEGEND>
 <TABLE>
 <TBODY>
@@ -316,10 +326,10 @@
 <TD>329</TD></TR>
 <TR>
 <TH>total Paid:</TH>
-<TD>71</TD></TR>
+<TD>73</TD></TR>
 <TR>
 <TH>% Paid:</TH>
-<TD>21.6</TD></TR></TBODY></TABLE></FIELDSET>
+<TD>22.2</TD></TR></TBODY></TABLE></FIELDSET>
 <FIELDSET><LEGEND>calendar</LEGEND>
 <TABLE>
 <TBODY>
@@ -328,7 +338,7 @@
 <TD>2018-07-01</TD></TR>
 <TR>
 <TH>estimated end Date:</TH>
-<TD>2018-11-21</TD></TR>
+<TD>2018-12-01</TD></TR>
 <TR>
 <TH>declared end date:</TH>
 <TD>2020-12-31</TD></TR></TBODY></TABLE></FIELDSET></DIV>
@@ -346,7 +356,7 @@
 <DIV id=sect0014 class=SECTION>
 <H3 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false >2.1.2 Phase CrowdFunding</H3>
 <DIV class=SECTIONCONTAINER>
-<DIV onclick=jc.selectElement(this); id=rich0041 class=RICHTEXT contentEditable=false >La phase de crowdFunding peut débuter à la fin de la phase précédente, soit approximativement le <SPAN id=code0053 class="CODE AUTOEXEC" style="DISPLAY: none" >phase1._estimatedEndDate().yyyymmdd()</SPAN><SPAN id=out0053 class="OUTPUT SUCCESS" contentEditable=false >2018-11-21</SPAN></DIV>
+<DIV onclick=jc.selectElement(this); id=rich0041 class=RICHTEXT contentEditable=false >La phase de crowdFunding peut débuter à la fin de la phase précédente, soit approximativement le <SPAN id=code0053 class="CODE AUTOEXEC" style="DISPLAY: none" >phase1._estimatedEndDate().yyyymmdd()</SPAN><SPAN id=out0053 class="OUTPUT SUCCESS" contentEditable=false >2018-12-01</SPAN></DIV>
 <DIV id=sect0032 class=SECTION>
 <H4 onclick=jc.selectElement(this.parentNode); class=SECTIONTITLE contentEditable=false >2.1.2.1 Mise en place d'un site <SPAN id=code0034 class="CODE AUTOEXEC HIDDEN" style="DISPLAY: none" >jc.name</SPAN><SPAN id=out0034 class="OUTPUT SUCCESS" >JCalc</SPAN></H4>
 <DIV class=SECTIONCONTAINER>
@@ -364,116 +374,109 @@
 <TBODY>
 <TR>
 <TD>2018-07-28</TD>
-<TD style="TEXT-ALIGN: left">dev site web durant congés</TD>
+<TD style="TEXT-ALIGN: left">dev&nbsp;site&nbsp;web&nbsp;durant&nbsp;congés</TD>
 <TD>16.00</TD>
 <TD>true</TD>
 <TD>0.00</TD>
 <TD>0.00</TD></TR>
 <TR>
 <TD>2018-07-28</TD>
-<TD style="TEXT-ALIGN: left">frais hebergement</TD>
+<TD style="TEXT-ALIGN: left">frais&nbsp;hebergement</TD>
 <TD></TD>
 <TD>true</TD>
 <TD>320.00</TD>
 <TD>320.00</TD></TR>
 <TR>
-<TD>2018-11-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2018-12-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>300.00</TD></TR>
 <TR>
-<TD>2018-12-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-01-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>280.00</TD></TR>
 <TR>
-<TD>2019-01-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-02-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>260.00</TD></TR>
 <TR>
-<TD>2019-02-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-03-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>240.00</TD></TR>
 <TR>
-<TD>2019-03-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-04-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>220.00</TD></TR>
 <TR>
-<TD>2019-04-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-05-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>200.00</TD></TR>
 <TR>
-<TD>2019-05-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-06-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>180.00</TD></TR>
 <TR>
-<TD>2019-06-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-07-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>160.00</TD></TR>
 <TR>
-<TD>2019-07-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-08-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>140.00</TD></TR>
 <TR>
-<TD>2019-08-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-09-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>120.00</TD></TR>
 <TR>
-<TD>2019-09-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-10-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>100.00</TD></TR>
 <TR>
-<TD>2019-10-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-11-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>80.00</TD></TR>
 <TR>
-<TD>2019-11-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-12-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
-<TD>60.00</TD></TR>
-<TR>
-<TD>2019-12-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
-<TD></TD>
-<TD></TD>
-<TD>-20.00</TD>
-<TD>40.00</TD></TR></TBODY></TABLE>
+<TD>60.00</TD></TR></TBODY></TABLE>
 <FIELDSET><LEGEND>spending summary</LEGEND>
 <TABLE>
 <TBODY>
@@ -482,10 +485,10 @@
 <TD>320</TD></TR>
 <TR>
 <TH>total Paid:</TH>
-<TD>280</TD></TR>
+<TD>260</TD></TR>
 <TR>
 <TH>% Paid:</TH>
-<TD>87.5</TD></TR></TBODY></TABLE></FIELDSET>
+<TD>81.3</TD></TR></TBODY></TABLE></FIELDSET>
 <FIELDSET><LEGEND>calendar</LEGEND>
 <TABLE>
 <TBODY>
@@ -494,7 +497,7 @@
 <TD>2018-07-01</TD></TR>
 <TR>
 <TH>estimated end Date:</TH>
-<TD>2020-02-20</TD></TR>
+<TD>2020-03-01</TD></TR>
 <TR>
 <TH>declared end date:</TH>
 <TD>2020-12-31</TD></TR></TBODY></TABLE></FIELDSET></DIV>
@@ -514,130 +517,123 @@
 <TBODY>
 <TR>
 <TD>2018-07-28</TD>
-<TD style="TEXT-ALIGN: left">dev site web durant congés</TD>
+<TD style="TEXT-ALIGN: left">dev&nbsp;site&nbsp;web&nbsp;durant&nbsp;congés</TD>
 <TD>16.00</TD>
 <TD>true</TD>
 <TD>0.00</TD>
 <TD>0.00</TD></TR>
 <TR>
 <TD>2018-07-28</TD>
-<TD style="TEXT-ALIGN: left">frais hebergement</TD>
+<TD style="TEXT-ALIGN: left">frais&nbsp;hebergement</TD>
 <TD></TD>
 <TD>true</TD>
 <TD>320.00</TD>
 <TD>320.00</TD></TR>
 <TR>
-<TD>2018-11-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
-<TD></TD>
-<TD></TD>
-<TD>-20.00</TD>
-<TD>300.00</TD></TR>
-<TR>
 <TD>2018-12-01</TD>
-<TD style="TEXT-ALIGN: left">frais potentiels d'enregistrement</TD>
+<TD style="TEXT-ALIGN: left">frais&nbsp;potentiels&nbsp;d'enregistrement</TD>
 <TD></TD>
 <TD></TD>
 <TD>-200.00</TD>
-<TD>100.00</TD></TR>
+<TD>120.00</TD></TR>
 <TR>
 <TD>2018-12-01</TD>
-<TD style="TEXT-ALIGN: left">1rst crowd funding target</TD>
+<TD style="TEXT-ALIGN: left">1rst&nbsp;crowd&nbsp;funding&nbsp;target</TD>
 <TD></TD>
 <TD></TD>
 <TD>10000.00</TD>
+<TD>10120.00</TD></TR>
+<TR>
+<TD>2018-12-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
+<TD></TD>
+<TD></TD>
+<TD>-20.00</TD>
 <TD>10100.00</TD></TR>
 <TR>
-<TD>2018-12-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-01-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>10080.00</TD></TR>
 <TR>
-<TD>2019-01-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-02-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>10060.00</TD></TR>
 <TR>
-<TD>2019-02-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-03-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>10040.00</TD></TR>
 <TR>
-<TD>2019-03-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-04-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>10020.00</TD></TR>
 <TR>
-<TD>2019-04-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-05-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>10000.00</TD></TR>
 <TR>
-<TD>2019-05-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-06-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>9980.00</TD></TR>
 <TR>
-<TD>2019-06-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-07-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>9960.00</TD></TR>
 <TR>
-<TD>2019-07-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-08-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>9940.00</TD></TR>
 <TR>
-<TD>2019-08-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-09-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>9920.00</TD></TR>
 <TR>
-<TD>2019-09-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-10-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>9900.00</TD></TR>
 <TR>
-<TD>2019-10-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-11-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>9880.00</TD></TR>
 <TR>
-<TD>2019-11-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
+<TD>2019-12-01</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
-<TD>9860.00</TD></TR>
-<TR>
-<TD>2019-12-21</TD>
-<TD style="TEXT-ALIGN: left">hosting fee</TD>
-<TD></TD>
-<TD></TD>
-<TD>-20.00</TD>
-<TD>9840.00</TD></TR></TBODY></TABLE>
+<TD>9860.00</TD></TR></TBODY></TABLE>
 <FIELDSET><LEGEND>spending summary</LEGEND>
 <TABLE>
 <TBODY>
@@ -646,10 +642,10 @@
 <TD>320</TD></TR>
 <TR>
 <TH>total Paid:</TH>
-<TD>-9520</TD></TR>
+<TD>-9540</TD></TR>
 <TR>
 <TH>% Paid:</TH>
-<TD>-2975.0</TD></TR></TBODY></TABLE></FIELDSET>
+<TD>-2981.3</TD></TR></TBODY></TABLE></FIELDSET>
 <FIELDSET><LEGEND>calendar</LEGEND>
 <TABLE>
 <TBODY>
@@ -658,7 +654,7 @@
 <TD>2018-07-01</TD></TR>
 <TR>
 <TH>estimated end Date:</TH>
-<TD>2018-11-09</TD></TR>
+<TD>2018-11-26</TD></TR>
 <TR>
 <TH>declared end date:</TH>
 <TD>2020-12-31</TD></TR></TBODY></TABLE></FIELDSET></DIV>
@@ -674,8 +670,8 @@
 <TH>dev based on users feedback$prisonH</TH></TR></THEAD>
 <TBODY>
 <TR>
-<TD>2018-11-21</TD>
-<TD style="TEXT-ALIGN: left">dev based on users feedback</TD>
+<TD>2018-12-01</TD>
+<TD style="TEXT-ALIGN: left">dev&nbsp;based&nbsp;on&nbsp;users&nbsp;feedback</TD>
 <TD>200.00</TD>
 <TD>true</TD>
 <TD>200.00</TD></TR></TBODY></TABLE>
@@ -696,10 +692,10 @@
 <TBODY>
 <TR>
 <TH>start:</TH>
-<TD>2018-11-21</TD></TR>
+<TD>2018-12-01</TD></TR>
 <TR>
 <TH>estimated end Date:</TH>
-<TD>2019-02-17</TD></TR>
+<TD>2019-02-26</TD></TR>
 <TR>
 <TH>declared end date:</TH>
 <TD>2020-12-31</TD></TR></TBODY></TABLE></FIELDSET></DIV>
@@ -732,8 +728,8 @@
 <TH>v1.0 first graphical version$prisonH</TH></TR></THEAD>
 <TBODY>
 <TR>
-<TD>2019-02-17</TD>
-<TD style="TEXT-ALIGN: left">v1.0 first graphical version</TD>
+<TD>2019-02-26</TD>
+<TD style="TEXT-ALIGN: left">v1.0&nbsp;first&nbsp;graphical&nbsp;version</TD>
 <TD>300.00</TD>
 <TD>true</TD>
 <TD>300.00</TD></TR></TBODY></TABLE>
@@ -754,10 +750,10 @@
 <TBODY>
 <TR>
 <TH>start:</TH>
-<TD>2019-02-17</TD></TR>
+<TD>2019-02-26</TD></TR>
 <TR>
 <TH>estimated end Date:</TH>
-<TD>2019-05-12</TD></TR>
+<TD>2019-05-21</TD></TR>
 <TR>
 <TH>declared end date:</TH>
 <TD>2020-12-31</TD></TR></TBODY></TABLE></FIELDSET></DIV>
@@ -769,12 +765,8 @@
 <P>Toutes les versions précédentes fonctionnement en mode fichier, ce qui limite le travail collaboratif (bien qu'il puisse être envisagé en utilisant des outils externes comme GIT dans une certaine mesure)</P>
 <P>Le but de cette étape est de pouvoir partager des données de manière collaborative, voire à terme générer un nouveau projet "wikiData" qui permetterait de partager des données structurées classiquement utiles à tous le monde, comme par exemple des calendriers de jours ouvrables, les cours des monnaies etc..</P>
 <P>&nbsp;</P>
-<P>Là encore, l'effort est budgeté de manière très approximative, n'ayant pas la possibilité de tester quoi que ce soit à ce stade. L'estimation ci-dessous ne réalise que le moteur de base, et non pas l'effort nécessaire pour aller chercher les données publiques (comme par exemple les cours des devises)</P></DIV>
-<DIV id=localToolBar class=HIDDEN>
-<DIV><BUTTON onclick=jc.insertNewSection(jc.localToolBar);>&#8593; new section &#8593;</BUTTON><BUTTON onclick=jc.insertNewRichText(jc.localToolBar);>&#8593; new richtext &#8593;</BUTTON><BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>&#8593; new code &#8593;</BUTTON></DIV>
-<DIV><SPAN id=codeId>code0051</SPAN><INPUT onclick=jc.hideCode(event) type=checkbox>hide codes</INPUT><INPUT onclick=jc.hideDeleted(event) type=checkbox>hide deleted</INPUT><INPUT onclick=jc.hideTest(event) type=checkbox>hide tests</INPUT><INPUT onclick=jc.hideTrace(event) type=checkbox>hide traces</INPUT><INPUT onclick=jc.autoRun(event) CHECKED type=checkbox>auto run</INPUT><BUTTON onclick=jc.hideToolBars();>hide ToolBars</BUTTON></DIV>
-<DIV class=RICHEDITTOOLBAR><BUTTON onclick=jc.richedit.bold();><B>B</B></BUTTON><BUTTON onclick=jc.richedit.italic();><I>i</I></BUTTON><BUTTON onclick=jc.richedit.underline();><U>U</U></BUTTON><BUTTON onclick=jc.richedit.strike();><STRIKE>S</STRIKE></BUTTON><BUTTON onclick=jc.richedit.h1();><B>H1</B></BUTTON><BUTTON onclick=jc.richedit.h2();><B>H2</B></BUTTON><BUTTON onclick=jc.richedit.div();>div</BUTTON><BUTTON onclick=jc.richedit.p();>¶</BUTTON><BUTTON onclick=jc.richedit.ol();>#</BUTTON><BUTTON onclick=jc.richedit.ul();>&#8226;</BUTTON><BUTTON onclick=jc.richedit.pre();>{}</BUTTON><BUTTON onclick=jc.execSelected(); style="COLOR: green">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); style="COLOR: green">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON><BUTTON onclick=jc.toggleAutoExec();>autoexec</BUTTON><BUTTON onclick=jc.save(); id=saveBtn>save</BUTTON><BUTTON onclick=jc.deleteBlock(jc.selectedElement);>&#8595; delete &#8595;</BUTTON></DIV></DIV><PRE onclick=jc.selectElement(this); id=code0051 class="CODE HIDDEN" contentEditable=false ><P>JCalcBusinessPlan</P><P>.budget('v2.0 first version with shared data',200,'prisonH',phase3._estimatedEndDate()) </P><P>  .setBurningRate(25,'prisonH')</P><P>  .name('phase4')</P></PRE>
-<DIV id=out0051 class=OUTPUT ><VAR>v2.0 first version with shared data</VAR>
+<P>Là encore, l'effort est budgeté de manière très approximative, n'ayant pas la possibilité de tester quoi que ce soit à ce stade. L'estimation ci-dessous ne réalise que le moteur de base, et non pas l'effort nécessaire pour aller chercher les données publiques (comme par exemple les cours des devises)</P></DIV><PRE onclick=jc.selectElement(this); id=code0051 class="CODE HIDDEN" contentEditable=false ><P>JCalcBusinessPlan</P><P>.budget('v2.0 first version with shared data',200,'prisonH',phase3._estimatedEndDate()) </P><P>  .setBurningRate(25,'prisonH')</P><P>  .name('phase4')</P></PRE>
+<DIV id=out0051 class="OUTPUT SUCCESS" ><VAR>v2.0 first version with shared data</VAR>
 <TABLE>
 <THEAD>
 <TR>
@@ -785,8 +777,8 @@
 <TH>v2.0 first version with shared data$prisonH</TH></TR></THEAD>
 <TBODY>
 <TR>
-<TD>2019-05-12</TD>
-<TD style="TEXT-ALIGN: left">v2.0 first version with shared data</TD>
+<TD>2019-05-21</TD>
+<TD style="TEXT-ALIGN: left">v2.0&nbsp;first&nbsp;version&nbsp;with&nbsp;shared&nbsp;data</TD>
 <TD>200.00</TD>
 <TD>true</TD>
 <TD>200.00</TD></TR></TBODY></TABLE>
@@ -807,10 +799,10 @@
 <TBODY>
 <TR>
 <TH>start:</TH>
-<TD>2019-05-12</TD></TR>
+<TD>2019-05-21</TD></TR>
 <TR>
 <TH>estimated end Date:</TH>
-<TD>2019-07-07</TD></TR>
+<TD>2019-07-16</TD></TR>
 <TR>
 <TH>declared end date:</TH>
 <TD>2020-12-31</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV>
