@@ -19,6 +19,8 @@
 
             vars:{},              // where all user variables are stored
 
+            autoRun:true,
+
             defaults:{
               format:{            // default formating methods  this can be redefined in some JCalc objects like v table... in options.
                 undef:function(){return '<SPAN style=color:red;>undefined</SPAN>'},
@@ -392,14 +394,14 @@
       var currentNumbers = [];
       this.toc = [];
       $('.SECTION').each(function (i,e) {
-        if ($(e).hasClass('DELETED')) return;
+        if ($(e).hasClass('CUT')) return;
         var title = e.firstChild;
-        var level = Number(title.tagName.slice(1))-1;
+        var level = jc.level(e);
         currentNumbers[level] = (currentNumbers[level] || 0)+1;
         currentNumbers.length = level+1;
         var number = currentNumbers.join('.');
         var t = title.innerHTML.replace(/^[\d\.]*(\s|\&nbsp;)*/,'');
-        title.innerHTML = number+' '+t;
+        title.outerHTML = '<H'+(level+1)+' class=SECTIONTITLE onclick=jc.selectElement(this.parentNode); contentEditable=true>'+number+' '+t+'</H'+(level+1)+'>';
         jc.tableOfContent.toc.push({number:number,level:level,title:jc.textContent(t),sectionId:e.id});
       });
     },
@@ -426,6 +428,12 @@
     return new jc.HTML('<span class=INVALIDLINK title="#'+url+' is not found in the table of content">'+text+'</span>');
   }
 
+  jc.level = function(element) {
+    // returns the level of the element = number of section between body and the element
+    // please note that the first section has level = 0 according to this definition 
+    // (but the title will be a <H1>)
+    return $(element).parentsUntil('BODY').filter('.SECTION').length;
+  }
 
   // EDI ///////////////////////////////////////////////////////////////////////////////
 
@@ -491,11 +499,11 @@
     window.document.body.hideCode=button.checked;
   }
 
-  jc.hideDeleted = function(event) {
+  jc.hideCut = function(event) {
     var button = event.target || window.event.srcElement; //IE7 compatibility
-    $('.DELETED').toggleClass('HIDDEN',button.checked);
+    $('.CUT').toggleClass('HIDDEN',button.checked);
     button.scrollIntoView();
-    window.document.body.hideDeleted=button.checked;
+    window.document.body.hideCut=button.checked;
   }
       
   jc.hideTest = function(event) {
@@ -514,7 +522,7 @@
 
   jc.autoRun = function(event) {
     var button = event.target || window.event.srcElement; //IE7 compatibility
-    window.document.body.autoRun=button.checked;
+    jc.autoRun = window.document.body.autoRun=button.checked;
   }
       
   jc.initLocalToolBars = function() {
@@ -522,22 +530,25 @@
     if (jc.localToolBar == undefined) {
       jc.localToolBar = window.document.createElement('DIV');
       jc.localToolBar.id='localToolBar';
-//*****      window.document.body.insertBefore(jc.localToolBar,window.document.body.lastChild);
     }
     $(jc.localToolBar).addClass('TOOLBAR HIDDEN');
+
+    jc.autoRun = window.document.body.autoRun!==false;
+
     jc.localToolBar.innerHTML = 
       '<DIV>'+
         '<BUTTON onclick=jc.insertNewSection(jc.localToolBar);>&#8593; new section &#8593;</BUTTON>'+
         '<BUTTON onclick=jc.insertNewRichText(jc.localToolBar);>&#8593; new richtext &#8593;</BUTTON>'+
         '<BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar);>&#8593; new code &#8593;</BUTTON>'+
+        '<BUTTON onclick=jc.paste(jc.localToolBar);>&#8593; paste &#8593;</BUTTON>'+
       '</DIV>'+
       '<DIV>'+
         '<SPAN id=codeId>no element</SPAN>'+
         '<INPUT onclick="jc.hideCode(event)"'+(window.document.body.hideCode===true?' checked':'')+' type=checkbox>hide codes</INPUT>'+
-        '<INPUT onclick="jc.hideDeleted(event)"'+(window.document.body.hideDeleted===true?' checked':'')+' type=checkbox>hide deleted</INPUT>'+
+        '<INPUT onclick="jc.hideCut(event)"'+(window.document.body.hideCut===true?' checked':'')+' type=checkbox>hide Cut</INPUT>'+
         '<INPUT onclick="jc.hideTest(event)"'+(window.document.body.hideTest===true?' checked':'')+' type=checkbox>hide tests</INPUT>'+
         '<INPUT onclick="jc.hideTrace(event)"'+(window.document.body.hideTrace===true?' checked':'')+' type=checkbox>hide traces</INPUT>'+
-        '<INPUT onclick="jc.autoRun(event)"'+(window.document.body.autoRun!==false?' checked':'')+' type=checkbox>auto run</INPUT>'+
+        '<INPUT onclick="jc.autoRun(event)"'+(jc.autoRun?' checked':'')+' type=checkbox>auto run</INPUT>'+
         '<BUTTON onclick=jc.hideToolBars();>hide ToolBars</BUTTON>'+
       '</DIV>'+
       '<DIV class=RICHEDITTOOLBAR>'+
@@ -557,7 +568,7 @@
         '<BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON>'+
         '<BUTTON onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON>'+
         '<BUTTON id="saveBtn" onclick="jc.save();">save</BUTTON>'+
-        '<BUTTON onclick=jc.deleteBlock(jc.selectedElement);>&#8595; delete &#8595;</BUTTON>'+
+        '<BUTTON onclick=jc.cutBlock(jc.selectedElement);>&#8595; cut &#8595;</BUTTON>'+
       '</DIV>';
 
     jc.insideToolBar = $('#insideToolBar')[0];  // start with localToolBar hidden so that its position is irrelevent
@@ -567,9 +578,10 @@
     }
     $(jc.insideToolBar).addClass('TOOLBAR HIDDEN');
     jc.insideToolBar.innerHTML = 
-      '<BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON>'+
-      '<BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON>'+
-      '<BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON>';
+      '<BUTTON onclick=jc.insertNewSection(this.parentNode);>&#8593; new section &#8593;</BUTTON>'+
+      '<BUTTON onclick=jc.insertNewRichText(this.parentNode);>&#8593; new rich text &#8593;</BUTTON>'+
+      '<BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>&#8593; new code &#8593;</BUTTON>'+
+      '<BUTTON onclick=jc.paste(this.parentNode);>&#8593; paste &#8593;</BUTTON>';
 
 
     jc.bottomToolBar = $('#bottomToolBar')[0];  // start with localToolBar hidden so that its position is irrelevent
@@ -579,14 +591,27 @@
     }
     $(jc.bottomToolBar).addClass('TOOLBAR HIDDEN');
     jc.bottomToolBar.innerHTML = 
-      '<BUTTON onclick=jc.insertNewSection(this.parentNode);>^ new section ^</BUTTON>'+
-      '<BUTTON onclick=jc.insertNewRichText(this.parentNode);>^ new rich text ^</BUTTON>'+
-      '<BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>^ new code ^</BUTTON>';
+      '<BUTTON onclick=jc.insertNewSection(this.parentNode);>&#8595; new section &#8595;</BUTTON>'+
+      '<BUTTON onclick=jc.insertNewRichText(this.parentNode);>&#8595; new rich text &#8595;</BUTTON>'+
+      '<BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>&#8595; new code &#8595;</BUTTON>'+
+      '<BUTTON onclick=jc.paste(this.parentNode);>&#8595; paste &#8595;</BUTTON>';
   }
 
   jc.setModified = function(state) {
     jc.modified = state;
-    $('#saveBtn').toggleClass('MODIFIED',state);
+    $('#saveBtn').toggleClass('WARNING',state);
+  }
+
+  jc.setUpToDate = function(state) {
+    if (state === jc.setUpToDate.state) return;
+    if (state) {
+      $('#runAllBtn').removeClass('WARNING');
+    }
+    else {
+      $('#runAllBtn').addClass('WARNING');
+      $('*').removeClass('SUCCESS ERROR');
+    }
+    jc.setUpToDate.state = state;
   }
 
   jc.save = function() {
@@ -594,7 +619,7 @@
     var fileName = window.prompt('save this sheet in this file?',window.location.pathname);
     if (fileName == undefined) return;
     window.document.documentElement.APPLICATIONNAME = fileName;
-    jc.removeDeletedBlocks();
+    jc.removeCutBlocks();
     $('.TOOLBAR').remove();
     jc.selectElement(undefined);
     var fso = new ActiveXObject("Scripting.FileSystemObject");
@@ -627,19 +652,18 @@
     }
   }
 
-  jc.deleteBlock = function(element,del) {
-    del = del || !$(element).hasClass('DELETED');
+  jc.cutBlock = function(element,cut) {
+    cut = cut || !$(element).hasClass('CUT');
     $(element)
     .add(jc.outputElement(element))
     .add(jc.testElement(element))
-    .find('*')
-    .andSelf()
-    .toggleClass('DELETED',del);
+    .toggleClass('CUT',cut);
     jc.setModified(true);
+    jc.setUpToDate(false);
   }
 
-  jc.removeDeletedBlocks = function() {
-    $('.DELETED').remove();
+  jc.removeCutBlocks = function() {
+    $('.CUT').remove();
   }
 
   jc.insertNewCodeBlock = function(beforeThatElement) {
@@ -653,6 +677,7 @@
     beforeThatElement.parentNode.insertBefore(newOutput,beforeThatElement);
     jc.selectElement(newCode);
     jc.setModified(true);
+    jc.run();
   }
 
   jc.insertNewRichText = function(beforeThatElement) {
@@ -663,22 +688,14 @@
     beforeThatElement.parentNode.insertBefore(newRichText,beforeThatElement);
     jc.selectElement(newRichText);
     jc.setModified(true);
+    jc.run()
   }
 
   jc.insertNewSection = function(beforeThatElement) {
     //insert a new section that consist of one title and one div as futur container of embeeded elements
-    //a bottomToolBar is added in the container
-    jc.setModified(true);
-    
     jc.blockNumber++;
-    var currentLevel = 1;
-    if (beforeThatElement.parentNode != window.document.body) {
-      var parentSectionTitle = beforeThatElement.parentNode.previousSibling;
-      var tag = parentSectionTitle.tagName;
-      if (tag.slice(0,1) === 'H') {
-        currentLevel = Number(tag.slice(1))+1;
-      }
-    }
+    var $parents = $(beforeThatElement).parentsUntil('BODY');
+    var currentLevel = $parents.length+1;
     var newSection = window.document.createElement('<DIV id='+jc.blockId('sect')+' class=SECTION>');
     var title = window.document.createElement('<H'+currentLevel+' class=SECTIONTITLE onclick=jc.selectElement(this.parentNode); contentEditable=true>');
     var container = window.document.createElement('<DIV class=SECTIONCONTAINER>');
@@ -687,15 +704,25 @@
     beforeThatElement.parentNode.insertBefore(newSection,beforeThatElement);
     jc.tableOfContent.updateSections();
     jc.selectElement(newSection);
+    jc.setModified(true);
+    jc.run();
+  }
+
+  jc.paste = function(beforeThatElement) {
+    jc.setModified(true);
+    var $cut = $('.CUT').detach().removeClass('CUT');
+    $(beforeThatElement).before($cut);
+    jc.run();
   }
 
   jc.editorKeyPress = function(event) {
     jc.setModified(true);
+    jc.setUpToDate(false);
     var element = event.srcElement;
     $(element.id.replace(/code/,"#out")).removeClass('SUCCESS').removeClass('ERROR');
     $(element.id.replace(/code/,"#test")).removeClass('SUCCESS').removeClass('ERROR');
     if (event.keyCode==10) {  //only IE
-      jc.execAll(); 
+      jc.run(); 
     }
   }
 
@@ -703,7 +730,7 @@
     jc.setModified(true);
     var element = event.srcElement;
     if (event.keyCode==10) {  //only IE
-      jc.execAll(); 
+      jc.run(); 
     }
   }
 
@@ -739,7 +766,7 @@ a('move toolbar to undefined')
     return $(element);
   }
 
-  jc.hideToolBars = function() {
+  jc.hideToolBars = function() {  //*********************************************
     $('.BOTTOMTOOLBAR').add(jc.localToolBar).addClass('HIDDEN');
     jc.selectElement(undefined);
   }
@@ -767,13 +794,13 @@ a('move toolbar to undefined')
   }
 
   jc.codeClick = function(event) {
-    var code = event.currentTarget; // not target, since target can be an child element, not the div itself
+    var code = event.target; // not target, since target can be an child element, not the div itself
     jc.selectElement(code);
     return false;  // prevent bubbling
   }
 
   jc.outClick = function(event) {
-    var element = event.currentTarget; // not target, since target can be an child element, not the div itself
+    var element = event.target; // not target, since target can be an child element, not the div itself
     var code = window.document.getElementById(element.id.replace(/out/,"code"))
     jc.selectElement(code);
     jc.execUntilSelected(code);
@@ -781,7 +808,7 @@ a('move toolbar to undefined')
   }
 
   jc.sectionClick = function(event) {
-    var section = event.currentTarget; // not target, since target can be an child element, not the div itself
+    var section = $(event.target).closest('.SECTION')[0]; // the user clicked on an internal part (title or container)
     jc.selectElement(section);
     return false;  // prevent bubbling
   }
@@ -882,6 +909,15 @@ a('move toolbar to undefined')
     }
   }
 
+  jc.run = function() {
+    if (jc.autoRun) {
+      jc.execAll();
+    }
+    else {
+      jc.execUntilSelected();
+    }
+  }
+
   jc.execAll = function() {
     jc.finalizations = [];
     jc.vars = {}; // run from fresh
@@ -889,6 +925,7 @@ a('move toolbar to undefined')
     jc.$editables(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
     $('.CODE').each(function(i,e) {jc.execCode(e);});
     jc.finalize();
+    jc.setUpToDate(true);
   }
 
   jc.execUntilSelected = function() {
@@ -916,6 +953,7 @@ a('move toolbar to undefined')
       jc.execCode(e);
     });
     jc.finalize();
+    jc.setUpToDate(false);
   }
 
   jc.reformatRichText = function(element) {
@@ -923,12 +961,17 @@ a('move toolbar to undefined')
     var mark = /\{\{[#]?(.*?)\}\}/;
     var h = element.innerHTML;
     var idx=-1;
+    var change=false;
     while ((idx=h.search(mark))!=-1) {
       jc.blockNumber++;
       if (h.charAt(idx+2) == '#') {
         h = h.replace(mark,'<SPAN class="CODE EMBEDDED" id='+ jc.blockId('code')+' style="DISPLAY: none;">jc.link("$1")</SPAN><SPAN class=OUTPUT contentEditable=false id='+ jc.blockId('out')+'>no output</SPAN>');
       }
       h = h.replace(mark,'<SPAN class="CODE EMBEDDED" id='+ jc.blockId('code')+' style="DISPLAY: none;">$1</SPAN><SPAN class=OUTPUT contentEditable=false id='+ jc.blockId('out')+'>no output</SPAN>');
+      change = true; 
+    }
+    if (change) {
+      jc.setUpToDate(false);
     }
     element.innerHTML = h;
   }
@@ -955,7 +998,7 @@ a('move toolbar to undefined')
     $('*').removeClass('OLD').removeClass('AUTOEXEC');// not in use anymore
     $('.OUTPUT').add('.CODE').removeAttr('onclick');  // no longer in the HTML but bound dynamically
     $('.RICHTEXT .CODE').add('.SECTIONTITLE .CODE').addClass('EMBEDDED');        // reserved for code inside another element
-  
+    $('#localToolBar').add('.BOTTOMTOOLBAR').add('.TOOLBAR').remove();           // no longer saved with the document and must be regenerated at init
  
     // prepare the sheet ///////////////////////////////////////////
     $('.SELECTED').removeClass('SELECTED');

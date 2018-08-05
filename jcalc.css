@@ -200,7 +200,7 @@ pre {
   background-color: yellow;
 }
 
-.DELETED {
+.CUT {
   background-color: b7b7b7;
   color: 828282;
   font-size: 8px;
@@ -232,8 +232,8 @@ pre {
   color: green;
 }
 
-.MODIFIED {
-  background-color:red;
+.WARNING {
+  background-color:yellow;
 }
 
 #localToolBar,
