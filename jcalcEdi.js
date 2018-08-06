@@ -777,7 +777,6 @@ a('move toolbar to undefined')
   jc.codeClick = function(event) {
     var code = event.currentTarget; // not target, since target can be an child element, not the div itself
     if ($(code).hasClass('EMBEDDED')) {
-a('code form EMBEDDED so bubble')
       return true; //EMBEDDED code is ruled by its container (richText / section...) so let the event bubble
     }
     jc.selectElement(code);
@@ -785,10 +784,10 @@ a('code form EMBEDDED so bubble')
   }
 
   jc.outClick = function(event) {
+    if (event.target.tagName == 'A') {/*a link, just let the system do*/ return true}
     var element = event.currentTarget; // not target, since target can be an child element, not the div itself
     var code = window.document.getElementById(element.id.replace(/out/,"code"))
     if ($(code).hasClass('EMBEDDED')) {
-a('out from EMBEDDED so bubble')
       return true; //EMBEDDED code is ruled by its container (richText / section...) so let the event bubble
     }
     if (jc.selectedElement === code) {
