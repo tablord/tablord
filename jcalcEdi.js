@@ -397,11 +397,12 @@
         if ($(e).hasClass('CUT')) return;
         var title = e.firstChild;
         var level = jc.level(e);
+
         currentNumbers[level] = (currentNumbers[level] || 0)+1;
         currentNumbers.length = level+1;
         var number = currentNumbers.join('.');
         var t = title.innerHTML.replace(/^[\d\.]*(\s|\&nbsp;)*/,'');
-        title.outerHTML = '<H'+(level+1)+' class=SECTIONTITLE onclick=jc.selectElement(this.parentNode); contentEditable=true>'+number+' '+t+'</H'+(level+1)+'>';
+        title.outerHTML = '<H'+(level+1)+' class=SECTIONTITLE contentEditable='+(e===jc.selectedElement)+'>'+number+' '+t+'</H'+(level+1)+'>';
         jc.tableOfContent.toc.push({number:number,level:level,title:jc.textContent(t),sectionId:e.id});
       });
     },
@@ -531,7 +532,7 @@
       jc.localToolBar = window.document.createElement('DIV');
       jc.localToolBar.id='localToolBar';
     }
-    $(jc.localToolBar).addClass('TOOLBAR HIDDEN');
+    $(jc.localToolBar).addClass('TOOLBAR HIDDEN').click(function(){return false}/*prevent bubbling to upper sections*/);
 
     jc.autoRun = window.document.body.autoRun!==false;
 
@@ -684,7 +685,7 @@
     // insert a new richText DIV 
     // -beforeThatElement is where it must be inserted (usually the localToolBox, but can be any Element)
     jc.blockNumber++;
-    var newRichText = window.document.createElement('<DIV id='+jc.blockId('rich')+' class=RICHTEXT onclick=jc.selectElement(this); contentEditable=false>');
+    var newRichText = window.document.createElement('<DIV id='+jc.blockId('rich')+' class=RICHTEXT contentEditable=false>');
     beforeThatElement.parentNode.insertBefore(newRichText,beforeThatElement);
     jc.selectElement(newRichText);
     jc.setModified(true);
@@ -697,7 +698,7 @@
     var $parents = $(beforeThatElement).parentsUntil('BODY');
     var currentLevel = $parents.length+1;
     var newSection = window.document.createElement('<DIV id='+jc.blockId('sect')+' class=SECTION>');
-    var title = window.document.createElement('<H'+currentLevel+' class=SECTIONTITLE onclick=jc.selectElement(this.parentNode); contentEditable=true>');
+    var title = window.document.createElement('<H'+currentLevel+' class=SECTIONTITLE contentEditable=true>');
     var container = window.document.createElement('<DIV class=SECTIONCONTAINER>');
     newSection.appendChild(title);
     newSection.appendChild(container);
@@ -715,31 +716,9 @@
     jc.run();
   }
 
-  jc.editorKeyPress = function(event) {
-    jc.setModified(true);
-    jc.setUpToDate(false);
-    var element = event.srcElement;
-    $(element.id.replace(/code/,"#out")).removeClass('SUCCESS').removeClass('ERROR');
-    $(element.id.replace(/code/,"#test")).removeClass('SUCCESS').removeClass('ERROR');
-    if (event.keyCode==10) {  //only IE
-      jc.run(); 
-    }
-  }
-
-  jc.richTextKeyPress = function(event) {
-    jc.setModified(true);
-    var element = event.srcElement;
-    if (event.keyCode==10) {  //only IE
-      jc.run(); 
-    }
-  }
-
-  jc.sectionTitleKeyPress = function(event) {
-    jc.setModified(true);
-  }
 
   jc.moveLocalToolBar = function(element) {
-    if (element === undefined) {
+    if (element == undefined) {
       $([jc.localToolBar,jc.bottomToolBar]).remove();
 a('move toolbar to undefined')
       return;
@@ -789,29 +768,77 @@ a('move toolbar to undefined')
     if ($(element).hasClass('EMBEDDED')) element = element.parentNode;
     jc.moveLocalToolBar(element);
     $(element).addClass('SELECTED');
-    jc.$editables(jc.selectedElement).attr('contentEditable',true);
+    jc.$editables(element).attr('contentEditable',true);
     element.focus();
   }
 
+  // EDI eventHandlers ///////////////////////////////////////////////////////////////
+
   jc.codeClick = function(event) {
-    var code = event.target; // not target, since target can be an child element, not the div itself
+    var code = event.currentTarget; // not target, since target can be an child element, not the div itself
+    if ($(code).hasClass('EMBEDDED')) {
+a('code form EMBEDDED so bubble')
+      return true; //EMBEDDED code is ruled by its container (richText / section...) so let the event bubble
+    }
     jc.selectElement(code);
     return false;  // prevent bubbling
   }
 
   jc.outClick = function(event) {
-    var element = event.target; // not target, since target can be an child element, not the div itself
+    var element = event.currentTarget; // not target, since target can be an child element, not the div itself
     var code = window.document.getElementById(element.id.replace(/out/,"code"))
-    jc.selectElement(code);
-    jc.execUntilSelected(code);
+    if ($(code).hasClass('EMBEDDED')) {
+a('out from EMBEDDED so bubble')
+      return true; //EMBEDDED code is ruled by its container (richText / section...) so let the event bubble
+    }
+    if (jc.selectedElement === code) {
+      jc.run(code);
+    }
+    else {
+      jc.selectElement(code);
+    }
+
+    return false;  // prevent bubbling
+  }
+
+  jc.richTextClick = function(event) {
+    var rich = event.currentTarget; // the user clicked on an internal part (title or container).parentNode
+    jc.selectElement(rich);
     return false;  // prevent bubbling
   }
 
   jc.sectionClick = function(event) {
-    var section = $(event.target).closest('.SECTION')[0]; // the user clicked on an internal part (title or container)
+    var section = event.currentTarget; // the user clicked on an internal part (title or container).parentNode
+    if (!$(section).hasClass('SECTION')) a("ouups: on click sur un element interne d'une section, mais currentTarget n'est pas une SECTION");
     jc.selectElement(section);
     return false;  // prevent bubbling
   }
+
+  jc.editorKeyPress = function(event) {
+    jc.setModified(true);
+    jc.setUpToDate(false);
+    var element = event.srcElement;
+    $(element.id.replace(/code/,"#out")).removeClass('SUCCESS').removeClass('ERROR');
+    $(element.id.replace(/code/,"#test")).removeClass('SUCCESS').removeClass('ERROR');
+    if (event.keyCode==10) {  //only IE
+      jc.run(); 
+    }
+  }
+
+  jc.richTextKeyPress = function(event) {
+    jc.setModified(true);
+    var element = event.srcElement;
+    if (event.keyCode==10) {  //only IE
+      jc.run(); 
+    }
+  }
+
+  jc.sectionTitleKeyPress = function(event) {
+    jc.setModified(true);
+  }
+
+  // formating / display / execution ////////////////////////////////////////////////////
+
 
   jc.format = function(obj,options) {
     if (options) {
@@ -952,7 +979,7 @@ a('move toolbar to undefined')
       if (i>lastI) return false;
       jc.execCode(e);
     });
-    jc.finalize();
+    // no finalization since not all code is run, so some element will not exist
     jc.setUpToDate(false);
   }
 
@@ -996,14 +1023,14 @@ a('move toolbar to undefined')
     jc.upgradeModules();
 
     $('*').removeClass('OLD').removeClass('AUTOEXEC');// not in use anymore
-    $('.OUTPUT').add('.CODE').removeAttr('onclick');  // no longer in the HTML but bound dynamically
+    $('.OUTPUT').add('.CODE').add('.RICHTEXT').removeAttr('onclick');  // no longer in the HTML but bound dynamically
     $('.RICHTEXT .CODE').add('.SECTIONTITLE .CODE').addClass('EMBEDDED');        // reserved for code inside another element
     $('#localToolBar').add('.BOTTOMTOOLBAR').add('.TOOLBAR').remove();           // no longer saved with the document and must be regenerated at init
  
     // prepare the sheet ///////////////////////////////////////////
     $('.SELECTED').removeClass('SELECTED');
     $('.CODE').live("click",jc.codeClick).live("keypress",jc.editorKeyPress);
-    $('.RICHTEXT').live("keypress",jc.richTextKeyPress);
+    $('.RICHTEXT').live("click",jc.richTextClick).live("keypress",jc.richTextKeyPress);
     $('.SECTIONTITLE').live("keypress",jc.sectionTitleKeyPress);
     $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR').live("click",jc.outClick);
     $('.SECTION').live("click",jc.sectionClick);
