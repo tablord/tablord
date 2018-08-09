@@ -8,10 +8,17 @@
 
 // some new Date methods
 
-Date.prototype.nextMonth = function nextMonth() {
+Date.prototype.nextMonth = function nextMonth(n) {
   // return a date that is one month ahead than date
   var d = new Date(this);
-  d.setMonth(d.getMonth()+1);
+  d.setMonth(d.getMonth()+(n||1));
+  return d;
+}
+
+Date.prototype.nextYear = function nextYear(n) {
+  // return a date that is one month ahead than date
+  var d = new Date(this);
+  d.setFullYear(d.getFullYear()+(n||1));
   return d;
 }
 
@@ -173,7 +180,7 @@ jc.finance.Account.prototype.account = function(name,currency,startDate,endDate)
     return account;
   }
   catch (e) {
-    throw new Error(e.message += '<br><u><b>account</b></u> '+jc.finance.help(jc.finance.CashFlow.prototype.account));
+    throw new Error(e.message += '<br><u><b>account</b></u> '+jc.finance.help(jc.finance.Account.prototype.account));
   }
 }
 
@@ -334,17 +341,17 @@ jc.finance.Budget.prototype.span = function(options) {
   this.execute(); 
   this.update();
 
-  options = $.extend(true,{},jc.defaults,{format:jc.finance.defaults.format,tasks:0,payments:1},{cols:{subject:{style:"text-align:left;"}}},options);
+  options = $.extend(true,{},jc.defaults,{format:jc.finance.defaults.format,tasks:0,payments:1,summary:1},options);
 
   var h = '<var>'+this._name+'</var>';
   if (options.tasks) {
-    h += this.collectInfo('taskSummary').span(options);
+    h += '<fieldset><legend>tasks</legend>'+this.collectInfo('taskSummary').span($.extend(true,{},options,{cols:{name:{className:'LEFT'},'*':1}}))+'</fieldset>';
   }
   
   if (options.payments) {
     var p = this._payments;
     var t = table().addRows(p).sort({date:1});
-    h += t.span(options);
+    h += '<fieldset><legend>payments</legend>'+t.span(options)+'</fieldset>';
   }
 
   if (options.summary) {

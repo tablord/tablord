@@ -152,6 +152,6 @@ jc.Diff.prototype.span = function () {
     h +='</pre>';
     s2 = i2;
   }
-  return new HTML(h);
+  return jc.html(h);
 }
 
