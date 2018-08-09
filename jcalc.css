@@ -59,10 +59,13 @@ td {
   text-valign: top;
 }
 
-td.LEFT {
+.LEFT {
   text-align: left;
-  text-valign: top;
 }
+.RIGHT {
+  text-align: right;
+}
+
 td.TRACE {
   border: 1px solid #000080;  
   text-align: left;

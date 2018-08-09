@@ -112,8 +112,27 @@ jc.finance.Order.prototype.execute = function(currency,date) {
   return this._payments;
 }
 
+jc.finance.Order.prototype.collectInfo = function(funcName,array) {
+  // if funcName is found, executes it and push the result in array
+  // if not it tries in the possible sub orders 
+  // note that is will collect the info at the level where it first find funcName
+  array = array || new Array();
+  array.span = function(options) {return table().addRows(array).span(options)};
+  this.execute();
+
+  if (this[funcName]) {
+    array.push(this[funcName](this));
+  }
+  else if (this._orders) {   // this method is generic and anticipates Account...
+    $.each(this._orders,function(i,order){
+      order.collectInfo(funcName,array);
+    });
+  }
+  return array;
+}
+
 jc.finance.Order.prototype.span = function() {
-  return jc.finance.defaults.format.date(this._date)+' '+ this._subject+' '+this._amount+' '+this._currency;
+  return jc.htlm(jc.finance.defaults.format.date(this._date)+' '+ this._subject+' '+this._amount+' '+this._currency);
 }
 
 jc.finance.Order.prototype.toString = function() {
@@ -173,6 +192,22 @@ jc.finance.Account.prototype.budget = function(name,initialBudget,currency,start
   }
   catch (e) {
     throw new Error(e.message += '<br><u><b>budget</b></u> '+jc.help(jc.finance.Account.prototype.budget));
+  }
+}
+
+jc.finance.Account.prototype.task = function(name,initialBudget,currency,startDate,endDate) {
+  // create a new task inside a CashFlow object
+  // a task is like an budget but has a .taskSummary() method that help colect task info
+  try {
+    currency = currency || this._currency;
+    startDate= new Date(startDate || this._startDate);
+    endDate = new Date(endDate || this._endDate);
+    var task = new jc.finance.Task(name,initialBudget,currency,startDate,endDate,this);
+    this._orders.push(task);
+    return task;
+  }
+  catch (e) {
+    throw new Error(e.message += '<br><u><b>task</b></u> '+jc.help(jc.finance.Account.prototype.task));
   }
 }
 
@@ -248,7 +283,7 @@ jc.finance.Account.prototype.span = function(options) {
   }
   var t = table().addRows(p).sort({date:1});
   options = $.extend(true,{},jc.defaults,{cols:t._cols,format:jc.finance.defaults.format},{cols:{date:1,subject:{style:"text-align:left;"}}},options);
-  return '<var>'+this._name+'</var>'+t.span(options);
+  return jc.html('<var>'+this._name+'</var>'+t.span(options));
 }
 
 jc.finance.Account.prototype.toString = function() {
@@ -298,20 +333,31 @@ jc.finance.Budget.prototype.update = function() {
 jc.finance.Budget.prototype.span = function(options) {
   this.execute(); 
   this.update();
-  var p = this._payments;
-  var t = table().addRows(p).sort({date:1});
-  options = $.extend(true,{},jc.defaults,{cols:t._cols,format:jc.finance.defaults.format},{cols:{date:1,subject:{style:"text-align:left;"}}},options);
-  return '<var>'+this._name+'</var>'+t.span(options)+
-         '<fieldset><legend>spending summary</legend>'+
-           '<table><tr><th>total Budget:</th><td>'+this._totalBudget+'</td></tr>'+
-                  '<tr><th>total Paid:</th><td>'+this._totalPaid+'</td></tr>'+
-                  '<tr><th>% Paid:</th><td>'+(this._totalPaid/this._totalBudget*100).toFixed(1)+'</td></tr></table></fieldset>'+
-         '<fieldset><legend>calendar</legend>'+
-           '<table><tr><th>start:</th><td>'+options.format.date(this._startDate)+'</td></tr>'+
-                  '<tr><th>estimated end Date:</th><td '+(this._estimatedEndDate().valueOf() > this._endDate.valueOf()?'class=ERROR ':'')+'>'+options.format.date(this._estimatedEndDate())+'</td></tr>'+
-                  '<tr><th>declared end date:</th><td>'+options.format.date(this._endDate)+'</td></tr></table></fieldset>';
 
-              
+  options = $.extend(true,{},jc.defaults,{format:jc.finance.defaults.format,tasks:0,payments:1},{cols:{subject:{style:"text-align:left;"}}},options);
+
+  var h = '<var>'+this._name+'</var>';
+  if (options.tasks) {
+    h += this.collectInfo('taskSummary').span(options);
+  }
+  
+  if (options.payments) {
+    var p = this._payments;
+    var t = table().addRows(p).sort({date:1});
+    h += t.span(options);
+  }
+
+  if (options.summary) {
+    h += '<fieldset><legend>spending summary</legend>'+
+            '<table><tr><th>total Budget:</th><td>'+this._totalBudget+'</td></tr>'+
+               '<tr><th>total Paid:</th><td>'+this._totalPaid+'</td></tr>'+
+               '<tr><th>% Paid:</th><td>'+(this._totalPaid/this._totalBudget*100).toFixed(1)+'</td></tr></table></fieldset>'+
+         '<fieldset><legend>calendar</legend>'+
+            '<table><tr><th>start:</th><td>'+options.format.date(this._startDate)+'</td></tr>'+
+               '<tr><th>estimated end Date:</th><td '+(this._estimatedEndDate().valueOf() > this._endDate.valueOf()?'class=ERROR ':'')+'>'+options.format.date(this._estimatedEndDate())+'</td></tr>'+
+               '<tr><th>declared end date:</th><td>'+options.format.date(this._endDate)+'</td></tr></table></fieldset>';
+  }
+  return jc.html(h);
 }
 
 jc.finance.Budget.prototype.setBurningRate = function(burningPerWeek,currency){
@@ -365,6 +411,27 @@ jc.finance.Budget.prototype._estimatedEndDate = function() {
   return estDate;
 }
   
+// Task //////////////////////////////////////////////////////////////////////////
+jc.finance.Task = function(name,initialBudget,currency,startDate,endDate,parent) {
+  jc.finance.Budget.call(this,name,initialBudget,currency,startDate,endDate,parent);
+}
+
+$.extend(jc.finance.Task.prototype,jc.finance.Budget.prototype);
+
+jc.finance.Task.prototype.taskSummary = function() {
+  this.update();
+  return {name:this._name,
+          startDate:this._startDate,
+          estimatedEndDate:this._estimatedEndDate(),
+          budget:this._totalBudget,
+          paid:this._totalPaid,
+          remaing:this._totalBudget-this._totalPaid,
+          percentDone:this._totalPaid/this._totalBudget*100}
+}
+
+
+
+
 // PermanentOrders ///////////////////////////////////////////////////////////////
 
 

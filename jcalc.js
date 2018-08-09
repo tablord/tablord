@@ -275,10 +275,19 @@
     // the span(options) method of table can take many option to customize the presentation of the table
     // options:{
     //    cols:{
-    //      col1:{head:1},  // any value make this col as head <th>
+    //      col1:{className:'HEAD'},  // set the class(es) of this col
     //      col2:1          // any value make this col visible
+    //      '*':1           // adds any not already defined col as visible
     options = $.extend(true,{},jc.defaults,options);
     options.cols = options.cols || this._cols;
+    if (options.cols['*']) {
+      delete options.cols['*'];
+      for (var col in this._cols) {
+        if (!options.cols[col]) {
+          options.cols[col] = this._cols[col];
+        }
+      }
+    }
     options.rows = options.rows || range(0,this._length-1);
     var h = '<table><thead><tr>';  // TODO modify to style
     for (var col in options.cols) {
@@ -288,9 +297,13 @@
     for (var i in options.rows) {
       h += '<tr>';
       for (var col in options.cols) {
-        var cell = jc.format(this[i][col],options);
-        var style = (options.cols[col].style)?'style="'+options.cols[col].style+'"':'';
-        h += ((col=="_id") || (options.cols[col].head))?'<th '+style+'>'+cell+'</th>':'<td '+style+'>'+cell+'</td>';
+        var c = options.cols[col];
+        if (options.cols[col] != 0) {
+          var cell = jc.format(this[i][col],options);
+          var attrs = (c.style?'style="'+c.style+'"':'')+
+                      (c.className?'class="'+c.className+'" ':'');
+          h += ((col=="_id") || (options.cols[col].head))?'<th '+attrs+'>'+cell+'</th>':'<td '+attrs+'>'+cell+'</td>';
+        }
       }
       h += '</tr>';
     }
