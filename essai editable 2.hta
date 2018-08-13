@@ -1,0 +1,42 @@
+<HTML sizset="0" sizcache="1" xmlns="http://www.w3.org/1999/xhtml" APPLICATIONNAME="D:\Documents\programmation\jcalc\jcalcV0\essai editable 2.hta" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SINGLEINSTANCE="yes" SCROLL="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
+<SCRIPT src="jquery-1.5.1.min.js"></SCRIPT>
+
+<SCRIPT class=UPDATE src="jcalcEdi.js"></SCRIPT>
+
+<SCRIPT src="units.js"></SCRIPT>
+
+<SCRIPT src="jcalc.js"></SCRIPT>
+
+<SCRIPT src="axe.js"></SCRIPT>
+
+<SCRIPT src="stateMachine.js"></SCRIPT>
+
+<SCRIPT src="BOM.js"></SCRIPT>
+
+<SCRIPT src="sys.js"></SCRIPT>
+
+<SCRIPT src="ocrRdy.js"></SCRIPT>
+
+<SCRIPT src="finance.js"></SCRIPT>
+</HEAD>
+<BODY sizset="0" sizcache="1" designMode="on"><PRE id=code0002 class="CODE AUTOEDIT" contentEditable=false>table("myTable")<BR>.cols({"toto":1,<BR>"tutu":1})<BR>.add({"toto":261,"tutu":377332})<BR>.add({"toto":4})<BR>.edit()</PRE>
+<DIV id=out0002 class="OUTPUT SUCCESS">
+<DIV><VAR>myTable</VAR>
+<TABLE>
+<THEAD>
+<TR>
+<TH>toto</TH>
+<TH>tutu</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD><INPUT class="EDITOR NUMBER" value=261 jcObject="myTable" jcCol="toto" jcRow="0"></INPUT></TD>
+<TD><INPUT class="EDITOR NUMBER" value=377332 jcObject="myTable" jcCol="tutu" jcRow="0"></INPUT></TD></TR>
+<TR>
+<TD><INPUT class="EDITOR NUMBER" value=4 jcObject="myTable" jcCol="toto" jcRow="1"></INPUT></TD>
+<TD><INPUT class="EDITOR UNDEFINED" jcObject="myTable" jcCol="tutu" jcRow="1"></INPUT></TD></TR></TBODY></TABLE></DIV></DIV>
+<DIV id=rich0013 class=RICHTEXT contentEditable=false>bug: il faut d'abord faire un run pour que les radio boutons fonctionnement correctement ?? pourquoi??</DIV><PRE id=code0004 class=CODE contentEditable=false>jc.localToolBar$</PRE>
+<DIV id=out0004 class="OUTPUT SUCCESS">JQuery of 1 elements<BR>0: <CODE class=INSPECTHTML>&lt;DIV&nbsp;id=localToolBar&nbsp;class=TOOLBAR&gt;&lt;DIV&gt;&lt;BUTTON&nbsp;onclick=jc.insertNewSection(jc.localToolBar$);&gt;&#8593;&nbsp;new&nbsp;section&nbsp;&#8593;&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.insertNewRichText(jc.localToolBar$);&gt;&#8593;&nbsp;new&nbsp;richtext&nbsp;&#8593;&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.insertNewCodeBlock(jc.localToolBar$);&gt;&#8593;&nbsp;new&nbsp;code&nbsp;&#8593;&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.paste(jc.localToolBar$);&gt;&#8593;&nbsp;paste&nbsp;&#8593;&lt;/BUTTON&gt;&lt;/DIV&gt;&lt;DIV&gt;&lt;SPAN&nbsp;id=codeId&gt;rich0013&lt;/SPAN&gt;&lt;INPUT&nbsp;onclick=jc.hideCode(event)&nbsp;type=checkbox&gt;hide&nbsp;codes&lt;/INPUT&gt;&lt;INPUT&nbsp;onclick=jc.hideCut(event)&nbsp;type=checkbox&gt;hide&nbsp;Cut&lt;/INPUT&gt;&lt;INPUT&nbsp;onclick=jc.hideTest(event)&nbsp;type=checkbox&gt;hide&nbsp;tests&lt;/INPUT&gt;&lt;INPUT&nbsp;onclick=jc.hideTrace(event)&nbsp;type=checkbox&gt;hide&nbsp;traces&lt;/INPUT&gt;&lt;INPUT&nbsp;onclick=jc.autoRun(event)&nbsp;CHECKED&nbsp;type=checkbox&gt;auto&nbsp;run&lt;/INPUT&gt;&lt;BUTTON&nbsp;onclick=jc.hideToolBars();&gt;hide&nbsp;ToolBars&lt;/BUTTON&gt;&lt;/DIV&gt;&lt;DIV&gt;&lt;SPAN&gt;&lt;BUTTON&nbsp;onclick=jc.execUntilSelected();&nbsp;id=runUntilSelectedBtn&nbsp;style="COLOR:&nbsp;#8dff60"&gt;&#9658;|&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.execAll();&nbsp;id=runAllBtn&nbsp;style="COLOR:&nbsp;#8dff60"&gt;&#9658;&#9658;&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.showOutputHtml(this);&gt;show&nbsp;html&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.copyOutputToTest(this);&gt;&#8594;test&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.save();&nbsp;id=saveBtn&nbsp;class=WARNING&gt;save&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.cutBlock(jc.selectedElement);&gt;&#8595;&nbsp;cut&nbsp;&#8595;&lt;/BUTTON&gt;&lt;/SPAN&gt;&lt;SPAN&nbsp;id=objectToolBar&gt;&lt;SPAN&nbsp;id=richTextToolBar&nbsp;class=TOOLBAR&gt;&lt;BUTTON&nbsp;onclick=jc.richedit.bold();&gt;&lt;B&gt;B&lt;/B&gt;&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.richedit.italic();&gt;&lt;I&gt;i&lt;/I&gt;&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.richedit.underline();&gt;&lt;U&gt;U&lt;/U&gt;&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.richedit.strike();&gt;&lt;STRIKE&gt;S&lt;/STRIKE&gt;&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.richedit.h1();&gt;&lt;B&gt;H1&lt;/B&gt;&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.richedit.h2();&gt;&lt;B&gt;H2&lt;/B&gt;&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.richedit.div();&gt;div&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.richedit.p();&gt;¶&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.richedit.ol();&gt;#&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.richedit.ul();&gt;&#8226;&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.richedit.pre();&gt;{}&lt;/BUTTON&gt;&lt;/SPAN&gt;&lt;/SPAN&gt;&lt;/DIV&gt;&lt;/DIV&gt;</CODE></DIV><PRE id=code0006 class=CODE contentEditable=false>jc.objectToolBar$</PRE>
+<DIV id=out0006 class="OUTPUT SUCCESS">JQuery of 1 elements<BR>0: <CODE class=INSPECTHTML>&lt;SPAN&nbsp;id=objectToolBar&gt;&lt;SPAN&nbsp;id=richTextToolBar&nbsp;class=TOOLBAR&gt;&lt;BUTTON&nbsp;onclick=jc.richedit.bold();&gt;&lt;B&gt;B&lt;/B&gt;&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.richedit.italic();&gt;&lt;I&gt;i&lt;/I&gt;&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.richedit.underline();&gt;&lt;U&gt;U&lt;/U&gt;&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.richedit.strike();&gt;&lt;STRIKE&gt;S&lt;/STRIKE&gt;&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.richedit.h1();&gt;&lt;B&gt;H1&lt;/B&gt;&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.richedit.h2();&gt;&lt;B&gt;H2&lt;/B&gt;&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.richedit.div();&gt;div&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.richedit.p();&gt;¶&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.richedit.ol();&gt;#&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.richedit.ul();&gt;&#8226;&lt;/BUTTON&gt;&lt;BUTTON&nbsp;onclick=jc.richedit.pre();&gt;{}&lt;/BUTTON&gt;&lt;/SPAN&gt;&lt;/SPAN&gt;</CODE></DIV><PRE id=code0008 class=CODE contentEditable=false>Table.prototype.toolBar$.find('[value=STRING]')</PRE>
+<DIV id=out0008 class="OUTPUT SUCCESS">JQuery of 1 elements<BR>0: <CODE class=INSPECTHTML>&lt;INPUT&nbsp;onclick="Table.force('STRING')"&nbsp;type=radio&nbsp;value=STRING&nbsp;name=format&gt;</CODE></DIV><PRE id=code0010 class=CODE contentEditable=false>$('#out0002')</PRE>
+<DIV id=out0010 class="OUTPUT SUCCESS">JQuery of 1 elements<BR>0: <CODE class=INSPECTHTML>&lt;DIV&nbsp;id=out0002&nbsp;class="OUTPUT&nbsp;SUCCESS"&gt;&lt;DIV&gt;&lt;VAR&gt;myTable&lt;/VAR&gt;&lt;TABLE&gt;&lt;THEAD&gt;&lt;TR&gt;&lt;TH&gt;toto&lt;/TH&gt;&lt;TH&gt;tutu&lt;/TH&gt;&lt;/TR&gt;&lt;/THEAD&gt;&lt;TBODY&gt;&lt;TR&gt;&lt;TD&gt;&lt;INPUT&nbsp;class="EDITOR&nbsp;NUMBER"&nbsp;value=261&nbsp;jcObject="myTable"&nbsp;jcCol="toto"&nbsp;jcRow="0"&gt;&lt;/INPUT&gt;&lt;/TD&gt;&lt;TD&gt;&lt;INPUT&nbsp;class="EDITOR&nbsp;NUMBER"&nbsp;value=377332&nbsp;jcObject="myTable"&nbsp;jcCol="tutu"&nbsp;jcRow="0"&gt;&lt;/INPUT&gt;&lt;/TD&gt;&lt;/TR&gt;&lt;TR&gt;&lt;TD&gt;&lt;INPUT&nbsp;class="EDITOR&nbsp;NUMBER"&nbsp;value=4&nbsp;jcObject="myTable"&nbsp;jcCol="toto"&nbsp;jcRow="1"&gt;&lt;/INPUT&gt;&lt;/TD&gt;&lt;TD&gt;&lt;INPUT&nbsp;class="EDITOR&nbsp;UNDEFINED"&nbsp;jcObject="myTable"&nbsp;jcCol="tutu"&nbsp;jcRow="1"&gt;&lt;/INPUT&gt;&lt;/TD&gt;&lt;/TR&gt;&lt;/TBODY&gt;&lt;/TABLE&gt;&lt;/DIV&gt;&lt;/DIV&gt;</CODE></DIV><PRE id=code0011 class=CODE contentEditable=false><P>var t=undefined</P><P>typeof t</P></PRE>
+<DIV id=out0011 class="OUTPUT SUCCESS">undefined</DIV></BODY></HTML>

@@ -125,8 +125,32 @@ pre {
   margin: 0px;
   padding: 0px;
 }
+
 .EMBEDDED {
   background-color: ffb848;
+}
+
+.AUTOEDIT {
+  background-color: ad78c1;
+}
+
+.EDITOR {
+  background-color: b9a3c1;
+}
+
+.EDITOR.NUMBER {
+  background-color: b9a3c1;
+  color : blue;
+  text-align: right;
+}
+.EDITOR.STRING {
+  background-color: b9a3c1;
+  color : red;
+  text-align: left;
+}
+.EDITOR.FUNCTION {
+  background-color: f2f9a8;
+  text-align: left;
 }
 
 .OUTPUTEXAMPLE,
@@ -142,6 +166,7 @@ pre {
   border:solid blue 3px;
   color: blue;
 }
+
 .TEST {
   background-color: b6fff7;
   border:solid blue 3px;
