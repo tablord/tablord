@@ -69,6 +69,8 @@
     return jc.html(this.label()+'= <span class=VALUE>'+this.valueOf()+'</span>'+this.unit());
   }
 
+  V.prototype.isV = true;
+
   function v(name,value) {
     // v(name) returns the variable name: rarely used since name alone will represent the same as well as jc.vars[name]
     // v(name,value) creates a new variable if it does not already exists and sets a new value
@@ -94,11 +96,15 @@
     // in case this function is used inside a table
 
     if (typeof jcFunc == "string") {
+      var code = jcFunc;
       try {
         if (jcFunc.search(/return/)== -1) {
           jcFunc = 'return '+jcFunc;
         }
-        return new Function('row','col','with (jc.vars){with(row||{}) {'+jcFunc+'}}');
+        var f = new Function('row','col','with (jc.vars){with(row||{}) {'+jcFunc+'}}');
+        f.code = jcFunc;
+        f.toString = function (){return this.code};
+        return f;
       }
       catch (e) {
         e.message = 'Error while compiling jcFunc\n'+jcFunc+'\n'+e.message;
@@ -108,7 +114,7 @@
     else if (typeof jcFunc == "function") {
       return jcFunc;
     }
-    this._error = 'jcFunc argument must either be a function() or a string representing the code of an expression like A+3 or return A+3'; 
+    this._error = 'jcFunc argument must either be a function() or a string representing the code of an expression like A+3 or return A+3\n'+code; 
     throw new Error(this._error);
   }
 
@@ -391,6 +397,7 @@
     .append('<input type="radio" name="format" value="STRING" onclick="Table.force(\'STRING\')">String</input>')
     .append('<input type="radio" name="format" value="NUMBER" onclick="Table.force(\'NUMBER\')">Number</input>')
     .append('<input type="radio" name="format" value="FUNCTION" onclick="Table.force(\'FUNCTION\')">Function</input>')
+    .append('<input type="text"  name="funcCode" value="" />')
     .append('<input type="radio" name="format" value="UNDEFINED" onclick="Table.force(\'UNDEFINED\')">undefined</input>')
   
   Table.prototype.setEditedCell = function(cell) {
@@ -401,6 +408,7 @@
       var format = cell.className.match(/NUMBER|STRING|FUNCTION|UNDEFINED/).toString();
       var radio$ = $('[value='+format+']',this.toolBar$)
       radio$.attr('checked',true);
+      $('[name=funcCode]',this.toolBar$).attr('value',format=='FUNCTION'?this[cell.row][cell.col].toString():'')
     }
   }
 
