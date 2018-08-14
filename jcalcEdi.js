@@ -349,10 +349,11 @@
       }
       return new jc.HTML(h);
     }
-
+a(func.toString())
     var source = func.toString().split('\n');
     var comments = []
-    var signature = source[0].match(/(function.*?\))/)[0];
+    var m = source[0].match(/(function.*?\))/);
+    var signature = m?m[0]:func.toString();  // if a jcFunc, the function keyword will not be found
     for (var i=1; i<source.length; i++) {
       var comment = source[i].match(/^\s*\/\/(.*)$/);
       if (comment && (comment.length ==2)) {
