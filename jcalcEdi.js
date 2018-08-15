@@ -35,7 +35,7 @@
             },
 
             errorHandler:function(message,url,line) {
-                var out  = jc.output._outputElement;
+                var out  = jc.output.outputElement;
                 if (out) {
                   if (url) {
                     out.innerHTML = message+'<br>'+url+' line:'+line+'<br>'+trace.span();
@@ -213,6 +213,9 @@
     if (this.obj === undefined) {
       return '<SPAN style=color:red;>undefined</SPAN>';
     }
+    if (typeof this.obj === 'number') {
+      return this.obj.toString();
+    }
     if (this.obj === '') {
       return '<SPAN style=color:red;>empty string</SPAN>';
     }
@@ -306,7 +309,7 @@
 
   jc.htmlAttribute = function(attr,value) {
     // write an attribute according to its type
-    return attr+'='+(typeof value == 'number'?value:'"'+jc.toHtml(value).replace(/"/g,'&quot;')+'"');
+    return ' '+attr+'='+(typeof value == 'number'?value:'"'+jc.toHtml(value).replace(/"/g,'&quot;')+'"');
   }
 
   jc.codeExample = function(example) {
@@ -337,7 +340,6 @@
     }
   }
     
-
   jc.help = function(func) {
   // returns the signature of the function and the first comment in a pretty html 
   // - func: the function to be inspected
@@ -349,7 +351,6 @@
       }
       return new jc.HTML(h);
     }
-a(func.toString())
     var source = func.toString().split('\n');
     var comments = []
     var m = source[0].match(/(function.*?\))/);
@@ -381,7 +382,7 @@ a(func.toString())
     // mostly used in a small code inside the title of a section to summerize the tests below
     var output = jc.output; // closure on jc.output
     output.finalize(function(){
-      var section = $(output._codeElement).closest('.SECTION');
+      var section = $(output.codeElement).closest('.SECTION');
       var numberOfSuccess= section.find('.TEST.SUCCESS').length;
       var numberOfErrors = section.find('.TEST.ERROR').length;
       output.html(
@@ -947,10 +948,10 @@ a('move toolbar to undefined')
   jc.finalize = function() {
     for (var i=0;i<jc.finalizations.length;i++) {
       var out = jc.finalizations[i];
-      jc.errorHandler.code = out._finalize+''; 
-      out._finalize();
-      out._finalize = undefined;  // so that displayResult will not show ... to be finalized...
-      jc.displayResult(out,out._outputElement);
+      jc.errorHandler.code = out.finalizationFunc.toString(); 
+      out.finalizationFunc();
+      out.finalizationFunc = undefined;  // so that displayResult will not show ... to be finalized...
+      jc.displayResult(out,out.outputElement);
     }
   }
 
