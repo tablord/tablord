@@ -133,7 +133,7 @@
         $.each(obj, function(i,value) {sa.push(JSON.stringify(value))});
         return '['+sa.join(',\n')+']';
       }
-      else return obj.toJson();
+      return obj.toJson();
     }
     
 

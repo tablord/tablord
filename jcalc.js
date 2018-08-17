@@ -47,6 +47,10 @@
     return this.value;
   }
 
+  V.prototype.toJson = function () {
+    return this.code()?'f('+JSON.stringify(this.code())+')':JSON.stringify(this.value);
+  }
+
   V.prototype.code = function() {
     // return the code of the embedded function if such a function exists
     //        or undefined if not a function
@@ -104,6 +108,7 @@
         var f = new Function('row','col','with (jc.vars){with(row||{}) {'+code+'}}');
         f.userCode = jcFunc;
         f.toString = function(){return this.userCode};
+        f.joJson = function(){return 'f("'+JSON.stringify(this.userCode)+'")'};
         return f;
       }
       catch (e) {
@@ -123,14 +128,24 @@
   function Row(obj) {
     this._ = {};
     for (var k in obj) {
-      var c = obj[k];
-      if (typeof c == "function") {
-        c = new V(undefined,c);  //convert the function into a V
-        c.row = this;       //and assign the _row,_col 
-        c.col = k;
-      }
-      this._[k] = c;
+      this.setCell(k,obj[k]);
     }
+  }
+
+  Row.prototype.cell = function(col) {
+    return this._[col].valueOf();
+  }  
+
+  Row.prototype.setCell = function (col,value) {
+    if (typeof value == "function") {
+      var f = new V(undefined,value);  //convert the function into a V
+      f.row = this;       //and assign the _row,_col 
+      f.col = col;
+      this._[col] = f;
+      return this;
+    }
+    this._[col] = value;
+    return this;
   }
 
   Row.prototype.toString = function() {
@@ -246,6 +261,10 @@
 
   Table.prototype.cell = function(row,col) {
     return this[row] && this[row]._[col];
+  }
+
+  Table.prototype.setCell = function(row,col,value) {
+    this[row].setCell(col,value);
   }
 
   Table.prototype.cellType = function(row,col) {
@@ -377,10 +396,11 @@
       case 'change':
         var value = event.target.value;
         if (!isNaN(Number(value))) value = Number(value);  //TODO: s'appuyer sur une classe ??
-        this[event.target.jcRow][event.target.jcCol] = value;
+        this.setCell(event.target.jcRow,event.target.jcCol,value);
         this.code.innerHTML = jc.toHtml(this.generateCode());
         jc.setModified(true);
-        this.setEditedCell(undefined);
+        jc.run();
+//        this.setEditedCell(undefined);
       default :
         return true;
     }
@@ -392,6 +412,28 @@
     cell$.focus();
   }
 
+  Table.funcCodeEvent = function(event) {
+    if ((event.type == 'keypress') && (event.keyCode!=10)){
+      return true;
+    }
+    if (event.type == 'click'){
+      Table.force('FUNCTION');
+      $('[value=FUNCTION]',jc.objectToolBar$).attr('checked',true);
+      event.target.focus();
+      return false;
+    }
+    var table = jc.vars[jc.selectedElement.jcObject];
+    var editor = table.editedCell;
+    table.setCell(editor.jcRow,editor.jcCol,f($('[name=funcCode]',jc.objectToolBar$).attr('value')));
+    table.code.innerHTML = jc.toHtml(table.generateCode());
+    jc.setModified(true);
+    jc.run();
+    table.setEditedCell(editor);
+    return false;  // no bubbling
+  }
+    
+
+
   /*************** voir comment changer le code d'une cellule?? et en particulier comment régler les erreurs de compilation
     tout comme erreurs d'executions: mettre le message dans output atteint la limite actuelle, en particulier si hors execution d'un bloc de code
     tout comme dans les finalization *********/
@@ -400,8 +442,12 @@
     .append('<input type="radio" name="type" value="STRING" onclick="Table.force(\'STRING\')">String</input>')
     .append('<input type="radio" name="type" value="NUMBER" onclick="Table.force(\'NUMBER\')">Number</input>')
     .append('<input type="radio" name="type" value="FUNCTION" onclick="Table.force(\'FUNCTION\')">Function</input>')
-    .append('<input type="text"  name="funcCode" value="" />')
+    .append($('<input type="text"  name="funcCode" value="" />').change(Table.funcCodeEvent).keypress(Table.funcCodeEvent).click(Table.funcCodeEvent))
     .append('<input type="radio" name="type" value="UNDEFINED" onclick="Table.force(\'UNDEFINED\')">undefined</input>')
+    .append('<button>&#8595;</button>')
+    .append('<input type="text" name="colName" />')
+    .append('<button>&#8595;</button>')
+    
 
 
   
@@ -414,6 +460,7 @@
       var radio$ = $('[value='+type+']',this.toolBar$)
       radio$.attr('checked',true);
       $('[name=funcCode]',this.toolBar$).attr('value',type=='FUNCTION'?this.cell(cell.jcRow,cell.jcCol).code():'')
+      $('[name=colName]',this.toolBar$).attr('value',cell.jcCol);
     }
   }
 
@@ -432,9 +479,13 @@
 
   // factory ////////////////////////////////////////////////
   table = function(name,local) {
-    // creates a new table
+    // returns an already existing table or creates a new table
     // - name is the name of the instance
     // - if local=true, the instance is not registered in v
+    if (jc.vars[name] && jc.vars[name].constructor == Table){
+      return jc.vars[name];
+    }
+
     if ((local == true) || (name == undefined)) {
       return new Table(name);
     }
