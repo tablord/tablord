@@ -9,7 +9,6 @@
                         //at init an empty object so _codeElement and _outputElement are undefined
             traces:[],
             tracesMaxLength:100,
-            localToolBar:undefined,
             htmlIndent:1,
             simulation:undefined, // will be set by StateMachine.js
             blockNumber:0,
@@ -68,23 +67,37 @@
     return function (n) {return n.toFixed(decimals)};
   }
 
-  jc.upgradeModules = function() {
-    // checks that this is the lastest modules and if not replaces what is needed
-    var modulesNeeded = ['jquery-1.5.1.min.js','jcalcEdi.js','units.js','jcalc.js','axe.js','stateMachine.js','BOM.js','sys.js','ocrRdy.js','finance.js'];
-    var allModules = modulesNeeded.concat('jquery.js'); // including deprecated modules
-    var modules = [];
-    var $script = $('SCRIPT').filter(function(){return $.inArray(this.src,allModules)!=-1});
-    $script.each(function(i,e){modules.push(e.src)});
-    if (modules.toString() == modulesNeeded.toString()) return; // everything is just as expected
+    
+  jc.getScrollOffsets = function(w) {
+    w = w||window;
+    if(w.pageXOffset != null) return {left:w.pageXOffset, top:w.pageYOffset};
 
-    // otherwise we have to upgrade
-    var h = '';
-    $.each(modulesNeeded,function(i,m){h+='<SCRIPT src="'+m+'"></SCRIPT>'});
-    window.prompt('your need to edit your scripts to upgrade',h);
+    //for IE
+    var d = w.document;
+    if (window.document.compatMode == "CSS1Compat")
+      return {left:d.documentElement.scrollLeft, top:d.documentElement.scrollTop};
+
+    // for browser in quirks mode
+    return {left:d.body.scrollLeft, top: d.body.scrollTop };
   }
 
-    
-    
+  jc.getViewPortSize = function(w){
+    w = w||window;
+    if (w.innerWidth != null) return {width:w.innerWidth,Height:w.innerHeight};
+  
+    var d = w.document;
+    if (window.document.compatMode == "CSS1Compat")
+      return {width:d.documentElement.clientWidth, height:d.documentElement.clientHeight};
+
+    return {width:d.body.clientWidth, height:d.body.clientHeight};
+  }
+
+  jc.resize = function() {
+    var viewPort = jc.getViewPortSize();
+    $('#jcContent')
+      .height(viewPort.height-$('#menu').outerHeight(true)-30)
+      .width($('#menu').width);
+  }
 
   //JQuery extentions /////////////////////////////////////////////////
   $.prototype.span = function() {
@@ -537,16 +550,10 @@
     jc.autoRun = window.document.body.autoRun=button.checked;
   }
       
-  jc.initLocalToolBars = function() {
-    $('#localToolBar').remove(); // kill anything previouly in the saved document
-    jc.localToolBar$ =  $(
-    '<DIV id=localToolBar class=TOOLBAR>'+
-      '<DIV>'+
-        '<BUTTON onclick=jc.insertNewSection(jc.localToolBar$);>&#8593; new section &#8593;</BUTTON>'+
-        '<BUTTON onclick=jc.insertNewRichText(jc.localToolBar$);>&#8593; new richtext &#8593;</BUTTON>'+
-        '<BUTTON onclick=jc.insertNewCodeBlock(jc.localToolBar$);>&#8593; new code &#8593;</BUTTON>'+
-        '<BUTTON onclick=jc.paste(jc.localToolBar$);>&#8593; paste &#8593;</BUTTON>'+
-      '</DIV>'+
+  jc.initToolBars = function() {
+    $('#menu').remove();
+    jc.menu$ =  $(
+    '<DIV id=menu class=TOOLBAR>'+
       '<DIV>'+
         '<SPAN id=codeId>no element</SPAN>'+
         '<INPUT onclick="jc.hideCode(event)"'+(window.document.body.hideCode===true?' checked':'')+' type=checkbox>hide codes</INPUT>'+
@@ -554,7 +561,7 @@
         '<INPUT onclick="jc.hideTest(event)"'+(window.document.body.hideTest===true?' checked':'')+' type=checkbox>hide tests</INPUT>'+
         '<INPUT onclick="jc.hideTrace(event)"'+(window.document.body.hideTrace===true?' checked':'')+' type=checkbox>hide traces</INPUT>'+
         '<INPUT onclick="jc.autoRun(event)"'+(jc.autoRun?' checked':'')+' type=checkbox>auto run</INPUT>'+
-        '<BUTTON onclick=jc.hideToolBars();>hide ToolBars</BUTTON>'+
+        '<BUTTON onclick=jc.selectElement(undefined);>hide ToolBars</BUTTON>'+
       '</DIV>'+
       '<DIV>'+
         '<SPAN>'+ 
@@ -568,8 +575,9 @@
         '<SPAN id=objectToolBar></SPAN>'+
       '</DIV>'+
     '</DIV>');
+    $('BODY').prepend(jc.menu$);
 
-    jc.objectToolBar$ = jc.localToolBar$.find('#objectToolBar');
+    jc.objectToolBar$ = jc.menu$.find('#objectToolBar');
 
     $('#richTextToolBar').remove(); // kill anything previouly in the saved document
     jc.richTextToolBar$ =  $('<SPAN id=richTextToolBar class=TOOLBAR></SPAN>')
@@ -585,8 +593,15 @@
       .append('<BUTTON onclick=jc.richedit.ul();>&#8226;</BUTTON>')
       .append('<BUTTON onclick=jc.richedit.pre();>{}</BUTTON>')
     
+    $('#topToolBar').remove();
+    jc.topToolBar$ = $('<DIV id=topToolBar class=TOOLBAR/>')
+      .append('<BUTTON onclick="jc.insertNewSection(this.parentNode);">&#8593; new section &#8593;</BUTTON>')
+      .append('<BUTTON onclick="jc.insertNewRichText(this.parentNode);">&#8593; new richtext &#8593;</BUTTON>')
+      .append('<BUTTON onclick="jc.insertNewCodeBlock(this.parentNode);">&#8593; new code &#8593;</BUTTON>')
+      .append('<BUTTON onclick="jc.paste(this.parentNode);">&#8593; paste &#8593;</BUTTON>')
+
     $('#insideToolBar').remove();
-    jc.insideToolBar$ = $('<DIV id=insideToolBar class=TOOLBAR></DIV>')
+    jc.insideToolBar$ = $('<DIV id=insideToolBar class=TOOLBAR/>')
       .append('<BUTTON onclick=jc.insertNewSection(this.parentNode);>&#8593; new section &#8593;</BUTTON>')
       .append('<BUTTON onclick=jc.insertNewRichText(this.parentNode);>&#8593; new rich text &#8593;</BUTTON>')
       .append('<BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>&#8593; new code &#8593;</BUTTON>')
@@ -671,8 +686,7 @@
 
   jc.insertNewCodeBlock = function(beforeThatElement) {
     // insert a new code and output DIV 
-    // -beforeThatElement is where it must be inserted (usually the localToolBar, but can be any Element)
-
+    // -beforeThatElement is where it must be inserted (usually the topToolBar, but can be any Element)
     jc.blockNumber++;
     var newCode = window.document.createElement('<PRE class=CODE id='+jc.blockId('code')+' contentEditable=true>');
     var newOutput = jc.outputElement(newCode);
@@ -685,7 +699,7 @@
 
   jc.insertNewRichText = function(beforeThatElement) {
     // insert a new richText DIV 
-    // -beforeThatElement is where it must be inserted (usually the localToolBox, but can be any Element)
+    // -beforeThatElement is where it must be inserted (usually the topToolBox, but can be any Element)
     jc.blockNumber++;
     var newRichText = window.document.createElement('<DIV id='+jc.blockId('rich')+' class=RICHTEXT contentEditable=false>');
     beforeThatElement.parentNode.insertBefore(newRichText,beforeThatElement);
@@ -718,14 +732,20 @@
     jc.run();
   }
 
+  jc.detachToolBars = function() {
+    jc.menu$.hide();
+    jc.detachLocalToolBars();
+  }
 
-  jc.moveLocalToolBar = function(element) {
-    if (element == undefined) {
-      jc.localToolBar$.add(jc.bottomToolBar$).add(jc.insideToolBar$).detach();
-a('move toolbar to undefined')
-      return;
-    }
-    $(element).before(jc.localToolBar$);
+  jc.detachLocalToolBars = function() {
+    // detach local tool bars
+    jc.topToolBar$.add(jc.bottomToolBar$).add(jc.insideToolBar$).detach();
+  }
+
+  jc.moveLocalToolBars = function(element) {
+    if (element == undefined) throw new Error('moveLocalToolBar(undefined) is forbidden');
+
+    $(element).before(jc.topToolBar$);
     lastElementOfBlock = jc.testElement(element) || jc.outputElement(element) || element;
     $(lastElementOfBlock).after(jc.bottomToolBar$);
     jc.objectToolBar$.empty();
@@ -750,9 +770,6 @@ a('move toolbar to undefined')
     return $(element);
   }
 
-  jc.detachToolBars = function() {  //*********************************************
-    jc.localToolBar$.add(jc.insideToolBar$).add(jc.bottomToolBar$).detach();
-  }
 
   jc.selectElement = function(element) {
     var e = jc.selectedElement;
@@ -776,7 +793,8 @@ a('move toolbar to undefined')
       return;
     }
     if ($(element).hasClass('EMBEDDED')) element = element.parentNode;
-    jc.moveLocalToolBar(element);
+    jc.menu$.show();
+    jc.moveLocalToolBars(element);
     $(element).addClass('SELECTED');
     jc.$editables(element).attr('contentEditable',true);
     element.focus();
@@ -1037,16 +1055,45 @@ a('move toolbar to undefined')
   }
 
 
-  window.attachEvent('onload',function () {
-    // upgrades ////////////////////////////////////////////////////
-    jc.upgradeModules();
+  // upgrades from previous versions ////////////////////////////////////////////////////////////////////////////////
+    jc.upgradeModules = function() {
+    // checks that this is the lastest modules and if not replaces what is needed
+    var modulesNeeded = ['jquery-1.5.1.min.js','jcalcEdi.js','units.js','jcalc.js','axe.js','stateMachine.js','BOM.js','sys.js','ocrRdy.js','finance.js'];
+    var allModules = modulesNeeded.concat('jquery.js'); // including deprecated modules
+    var modules = [];
+    var $script = $('SCRIPT').filter(function(){return $.inArray(this.src,allModules)!=-1});
+    $script.each(function(i,e){modules.push(e.src)});
+    if (modules.toString() == modulesNeeded.toString()) return; // everything is just as expected
+
+    // otherwise we have to upgrade
+    var h = '';
+    $.each(modulesNeeded,function(i,m){h+='<SCRIPT src="'+m+'"></SCRIPT>'});
+    window.prompt('your need to edit your scripts to upgrade',h);
+  }
+
+    
+  jc.upgradeFramework = function() {
+    // upgrades the sheet framework from previous versions
 
     $('*').removeClass('OLD').removeClass('AUTOEXEC');// not in use anymore
     $('.OUTPUT').add('.CODE').add('.RICHTEXT').removeAttr('onclick');  // no longer in the HTML but bound dynamically
     $('.RICHTEXT .CODE').add('.SECTIONTITLE .CODE').addClass('EMBEDDED');        // reserved for code inside another element
     $('#localToolBar').add('.BOTTOMTOOLBAR').add('.TOOLBAR').remove();           // no longer saved with the document and must be regenerated at init
- 
+
+    // since v0.0110 the menu is fixed in a #menu DIV and all sheet is contained in a #jcContent DIV
+    if ($('#jcContent').length == 0) {                                   
+      $('BODY').wrapInner('<DIV id=jcContent style="overflow:scroll; border:solid red 1px;"/>');
+    }
+  }
+
+
+  window.attachEvent('onload',function () {
+    // upgrades ////////////////////////////////////////////////////
+    jc.upgradeModules();
+    jc.upgradeFramework();
+
     // prepare the sheet ///////////////////////////////////////////
+    jc.content$ = $('#jcContent');
     $('.SELECTED').removeClass('SELECTED');
     $('.CODE').live("click",jc.codeClick).live("keypress",jc.editorKeyPress);
     $('.RICHTEXT').live("click",jc.richTextClick).live("keypress",jc.richTextKeyPress);
@@ -1056,11 +1103,11 @@ a('move toolbar to undefined')
     $('.SECTION').live("click",jc.sectionClick);
     $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
     jc.findblockNumber();
-    jc.initLocalToolBars();
+    jc.initToolBars();
     if ($('.CODE').add('.SECTION').add('.RICHTEXT').length == 0) {  // if really empty sheet
-      $('BODY').append(jc.bottomToolBar$)
+      jc.content$.append(jc.bottomToolBar$)
     }
-    window.onbeforeunload = jc.beforeUnload;
+    $(window).resize(jc.resize).load(jc.resize).bind('beforeunload',jc.beforeUnload);
 
     if (window.document.body.autoRun!==false) jc.execAll();
   });  
