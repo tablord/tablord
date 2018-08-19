@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=windows-1252"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 5.1.5.2 (Windows)"/>
+	<meta name="created" content="2018-08-11T16:00:47.346000000"/>
+	<meta name="changed" content="2018-08-11T16:03:35.223000000"/>
+<SCRIPT src="jquery-1.5.1.min.js"></SCRIPT>
+<script>
+jc = {};
+
+jc.getScrollOffsets = function(w) {
+  w = w||window;
+  if(w.pageXOffset != null) return {left:w.pageXOffset, top:w.pageYOffset};
+
+  //for IE
+  var d = w.document;
+  if (window.document.compatMode == "CSS1Compat")
+    return {left:d.documentElement.scrollLeft, top:d.documentElement.scrollTop};
+
+  // for browser in quirks mode
+  return {left:d.body.scrollLeft, top: d.body.scrollTop };
+}
+
+jc.getViewPortSize = function(w){
+  w = w||window;
+  if (w.innerWidth != null) return {width:w.innerWidth,Height:w.innerHeight};
+  
+  var d = w.document;
+  if (window.document.compatMode == "CSS1Compat")
+    return {width:d.documentElement.clientWidth, height:d.documentElement.clientHeight};
+
+  return {width:d.body.clientWidth, height:d.body.clientHeight};
+}
+
+jc.resize = function() {
+  var viewPort = jc.getViewPortSize();
+  $('#coord').text('coucou');
+  $('#contenu').height(viewPort.height-$('#menu').outerHeight(true)-30);
+  $('#contenu').width($('#menu').width);
+}
+
+$(window).resize(jc.resize).load(jc.resize);
+
+</script>
+</head>
+<body lang="fr-CH" dir="ltr">
+<div id=menu style="border: green 1px solid;">
+<div id=coord>coord</div>
+<button onclick="$('#one').focus()">one</button>
+<button onclick="$('#two').focus()">two</button>
+Menuszzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz<br>
+Menus<br>
+Menus<br>
+Menus<br>
+</div>
+<div id=contenu style="overflow:scroll; height=50px; border:solid red 1px;">
+aaasdyasdfasdfasdfasdfasfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff<br>
+aaasdf as df as df asd f as df a sd f a sd f as d fa sd f as df a sd f as df a sd f as df as d f asd f asd f asda<br>
+<div id=one contentEditable=true>one</div>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+<div id=two contentEditable=true>two</div>
+aaasdf<br>
+aaasdf<br>
+aaasdf<br>
+</div>
+</body>
+</html>
