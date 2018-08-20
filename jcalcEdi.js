@@ -638,7 +638,6 @@
     if (fileName == undefined) return;
     window.document.documentElement.APPLICATIONNAME = fileName;
     jc.removeCutBlocks();
-    $('.TOOLBAR').remove();
     jc.selectElement(undefined);
     var fso = new ActiveXObject("Scripting.FileSystemObject");
     var file = fso.OpenTextFile(fileName,2,true);
@@ -733,7 +732,7 @@
   }
 
   jc.detachToolBars = function() {
-    jc.menu$.hide();
+    jc.menu$.hide(500);
     jc.detachLocalToolBars();
   }
 
@@ -793,7 +792,7 @@
       return;
     }
     if ($(element).hasClass('EMBEDDED')) element = element.parentNode;
-    jc.menu$.show();
+    jc.menu$.show(500);
     jc.moveLocalToolBars(element);
     $(element).addClass('SELECTED');
     jc.$editables(element).attr('contentEditable',true);
@@ -1087,7 +1086,7 @@
   }
 
 
-  window.attachEvent('onload',function () {
+  $(window).load(function () {
     // upgrades ////////////////////////////////////////////////////
     jc.upgradeModules();
     jc.upgradeFramework();
@@ -1107,9 +1106,10 @@
     if ($('.CODE').add('.SECTION').add('.RICHTEXT').length == 0) {  // if really empty sheet
       jc.content$.append(jc.bottomToolBar$)
     }
-    $(window).resize(jc.resize).load(jc.resize).bind('beforeunload',jc.beforeUnload);
+    $(window).resize(jc.resize).bind('beforeunload',jc.beforeUnload);
 
     if (window.document.body.autoRun!==false) jc.execAll();
+    jc.resize();
   });  
   
   window.onerror = jc.errorHandler;

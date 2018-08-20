@@ -409,13 +409,20 @@
   Table.force = function(type) {
     var cell$ = $(jc.vars[jc.selectedElement.jcObject].editedCell).removeClass('STRING NUMBER FUNCTION UNDEFINED').addClass(type);
     if (type='UNDEFINED') cell$.value = '';
-    cell$.focus();
+    if (type != 'FUNCTION') {
+      cell$.focus()
+    }
+    else {
+      Table.funcCode$.focus();
+    }
   }
 
   Table.funcCodeEvent = function(event) {
+/*
     if ((event.type == 'keypress') && (event.keyCode!=10)){
       return true;
     }
+*/
     if (event.type == 'click'){
       Table.force('FUNCTION');
       $('[value=FUNCTION]',jc.objectToolBar$).attr('checked',true);
@@ -438,29 +445,36 @@
     tout comme erreurs d'executions: mettre le message dans output atteint la limite actuelle, en particulier si hors execution d'un bloc de code
     tout comme dans les finalization *********/
 
-  Table.prototype.toolBar$ = $('<SPAN/>')
+  Table.toolBar$ = $('<SPAN/>')
     .append('<input type="radio" name="type" value="STRING" onclick="Table.force(\'STRING\')">String</input>')
     .append('<input type="radio" name="type" value="NUMBER" onclick="Table.force(\'NUMBER\')">Number</input>')
     .append('<input type="radio" name="type" value="FUNCTION" onclick="Table.force(\'FUNCTION\')">Function</input>')
-    .append($('<input type="text"  name="funcCode" value="" />').change(Table.funcCodeEvent).keypress(Table.funcCodeEvent).click(Table.funcCodeEvent))
+    .append(Table.funcCode$=$('<input type="text"  name="funcCode" value="">').change(Table.funcCodeEvent).click(Table.funcCodeEvent))
     .append('<input type="radio" name="type" value="UNDEFINED" onclick="Table.force(\'UNDEFINED\')">undefined</input>')
     .append('<button>&#8595;</button>')
     .append('<input type="text" name="colName" />')
     .append('<button>&#8595;</button>')
     
-
-
   
-  Table.prototype.setEditedCell = function(cell) {
-    this.editedCell = cell;
-    jc.objectToolBar$.empty();
-    if (cell) {
-      jc.objectToolBar$.append(this.toolBar$);
-      var type = this.cellType(cell.jcRow,cell.jcCol);
-      var radio$ = $('[value='+type+']',this.toolBar$)
+  Table.prototype.setEditedCell = function(editor) {
+    this.editedCell = editor;
+    Table.toolBar$.detach();
+    if (editor) {
+      jc.objectToolBar$.append(Table.toolBar$);
+      var type = this.cellType(editor.jcRow,editor.jcCol);
+      var radio$ = $('[value='+type+']',Table.toolBar$)
       radio$.attr('checked',true);
-      $('[name=funcCode]',this.toolBar$).attr('value',type=='FUNCTION'?this.cell(cell.jcRow,cell.jcCol).code():'')
-      $('[name=colName]',this.toolBar$).attr('value',cell.jcCol);
+
+      $('[name=colName]',Table.toolBar$).attr('value',editor.jcCol);
+
+      if (type == 'FUNCTION') {
+        Table.funcCode$.attr('value',this.cell(editor.jcRow,editor.jcCol).code());
+        Table.funcCode$.focus();
+      }
+      else {
+        Table.funcCode$.attr('value','');
+        editor.focus();
+      }
     }
   }
 
