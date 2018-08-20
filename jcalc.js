@@ -396,6 +396,7 @@
       case 'change':
         var value = event.target.value;
         if (!isNaN(Number(value))) value = Number(value);  //TODO: s'appuyer sur une classe ??
+a('change',value,typeof value);
         this.setCell(event.target.jcRow,event.target.jcCol,value);
         this.code.innerHTML = jc.toHtml(this.generateCode());
         jc.setModified(true);
@@ -407,14 +408,22 @@
   }
 
   Table.force = function(type) {
-    var cell$ = $(jc.vars[jc.selectedElement.jcObject].editedCell).removeClass('STRING NUMBER FUNCTION UNDEFINED').addClass(type);
-    if (type='UNDEFINED') cell$.value = '';
-    if (type != 'FUNCTION') {
-      cell$.focus()
+    var table = jc.vars[jc.selectedElement.jcObject];
+    var value = table.cell(table.editedCell.jcRow,table.editedCell.jcCol).valueOf();
+    if ((type == 'NUMBER') && (typeof value != 'number')) {
+      type = 'STRING';
+      Table.toolBar$.find('[value=STRING]').attr('checked',true);
     }
-    else {
-      Table.funcCode$.focus();
+    var editor$ = $(table.editedCell).removeClass('STRING NUMBER FUNCTION UNDEFINED').addClass(type);
+    switch (type) {
+      case 'UNDEFINED':
+        editor$.val('');
+      case 'FUNCTION':
+        Table.funcCode$.focus();
+      default:
+        editor$.focus();
     }
+    editor$.change();
   }
 
   Table.funcCodeEvent = function(event) {
