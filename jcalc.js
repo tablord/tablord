@@ -138,7 +138,6 @@
 
   Row.prototype.setCell = function (col,value) {
     if (typeof value == "function") {
-a('row.setCell(func)')
       var f = new V(undefined,value);  //wrap the function into a V
       f.row = this;       //and assign the _row,_col 
       f.col = col;
@@ -387,10 +386,8 @@ a('row.setCell(func)')
   }
 
   Table.prototype.setEditableValue = function(editor) {
-a('inside setEditableValue',editor.value,typeof editor.value)
     this.setCell(Number(editor.attr('jcRow')),editor.attr('jcCol'),editor.value);
     this.code.innerHTML = jc.toHtml(this.generateCode());
-a('code generated')
     jc.setModified(true);
     jc.run();
   }

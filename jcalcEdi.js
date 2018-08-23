@@ -490,29 +490,24 @@
        return false; // prevent bubbling
 
       case 'change':
-a('change')
         var value = event.target.value;
         switch (jc.editor.type) {
           case 'number':
-a('number')
             if (!isNaN(Number(value))) {
               value = Number(value);
             }
             else {
-a('force string')
               jc.editor.force('string');
               return false; // a new event will take place and finish the job
             }
             break;
           case 'function':
             value = f(jc.editor.funcCode$.val());
-a('function',value,typeof value)
             break;
           case 'undefined':
             value = undefined;
             break;
         }
-a('seteditablevalue',value,typeof value)
         jc.editor.value = value;
         obj.setEditableValue(jc.editor);
         jc.setModified(true);
@@ -534,11 +529,13 @@ a('seteditablevalue',value,typeof value)
         editor$.val('').focus();
         break;
       case 'function':
-a(type,editor$.attr('className'),typeof this.value)
-        var code = this.value.toString();
+        var code = (this.value == undefined?'undefined':this.value.toString());
         this.funcCode$.val(code).focus();
         break;
       case 'number':
+        if (this.value == undefined) {
+          this.value = 0;
+        }
         var n = Number(this.value)
         if (isNaN(n)) {
           type = 'string';
@@ -1037,7 +1034,7 @@ a(type,editor$.attr('className'),typeof this.value)
 
   jc.sectionClick = function(event) {
     var section = event.currentTarget; // the user clicked on an internal part (title or container).parentNode
-    if (!$(section).hasClass('SECTION')) a("ouups: on click sur un element interne d'une section, mais currentTarget n'est pas une SECTION");
+    if (!$(section).hasClass('SECTION')) window.alert("ouups: on click sur un element interne d'une section, mais currentTarget n'est pas une SECTION");
     jc.selectElement(section);
     return false;  // prevent bubbling
   }
