@@ -138,7 +138,8 @@
 
   Row.prototype.setCell = function (col,value) {
     if (typeof value == "function") {
-      var f = new V(undefined,value);  //convert the function into a V
+a('row.setCell(func)')
+      var f = new V(undefined,value);  //wrap the function into a V
       f.row = this;       //and assign the _row,_col 
       f.col = col;
       this._[col] = f;
@@ -267,10 +268,12 @@
     this[row].setCell(col,value);
   }
 
+/***********************
   Table.prototype.cellType = function(row,col) {
     var c = this.cell(row,col);
     return c.type || (typeof c).toUpperCase();
   }
+*/
 
   Table.prototype.sort = function(cols) {
     // sort the table according to the "cols" criteria
@@ -327,9 +330,6 @@
       }
     }
     options.rows = options.rows || range(0,this.length-1);
-    if (this.code) {
-      options.format.undef = function(){return ''};
-    }
     var h = '<table><thead><tr>';  // TODO modify to style
     for (var col in options.cols) {
       h += '<th>'+col+'</th>';
@@ -341,16 +341,7 @@
       for (var col in options.cols) {
         var c = options.cols[col];
         if (options.cols[col] != 0) {
-          if (this.code) {
-            var type = (this.cellType(row,col));
-            var cell = '<input class="EDITOR '+type+'" '+
-                               jc.htmlAttribute('jcObject',this.name)+
-                               jc.htmlAttribute('jcRow',i)+jc.htmlAttribute('jcCol',col)+
-                               jc.htmlAttribute('value',jc.format(this.cell(row,col),options))+'></input>';
-          }
-          else {
-            var cell = jc.format(this[i]._[col],options);
-          }
+          var cell = jc.format(this[i]._[col],options);
           var attrs = (c.style?'style="'+c.style+'"':'')+
                       (c.className?' class="'+c.className+'" ':'');
           h += ((col=="_id") || (options.cols[col].head))?'<th '+attrs+'>'+cell+'</th>':'<td '+attrs+'>'+cell+'</td>';
@@ -378,82 +369,36 @@
     // premier jet: toute la table est éditée peut être simple et efficasse: en cas de tables partielles, faire simplement plusieurs tables et faire une fct pour lier plusieurs tables
     this.code = jc.output.codeElement;   
     $(this.code).addClass('AUTOEDIT').attr('jcObject',this.name);
-    return this.view(options);
-    // the events will be "live" registered
+    
+    var h = '<div><var>'+this.name+'</var><table>';
+    for (var row=0; row<this.length; row++) {
+      h += '<tr>';
+      for (var col in this[row]._) {
+        h += '<td>'+jc.editor.html(this.cell(row,col),{jcObject:this.name,'jcRow':row,jcCol:col})+'</td>';
+      }
+      h += '</tr>';
+    }    
+    h+='</table></div>';
+    return jc.html(h);
   }
 
-  Table.prototype.editorEvent = function(event){
-    // editorEvent is a event handler that will recieve click, keypress and change event
-    // as it is called by jc.elementEditor, this represents the jcObject beeing edited (here the Table object)
-    switch (event.type) {
-      case 'click':
-        if (this.code !== jc.selectedElement) {
-          jc.selectElement(this.code);
-        }
-        this.setEditedCell(event.target);
-        event.target.focus();
-        return false; // prevent bubbling
-      case 'change':
-        var value = event.target.value;
-        if (!isNaN(Number(value))) value = Number(value);  //TODO: s'appuyer sur une classe ??
-a('change',value,typeof value);
-        this.setCell(event.target.jcRow,event.target.jcCol,value);
-        this.code.innerHTML = jc.toHtml(this.generateCode());
-        jc.setModified(true);
-        jc.run();
-//        this.setEditedCell(undefined);
-      default :
-        return true;
-    }
+  Table.prototype.getEditableValue = function(editor) {
+    return this.cell(Number(editor.attr('jcRow')),editor.attr('jcCol'));
   }
 
-  Table.force = function(type) {
-    var table = jc.vars[jc.selectedElement.jcObject];
-    var value = table.cell(table.editedCell.jcRow,table.editedCell.jcCol).valueOf();
-    if ((type == 'NUMBER') && (typeof value != 'number')) {
-      type = 'STRING';
-      Table.toolBar$.find('[value=STRING]').attr('checked',true);
-    }
-    var editor$ = $(table.editedCell).removeClass('STRING NUMBER FUNCTION UNDEFINED').addClass(type);
-    switch (type) {
-      case 'UNDEFINED':
-        editor$.val('');
-      case 'FUNCTION':
-        Table.funcCode$.focus();
-      default:
-        editor$.focus();
-    }
-    editor$.change();
-  }
-
-  Table.funcCodeEvent = function(event) {
-/*
-    if ((event.type == 'keypress') && (event.keyCode!=10)){
-      return true;
-    }
-*/
-    if (event.type == 'click'){
-      Table.force('FUNCTION');
-      $('[value=FUNCTION]',jc.objectToolBar$).attr('checked',true);
-      event.target.focus();
-      return false;
-    }
-    var table = jc.vars[jc.selectedElement.jcObject];
-    var editor = table.editedCell;
-    table.setCell(editor.jcRow,editor.jcCol,f($('[name=funcCode]',jc.objectToolBar$).attr('value')));
-    table.code.innerHTML = jc.toHtml(table.generateCode());
+  Table.prototype.setEditableValue = function(editor) {
+a('inside setEditableValue',editor.value,typeof editor.value)
+    this.setCell(Number(editor.attr('jcRow')),editor.attr('jcCol'),editor.value);
+    this.code.innerHTML = jc.toHtml(this.generateCode());
+a('code generated')
     jc.setModified(true);
     jc.run();
-    table.setEditedCell(editor);
-    return false;  // no bubbling
   }
+
+
+/*************
+
     
-
-
-  /*************** voir comment changer le code d'une cellule?? et en particulier comment régler les erreurs de compilation
-    tout comme erreurs d'executions: mettre le message dans output atteint la limite actuelle, en particulier si hors execution d'un bloc de code
-    tout comme dans les finalization *********/
-
   Table.toolBar$ = $('<SPAN/>')
     .append('<input type="radio" name="type" value="STRING" onclick="Table.force(\'STRING\')">String</input>')
     .append('<input type="radio" name="type" value="NUMBER" onclick="Table.force(\'NUMBER\')">Number</input>')
@@ -464,28 +409,7 @@ a('change',value,typeof value);
     .append('<input type="text" name="colName" />')
     .append('<button>&#8595;</button>')
     
-  
-  Table.prototype.setEditedCell = function(editor) {
-    this.editedCell = editor;
-    Table.toolBar$.detach();
-    if (editor) {
-      jc.objectToolBar$.append(Table.toolBar$);
-      var type = this.cellType(editor.jcRow,editor.jcCol);
-      var radio$ = $('[value='+type+']',Table.toolBar$)
-      radio$.attr('checked',true);
-
-      $('[name=colName]',Table.toolBar$).attr('value',editor.jcCol);
-
-      if (type == 'FUNCTION') {
-        Table.funcCode$.attr('value',this.cell(editor.jcRow,editor.jcCol).code());
-        Table.funcCode$.focus();
-      }
-      else {
-        Table.funcCode$.attr('value','');
-        editor.focus();
-      }
-    }
-  }
+*****/  
 
 
   Table.prototype.generateCode = function() {

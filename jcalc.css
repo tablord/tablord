@@ -138,17 +138,22 @@ pre {
   background-color: b9a3c1;
 }
 
-.EDITOR.NUMBER {
+.EDITOR.undefined {
+  background-color: b9a3C1;
+  color : white;
+}
+
+.EDITOR.number {
   background-color: b9a3c1;
   color : blue;
   text-align: right;
 }
-.EDITOR.STRING {
+.EDITOR.string {
   background-color: b9a3c1;
   color : red;
   text-align: left;
 }
-.EDITOR.FUNCTION {
+.EDITOR.function {
   background-color: f2f9a8;
   text-align: left;
 }

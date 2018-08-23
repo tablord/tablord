@@ -322,7 +322,9 @@
 
   jc.htmlAttribute = function(attr,value) {
     // write an attribute according to its type
-    return ' '+attr+'='+(typeof value == 'number'?value:'"'+jc.toHtml(value).replace(/"/g,'&quot;')+'"');
+    var h = ' '+attr+'='+(typeof value == 'number'?value:'"'+jc.toHtml(value).replace(/"/g,'&quot;')+'"');
+//a(h,typeof value)
+    return h;
   }
 
   jc.codeExample = function(example) {
@@ -410,7 +412,198 @@
                  /*tableOfContent:jc.tableOfContent,*/link:jc.link
   };
 
+  // Editor ////////////////////////////////////////////////////////////////////////////
+  // the goal of Editor is to offer a genenral mechanism in order to help implement 
+  // jcObject edition capabilities.
+  // this mechanism is the following:
+  // an object that would like to propose edition capabilities has to offer the following interface
+  //   .edit()  similar to .span() but return html code representing the object in edition.
+  //            usually .edit() calls jc.editor.html(...) in order to get the necessary html code that will
+  //            interact with jc.editor
+  //   .getEditableValue(editor)  will be called by the editor when the user selects a given DOM EDITOR element
+  //                              this is the responsibility of the object to look on editor's properties that are specific to this
+  //                              object to know how to get the value. the returned value can be a simple type (undefined,number,string)
+  //                              or a function. if this function has a .code property, it is considered to be a jcFunc and .code represents
+  //                              only the body of the function (usually an expression)
+  //   .setEditableValue(editor)  will be called by the editor when the user has finished to edit a given value.
+  //                              this method has the responsibility to upgrade the code
+  //
+  //--------------
+  //  jc.editor is a single instance object that provides most of the services and that dialogs with the DOM elements composing
+  //            the user interface.
+  //
+  //  jc.editor.html(...) return html code needed to create the editor for a simple value
+  //                      if the value is simple (undefined, number, string or function) it will 
+  //                      be handled natively.
+  //                      if value is an object, it will return the code of object.edit()
+  //                      TODO: provide mechanism for simple object / arrays
+  //
+  //  jc.editor.simpleTypeToolBar$ a jQuery storing the necessary toolBar for the simple types
+  //
+  ///////////////////////////////////////////////////////////////////////////////////////
+
+  jc.Editor = function(){
+
+  }
+
+  jc.Editor.prototype.createToolBar = function() {
+    this.toolBar$ = $('<SPAN/>')
+      .append('<input type="radio" name="type" value="string" onclick="jc.editor.force(\'string\');">String</input>')
+      .append('<input type="radio" name="type" value="number" onclick="jc.editor.force(\'number\')">Number</input>')
+      .append('<input type="radio" name="type" value="function" onclick="jc.editor.force(\'function\')">Function</input>')
+      .append(this.funcCode$=$('<input type="text"  name="funcCode" value="">').change(jc.Editor.funcCodeEvent).click(jc.editor.funcCodeEvent))
+      .append('<input type="radio" name="type" value="undefined" onclick="jc.editor.force(\'undefined\')">undefined</input>');
+  };
+
+
+  jc.Editor.funcCodeEvent = function(event) {
+    switch(event.type) {
+      case 'click':
+        jc.editor.force('function');
+        $('[value=function]',jc.editor.toolBar$).attr('checked',true);
+        event.target.focus();
+        return false;
+      case 'change':
+        jc.editor.value = f(event.target.value);
+        jc.editor.type = 'function';
+        jc.editor.jcObject.setEditableValue(jc.editor);
+        return false;  // no bubbling
+    }
+  }
+
+
+  jc.Editor.eventHandler = function(event) {
+    // the event handler that will recieve click, keypress and change event
+    obj = jc.vars[event.target.jcObject];
+    if (obj == undefined) throw new Error('event on a editor linked to a non existing object '+event.target.jcObject);
+    switch (event.type) {
+      case 'click':
+        if (obj.code !== jc.selectedElement) {
+          jc.selectElement(obj.code);
+        }
+        jc.editor.setCurrentEditor(event.target);
+        event.target.focus();
+       return false; // prevent bubbling
+
+      case 'change':
+a('change')
+        var value = event.target.value;
+        if (jc.editor.type == 'number') {
+a('number')
+          if (!isNaN(Number(value))) {
+            value = Number(value);
+          }
+          else {
+a('force string')
+            jc.editor.force('string');
+            return false; // a new event will take place and finish the job
+          }
+        }
+        if (jc.editor.type == 'function') {
+          value = f(jc.editor.funcCode$.val());
+a('function',value,typeof value)
+        }
+a('seteditablevalue',value,typeof value)
+        jc.editor.value = value;
+        obj.setEditableValue(jc.editor);
+        jc.setModified(true);
+        return false;
+
+      default :
+        return true;
+    }
+  }
+
+  jc.Editor.prototype.force = function(type) {
+    if (type == this.type) return;
+
+    var editor$ = $(this.currentEditor);
+    switch (type) {
+      case 'undefined':
+        this.value = undefined;
+        this.funcCode$.val('');
+        editor$.val('').focus();
+        break;
+      case 'function':
+a(type,editor$.attr('className'),typeof this.value)
+        var code = this.value.toString();
+        this.funcCode$.val(code).focus();
+        break;
+      case 'number':
+        var n = Number(this.value)
+        if (isNaN(n)) {
+          type = 'string';
+        }
+        else {
+          this.value = n;
+        }
+        this.funcCode$.val('');
+        editor$.focus();
+        break;
+      case 'string':
+        this.funcCode$.val('');
+        editor$.focus();
+        break;
+    }
+    this.type = type;
+    editor$.removeClass('string number function undefined').addClass(type).change();
+  }
+
+
+  jc.Editor.prototype.setCurrentEditor = function(editor) {
+    this.currentEditor = editor;
+    if (editor) {
+      this.jcObject = jc.vars[editor.jcObject];
+      jc.objectToolBar$.append(jc.editor.toolBar$);
+      this.value = this.jcObject.getEditableValue(this);
+      this.type = this.value.isV?'function':typeof this.value;
+      var radio$ = $('[value='+this.type+']',this.toolBar$);
+      radio$.attr('checked',true);
+
+      if (this.type == 'function') {
+        this.funcCode$.val(this.value.code());
+        this.funcCode$.focus();
+      }
+      else {
+        this.funcCode$.val('');
+        editor.focus();
+      }
+    }
+  }
+
+  jc.Editor.prototype.attr = function(attr) {
+    // return the attr value of the html editor
+    return this.currentEditor[attr];
+  }
   
+  jc.Editor.prototype.html = function(value,params) {
+    // value : the initial value of the editor
+    // params : an object that at least has jcObject:nameOfTheObject in jc.vars
+    
+    var type = typeof value;
+    if (value.isV && value.code()) {
+      type = 'function';
+      value = value.valueOf();
+    }
+    else if (value == undefined) {
+      value = '';
+    }
+    else if (type == 'object') {
+      throw new Error('objects are not yet supported in edition')
+    }
+
+    var h = '<INPUT class="EDITOR '+type+'"'+jc.htmlAttribute('value',value);
+    for (var p in params) {
+      h += jc.htmlAttribute(p,params[p]);
+    }
+    h += '>';
+    return h;
+  };
+
+
+  jc.editor = new jc.Editor();
+  jc.editor.createToolBar();
+
   // Table of Content //////////////////////////////////////////////////////////////////
   jc.tableOfContent = {
     toc : [],
@@ -1097,7 +1290,7 @@
     $('.CODE').live("click",jc.codeClick).live("keypress",jc.editorKeyPress);
     $('.RICHTEXT').live("click",jc.richTextClick).live("keypress",jc.richTextKeyPress);
     $('.SECTIONTITLE').live("keypress",jc.sectionTitleKeyPress);
-    $('.EDITOR').live("change",jc.elementEditor).live("click",jc.elementEditor);
+    $('.EDITOR').live("change",jc.Editor.eventHandler).live("click",jc.Editor.eventHandler);
     $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR').live("click",jc.outClick);
     $('.SECTION').live("click",jc.sectionClick);
     $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
