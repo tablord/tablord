@@ -146,6 +146,10 @@
         $.each(obj, function(i,value) {sa.push(JSON.stringify(value))});
         return '['+sa.join(',\n')+']';
       }
+      else if (obj === undefined) {
+        return 'undefined';
+      }
+      
       return obj.toJson();
     }
     
@@ -488,20 +492,25 @@
       case 'change':
 a('change')
         var value = event.target.value;
-        if (jc.editor.type == 'number') {
+        switch (jc.editor.type) {
+          case 'number':
 a('number')
-          if (!isNaN(Number(value))) {
-            value = Number(value);
-          }
-          else {
+            if (!isNaN(Number(value))) {
+              value = Number(value);
+            }
+            else {
 a('force string')
-            jc.editor.force('string');
-            return false; // a new event will take place and finish the job
-          }
-        }
-        if (jc.editor.type == 'function') {
-          value = f(jc.editor.funcCode$.val());
+              jc.editor.force('string');
+              return false; // a new event will take place and finish the job
+            }
+            break;
+          case 'function':
+            value = f(jc.editor.funcCode$.val());
 a('function',value,typeof value)
+            break;
+          case 'undefined':
+            value = undefined;
+            break;
         }
 a('seteditablevalue',value,typeof value)
         jc.editor.value = value;
@@ -581,7 +590,7 @@ a(type,editor$.attr('className'),typeof this.value)
     // params : an object that at least has jcObject:nameOfTheObject in jc.vars
     
     var type = typeof value;
-    if (value.isV && value.code()) {
+    if (value && value.isV && value.code()) {
       type = 'function';
       value = value.valueOf();
     }
