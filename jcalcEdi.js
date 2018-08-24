@@ -466,6 +466,7 @@
         jc.editor.force('function');
         $('[value=function]',jc.editor.toolBar$).attr('checked',true);
         event.target.focus();
+//!!! à voir si pas mieux de faire du bubbling
         return false;
       case 'change':
         jc.editor.value = f(event.target.value);
@@ -486,8 +487,7 @@
           jc.selectElement(obj.code);
         }
         jc.editor.setCurrentEditor(event.target);
-        event.target.focus();
-       return false; // prevent bubbling
+      return false; // prevent bubbling
 
       case 'change':
         var value = event.target.value;
@@ -526,11 +526,11 @@
       case 'undefined':
         this.value = undefined;
         this.funcCode$.val('');
-        editor$.val('').focus();
+        editor$.val('');
         break;
       case 'function':
         var code = (this.value == undefined?'undefined':this.value.toString());
-        this.funcCode$.val(code).focus();
+        this.funcCode$.val(code);
         break;
       case 'number':
         if (this.value == undefined) {
@@ -538,21 +538,21 @@
         }
         var n = Number(this.value)
         if (isNaN(n)) {
-          type = 'string';
+          this.force('string');
+          return;
         }
         else {
           this.value = n;
         }
         this.funcCode$.val('');
-        editor$.focus();
         break;
       case 'string':
         this.funcCode$.val('');
-        editor$.focus();
         break;
     }
     this.type = type;
-    editor$.removeClass('string number function undefined').addClass(type).change();
+    editor$.change();  // will update the value, update the code, run the sheet and so updage the editors and tool bars
+    this.setCurrentEditor(this.currentEditor); // will refresh the toolbar and refocus the editor according to the new situation
   }
 
 
@@ -568,11 +568,15 @@
 
       if (this.type == 'function') {
         this.funcCode$.val(this.value.code());
-        this.funcCode$.focus();
+        if (this.funcCode$[0] != window.document.activeElement){
+          this.funcCode$.focus();
+        }
       }
       else {
         this.funcCode$.val('');
-        editor.focus();
+        if (editor != window.document.activeElement){
+          editor.focus();
+        }
       }
     }
   }
