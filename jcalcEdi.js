@@ -455,27 +455,29 @@
       .append('<input type="radio" name="type" value="string" onclick="jc.editor.force(\'string\');">String</input>')
       .append('<input type="radio" name="type" value="number" onclick="jc.editor.force(\'number\')">Number</input>')
       .append('<input type="radio" name="type" value="function" onclick="jc.editor.force(\'function\')">Function</input>')
-      .append(this.funcCode$=$('<input type="text"  name="funcCode" value="">').change(jc.Editor.funcCodeEvent).click(jc.editor.funcCodeEvent))
+      .append(this.funcCode$=$('<input type="text"  name="funcCode" value="" onchange="jc.editor.funcCodeChange();" onclick="jc.editor.funcCodeClick();">'))
       .append('<input type="radio" name="type" value="undefined" onclick="jc.editor.force(\'undefined\')">undefined</input>');
   };
 
 
-  jc.Editor.funcCodeEvent = function(event) {
-    switch(event.type) {
-      case 'click':
-        jc.editor.force('function');
-        $('[value=function]',jc.editor.toolBar$).attr('checked',true);
-        event.target.focus();
-//!!! à voir si pas mieux de faire du bubbling
-        return false;
-      case 'change':
-        jc.editor.value = f(event.target.value);
-        jc.editor.type = 'function';
-        jc.editor.jcObject.setEditableValue(jc.editor);
-        return false;  // no bubbling
-    }
+  jc.Editor.prototype.funcCodeClick = function() {
+    this.force('function');
+    $('[value=function]',this.toolBar$).attr('checked',true);
+    this.funcCode$.focus();
   }
 
+  jc.Editor.prototype.funcCodeChange = function() {
+    this.value = f(this.funcCode$.val());
+    this.type = 'function';
+    this.jcObject.setEditableValue(this);
+  }
+
+  ////////////
+  //TODO: there is problem at least in IE7: when the users click on another control, first a change event is triggerd
+  //normally it should be followed by a click envent, but as the control is destroyed and re-created, it seems to "capture" the next click
+  //event
+  // ?????? peut être qu'avec un setTimeout(0) on peut passer outre, en laissant d'abord le click se faire et en updatant le code via le timer
+  ////////////
 
   jc.Editor.eventHandler = function(event) {
     // the event handler that will recieve click, keypress and change event
@@ -490,6 +492,8 @@
       return false; // prevent bubbling
 
       case 'change':
+        this.selectionStart = event.target.selectionStart;
+        this.selectionStart = event.target.selectionEnd;
         var value = event.target.value;
         switch (jc.editor.type) {
           case 'number':
@@ -514,6 +518,7 @@
         return false;
 
       default :
+a('unexpected event',event.type)
         return true;
     }
   }
@@ -592,8 +597,9 @@
     
     var type = typeof value;
     if (value && value.isV && value.code()) {
-      type = 'function';
+      type = 'function ';
       value = value.valueOf();
+      type += (typeof value == 'number')?'RIGHT':'LEFT';
     }
     else if (value == undefined) {
       value = '';
