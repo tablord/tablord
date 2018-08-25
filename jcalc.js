@@ -387,9 +387,8 @@
 
   Table.prototype.setEditableValue = function(editor) {
     this.setCell(Number(editor.attr('jcRow')),editor.attr('jcCol'),editor.value);
-    this.code.innerHTML = jc.toHtml(this.generateCode());
     jc.setModified(true);
-    jc.run();
+    window.setTimeout(function(){obj.updateCode();jc.run()},0);
   }
 
 
@@ -409,7 +408,7 @@
 *****/  
 
 
-  Table.prototype.generateCode = function() {
+  Table.prototype.updateCode = function() {
     // generate the code that represents the element as edited
     // can be used to replace the existing code 
     var code = 'table('+JSON.stringify(this.name)+')\n';
@@ -417,7 +416,7 @@
     for (var i=0; i<this.length; i++) {
       code += '.add('+this[i].toJSON()+')\n';
     }
-    return code+'.edit()';
+    this.code.innerHTML = jc.toHtml(code+'.edit()');
   }
         
 

@@ -470,6 +470,7 @@
     this.value = f(this.funcCode$.val());
     this.type = 'function';
     this.jcObject.setEditableValue(this);
+    return false; //?????
   }
 
   ////////////
@@ -477,6 +478,8 @@
   //normally it should be followed by a click envent, but as the control is destroyed and re-created, it seems to "capture" the next click
   //event
   // ?????? peut être qu'avec un setTimeout(0) on peut passer outre, en laissant d'abord le click se faire et en updatant le code via le timer
+  //  pas mieux : l'evenement click n'arrive jamais sur l'endroit où on a cliqué et si dans le change on return true, c'est encore pire, on ne retrouve 
+  //              jamais le focus.  &&%ç%*&@
   ////////////
 
   jc.Editor.eventHandler = function(event) {
@@ -492,8 +495,6 @@
       return false; // prevent bubbling
 
       case 'change':
-        this.selectionStart = event.target.selectionStart;
-        this.selectionStart = event.target.selectionEnd;
         var value = event.target.value;
         switch (jc.editor.type) {
           case 'number':
@@ -514,11 +515,10 @@
         }
         jc.editor.value = value;
         obj.setEditableValue(jc.editor);
-        jc.setModified(true);
         return false;
 
       default :
-a('unexpected event',event.type)
+        window.alert('unexpected event',event.type)
         return true;
     }
   }
@@ -567,7 +567,7 @@ a('unexpected event',event.type)
       this.jcObject = jc.vars[editor.jcObject];
       jc.objectToolBar$.append(jc.editor.toolBar$);
       this.value = this.jcObject.getEditableValue(this);
-      this.type = this.value.isV?'function':typeof this.value;
+      this.type = (this.value && this.value.isV)?'function':typeof this.value;
       var radio$ = $('[value='+this.type+']',this.toolBar$);
       radio$.attr('checked',true);
 
