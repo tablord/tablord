@@ -20,6 +20,9 @@ jc.Units = {
   km_h:    {type:'speed',k:1000/3600,    symbole:'km/h'},
   mph:     {type:'speed',k:1609.344/3600,symbole:'mph'},
 
+  rpm:     {type:'rotationSpeed',k:1,    symbole:'rpm'},
+  rps:     {type:'rotationSpeed',k:60,   symbole:'rps'},
+
   EUR:     {type:'currency',k:1,         symbole:'€'},
   USD:     {type:'currency',k:0.86,      symbole:'$'},
   CHF:     {type:'currency',k:0.87,      symbole:'chf'}
@@ -28,8 +31,8 @@ jc.Units = {
 jc.Units.convert = function(value,from,to) {
   // convert the value from unit "from" to "to"
   // an error is thrown if the 2 units are not from the same type
-  if (jc.Units[from] == undefined) throw new Error("can't convert from an undefined unit");
-  if (jc.Units[to] == undefined) throw new Error("can't convert to an undefined unit");
+  if (jc.Units[from] == undefined) throw new Error("can't convert from an undefined unit ("+from+")");
+  if (jc.Units[to] == undefined) throw new Error("can't convert to an undefined unit ("+to+")");
   if (jc.Units[from].type != jc.Units[to].type) throw new Error("can't convert "+from+' to '+to+' since they are not of the same type ('+jc.Units[from].type+' != '+jc.Units[to].type+')');
   if (from == to) return value; // to avoid NaN (divide by zero) if not necessary
   return value * jc.Units[from].k / jc.Units[to].k;

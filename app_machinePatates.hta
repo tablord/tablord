@@ -1,0 +1,44 @@
+<HTML sizset="0" sizcache="1" xmlns="http://www.w3.org/1999/xhtml" APPLICATIONNAME="D:\Documents\programmation\jcalc\jcalcV0\app_machinePatates.hta" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SINGLEINSTANCE="yes" SCROLL="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
+<SCRIPT src="jquery-1.5.1.min.js"></SCRIPT>
+
+<SCRIPT class=UPDATE src="jcalcEdi.js"></SCRIPT>
+
+<SCRIPT src="units.js"></SCRIPT>
+
+<SCRIPT src="jcalc.js"></SCRIPT>
+
+<SCRIPT src="axe.js"></SCRIPT>
+
+<SCRIPT src="stateMachine.js"></SCRIPT>
+
+<SCRIPT src="BOM.js"></SCRIPT>
+
+<SCRIPT src="sys.js"></SCRIPT>
+
+<SCRIPT src="ocrRdy.js"></SCRIPT>
+
+<SCRIPT src="finance.js"></SCRIPT>
+</HEAD>
+<BODY sizset="0" sizcache="1" hideCode="true" designMode="on">
+<DIV id=menu class=TOOLBAR style="OVERFLOW: hidden; HEIGHT: 45px; WIDTH: 1383px; ZOOM: 1; PADDING-BOTTOM: 0px; PADDING-TOP: 0px; PADDING-LEFT: 0px; FILTER:  alpha(opacity=100); MARGIN: 0px; PADDING-RIGHT: 0px" >
+<DIV><SPAN id=codeId>code0023</SPAN><INPUT onclick=jc.hideCode(event) type=checkbox>hide codes</INPUT><INPUT onclick=jc.hideCut(event) type=checkbox>hide Cut</INPUT><INPUT onclick=jc.hideTest(event) type=checkbox>hide tests</INPUT><INPUT onclick=jc.hideTrace(event) type=checkbox>hide traces</INPUT><INPUT onclick=jc.autoRun(event) CHECKED type=checkbox>auto run</INPUT><BUTTON onclick=jc.selectElement(undefined);>hide ToolBars</BUTTON></DIV>
+<DIV><SPAN><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn class=WARNING style="COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING >save</BUTTON><BUTTON onclick=jc.cutBlock(jc.selectedElement); >&#8595; cut &#8595;</BUTTON></SPAN><SPAN id=objectToolBar></SPAN></DIV></DIV>
+<DIV id=jcContent style="OVERFLOW: scroll; BORDER-TOP: red 1px solid; HEIGHT: 650px; BORDER-RIGHT: red 1px solid; BORDER-BOTTOM: red 1px solid; BORDER-LEFT: red 1px solid" sizset="0" sizcache="1">
+<DIV id=sect0002 class=SECTION sizset="0" sizcache="1">
+<H1 class=SECTIONTITLE contentEditable=false>1 Faucheuse pour machine à ramasser les pommes de terres</H1>
+<DIV class=SECTIONCONTAINER sizset="0" sizcache="1"><PRE id=code0020 class="CODE HIDDEN" contentEditable=false><P>jc.defaults.format.number = jc.toFixed(2);</P><P>&nbsp;</P></PRE>
+<DIV id=out0020 class=OUTPUT><B>display precision of 2 decimals</B><BR></DIV>
+<DIV id=rich0004 class=RICHTEXT contentEditable=false sizset="1" sizcache="1">
+<P sizset="1" sizcache="1">pour faire les calculs, les hypothèses suivantes sont prises<BR><SPAN id=code0005 class="CODE EMBEDDED HIDDEN AUTOEDIT" contentEditable=false style="DISPLAY: none" jcObject="vitesseRamassage$km_h">v("vitesseRamassage$km_h",2).edit()</SPAN><SPAN id=out0005 class=OUTPUT contentEditable=false><VAR>vitesseRamassage</VAR><INPUT class="EDITOR number" value=2 jcObject="vitesseRamassage$km_h">&nbsp;<SPAN class=UNIT>km_h</SPAN></SPAN></P>
+<P sizset="2" sizcache="1"><SPAN id=code0006 class="CODE EMBEDDED HIDDEN AUTOEDIT" contentEditable=false style="DISPLAY: none" jcObject="vitessePriseForce$rpm">v("vitessePriseForce$rpm",600).edit()</SPAN><SPAN id=out0006 class=OUTPUT contentEditable=false><VAR>vitessePriseForce</VAR><INPUT class="EDITOR number" value=600 jcObject="vitessePriseForce$rpm">&nbsp;<SPAN class=UNIT>rpm</SPAN></SPAN></P>
+<P sizset="3" sizcache="1"><SPAN id=code0007 class="CODE EMBEDDED HIDDEN AUTOEDIT" contentEditable=false style="DISPLAY: none" jcObject="pasHelice$mm">v("pasHelice$mm",120).edit()</SPAN><SPAN id=out0007 class=OUTPUT contentEditable=false><VAR>pasHelice</VAR><INPUT class="EDITOR number" value=120 jcObject="pasHelice$mm">&nbsp;<SPAN class=UNIT>mm</SPAN></SPAN></P>
+<P sizset="4" sizcache="1"><SPAN id=code0008 class="CODE EMBEDDED HIDDEN AUTOEDIT" style="DISPLAY: none" jcObject="rayonUtileHelice$mm">v('rayonUtileHelice$mm',120).edit()</SPAN><SPAN id=out0008 class=OUTPUT contentEditable=false><VAR>rayonUtileHelice</VAR><INPUT class="EDITOR number" value=120 jcObject="rayonUtileHelice$mm">&nbsp;<SPAN class=UNIT>mm</SPAN></SPAN></P>
+<P sizset="5" sizcache="1"><SPAN id=code0011 class="CODE EMBEDDED HIDDEN AUTOEDIT" contentEditable=false style="DISPLAY: none" jcObject="distanceEntreCouteaux$mm">v("distanceEntreCouteaux$mm",190).edit()</SPAN><SPAN id=out0011 class=OUTPUT contentEditable=false><VAR>distanceEntreCouteaux</VAR><INPUT class="EDITOR number" value=190 jcObject="distanceEntreCouteaux$mm">&nbsp;<SPAN class=UNIT>mm</SPAN></SPAN></P>
+<P>&nbsp;</P>
+<P sizset="6" sizcache="1">Une branche touche l'hélice durant <SPAN id=code0009 class="CODE EMBEDDED HIDDEN" style="DISPLAY: none">v('dureeCoupe$s',rayonUtileHelice$mm.to('m')/vitesseRamassage$km_h.to('m_s')).view()</SPAN><SPAN id=out0009 class=OUTPUT contentEditable=false><VAR>dureeCoupe</VAR> = <SPAN class=VALUE>0.22</SPAN>&nbsp;<SPAN class=UNIT>s</SPAN></SPAN>. On considère que si elle ne se fait pas couper durant ce laps de temps, elle se pliera et se fera couper au temps suivant.</P>
+<P sizset="7" sizcache="1">Il faut que durant ce temps, l'hélice avance d'au moins la distance entre deux dents de coupe soit <SPAN id=code0012 class="CODE EMBEDDED HIDDEN" style="DISPLAY: none">distanceEntreCouteaux$mm</SPAN><SPAN id=out0012 class=OUTPUT contentEditable=false>190.00</SPAN> mm, soit <SPAN id=code0013 class="CODE EMBEDDED HIDDEN" style="DISPLAY: none">v('nbToursHelicePourCouper$t',distanceEntreCouteaux$mm/pasHelice$mm).view()</SPAN><SPAN id=out0013 class=OUTPUT contentEditable=false><VAR>nbToursHelicePourCouper</VAR> = <SPAN class=VALUE>1.58</SPAN>&nbsp;<SPAN class=UNIT>t</SPAN></SPAN></P>
+<P sizset="9" sizcache="1">soit une vitesse de rotation de l'hélice de <SPAN id=code0014 class="CODE EMBEDDED HIDDEN" style="DISPLAY: none">v('vitesseRotationHelice$rps',nbToursHelicePourCouper$t/dureeCoupe$s).view()</SPAN><SPAN id=out0014 class=OUTPUT contentEditable=false><VAR>vitesseRotationHelice</VAR> = <SPAN class=VALUE>7.33</SPAN>&nbsp;<SPAN class=UNIT>rps</SPAN></SPAN>&nbsp;soit <SPAN id=code0015 class="CODE EMBEDDED HIDDEN" style="DISPLAY: none">v('vitesseRotationHelice$rpm',vitesseRotationHelice$rps.to('rpm')).view()</SPAN><SPAN id=out0015 class=OUTPUT contentEditable=false><VAR>vitesseRotationHelice</VAR> = <SPAN class=VALUE>439.81</SPAN>&nbsp;<SPAN class=UNIT>rpm</SPAN></SPAN></P>
+<P>&nbsp;</P>
+<P sizset="11" sizcache="1">le rapport de la boite d'angle est donc d'environ <SPAN id=code0017 class="CODE EMBEDDED HIDDEN" style="DISPLAY: none">vitessePriseForce$rpm/vitesseRotationHelice$rpm</SPAN><SPAN id=out0017 class=OUTPUT contentEditable=false>1.36</SPAN></P>
+<P>&nbsp;</P>
+<P sizset="12" sizcache="1">la vitesse apparente de l'hélice (soit la vitesse avec laquelle les branche sont poussée vers le millieu du tracteur) est <SPAN id=code0018 class="CODE EMBEDDED HIDDEN" style="DISPLAY: none">vitesseRotationHelice$rps*pasHelice$mm.to('m')</SPAN><SPAN id=out0018 class=OUTPUT contentEditable=false>0.88</SPAN> m/s</P></DIV></DIV></DIV></DIV></BODY></HTML>

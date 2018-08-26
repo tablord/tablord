@@ -64,7 +64,9 @@
   // classical formating functions
   jc.toFixed = function(decimals) {
     // returns a fomating function(obj) that formats the number with fixed decimals
-    return function (n) {return n.toFixed(decimals)};
+    var f = function (n) {return n.toFixed(decimals)};
+    f.toString = function() {return 'display precision of '+decimals+' decimals'};
+    return f;
   }
 
     
@@ -424,6 +426,9 @@
   //   .edit()  similar to .span() but return html code representing the object in edition.
   //            usually .edit() calls jc.editor.html(...) in order to get the necessary html code that will
   //            interact with jc.editor
+  //   .codeElement this property must be created by edit() and must containt the codeElement that contains the .edit() function 
+  //                and that will be updated after edition
+  //
   //   .getEditableValue(editor)  will be called by the editor when the user selects a given DOM EDITOR element
   //                              this is the responsibility of the object to look on editor's properties that are specific to this
   //                              object to know how to get the value. the returned value can be a simple type (undefined,number,string)
@@ -431,7 +436,7 @@
   //                              only the body of the function (usually an expression)
   //   .setEditableValue(editor)  will be called by the editor when the user has finished to edit a given value.
   //                              this method has the responsibility to upgrade the code
-  //
+  //   
   //--------------
   //  jc.editor is a single instance object that provides most of the services and that dialogs with the DOM elements composing
   //            the user interface.
@@ -488,8 +493,8 @@
     if (obj == undefined) throw new Error('event on a editor linked to a non existing object '+event.target.jcObject);
     switch (event.type) {
       case 'click':
-        if (obj.code !== jc.selectedElement) {
-          jc.selectElement(obj.code);
+        if (obj.codeElement !== jc.selectedElement) {
+          jc.selectElement(obj.codeElement);
         }
         jc.editor.setCurrentEditor(event.target);
       return false; // prevent bubbling
@@ -951,12 +956,18 @@
   }
 
   jc.moveLocalToolBars = function(element) {
+    $('#codeId').text(element.id);
     if (element == undefined) throw new Error('moveLocalToolBar(undefined) is forbidden');
+    
+    if ($(element).hasClass('EMBEDDED')) {
+      jc.detachLocalToolBars();
+      return;
+    }
 
     $(element).before(jc.topToolBar$);
     lastElementOfBlock = jc.testElement(element) || jc.outputElement(element) || element;
     $(lastElementOfBlock).after(jc.bottomToolBar$);
-    jc.objectToolBar$.empty();
+    jc.objectToolBar$.empty(); //TODO!!!!!!!!!!!!!   vérifier l'impact sur les événements !!!!!!!!!!!!!!!!!!!!
 
     if ($(element).hasClass('SECTION')) {
       $('.SECTIONCONTAINER',element).append(jc.insideToolBar$);
@@ -967,9 +978,6 @@
         jc.objectToolBar$.append(jc.richTextToolBar$);
       }
     }
-    
-    $('#codeId').text(element.id);
-    
   }
 
   jc.$editables = function(element) {
@@ -1000,7 +1008,6 @@
       jc.detachToolBars();
       return;
     }
-    if ($(element).hasClass('EMBEDDED')) element = element.parentNode;
     jc.menu$.show(500);
     jc.moveLocalToolBars(element);
     $(element).addClass('SELECTED');

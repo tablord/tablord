@@ -126,12 +126,13 @@ pre {
   padding: 0px;
 }
 
-.EMBEDDED {
-  background-color: ffb848;
-}
 
 .AUTOEDIT {
-  background-color: ad78c1;
+  color: red;
+}
+
+.EMBEDDED {
+  background-color: ffb848;
 }
 
 .EDITOR {
