@@ -359,7 +359,14 @@
 
 
   // editor interface ////////////////////////////////////////////////////
-  
+    
+  Table.dragStartEvent = function(event) {
+a('dragstart')
+    event = event || window.event;
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData('text',JSON.stringify({jcObject:event.target.jcObject,jcCol:event.target.innerHTML}))
+  }
+
   Table.prototype.edit = function(options) {
     // edit is similar to span, but gernerates HTML code in order to edit the object interactively
     // it will also set the code to AUTOEDIT class which means that it should no longer be modified by the user since it will
@@ -369,10 +376,14 @@
     this.code = jc.output.codeElement;   
     $(this.code).addClass('AUTOEDIT').attr('jcObject',this.name);
     
-    var h = '<div><var>'+this.name+'</var><table>';
+    var h = '<div><var>'+this.name+'</var><table><tr><th>#</th>';
+    for (var col in this._cols) {
+      h += '<th>'+col+'</th>';
+    }
+    h += '</tr>';
     for (var row=0; row<this.length; row++) {
-      h += '<tr>';
-      for (var col in this[row]._) {
+      h += '<tr><th draggable=true>'+row+'</th>';
+      for (var col in this._cols) {
         h += '<td>'+jc.editor.html(this.cell(row,col),{jcObject:this.name,'jcRow':row,jcCol:col})+'</td>';
       }
       h += '</tr>';
@@ -390,22 +401,6 @@
     jc.setModified(true);
     window.setTimeout(function(){obj.updateCode();jc.run()},0);
   }
-
-
-/*************
-
-    
-  Table.toolBar$ = $('<SPAN/>')
-    .append('<input type="radio" name="type" value="STRING" onclick="Table.force(\'STRING\')">String</input>')
-    .append('<input type="radio" name="type" value="NUMBER" onclick="Table.force(\'NUMBER\')">Number</input>')
-    .append('<input type="radio" name="type" value="FUNCTION" onclick="Table.force(\'FUNCTION\')">Function</input>')
-    .append(Table.funcCode$=$('<input type="text"  name="funcCode" value="">').change(Table.funcCodeEvent).click(Table.funcCodeEvent))
-    .append('<input type="radio" name="type" value="UNDEFINED" onclick="Table.force(\'UNDEFINED\')">undefined</input>')
-    .append('<button>&#8595;</button>')
-    .append('<input type="text" name="colName" />')
-    .append('<button>&#8595;</button>')
-    
-*****/  
 
 
   Table.prototype.updateCode = function() {
