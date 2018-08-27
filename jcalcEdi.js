@@ -13,7 +13,9 @@
             simulation:undefined, // will be set by StateMachine.js
             blockNumber:0,
             finalizations:[],     // a stack of output to be finalized
-            
+
+            intervalTimers:[],    // a list of intervalTimer handle in order to kill them (clearInterval) at the next run
+            inAnimation:false,    // true when execution take place through jc.animate()
             modified:false,       // file is modified
 
             vars:{},              // where all user variables are stored
@@ -781,6 +783,7 @@
         '<SPAN>'+ 
            '<BUTTON id=runUntilSelectedBtn onclick=jc.execUntilSelected(); style="color: #8dff60;">&#9658;|</BUTTON>'+
            '<BUTTON id=runAllBtn onclick=jc.execAll(); style="color: #8dff60;">&#9658;&#9658;</BUTTON>'+
+           '<BUTTON id=stopAnimation onclick=jc.clearTimers(); style="color: red">&#9632;</BUTTON>'+
            '<BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON>'+
            '<BUTTON onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON>'+
            '<BUTTON id="saveBtn" onclick="jc.save();">save</BUTTON>'+
@@ -1176,6 +1179,50 @@
         $(test).removeClass('SUCCESS').addClass('ERROR');
       }
     }
+    jc.output = undefined;  // so that any errors from the EDI will be reported in a dialog, not in the last outputElement.
+  }
+
+  jc.execCodes = function(fromCodeId,toCodeId) {
+    // execute CODE element starting from fromCodeId and ending with toCodeId
+    // it does not clean the environement first, since this function is intended to be used
+    // by the user in order to execute some codes repeatidly
+    // nor it will perform any finalization (but it will register output.finalize functions
+    // that will be executed at the end of the sheet execution
+    // please note that it is POSSIBLE to run the code containing the jc.execCodes() allowing 
+    // some recursivity. Of course this can also result in an never ending loop if not used properly
+
+    var include = false;
+    var code$ = $('.CODE');
+    fromCodeId = fromCodeId || code$.first().attr('id');
+    toCodeId = toCodeId || code$.last().attr('id');
+    code$.each(function(i,e) {
+      if (e.id === fromCodeId) include=true;
+      if (include) jc.execCode(e);
+      if (e.id === toCodeId) include = false;
+    });
+  }
+
+  jc.animate = function (interval,fromCodeId,toCodeId,endCondition) {
+    // run every "interval" all codes between fromCodeId to toCodeId
+    // if fromCodeId is undefined, the CODE element where this function is called will be used
+    fromCodeId = fromCodeId || jc.output.codeElement.id;
+    toCodeId = toCodeId || fromCodeId;
+    if (jc.inAnimation == false) {
+      jc.intervalTimers.push(window.setInterval(function() {
+        jc.inAnimation = true;
+        jc.execCodes(fromCodeId,toCodeId);
+        jc.inAnimation = false;
+      }
+      ,interval));
+    }
+  }
+
+  jc.clearTimers = function () {
+    for (var i = 0;i<jc.intervalTimers.length;i++) {
+      window.clearInterval(jc.intervalTimers[i]);
+    };
+    jc.intervalTimers = [];
+    jc.inAnimation = false;
   }
 
   jc.finalize = function() {
@@ -1197,7 +1244,9 @@
     }
   }
 
+ 
   jc.execAll = function() {
+    jc.clearTimers();
     jc.finalizations = [];
     jc.vars = {}; // run from fresh
     jc.tableOfContent.updateSections();
@@ -1208,6 +1257,7 @@
   }
 
   jc.execUntilSelected = function() {
+    jc.clearTimers();
     jc.finalizations = [];
     jc.vars = {}; // run from fresh
     jc.tableOfContent.updateSections();
