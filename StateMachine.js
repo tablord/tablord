@@ -1,18 +1,23 @@
+// Simulation /////////////////////////////////////////////////////////////////////////
+// is the time keeper for the entire simulation
+// one instance (jc._simulation) is automatically created, which is ok for most purpose
+///////////////////////////////////////////////////////////////////////////////////////
+
 function Simulation(name) {
-  this._name = name;
+  this.name = name;
   this.length = 0;
   this.step$s = 0.1;
-  this.time$s = -this.step$s;
+  this.time$s = 0;
   this.timeDecimals = 3;
 }
 
 Simulation.prototype.runSteps = function(nbSteps) {
   nbSteps = nbSteps || 1;
   for (var s= 1; s <= nbSteps; s++) {
-    this.time$s += this.step$s;
     for (var i=0; i< this.length; i++) {
       this[i].runOnce(this.time$s);
     }
+    this.time$s += this.step$s;
   }
   return this;
 }
@@ -38,20 +43,15 @@ Simulation.prototype.step = function(step$s) {
 
 Simulation.prototype.toString = function(options) {
   options = options || {};
-  return '[Simulation "'+this._name+'" time: '+this.time$s.toFixed(options.timeDecimals || this.timeDecimals)+']';
+  return '[Simulation "'+this.name+'" time: '+this.time$s.toFixed(options.timeDecimals || this.timeDecimals)+']';
 }
 
-function simulation(name) {
-  return jc.vars[name] = new Simulation(name);
-}
-
-jc.simulation = simulation('_simulation');
 
 // StateMachine ///////////////////////////////////////////////////////////////
 
 function StateMachine(name,simulation) {
-  this._name = name;
-  this.simulation = simulation || jc.simulation;
+  this.name = name;
+  this.simulation = simulation;
   this.length = 0;  //number of states
   this.currentState = undefined;
   this.log = [];
@@ -67,7 +67,7 @@ StateMachine.prototype.state = function(name) {
 
 StateMachine.prototype.span = function(options) {
   options = options ||{};
-  var h = '<DIV class=STATEMACHINE>'+this._name;
+  var h = '<DIV class=STATEMACHINE>'+this.name;
   for (var i=0; i<this.length; i++) {
     h += this[i].span();
   }
@@ -87,38 +87,49 @@ StateMachine.prototype.runOnce = function(time) {
   var where = 'runOnce';
   try {
     where='runOnce/runF';
-    this.currentState.runF();
+    if (this.currentState.runF) {
+      this.currentState.runF();
+    }
     for (var i = 0; i<this.currentState.length; i++) {
-      if (this.currentState[i].condF() == true) {
-        if (this.currentState.exitF) {where='runOnce/exitF';this.currentState.exitF()};
-        var trans = this.currentState[i];
-        this.currentState = this.currentState[i].next;
-        if (this.currentState.entryF) {where='runOnce/entryF';this.currentState.entryF()};
+      var trans = this.currentState[i];
+      where='runOnce/transition-->'+trans.next.name;
+      if (trans.condF(this.currentState) == true) {  //currentState is passed to condF so the user can call wait(...)
+        if (this.currentState.exitF) {
+          where='runOnce/exitF';
+          this.currentState.exitF()
+        };
+        this.currentState = trans.next;
+        this.currentState.entryTime$s = time;
+        if (this.currentState.entryF) {
+          where='runOnce/entryF';
+          this.currentState.entryTime = time;
+          this.currentState.entryF()
+        };
         this.log.push({transition:trans,time:time});
         break;
       }
     }
   }
   catch (e) {
-    e.message = this.currentState._name+' at time='+this.time+' in '+where+': '+e.message;
-    throw e;
+    throw new Error(this.currentState.name+' at time='+time+' in '+where+': '+e.message);
   }
   return this;
 }
 
 StateMachine.prototype.toString = function() {
-  return '[StateMachine '+this._name+' of '+this.length+' states; currentState='+this.currentState._name+']';
+  return '[StateMachine '+this.name+' of '+this.length+' states; currentState='+this.currentState.name+']';
 }
 
-function stateMachine(name) {
-  return jc.vars[name] = new StateMachine(name);
+function stateMachine(name,simulation) {
+  simulation = simulation || jc.simulation;
+  return jc.vars[name] = new StateMachine(name,simulation);
 }
 
 
 // State //////////////////////////////////////////////////////////////////////
 
 function State(name,stateMachine) {
-  this._name = name;
+  this.name = name;
   this.stateMachine = stateMachine;
   this.length = 0; // number of transition
 }
@@ -148,6 +159,11 @@ State.prototype.transition = function(nextStateName,jcCond) {
   return this;
 }
 
+State.prototype.wait = function(time) {
+  // return true if the we are in this state more than "time"
+  return this.stateMachine.simulation.time$s >= this.entryTime$s + time;
+}
+
 State.prototype.state = function (name) {  //same as StateMachine.state, but to ease writing, is also a method of state
   var s = new State(name,this.stateMachine);
   this.stateMachine[name] = s;
@@ -166,14 +182,18 @@ State.prototype.end = function () {
 }
 
 State.prototype.compile = function() {
+  var where;
   try {
     if (this.entryCode) { 
+      where = 'entry';
       this.entryF = f(this.entryCode);
     }
     if (this.runCode) { 
+      where = 'run';
       this.runF = f(this.runCode);
     }
-    if (this.entryCode) { 
+    if (this.exitCode) { 
+      where = 'exit';
       this.exitF = f(this.exitCode);
     }
     for (var i=0; i<this.length; i++) {
@@ -181,13 +201,12 @@ State.prototype.compile = function() {
     }
   }
   catch (e) {
-    e.message = '[State '+this._name+'] '+e.message
-    throw e;
+    throw new Error('[State '+this.name+':'+where+'] '+e.message);
   }
 }
 
 State.prototype.span = function(){
-  var h = '<DIV class="SMSTATE'+((this.stateMachine.currentState==this)?' SMCURRENTSTATE':'')+'">'+this._name+'<br>';
+  var h = '<DIV class="SMSTATE'+((this.stateMachine.currentState==this)?' SMCURRENTSTATE':'')+'">'+this.name+'<br>';
   if (this.entryCode) h+= 'entry: <SPAN class=CODEVIEW>'+this.entryCode+'</SPAN>';
   if (this.runCode)   h+= 'run  : <SPAN class=CODEVIEW>'+this.runCode+'</SPAN>';
   if (this.exitCode)  h+= 'exit : <SPAN class=CODEVIEW>'+this.exitCode+'</SPAN>';
@@ -216,7 +235,6 @@ Transition.prototype.compile = function() {
     this.next = this.state.stateMachine[this.nextStateName];
   }
   catch (e) {
-    e.message = '-->'+this.nextStateName+': '+e.message;
-    throw e;
+    throw new Error('-->'+this.nextStateName+': '+e.message);
   }
 }

@@ -11,8 +11,8 @@ Axe.prototype.toString = function() {
 
 Axe.prototype.appendFunction = function (f,init) {
   var last = this.functions.length-1;
-  if (init.t < this.functions[last].t) {
-    throw new Error("Axe.appendFunction: can't append a function with time "+init.t+" since last function starts at "+this.functions[last].t);
+  if ((last<0) || (init.t < this.functions[last].init.t)) {
+    throw new Error("Axe.appendFunction: can't append a function with time "+init.t+" since last function starts at "+this.functions[last].init.t);
   }
   var res = this.functions[last].f(this.functions[last].init,init.t); // calculate the next last point of previous function
   init.p = res.p;
@@ -23,9 +23,10 @@ Axe.prototype.appendFunction = function (f,init) {
 
 Axe.prototype.faccelerate = function (init,t) {
   //returns {t:t,p:xxx,v:xxx,a:init.a,j:xxxx} for a given t
+  var dt = t-init.t;
   var res = {t:t,a:init.a};
   res.v = init.v+init.a*(t-init.t);
-  res.p = init.p+(0.5*init.a*Math.pow(t-init.t,2));
+  res.p = init.p+(init.v*dt)+(0.5*init.a*Math.pow(dt,2));
   return res;
 }
 
@@ -38,23 +39,38 @@ Axe.prototype.accelerate = function(init){
   return this;
 }
 
+Axe.prototype.move = function(init,output){
+  var t = init.t || (this.simulation && this.simulation.time$s);
+  var at_t = this.at(t);
+  var d = init.p - at_t.p;
+  var dir = d>0?1:-1;
+  var v = at_t.v;
+  var defaults = d>=0?this.forward:this.backward;
+trace(init,{t:t,d:d,v:v},defaults)
 
-Axe.prototype.move = function(init){
-  var a1 = init.a1 || init.a;
-  var a2 = init.a2 || -init.a;
-  var a3 = init.a3 || a2;
 
 
-  var v3 = init.v3 || 0;
-  var v2 = init.v2 || v3;
-  var v1 = init.v1;
-  var v  = init.v || 0;   //*************************work around: a corriger le recalcul pour avoir le v du précédent
+  var a1 = init.a1 ||  init.a || defaults.a1;
+  var a2 = init.a2 || -init.a || defaults.a2;
+  var a3 = init.a3 || -init.a || defaults.a3;
 
-  var d  = init.d;
-  
+
+  var v3 = init.v3 || defaults.v3 || 0;
+  var v2 = init.v2 || defaults.v2 || v3;
+  var v1 = init.v1 || defaults.v1;
+
+  if ((v2==0)  && ((tf != undefined) || (df != undefined))) {
+    throw new Error("can't specify tf or df if V2==0")
+  }
+  if ((init.df != undefined) && (init.tf != undefined)) {
+    throw new Error("can't specify both df and tf together")
+  }
+
   do {
-    v2 = ((v1/v2)>1)?v2:v1; //if abs(v2) > abs(v1) v2 is limited to v1
-    var t  = init.t;
+    // make sure that abs(v1)>abs(v2)>abs(v3)
+    v2 = v1*dir > v2*dir?v2:v1;
+    v3 = v2*dir > v3*dir?v3:v2;
+
     var t1 = (v1-v)/a1;
     var t2 = (v2-v1)/a2;
     var t3 = (v3-v2)/a3;
@@ -71,16 +87,39 @@ Axe.prototype.move = function(init){
     if (tc < 0) {
       v1 = 0.9*v1; // ***** dirty and stupid
     }
-//a(jc.inspect({t:t,t1:t1,tc:tc,t2:t2,t3:t3,tf:tf,ts:ts,a1:a1,a2:a2,a3:a3,v:v,v1:v1,v2:v2,v3:v3,d:d,d1:d1,d2:d2,d3:d3,dc:dc,df:df}))
   }
   while (tc < 0);
-  this.appendFunction(Axe.prototype.faccelerate,{t:t,a:a1,comment:jc.inspect({t1:t1,tc:tc,t2:t2,t3:t3,tf:tf,ts:ts,a:init.a,a1:a1,a2:a2,a3:a3,v:v,v1:v1,v2:v2,v3:v3,d:d,d1:d1,d2:d2,d3:d3,dc:dc,df:df})});
-  this.appendFunction(Axe.prototype.faccelerate,{t:t+t1,a:0});
-  this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc,a:a2});
-  this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2,a:0});
-  this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2+ts,a:a3});
-  this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2+ts+t3,a:0});
 
+  // if t is before the last function init time, it means that the user initiate a move before the end of the 
+  // previous move. we have to cancel the planned future function in order to replace by new ones
+  var i = this.functions.length-1;
+  while ((i >= 0) && (t < this.functions[i].init.t)) {
+    i--;
+  }
+  this.functions.length = i+1;
+
+  // now add the move
+trace('acc');
+  this.appendFunction(Axe.prototype.faccelerate,{t:t,a:a1});
+trace('vc');
+  this.appendFunction(Axe.prototype.faccelerate,{t:t+t1,a:0});
+trace('dec');
+  this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc,a:a2});
+trace('approach');
+  this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2,a:0});
+trace('approach ok')
+  if (ts>0) {
+trace('final')
+    this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2+ts,a:a3});
+trace('final ok')
+  }
+  if (t3>0) {
+trace('target',{t:t,t1:t1,tc:tc,t2:t2,t3:t3,tf:tf,ts:ts,a1:a1,a2:a2,a3:a3,v1:v1,v2:v2,v3:v3,d:d,d1:d1,d2:d2,d3:d3,dc:dc,df:df})
+    this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2+ts+t3,a:0});
+trace('target reached')
+  }
+  if (output) output.inspect({t:t,t1:t1,tc:tc,t2:t2,t3:t3,tf:tf,ts:ts,a1:a1,a2:a2,a3:a3,v1:v1,v2:v2,v3:v3,d:d,d1:d1,d2:d2,d3:d3,dc:dc,df:df})
+                    .html(this.move.help());
   return this;
 }
 
@@ -89,20 +128,28 @@ Axe.prototype.move.help = function() {
   var h ="   |<-------------- tt ----------------->|       \n"+
          "   |<--t1-->|<----- tc ------->|<t2>|    |       \n"+
          "   |        +------------------+ v1 |    |       \n"+
-         "   |       /                    \   |<tf>|       \n"+
-         "   |      /                      \a2|    |       \n"+
-         "   |  a1 /                        \ |ts|t|       \n"+
-         "   |    /          dc              \|  |3|       \n"+
+         "   |       /                    \\   |<tf>|       \n"+
+         "   |      /                      \\a2|    |       \n"+
+         "   |  a1 /                        \\ |ts|t|       \n"+
+         "   |    /          dc              \\|  |3|       \n"+
          "   |   /                            +--+ v2      \n"+
-         "   |  /d1                        d2 |   \|       \n"+
+         "   |  /d1                        d2 |   \\|       \n"+
          "   | /                              |    + v3    \n"+
          "   |+ v                             |(df)|       \n"+
-         "   +---------------------------------------------\n"
-  return '<pre>'+toHtml(h)+'</pre>';
+         "   +---------------------------------------------\n";
+  h = '<pre>'+jc.toHtml(h)+'</pre>';
+  h += 'by default: \n'+
+       'a1 = a,  a2 = -a  a3 = a2 \n';
+  return jc.html(h);
 }
       
+Axe.prototype.at = function(t) {
+  t = t || this.simulation.time$s;
+  var i = this.functions.length-1;
+  while ((i > 0) && (t < this.functions[i].init.t)) i--;
+  return this.functions[i].f(this.functions[i].init,t);
+}
      
-
 
 Axe.prototype.sample = function(start,end,step) {
 // return a Table with all values form start to end, step by step
@@ -149,7 +196,12 @@ Axe.prototype.view = function() {
   return '<div class="SUCCESS">'+this._name+this.span()+'</div>';
 }
   
-function axe(name) {
-  return jc.vars[name] = new Axe(name);
+function axe(name,params,simulation) {
+  // params = {forward:{..same as move},backward:{..same as move},a:default acceleration,v1:default maxSpeed, v2:default approachSpeed}
+  var a = new Axe(name);
+  a.simulation = simulation || jc.simulation;
+  a.forward = $.extend(true,{a1:params.a,a2:-params.a,a3:-params.a,v1: (params.v1 || 1),v2: (params.v2 || 0),v3: (params.v3 || 0)},params.forward);
+  a.backward = $.extend(true,{a1:-params.a,a2:params.a,a3:params.a,v1:-(params.v1 || 1),v2:-(params.v2 || 0),v3:-(params.v3 || 0)},params.backward);
+  return jc.vars[name] = a;
 }
 

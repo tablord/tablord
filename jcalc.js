@@ -23,6 +23,7 @@
       this.label = lu[1];
       this.unit  = lu[2];
     }
+    else this.label = this.name;
   }
 
   V.prototype.setValue = function(value){
@@ -239,6 +240,7 @@
     this.name = name;
     this.length = 0;
     this._cols = {};
+    this._id = {};
   }
   
   Table.prototype.cols = function(cols) {
@@ -268,6 +270,9 @@
     row = new Row(row); // transform it to a Row
     row.table = this;
     this[this.length++] = row;
+    if (row._._id) {
+      this._id[row._._id] = row;
+    }
     this.updateCols(row);
     return this;
   }

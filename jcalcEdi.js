@@ -10,7 +10,7 @@
             traces:[],
             tracesMaxLength:100,
             htmlIndent:1,
-            simulation:undefined, // will be set by StateMachine.js
+            simulation:undefined, // will be set in jc.execAll()
             blockNumber:0,
             finalizations:[],     // a stack of output to be finalized
 
@@ -765,6 +765,14 @@
     var button = event.target || window.event.srcElement; //IE7 compatibility
     jc.autoRun = window.document.body.autoRun=button.checked;
   }
+
+  jc.print = function() {
+    jc.selectElement(undefined);
+    jc.content$.css('overflow','visible');
+    window.print();
+    jc.content$.css('overflow','scroll');
+    jc.resize();
+  }
       
   jc.initToolBars = function() {
     $('#menu').remove();
@@ -778,6 +786,7 @@
         '<INPUT onclick="jc.hideTrace(event)"'+(window.document.body.hideTrace===true?' checked':'')+' type=checkbox>hide traces</INPUT>'+
         '<INPUT onclick="jc.autoRun(event)"'+(jc.autoRun?' checked':'')+' type=checkbox>auto run</INPUT>'+
         '<BUTTON onclick=jc.selectElement(undefined);>hide ToolBars</BUTTON>'+
+        '<BUTTON onclick="jc.print();">print...</BUTTON>'+
       '</DIV>'+
       '<DIV>'+
         '<SPAN>'+ 
@@ -1140,7 +1149,7 @@
 
   jc.displayResult = function(result,out) {
       var h = jc.format(result);    // result has to be calculated first, since programmer can use trace in functions like span()
-      out.innerHTML = trace.span()+h;
+      out.innerHTML = trace.span()+jc.output.html(h).toString();
       $(out).removeClass('ERROR').addClass('SUCCESS');
   }
 
@@ -1168,6 +1177,7 @@
     var out  = jc.outputElement(element);
     var test = jc.testElement(element)
     jc.output = newOutput(element,out);
+    jc.output.span = function() {};
     var res = jc.securedEval(jc.toString(element.innerHTML));
     jc.displayResult(res,out);
     // test
@@ -1249,6 +1259,7 @@
     jc.clearTimers();
     jc.finalizations = [];
     jc.vars = {}; // run from fresh
+    jc.simulation = new Simulation('_simulation');
     jc.tableOfContent.updateSections();
     jc.$editables(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
     $('.CODE').each(function(i,e) {jc.execCode(e);});
@@ -1346,8 +1357,9 @@
     $('#localToolBar').add('.BOTTOMTOOLBAR').add('.TOOLBAR').remove();           // no longer saved with the document and must be regenerated at init
 
     // since v0.0110 the menu is fixed in a #menu DIV and all sheet is contained in a #jcContent DIV
-    if ($('#jcContent').length == 0) {                                   
-      $('BODY').wrapInner('<DIV id=jcContent style="overflow:scroll; border:solid red 1px;"/>');
+    jc.content$ = $('#jcContent').css('border','none');
+    if (jc.content$.length == 0) {                                   
+      $('BODY').wrapInner('<DIV id=jcContent style="overflow:scroll;"/>');
     }
   }
 
@@ -1358,7 +1370,6 @@
     jc.upgradeFramework();
 
     // prepare the sheet ///////////////////////////////////////////
-    jc.content$ = $('#jcContent');
     $('.SELECTED').removeClass('SELECTED');
     $('.CODE').live("click",jc.codeClick).live("keypress",jc.editorKeyPress);
     $('.RICHTEXT').live("click",jc.richTextClick).live("keypress",jc.richTextKeyPress);
