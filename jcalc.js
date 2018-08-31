@@ -473,6 +473,7 @@ a('dragstart')
     h = new jc.HTML();
     h.codeElement = codeElement;
     h.outputElement = outputElement;
+    h.span = function(){return ''};  // so that if a statment ends with an output, it will no show the output twice
     return h;
   }
 

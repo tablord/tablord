@@ -412,6 +412,7 @@
         '<SPAN class='+(numberOfErrors==0?'SUCCESS':'ERROR')+'>tests passed:'+numberOfSuccess+' failed:'+numberOfErrors+'</SPAN>'
       )}
     );
+    return 'test Status: ';
   }
 
   jc.helps.jc = {inspect:jc.inspect,
@@ -1147,13 +1148,13 @@
     return jc.toHtml(obj);       // fallback is to let display either valueOf or toString
   }
 
-  jc.displayResult = function(result,out) {
+  jc.displayResult = function(result,output) {
       var h = jc.format(result);    // result has to be calculated first, since programmer can use trace in functions like span()
-      out.innerHTML = trace.span()+jc.output.html(h).toString();
-      $(out).removeClass('ERROR').addClass('SUCCESS');
+      output.outputElement.innerHTML = trace.span()+output.html(h).toString();
+      $(output.outputElement).removeClass('ERROR').addClass('SUCCESS');
   }
 
-  jc.displayError = function(error,out) {
+  jc.displayError = function(error,output) {
     if (error.message) {
       if (error.message == "Erreur d'execution inconnue") {
         error.message += "this block can not be displayed in a {{ inline code}}; use a separate code block"
@@ -1165,9 +1166,9 @@
       }
       error = error.name+': '+error.message;
     }
-    var tag = (out.tagName=='SPAN')?'SPAN':'PRE';  // if span, one can only insert span, not div
-    out.innerHTML = trace.span()+error+(code?'<'+tag+' class="CODEINERROR">'+code+'</'+tag+'>':'');
-    $(out).removeClass('SUCCESS').addClass('ERROR');
+    var tag = (output.outputElement.tagName=='SPAN')?'SPAN':'PRE';  // if span, one can only insert span, not div
+    output.outputElement.innerHTML = trace.span()+error+(code?'<'+tag+' class="CODEINERROR">'+code+'</'+tag+'>':'');
+    $(output.outputElement).removeClass('SUCCESS').addClass('ERROR');
   }
 
 
@@ -1177,9 +1178,8 @@
     var out  = jc.outputElement(element);
     var test = jc.testElement(element)
     jc.output = newOutput(element,out);
-    jc.output.span = function() {};
     var res = jc.securedEval(jc.toString(element.innerHTML));
-    jc.displayResult(res,out);
+    jc.displayResult(res,jc.output);
     // test
     if (test != undefined) {
       if (jc.trimHtml(out.innerHTML) == jc.trimHtml(test.innerHTML)) {   //TODO rethink how to compare
@@ -1238,10 +1238,10 @@
   jc.finalize = function() {
     for (var i=0;i<jc.finalizations.length;i++) {
       var out = jc.finalizations[i];
-      jc.errorHandler.code = out.finalizationFunc.toString(); 
+      jc.errorHandler.code = out.finalizationFunc.toString();
       out.finalizationFunc();
       out.finalizationFunc = undefined;  // so that displayResult will not show ... to be finalized...
-      jc.displayResult(out,out.outputElement);
+      jc.displayResult(out,out);
     }
   }
 
