@@ -269,6 +269,14 @@ pre {
   background-color:yellow;
 }
 
+.INTERACTIVE {
+  background-color:cyan;
+}
+
+.IELEMENT {
+  position:absolute;
+}
+
 #menu,
 button {
   background-color: 909090;

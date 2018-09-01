@@ -4,9 +4,15 @@
             version:'0.1',
             authors:['Marc Nicole'],
             selectedElement:undefined,
-            output: {}, //a new Output is created for each code. 
+            output: undefined,
+                        //a new Output is created for each code. 
                         //it hold both the code and output Elements as well as the htlm
                         //at init an empty object so _codeElement and _outputElement are undefined
+                        //jc.output is only defined during user code execution in order to catch errors
+                        //from user code in association with the right output.
+                        //please note that jc.output == undefined during finalization code, but the finalization code
+                        //defined by the user can still access output due to the closure mechanism of JavaScript
+
             traces:[],
             tracesMaxLength:100,
             htmlIndent:1,
@@ -780,7 +786,6 @@
     jc.menu$ =  $(
     '<DIV id=menu class=TOOLBAR>'+
       '<DIV>'+
-        '<SPAN id=codeId>no element</SPAN>'+
         '<INPUT onclick="jc.hideCode(event)"'+(window.document.body.hideCode===true?' checked':'')+' type=checkbox>hide codes</INPUT>'+
         '<INPUT onclick="jc.hideCut(event)"'+(window.document.body.hideCut===true?' checked':'')+' type=checkbox>hide Cut</INPUT>'+
         '<INPUT onclick="jc.hideTest(event)"'+(window.document.body.hideTest===true?' checked':'')+' type=checkbox>hide tests</INPUT>'+
@@ -794,9 +799,10 @@
            '<BUTTON id=runUntilSelectedBtn onclick=jc.execUntilSelected(); style="color: #8dff60;">&#9658;|</BUTTON>'+
            '<BUTTON id=runAllBtn onclick=jc.execAll(); style="color: #8dff60;">&#9658;&#9658;</BUTTON>'+
            '<BUTTON id=stopAnimation onclick=jc.clearTimers(); style="color: red">&#9632;</BUTTON>'+
+           '<BUTTON id="saveBtn" onclick="jc.save();">save</BUTTON>'+
+           '<SPAN id=codeId>no element</SPAN>'+
            '<BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON>'+
            '<BUTTON onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON>'+
-           '<BUTTON id="saveBtn" onclick="jc.save();">save</BUTTON>'+
            '<BUTTON onclick=jc.cutBlock(jc.selectedElement);>&#8595; cut &#8595;</BUTTON>'+
         '</SPAN>'+
         '<SPAN id=objectToolBar></SPAN>'+
@@ -1378,6 +1384,7 @@
     $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR').live("click",jc.outClick);
     $('.SECTION').live("click",jc.sectionClick);
     $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
+    $('.INTERACTIVE').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
     jc.findblockNumber();
     jc.initToolBars();
     if ($('.CODE').add('.SECTION').add('.RICHTEXT').length == 0) {  // if really empty sheet

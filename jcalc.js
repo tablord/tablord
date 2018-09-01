@@ -34,7 +34,7 @@
     else {
       this.value=value;
       this.func = undefined;
-      this.type = (typeof value).toUpperCase();
+      this.type = typeof value;
     }
   }
 
@@ -583,10 +583,44 @@ a('dragstart')
     return this;
   }
 
-  jc.HTML.prototype.tag = function(tagName,elements) {
-    this.htmlCode += '<'+tagName+'>';
-    var tagEnd = '</'+tagName+'>';
-    if (elements.length == 0) {
+  jc.HTML.prototype.interactiveDiv = function(style) {
+    // adds an DIV that will allow interactivity of its internal component 
+    // since it will prevent bubbling events up to the EDI
+    // it will also create an internal DIV position:relative so that 
+    // internal component can be positionned in an absolute manner
+    // this call has to be terminated by a call to .end()
+
+    this.htmlCode += '<DIV class=INTERACTIVE style="'+style+'"><DIV style="position:relative;">';
+    this.tagsEnd.push('</DIV></DIV>');
+    return this;
+  }
+
+  jc.HTML.prototype.iCheckBox = function(id,style,text,checked) {
+    // adds a HTML checkBox with id=id and text as content
+    // if checked = true, it will be initalized to check
+    // this checkBox will have the class IELEMENT and so will be positionned absolute
+    // style if defined will be added to the style, allowing to specify top, left borders...
+    // at the same time a JcCheckBox is created with the same id allowing to interact
+    // easily with the checkBox in user code
+    this.htmlCode += '<SPAN class=IELEMENT'+(style?' style="'+style+'"':'')+'><INPUT id='+id+' type="checkbox"'+(checked?' CHECKED>':'>')+text+'</INPUT></SPAN>';
+    new jc.JcCheckBox(id);
+    return this;
+  }
+
+  jc.HTML.prototype.iDiv = function(id,style,content) {
+    this.htmlCode += '<DIV id='+id+' class=IELEMENT'+(style?' style="'+style+'"':'')+'>'+(content?content:'')+'</DIV>';
+    new jc.JcElement(id);
+    return this;
+  }
+ 
+
+  jc.HTML.prototype.tag = function(tagNameAnAttributes,elements) {
+    // adds to the html <tagNameAndAttributes>span of all elements</tagName>
+    // if element is empty, only adds <tagNameAndAttributes> and push the 
+    // closing </tagName> on the stack waiting for an .end()
+    this.htmlCode += '<'+tagNameAnAttributes+'>';
+    var tagEnd = '</'+tagNameAnAttributes.split(' ')[0]+'>';
+    if (elements == undefined) {
       this.tagsEnd.push(tagEnd);
       return this;
     }
@@ -646,7 +680,75 @@ a('dragstart')
     return new jc.HTML(htmlcode);
   }
 
+  // interactive Elements ////////////////////////////////////////////////////////
+  jc.JcElement = function(id) {
+    this.name = id;
+    jc.vars[id] = this;
+  }
+
+  jc.JcElement.prototype.top = function(newValue) {
+    // if newValue exists, set a new value and return the element
+    //   otherwise return the value of the top of the corresponding element
+    if (newValue === undefined) return $('#'+this.name).css('top');
+    $('#'+this.name).css('top',newValue);
+    return this;
+  }
+
+  jc.JcElement.prototype.left = function(newValue) {
+    // if newValue exists, set a new value and return the element
+    //   otherwise return the value of the left of the corresponding element
+    if (newValue === undefined) return $('#'+this.name).css('left');
+    $('#'+this.name).css('left',newValue);
+    return this;
+  }
+
+  jc.JcElement.prototype.height = function(newValue) {
+    // if newValue exists, set a new value and return the element
+    //   otherwise return the value of the height of the corresponding element
+    if (newValue === undefined) return $('#'+this.name).css('height');
+    $('#'+this.name).css('height',newValue);
+    return this;
+  }
+
+  jc.JcElement.prototype.width = function(newValue) {
+    // if newValue exists, set a new value and return the element
+    //   otherwise return the value of the top of the corresponding element
+    if (newValue === undefined) return $('#'+this.name).css('width');
+    $('#'+this.name).css('width',newValue);
+    return this;
+  }
+
+  jc.JcElement.prototype.toString = function() {
+    return '[object JcElement]';
+  }
+
+  // JcCheckBox //////////////////////////////////////////////////
+
+  jc.JcCheckBox = function(id) {
+    this.name = id;
+    jc.vars[id] = this;
+  }
+
+  $.extend(jc.JcCheckBox.prototype,jc.JcElement.prototype);
+
+  jc.JcCheckBox.prototype.checked = function(newState) {
+    // when used without parameters, return the current state of the corresponding checkBox (generally created with output.iCheckBox)
+    // (same as valueOf)
+    // with a parameter (true or false) set a new state to the checked attribute of the iCheckBox
+    if (newState===undefined) return $('#'+this.name).attr('checked');
+    $('#'+this.name).attr('checked',newState);
+    return this;
+  }
   
+  jc.JcCheckBox.prototype.valueOf = function() {
+    // returns the state of the checked attribute
+    return this.checked();
+  }
+ 
+  jc.JcCheckBox.prototype.toString = function() {
+    return '[object JcCheckBox]';
+  }
+
   // helpers /////////////////////////////////////////////
 
   function range(min,max) {    //TODO devrait être un itérateur, mais n'existe pas encore dans cette version
