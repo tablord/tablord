@@ -583,36 +583,22 @@ a('dragstart')
     return this;
   }
 
-  jc.HTML.prototype.interactiveDiv = function(style) {
+  jc.HTML.prototype.interactiveDiv = function(style/*,iElements*/) {
     // adds an DIV that will allow interactivity of its internal component 
     // since it will prevent bubbling events up to the EDI
     // it will also create an internal DIV position:relative so that 
     // internal component can be positionned in an absolute manner
-    // this call has to be terminated by a call to .end()
+    // for all iElements passed in parameters .control() will be called
 
     this.htmlCode += '<DIV class=INTERACTIVE style="'+style+'"><DIV style="position:relative;">';
-    this.tagsEnd.push('</DIV></DIV>');
+    for (var i=1; i< arguments.length; i++) {
+      var h = arguments[i].control()
+      this.htmlCode += h;
+    }
+    this.htmlCode += '</DIV></DIV>';
     return this;
   }
 
-  jc.HTML.prototype.iCheckBox = function(id,style,text,checked) {
-    // adds a HTML checkBox with id=id and text as content
-    // if checked = true, it will be initalized to check
-    // this checkBox will have the class IELEMENT and so will be positionned absolute
-    // style if defined will be added to the style, allowing to specify top, left borders...
-    // at the same time a JcCheckBox is created with the same id allowing to interact
-    // easily with the checkBox in user code
-    this.htmlCode += '<SPAN class=IELEMENT'+(style?' style="'+style+'"':'')+'><INPUT id='+id+' type="checkbox"'+(checked?' CHECKED>':'>')+text+'</INPUT></SPAN>';
-    new jc.JcCheckBox(id);
-    return this;
-  }
-
-  jc.HTML.prototype.iDiv = function(id,style,content) {
-    this.htmlCode += '<DIV id='+id+' class=IELEMENT'+(style?' style="'+style+'"':'')+'>'+(content?content:'')+'</DIV>';
-    new jc.JcElement(id);
-    return this;
-  }
- 
 
   jc.HTML.prototype.tag = function(tagNameAnAttributes,elements) {
     // adds to the html <tagNameAndAttributes>span of all elements</tagName>
@@ -683,50 +669,115 @@ a('dragstart')
   // interactive Elements ////////////////////////////////////////////////////////
   jc.JcElement = function(id) {
     this.name = id;
+    this._css = {};
     jc.vars[id] = this;
+    
   }
 
-  jc.JcElement.prototype.top = function(newValue) {
+  jc.JcElement.prototype.css = function(cssAttr,newValue) {
+    // if newValue exists, set a new value and return the element
+    //   otherwise return the value of the css atribute of the corresponding element
+    //   note that if no HTML element exists, cached values will be used
+    //   so the user code can use an element independently from beeing displayed
+    if (newValue === undefined) return $('#'+this.name).css(cssAttr) || this._css[cssAttr];
+    $('#'+this.name).css('top',newValue);
+    this._css[cssAttr] = newValue;
+    return this;
+ }    
+  
+ jc.JcElement.prototype.top = function(newValue) {
     // if newValue exists, set a new value and return the element
     //   otherwise return the value of the top of the corresponding element
-    if (newValue === undefined) return $('#'+this.name).css('top');
-    $('#'+this.name).css('top',newValue);
-    return this;
+    return this.css('top',newValue);
   }
 
   jc.JcElement.prototype.left = function(newValue) {
     // if newValue exists, set a new value and return the element
     //   otherwise return the value of the left of the corresponding element
-    if (newValue === undefined) return $('#'+this.name).css('left');
-    $('#'+this.name).css('left',newValue);
-    return this;
+    return this.css('left',newValue);
   }
 
   jc.JcElement.prototype.height = function(newValue) {
     // if newValue exists, set a new value and return the element
     //   otherwise return the value of the height of the corresponding element
-    if (newValue === undefined) return $('#'+this.name).css('height');
-    $('#'+this.name).css('height',newValue);
-    return this;
+    return this.css('height',newValue);
   }
 
   jc.JcElement.prototype.width = function(newValue) {
     // if newValue exists, set a new value and return the element
     //   otherwise return the value of the top of the corresponding element
-    if (newValue === undefined) return $('#'+this.name).css('width');
-    $('#'+this.name).css('width',newValue);
+    return this.css('width',newValue);
+  }
+
+  jc.JcElement.prototype.style = function() {
+    // return the style attribute based on ._css
+    var s = ' style="';
+    for (var attr in this._css) {
+      s+= attr+':'+this._css[attr]+';';
+    }
+    return s+'"';
+  }
+
+  jc.JcElement.prototype.html = function(newHtml) {
+    // get or set the htmlContent of the Element
+    if (newHtml === undefined) return $('#'+this.name).html() || this._html;
+    $('#'+this.name).html(newHtml);
+    this._html = newHtml;
     return this;
   }
 
   jc.JcElement.prototype.toString = function() {
-    return '[object JcElement]';
+    return '[object JcElement '+this.name+']';
+  }
+
+  jc.JcElement.prototype.control = function() {
+    return '<DIV id='+this.name+' class=IELEMENT'+this.style()+'></DIV>';
+  }
+
+
+  // JcValue //////////////////////////////////////////////////
+
+  jc.JcValue = function(id,text) {
+    jc.JcElement.call(this,id);
+    this._value = 0;
+    this.text = text || id;
+  }
+
+  $.extend(jc.JcValue.prototype,jc.JcElement.prototype);
+
+  jc.JcValue.prototype.value = function(newValue) {
+    // when used without parameters, return the current value
+    // (same as valueOf)
+    // with a parameter set a new value
+    if (newValue===undefined) return ($('#'+this.name).val() || this._value);
+    $('#'+this.name).val(newValue);
+    this._value = newValue;
+    return this;
+  }
+  
+  jc.JcValue.prototype.valueOf = function() {
+    // returns the state of the checked attribute
+    return this.value();
+  }
+ 
+  jc.JcValue.prototype.toString = function() {
+    return '[object JcValue '+this.name+']';
+  }
+
+  jc.JcValue.prototype.control = function() {
+    // return the HTML code for a checkBox with id=id and text as content
+    // this checkBox will have the class IELEMENT and so will be positionned absolute
+    // at the same time a JcCheckBox is created with the same id allowing to interact
+    // easily with the checkBox in user code
+    return '<SPAN class=IELEMENT'+this.style()+'>'+this.text+'<INPUT id='+this.name+' type="number" value='+this._value+'></INPUT></SPAN>';
   }
 
   // JcCheckBox //////////////////////////////////////////////////
 
-  jc.JcCheckBox = function(id) {
-    this.name = id;
-    jc.vars[id] = this;
+  jc.JcCheckBox = function(id,text) {
+    jc.JcElement.call(this,id);
+    this._checked = false;
+    this.text = text;
   }
 
   $.extend(jc.JcCheckBox.prototype,jc.JcElement.prototype);
@@ -735,8 +786,9 @@ a('dragstart')
     // when used without parameters, return the current state of the corresponding checkBox (generally created with output.iCheckBox)
     // (same as valueOf)
     // with a parameter (true or false) set a new state to the checked attribute of the iCheckBox
-    if (newState===undefined) return $('#'+this.name).attr('checked');
+    if (newState===undefined) return ($('#'+this.name).attr('checked') || this._checked);
     $('#'+this.name).attr('checked',newState);
+    this._checked = newState;
     return this;
   }
   
@@ -747,6 +799,14 @@ a('dragstart')
  
   jc.JcCheckBox.prototype.toString = function() {
     return '[object JcCheckBox]';
+  }
+
+  jc.JcCheckBox.prototype.control = function() {
+    // return the HTML code for a checkBox with id=id and text as content
+    // this checkBox will have the class IELEMENT and so will be positionned absolute
+    // at the same time a JcCheckBox is created with the same id allowing to interact
+    // easily with the checkBox in user code
+    return '<SPAN class=IELEMENT'+this.style()+'><INPUT id='+this.name+' type="checkbox"'+(this._checked?' CHECKED>':'>')+this.text+'</INPUT></SPAN>';
   }
 
   // helpers /////////////////////////////////////////////

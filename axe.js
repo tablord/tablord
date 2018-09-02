@@ -2,7 +2,8 @@
 
 function Axe (name) {
   this._name = name;
-  this.functions = [{f:Axe.prototype.faccelerate,init:{t:0,p:0,v:0,a:0}}];
+  this.functions = [{f:Axe.prototype.faccelerate,init:{t:-Infinity,p:0,v:0,a:0}}];
+  this.decimals = 3;
 }
 
 Axe.prototype.toString = function() {
@@ -23,6 +24,7 @@ Axe.prototype.appendFunction = function (f,init) {
 
 Axe.prototype.faccelerate = function (init,t) {
   //returns {t:t,p:xxx,v:xxx,a:init.a,j:xxxx} for a given t
+  if (init.t == -Infinity) return {t:t,a:init.a,v:init.v,p:init.p};
   var dt = t-init.t;
   var res = {t:t,a:init.a};
   res.v = init.v+init.a*(t-init.t);
@@ -39,49 +41,65 @@ Axe.prototype.accelerate = function(init){
   return this;
 }
 
-Axe.prototype.move = function(init,output){
-  var t = init.t || (this.simulation && this.simulation.time$s);
-  var at_t = this.at(t);
-  var d = init.p - at_t.p;
-  var dir = d>0?1:-1;
-  var v = at_t.v;
-  var defaults = d>=0?this.forward:this.backward;
-trace(init,{t:t,d:d,v:v},defaults)
+Axe.prototype.move = function(init){
 
+//TODO pour les petits déplacement (d < df) ce n'est pas encore ok !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+  var t,t1,tc,t2,t3,tf,ts,a1,a2,a3,v0,v1,v2,v3,d,d1,d2,d3,dc,ds,df, dir,at_t,defaults;
+  t = init.t || (this.simulation && this.simulation.time$s);
+  at_t = this.at(t);
+  d = init.p - at_t.p;
+  dir = d>0?1:-1;
+  v0 = at_t.v;
+  defaults = d>=0?this.forward:this.backward;
 
-  var a1 = init.a1 ||  init.a || defaults.a1;
-  var a2 = init.a2 || -init.a || defaults.a2;
-  var a3 = init.a3 || -init.a || defaults.a3;
+  a1 = init.a1 ||  init.a || defaults.a1;
+  a2 = init.a2 || -init.a || defaults.a2;
+  a3 = init.a3 || -init.a || defaults.a3;
 
-
-  var v3 = init.v3 || defaults.v3 || 0;
-  var v2 = init.v2 || defaults.v2 || v3;
-  var v1 = init.v1 || defaults.v1;
-
-  if ((v2==0)  && ((tf != undefined) || (df != undefined))) {
-    throw new Error("can't specify tf or df if V2==0")
-  }
-  if ((init.df != undefined) && (init.tf != undefined)) {
-    throw new Error("can't specify both df and tf together")
-  }
+  v3 = init.v3 || defaults.v3 || 0;
+  v2 = init.v2 || defaults.v2 || v3;
+  v1 = init.v1 || defaults.v1;
+  if ((v1*dir<0)||(v2*dir<0)||(v3*dir<0)) throw new Error('v1:'+v1+' v2:'+v2+' v3:'+v3+'must be same sign as deplacement:'+d+'(p(t:'+t+'):'+at_t.p+'-init.p:'+init.p+')');
+  if ((a1*dir<0)||(a2*dir>0)||(a3*dir>0)) throw new Error('a1:'+a1+'must be same sign and a2:'+a2+' a3:'+a3+'must be oposite sign as deplacement:'+d);
 
   do {
     // make sure that abs(v1)>abs(v2)>abs(v3)
     v2 = v1*dir > v2*dir?v2:v1;
     v3 = v2*dir > v3*dir?v3:v2;
 
-    var t1 = (v1-v)/a1;
-    var t2 = (v2-v1)/a2;
-    var t3 = (v3-v2)/a3;
+    t1 = (v1-v0)/a1;
+    t2 = (v2-v1)/a2;
+    t3 = (v3-v2)/a3;
 
-    var df = init.df || (init.tf)?init.tf*v2 + t3*(v2+v3)/2 : 0;
-    var tf = init.tf || (v2 != 0)?(df-(v2+v3)/2/a3)/v2 : 0;
-    var ts = tf-t3;
+    d1 = (v0+v1)/2*t1;
+    d2 = (v1+v2)/2*t2;
+    d3 = (v2+v3)/2*t3;
+    if (v2==0) {
+      df = 0;
+      tf = init.tf || 0;
+    }
+    else {
+      if ((init.df && init.tf) !== undefined) {
+        throw new Error("can't specify both df and tf together")
+      }
+      if (init.tf) {
+        tf = init.tf;
+        if (tf < t3) throw new Error('tf:'+tf+' must be > t3:'+t3);
+        ts = tf-t3;
+        ds = ts*v2;
+        df = ds+d3;
+      }    
+      else if (init.df) {
+        df = init.df;
+        if (df*dir < d3*dir) throw new Error('df:'+df+' must be longer than d3:'+d3);
+        ds = df-d3;
+        ts = ds/v2;
+        tf = ts+t3;
+      }
+      else throw new Error("either df or tf must be specified when v2!=0")
+    }
 
-    var d1 = (v+v1)/2*t1;
-    var d2 = (v1+v2)/2*t2;
-    var d3 = (v2+v3)/2*t3;
     var dc = d-d1-d2-df;
     var tc = dc / v1;
     if (tc < 0) {
@@ -89,37 +107,29 @@ trace(init,{t:t,d:d,v:v},defaults)
     }
   }
   while (tc < 0);
+  
+  trace({t:t,t1:t1,tc:tc,t2:t2,t3:t3,tf:tf,ts:ts,a1:a1,a2:a2,a3:a3,v1:v1,v2:v2,v3:v3,d:d,d1:d1,d2:d2,d3:d3,dc:dc,df:df})
+  
 
   // if t is before the last function init time, it means that the user initiate a move before the end of the 
   // previous move. we have to cancel the planned future function in order to replace by new ones
   var i = this.functions.length-1;
-  while ((i >= 0) && (t < this.functions[i].init.t)) {
+  while ((i >= 0) && (t <= this.functions[i].init.t)) {
     i--;
   }
   this.functions.length = i+1;
 
   // now add the move
-trace('acc');
   this.appendFunction(Axe.prototype.faccelerate,{t:t,a:a1});
-trace('vc');
   this.appendFunction(Axe.prototype.faccelerate,{t:t+t1,a:0});
-trace('dec');
   this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc,a:a2});
-trace('approach');
   this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2,a:0});
-trace('approach ok')
   if (ts>0) {
-trace('final')
     this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2+ts,a:a3});
-trace('final ok')
   }
   if (t3>0) {
-trace('target',{t:t,t1:t1,tc:tc,t2:t2,t3:t3,tf:tf,ts:ts,a1:a1,a2:a2,a3:a3,v1:v1,v2:v2,v3:v3,d:d,d1:d1,d2:d2,d3:d3,dc:dc,df:df})
     this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2+ts+t3,a:0});
-trace('target reached')
   }
-  if (output) output.inspect({t:t,t1:t1,tc:tc,t2:t2,t3:t3,tf:tf,ts:ts,a1:a1,a2:a2,a3:a3,v1:v1,v2:v2,v3:v3,d:d,d1:d1,d2:d2,d3:d3,dc:dc,df:df})
-                    .html(this.move.help());
   return this;
 }
 
@@ -133,9 +143,9 @@ Axe.prototype.move.help = function() {
          "   |  a1 /                        \\ |ts|t|       \n"+
          "   |    /          dc              \\|  |3|       \n"+
          "   |   /                            +--+ v2      \n"+
-         "   |  /d1                        d2 |   \\|       \n"+
+         "   |  /d1                        d2 |   \\|a3    \n"+
          "   | /                              |    + v3    \n"+
-         "   |+ v                             |(df)|       \n"+
+         "   |+ v0                            |(df)|       \n"+
          "   +---------------------------------------------\n";
   h = '<pre>'+jc.toHtml(h)+'</pre>';
   h += 'by default: \n'+
@@ -184,7 +194,7 @@ Axe.prototype.span = function() {
     var f = this.functions[i];
     h += '<tr><td>'+f.f.toString()+'</td>';
     for (var col in cols) {  
-      h += '<td>'+((f.init[col]!==undefined)?f.init[col]:'--')+'</td>';
+      h += '<td>'+((f.init[col]!==undefined)?f.init[col].toFixed(this.decimals):'--')+'</td>';
     }
     h += '</tr>';
   }
