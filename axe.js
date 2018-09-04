@@ -2,7 +2,7 @@
 
 function Axe (name) {
   this._name = name;
-  this.functions = [{f:Axe.prototype.faccelerate,init:{t:-Infinity,p:0,v:0,a:0}}];
+  this.functions = [{f:Axe.prototype.faccelerate,init:{t:-Infinity,p:0,v:0,a:0,phase:'init'}}];
   this.decimals = 3;
 }
 
@@ -100,6 +100,15 @@ Axe.prototype.move = function(init){
       else throw new Error("either df or tf must be specified when v2!=0")
     }
 
+    if (df*dir > d*dir) {
+      // the distance is so short that breaking distance is bigger
+      // in that case recalculate for v2 as highest speed
+      v2 = v3;
+      df = ds = tf = ts = 0;
+      tc = -1; // just to force the while to loop again
+      continue;
+    }
+
     var dc = d-d1-d2-df;
     var tc = dc / v1;
     if (tc < 0) {
@@ -120,15 +129,15 @@ Axe.prototype.move = function(init){
   this.functions.length = i+1;
 
   // now add the move
-  this.appendFunction(Axe.prototype.faccelerate,{t:t,a:a1});
-  this.appendFunction(Axe.prototype.faccelerate,{t:t+t1,a:0});
-  this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc,a:a2});
-  this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2,a:0});
+  this.appendFunction(Axe.prototype.faccelerate,{t:t,a:a1,phase:'t1'});
+  this.appendFunction(Axe.prototype.faccelerate,{t:t+t1,a:0,phase:'tc'});
+  this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc,a:a2,phase:'t2'});
+  this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2,a:0,phase:'ts'});
   if (ts>0) {
-    this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2+ts,a:a3});
+    this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2+ts,a:a3,phase:'t3'});
   }
   if (t3>0) {
-    this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2+ts+t3,a:0});
+    this.appendFunction(Axe.prototype.faccelerate,{t:t+t1+tc+t2+ts+t3,a:0,phase:'stop'});
   }
   return this;
 }
@@ -194,7 +203,7 @@ Axe.prototype.span = function() {
     var f = this.functions[i];
     h += '<tr><td>'+f.f.toString()+'</td>';
     for (var col in cols) {  
-      h += '<td>'+((f.init[col]!==undefined)?f.init[col].toFixed(this.decimals):'--')+'</td>';
+      h += '<td>'+((f.init[col]!==undefined)?(typeof f.init[col] == 'number'?f.init[col].toFixed(this.decimals):f.init[col]):'--')+'</td>';
     }
     h += '</tr>';
   }
