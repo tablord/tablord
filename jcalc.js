@@ -423,6 +423,7 @@ a('dragstart')
     return jc.html(h);
   }
 
+//***********************trouver the bug !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   Table.prototype.getEditableValue = function(editor) {
     return this.cell(Number(editor.attr('jcRow')),editor.attr('jcCol'));
   }
@@ -430,6 +431,7 @@ a('dragstart')
   Table.prototype.setEditableValue = function(editor) {
     this.setCell(Number(editor.attr('jcRow')),editor.attr('jcCol'),editor.value);
     jc.setModified(true);
+    var obj = this;
     window.setTimeout(function(){obj.updateCode();jc.run()},0);
   }
 

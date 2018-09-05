@@ -445,6 +445,8 @@
   //                              only the body of the function (usually an expression)
   //   .setEditableValue(editor)  will be called by the editor when the user has finished to edit a given value.
   //                              this method has the responsibility to upgrade the code
+  //   .updateCode()              not strictly speaking part of the Editor interface, but common practice to encapsulate the code update
+  //                              in updateCode and call this function in setEditableValue through a window.setTimout(
   //   
   //--------------
   //  jc.editor is a single instance object that provides most of the services and that dialogs with the DOM elements composing
@@ -498,7 +500,7 @@
 
   jc.Editor.eventHandler = function(event) {
     // the event handler that will recieve click, keypress and change event
-    obj = jc.vars[event.target.jcObject];
+    var obj = jc.vars[event.target.jcObject];
     if (obj == undefined) throw new Error('event on a editor linked to a non existing object '+event.target.jcObject);
     switch (event.type) {
       case 'click':
