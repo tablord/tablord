@@ -555,27 +555,33 @@ a('dragstart')
   }
     
   jc.HTML.prototype.p = function (/*elements*/) {
-    this.tag('P',arguments);
+    this._tag('P',arguments);
     return this;
   }
   jc.HTML.prototype.ul = function (/*elements*/) {
-    this.tag('UL',arguments);
+    this._tag('UL',arguments);
     return this;
   }
   jc.HTML.prototype.li = function (/*elements*/) {
-    this.tag('LI',arguments);
+    this._tag('LI',arguments);
     return this;
   }
   jc.HTML.prototype.pre = function (/*elements*/) {
-    this.tag('PRE',arguments);
+    this._tag('PRE',arguments);
     return this;
   }
   jc.HTML.prototype.hr = function (){
-    this.tag('HR',[]);
+    this._tag('HR',[]);
     return this
   }
   jc.HTML.prototype.h = function (/*elements*/) {
-    this.tag('H'+jc.htmlIndent,arguments);
+    this._tag('H'+jc.htmlIndent,arguments);
+    return this;
+  }
+  jc.HTML.prototype.tag = function(tagNameAndAttributes /*,elements*/) {
+    var elements = [];
+    for (var i = 1; i<arguments.length; i++) elements.push(arguments[i]);
+    this._tag(tagNameAndAttributes,elements);
     return this;
   }
 
@@ -602,7 +608,7 @@ a('dragstart')
   }
 
 
-  jc.HTML.prototype.tag = function(tagNameAnAttributes,elements) {
+  jc.HTML.prototype._tag = function(tagNameAnAttributes ,elements) {
     // adds to the html <tagNameAndAttributes>span of all elements</tagName>
     // if element is empty, only adds <tagNameAndAttributes> and push the 
     // closing </tagName> on the stack waiting for an .end()

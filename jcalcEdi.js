@@ -178,25 +178,49 @@
 
 
   function trace(/*objects*/) {
-    if (trace.on) { 
+    if (trace._on) { 
       var message = '';
       for (var i=0; i<arguments.length; i++){
         message += jc.inspect(arguments[i]).span();
       }
-      jc.traces.push(message);
-      if (jc.traces.length > jc.tracesMaxLength) {
-        jc.traces.pop();
-        jc.traces[0]='...';
+      trace.messages.push(message);
+      if (trace.messages.length > jc.tracesMaxLength) {
+        trace.messages.pop();
+        trace.messages[0]='...';
       }
     }
   }
 
-  trace.on = true;  // user can disable trace with trace.on = false anywhere in its code
-  
+  trace._on = false;
+  trace.stack = [];
+  trace.messages = [];
+  trace.on = function() {
+    // enable the capture of trace
+    // return trace for method chaining
+    trace._on = true;
+    return trace
+  };
+  trace.off = function() {
+    // disable the capture of trace
+    // return trace for method chaining
+    trace._on = false; return trace
+  };
+  trace.push = function() {
+    // push the current trace state on a stack
+    // return trace for method chaining
+    trace.stack.push(trace._on);
+    return trace
+  };
+  trace.pop = function() {
+    // restore the previously pushed trace state from the stack
+    // return trace for method chaining
+    trace._on = trace.stack.pop();
+    return trace
+  };
   trace.span = function () {
-    if (jc.traces.length > 0){
-      var h = '<DIV class=TRACE>'+jc.traces.length+' traces:<table class=DEBUG><tr><td class=TRACE>'+jc.traces.join('</td></tr><tr><td class=TRACE>')+'</td></tr></table></DIV>';
-      jc.traces = [];
+    if (trace.messages.length > 0){
+      var h = '<DIV class=TRACE>'+trace.messages.length+' traces:<table class=DEBUG><tr><td class=TRACE>'+trace.messages.join('</td></tr><tr><td class=TRACE>')+'</td></tr></table></DIV>';
+      trace.messages = [];
       return new jc.HTML(h);
     }
     return '';
@@ -1158,8 +1182,8 @@
 
   jc.displayResult = function(result,output) {
       var h = jc.format(result);    // result has to be calculated first, since programmer can use trace in functions like span()
-      output.outputElement.innerHTML = trace.span()+output.html(h).toString();
-      $(output.outputElement).removeClass('ERROR').addClass('SUCCESS');
+      output.outputElement.innerHTML = output.html(h).toString();
+      $(output.outputElement).removeClass('ERROR').addClass('SUCCESS').before(trace.span().toString());
   }
 
   jc.displayError = function(error,output) {
@@ -1264,6 +1288,7 @@
 
  
   jc.execAll = function() {
+    $('.TRACE').remove();
     jc.clearTimers();
     jc.finalizations = [];
     jc.vars = {}; // run from fresh
@@ -1276,6 +1301,7 @@
   }
 
   jc.execUntilSelected = function() {
+    $('.TRACE').remove();
     jc.clearTimers();
     jc.finalizations = [];
     jc.vars = {}; // run from fresh
