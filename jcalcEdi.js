@@ -319,6 +319,13 @@
     return ('00000000000000000'+integer).slice(-numberOfDigits);
   }
 
+  jc.limit = function (value,min,max) {
+    // return value bounded by min and max
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
+  }
+
   jc.purgeJQueryAttr = function(html) {
     // supress all jqueryxxx="yy" attributes, since they are meaningless for the user and also compromise the testability
     // since they depend on the context
@@ -748,7 +755,7 @@
   jc.outputElement = function(element) {
     // return the output element associated with element if any
     // if applied on another element than id=codexxxx return undefined;
-    if (element.id.slice(0,4) !== 'code') return;
+    if ((element == undefined) || (element.id.slice(0,4) !== 'code')) return;
     var outId = element.id.replace(/code/,"out");
     var out = window.document.getElementById(outId);
     if (out == undefined) {
@@ -762,7 +769,7 @@
   jc.testElement = function(element) {
     // returns the test element if any
     // if applied on another element than id=codexxxx return undefined;
-    if (element.id.slice(0,4) !== 'code') return;
+    if ((element == undefined) || (element.id.slice(0,4) !== 'code')) return;
     return window.document.getElementById(element.id.replace(/code/,"test"));
   }
 
@@ -920,11 +927,14 @@
     var out = jc.outputElement(jc.selectedElement);
     var test = jc.testElement(jc.selectedElement);
     if (test == undefined) {
-      out.insertAdjacentHTML('afterend','<DIV id="'+jc.selectedElement.id.replace(/code/,"test")+'" class=TEST>'+out.innerHTML+'</DIV>');
+      $(out).after($('<DIV id="'+jc.selectedElement.id.replace(/code/,"test")+'" class=TEST>'+out.innerHTML+'</DIV>'));
     }
-    else {
+    else if (!$(test).hasClass('SUCCESS')) {
       test.innerHTML = out.innerHTML;
       $(test).removeClass('ERROR').addClass('SUCCESS');
+    }
+    else {
+      $(test).remove();
     }
   }
 
@@ -1001,19 +1011,20 @@
   }
 
   jc.moveLocalToolBars = function(element) {
-    $('#codeId').text(element.id);
     if (element == undefined) throw new Error('moveLocalToolBar(undefined) is forbidden');
+
+    jc.detachLocalToolBars();
     
     if ($(element).hasClass('EMBEDDED')) {
-      jc.detachLocalToolBars();
       return;
     }
 
     $(element).before(jc.topToolBar$);
     lastElementOfBlock = jc.testElement(element) || jc.outputElement(element) || element;
     $(lastElementOfBlock).after(jc.bottomToolBar$);
-    jc.objectToolBar$.empty(); //TODO!!!!!!!!!!!!!   vérifier l'impact sur les événements !!!!!!!!!!!!!!!!!!!!
-
+    jc.objectToolBar$.children().detach(); //TODO!!!!!!!!!!!!!   vérifier l'impact sur les événements !!!!!!!!!!!!!!!!!!!!
+//******^^^^^^^^^^^^ est-ce ok??
+                                            
     if ($(element).hasClass('SECTION')) {
       $('.SECTIONCONTAINER',element).append(jc.insideToolBar$);
     }
@@ -1024,6 +1035,7 @@
       }
     }
   }
+
 
   jc.$editables = function(element) {
     // returns a JQuery of the tags that are editable in element
@@ -1050,10 +1062,12 @@
     // set the new selection
     jc.selectedElement = element;
     if (element == undefined){
+      $('#codeId').text('no selection');
       jc.detachToolBars();
       return;
     }
     jc.menu$.show(500);
+    $('#codeId').text(element.id);
     jc.moveLocalToolBars(element);
     $(element).addClass('SELECTED');
     jc.$editables(element).attr('contentEditable',true);
@@ -1257,6 +1271,7 @@
       }
       ,interval));
     }
+    return new Date().toString();
   }
 
   jc.clearTimers = function () {
@@ -1351,6 +1366,11 @@
   }
 
   jc.showOutputHtml = function(checkBox) {
+    var out = jc.outputElement(jc.selectedElement) || {id:'no output',innerHTML:''};
+    var test = jc.testElement(jc.selectedElement) || {id:'no test',innerHTML:''};
+    window.alert(out.id+':\n'+out.innerHTML+'\n\n'+
+                 test.id+':\n'+test.innerHTML);
+/*
     var outHtmlId = 'html'+jc.selectedElement.id;
     var outHtml = window.document.getElementById(outHtmlId);
     if (!checkBox.checked && outHtml) {
@@ -1362,6 +1382,7 @@
       var outHtml = window.document.getElementById(outHtmlId);
     }
     outHtml.innerHTML = jc.toHtml(out.innerHTML);
+*/
   }
 
 

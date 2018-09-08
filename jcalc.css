@@ -177,7 +177,8 @@ pre {
   border:solid blue 3px;
   color: blue;
 }
-
+.DIFFSAME,
+.USERSUCCESS,
 .SUCCESS {
   background-color: 8dff60;
   color: black;
@@ -194,6 +195,8 @@ pre {
   border:solid blue 1px;
 }
 
+.DIFFERENT,
+.USERERROR,
 .ERROR {
   background-color: ff4d4d;
   color: black;

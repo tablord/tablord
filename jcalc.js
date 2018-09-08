@@ -36,6 +36,7 @@
       this.func = undefined;
       this.type = typeof value;
     }
+    return this;
   }
 
   V.prototype.valueOf = function () {
@@ -157,7 +158,7 @@
     throw new Error(this.error);
   }
 
-  // table //////////////////////////////////////////////
+  // Row //////////////////////////////////////////////
 
   function Row(obj) {
     this._ = {};
@@ -191,6 +192,7 @@
     for (var col in this._) {
       func(col,this._[col]);
     }
+    return this;
   }
 
   Row.prototype.toJSON = function() {
@@ -226,12 +228,10 @@
   Row.prototype.list = function() {
     var h = '<table>';
     this.eachCol(function (col,val) {h += '<tr><th>'+col+'</th><td>'+val+'</td></tr>'});
-    return h+'</table>';
+    return jc.html(h+'</table>');
   }
 
-  Row.prototype.isRow = function() {
-    return true;
-  }
+  Row.prototype.isRow = true;
 
 // Table //////////////////////////////////////////////////////////////
 
@@ -267,7 +267,13 @@
   }
 
   Table.prototype.add = function(row) {
-    row = new Row(row); // transform it to a Row
+    // add a row
+    // row can be either a simple object or a Row object
+    // return the table for method chaining
+
+    if (!row.isRow) {
+      row = new Row(row); // transform it to a Row
+    }
     row.table = this;
     this[this.length++] = row;
     if (row._._id) {
@@ -303,6 +309,7 @@
 
   Table.prototype.setCell = function(row,col,value) {
     this[row].setCell(col,value);
+    return this;
   }
 
   Table.prototype.sort = function(cols) {
@@ -315,11 +322,11 @@
     function order(a,b) {
       for (var col in cols) {
         if (typeof cols[col] == 'function') {
-          var res = cols[col](a[col],b[col])
+          var res = cols[col](a.cell(col),b.cell(col))
           if (res != 0) return res;
         }
-        if (a[col] > b[col]) return  cols[col];
-        if (a[col] < b[col]) return -cols[col];
+        if (a.cell(col) > b.cell(col)) return  cols[col];
+        if (a.cell(col) < b.cell(col)) return -cols[col];
       }
       return 0;
     }
@@ -463,10 +470,6 @@ a('dragstart')
     return jc.vars[name] = new Table(name);
   }
 
-/***************************************
- les evenements keypress ne semblent être reçu qu'au niveau le plus haut de content editable
-******************************************/
-
   // Output ///////////////////////////////////////////////
 
   function newOutput (codeElement,outputElement) {
@@ -534,23 +537,23 @@ a('dragstart')
 
   jc.HTML.prototype.showDiff = function(e1,e2) {
     if (e1.length != e2.length) {
-      this.htmlCode += '<span class=ERROR>e1.length=='+e1.length+' != e2.length=='+e2.length+'</span>';
+      this.htmlCode += '<span class=DIFFSAME>e1.length=='+e1.length+' != e2.length=='+e2.length+'</span>';
     }
     for (var i=0; (i<e1.length) && (i<e2.length); i++) {
       if (e1.charAt(i) != e2.charAt(i)) break;
     }
-    this.htmlCode += '<span class=SUCCESS>'+e1.slice(0,i)+'</span><br>e1:<span class=ERROR>'+e1.slice(i)+'</span><br>e2:<span class=ERROR>'+e2.slice(i)+'</span>';
+    this.htmlCode += '<span class=DIFFSAME>'+e1.slice(0,i)+'</span><br>e1:<span class=DIFFERENT>'+e1.slice(i)+'</span><br>e2:<span class=DIFFERENT>'+e2.slice(i)+'</span>';
     return this;
   }
 
   jc.HTML.prototype.showHtmlDiff = function(e1,e2) {
     if (e1.length != e2.length) {
-      this.htmlCode += '<span class=ERROR>e1.length=='+e1.length+' != e2.length=='+e2.length+'</span>';
+      this.htmlCode += '<span class=DIFFERENT>e1.length=='+e1.length+' != e2.length=='+e2.length+'</span>';
     }
     for (var i=0; (i<e1.length) && (i<e2.length); i++) {
       if (e1.charAt(i) != e2.charAt(i)) break;
     }
-    this.htmlCode += '<span class=SUCCESS>'+jc.toHtml(e1.slice(0,i))+'</span><br>e1:<span class=CODEINERROR>'+jc.toHtml(e1.slice(i))+'</span><br>e2:<span class=CODEINERROR>'+jc.toHtml(e2.slice(i))+'</span>';
+    this.htmlCode += '<span class=DIFFSAME>'+jc.toHtml(e1.slice(0,i))+'</span><br>e1:<span class=DIFFERENT>'+jc.toHtml(e1.slice(i))+'</span><br>e2:<span class=DIFFERENT>'+jc.toHtml(e2.slice(i))+'</span>';
     return this;
   }
     
@@ -560,6 +563,10 @@ a('dragstart')
   }
   jc.HTML.prototype.ul = function (/*elements*/) {
     this._tag('UL',arguments);
+    return this;
+  }
+  jc.HTML.prototype.ol = function (/*elements*/) {
+    this._tag('OL',arguments);
     return this;
   }
   jc.HTML.prototype.li = function (/*elements*/) {
@@ -578,43 +585,29 @@ a('dragstart')
     this._tag('H'+jc.htmlIndent,arguments);
     return this;
   }
+
+  jc.HTML.prototype.indent = function(levels) {
+    // increment the header level
+    // levels: number of level to increment (default is 1)
+    levels = levels || 1;
+    jc.htmlIndent += levels;
+    return this;
+  }
+
   jc.HTML.prototype.tag = function(tagNameAndAttributes /*,elements*/) {
+    // adds to the html <tagNameAndAttributes>span of all elements</tagName>
+    // if element is empty, only adds <tagNameAndAttributes> and push the 
+    // closing </tagName> on the stack waiting for an .end()
     var elements = [];
     for (var i = 1; i<arguments.length; i++) elements.push(arguments[i]);
     this._tag(tagNameAndAttributes,elements);
     return this;
   }
 
-  jc.HTML.prototype.indent = function(levels) {
-    levels = levels || 1;
-    jc.htmlIndent += levels;
-    return this;
-  }
-
-  jc.HTML.prototype.interactiveDiv = function(style/*,iElements*/) {
-    // adds an DIV that will allow interactivity of its internal component 
-    // since it will prevent bubbling events up to the EDI
-    // it will also create an internal DIV position:relative so that 
-    // internal component can be positionned in an absolute manner
-    // for all iElements passed in parameters .control() will be called
-
-    this.htmlCode += '<DIV class=INTERACTIVE style="'+style+'"><DIV style="position:relative;">';
-    for (var i=1; i< arguments.length; i++) {
-      var h = arguments[i].control()
-      this.htmlCode += h;
-    }
-    this.htmlCode += '</DIV></DIV>';
-    return this;
-  }
-
-
   jc.HTML.prototype._tag = function(tagNameAnAttributes ,elements) {
-    // adds to the html <tagNameAndAttributes>span of all elements</tagName>
-    // if element is empty, only adds <tagNameAndAttributes> and push the 
-    // closing </tagName> on the stack waiting for an .end()
     this.htmlCode += '<'+tagNameAnAttributes+'>';
     var tagEnd = '</'+tagNameAnAttributes.split(' ')[0]+'>';
-    if (elements == undefined) {
+    if ((elements == undefined) || (!elements.length)) {
       this.tagsEnd.push(tagEnd);
       return this;
     }
@@ -634,18 +627,39 @@ a('dragstart')
     return this;
   }
 
+  jc.HTML.prototype.end = function() {
+    // close the last opened tag
+    this.htmlCode += this.tagsEnd.pop();
+    return this;
+  }  
+    
   jc.HTML.prototype.inspect = function(/*objects*/) {
+    // adds to the HTML object the inspection of all objects passed in parameters
     for (var i=0; i<arguments.length; i++) {
       this.htmlCode += jc.inspect(arguments[i]).span();
     }
     return this;
   }
 
-  jc.HTML.prototype.end = function() {
-    this.htmlCode += this.tagsEnd.pop();
+
+
+  jc.HTML.prototype.interactiveDiv = function(style/*,iElements*/) {
+    // adds an DIV that will allow interactivity of its internal component 
+    // since it will prevent bubbling events up to the EDI
+    // it will also create an internal DIV position:relative so that 
+    // internal component can be positionned in an absolute manner
+    // for all iElements passed in parameters .control() will be called
+
+    this.htmlCode += '<DIV class=INTERACTIVE style="'+style+'"><DIV style="position:relative;">';
+    for (var i=1; i< arguments.length; i++) {
+      var h = arguments[i].control()
+      this.htmlCode += h;
+    }
+    this.htmlCode += '</DIV></DIV>';
     return this;
-  }  
-    
+  }
+
+
   jc.HTML.prototype.sendTo = function(jquerySelector){
     var that = this;
     $(jquerySelector).each(function(i,e){e.innerHTML = that.html});
@@ -675,9 +689,10 @@ a('dragstart')
   }
 
   // interactive Elements ////////////////////////////////////////////////////////
-  jc.JcElement = function(id) {
+  jc.JcElement = function(id,css) {
     this.name = id;
-    this._css = {};
+    this._css = {top:0,left:0,height:0,width:0};
+    $.extend(this._css,css);
     jc.vars[id] = this;
     
   }
@@ -688,7 +703,7 @@ a('dragstart')
     //   note that if no HTML element exists, cached values will be used
     //   so the user code can use an element independently from beeing displayed
     if (newValue === undefined) return $('#'+this.name).css(cssAttr) || this._css[cssAttr];
-    $('#'+this.name).css('top',newValue);
+    $('#'+this.name).css(cssAttr,newValue);
     this._css[cssAttr] = newValue;
     return this;
  }    
