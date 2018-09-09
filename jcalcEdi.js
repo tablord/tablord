@@ -808,6 +808,7 @@
 
   jc.print = function() {
     jc.selectElement(undefined);
+    jc.menu$.hide();
     jc.content$.css('overflow','visible');
     window.print();
     jc.content$.css('overflow','scroll');
@@ -868,10 +869,10 @@
 
     $('#insideToolBar').remove();
     jc.insideToolBar$ = $('<DIV id=insideToolBar class=TOOLBAR/>')
-      .append('<BUTTON onclick=jc.insertNewSection(this.parentNode);>&#8593; new section &#8593;</BUTTON>')
-      .append('<BUTTON onclick=jc.insertNewRichText(this.parentNode);>&#8593; new rich text &#8593;</BUTTON>')
-      .append('<BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>&#8593; new code &#8593;</BUTTON>')
-      .append('<BUTTON onclick=jc.paste(this.parentNode);>&#8593; paste &#8593;</BUTTON>')
+      .append('<BUTTON onclick=jc.insertNewSection(this.parentNode);>new section</BUTTON>')
+      .append('<BUTTON onclick=jc.insertNewRichText(this.parentNode);>new rich text</BUTTON>')
+      .append('<BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>new code</BUTTON>')
+      .append('<BUTTON onclick=jc.paste(this.parentNode);>paste</BUTTON>')
 
     $('#bottomToolBar').remove();
     jc.bottomToolBar$ = $('<DIV id=bottomToolBar class=TOOLBAR></DIV>')
@@ -1000,11 +1001,6 @@
     jc.run();
   }
 
-  jc.detachToolBars = function() {
-    jc.menu$.hide(500);
-    jc.detachLocalToolBars();
-  }
-
   jc.detachLocalToolBars = function() {
     // detach local tool bars
     jc.topToolBar$.add(jc.bottomToolBar$).add(jc.insideToolBar$).detach();
@@ -1022,14 +1018,15 @@
     $(element).before(jc.topToolBar$);
     lastElementOfBlock = jc.testElement(element) || jc.outputElement(element) || element;
     $(lastElementOfBlock).after(jc.bottomToolBar$);
-    jc.objectToolBar$.children().detach(); //TODO!!!!!!!!!!!!!   vérifier l'impact sur les événements !!!!!!!!!!!!!!!!!!!!
-//******^^^^^^^^^^^^ est-ce ok??
+    jc.objectToolBar$.children().detach();
                                             
     if ($(element).hasClass('SECTION')) {
-      $('.SECTIONCONTAINER',element).append(jc.insideToolBar$);
+      var container$ = $('.SECTIONCONTAINER',element).first()
+      if (container$.children().length == 0) {
+        container$.append(jc.insideToolBar$);
+      }
     }
     else {
-      jc.insideToolBar$.detach();
       if ($(element).hasClass('RICHTEXT')) {
         jc.objectToolBar$.append(jc.richTextToolBar$);
       }
@@ -1063,7 +1060,7 @@
     jc.selectedElement = element;
     if (element == undefined){
       $('#codeId').text('no selection');
-      jc.detachToolBars();
+      jc.detachLocalToolBars();
       return;
     }
     jc.menu$.show(500);
