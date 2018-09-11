@@ -189,6 +189,7 @@
         trace.messages[0]='...';
       }
     }
+    return trace;
   }
 
   trace._on = false;
@@ -203,7 +204,8 @@
   trace.off = function() {
     // disable the capture of trace
     // return trace for method chaining
-    trace._on = false; return trace
+    trace._on = false;
+    return trace
   };
   trace.push = function() {
     // push the current trace state on a stack

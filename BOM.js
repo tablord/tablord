@@ -140,19 +140,27 @@ jc.Part.prototype.span = function() {
 
 // Plan of Need //////////////////////////////////
 jc.PlanOfNeed = function() {
+  // constructor of a PlanOfNeed object which purpose is to collect
+  // needs {time,quantity} 
   this.plan = [];
   this.needsUpdate = false;
 }
 
 jc.PlanOfNeed.prototype.push = function(need) {
+  // push a new need to the plan
+  // it's the caller responsibility to push the need in
+  // a chronological order
   this.plan.push(need);
 }
 
 jc.PlanOfNeed.prototype.pop = function() {
+  // pop the last pushed need
   return this.plan.pop();
 }
 
 jc.PlanOfNeed.prototype.add = function(time,quantity) {
+  // add a new need to the plan of need
+  // this function manages to keep needs in the chronological order
   this.needsUpdate = true;
   for (var i=this.plan.length-1; i>=0; i--) {
     if (time == this.plan[i].time) {
@@ -265,14 +273,72 @@ jc.PlanOfNeed.prototype.span = function() {
 }
 
 
+// Scenarii ///////////////////////////////////////////////////////////////////////////
+
+jc.Scenarii = function(product,conditions) {
+  // create all scenarii for conditions
+  // product    the product that contains all variables 
+  // conditions is an array of condition which are array of variable values
+  //            like [['setup_manual','width_170'],['setup_motorized','width_170'].....]
+  // PLEASE NOTE 
+  // * each condition must be sorted alphabetically before creating a scenarii object
+  // * a condition can not use multiple time the same variable (ie: ['width_170','width_210'] is forbidden)
+
+//*** il faut éviter les doublons dans les conditions: à voir où est ce que l'on fait ce traitement
+//*** de même aucune condition ne doit possèder 2 fois la même variable genre ['width_170','width_210']
+
+trace('Scenarii for ',product.name)
+  this.product = product;
+  this.scenarii = [];
+  var neededVariables = {};
+  for (var i=0;i<conditions.length;i++) {
+    for (var j=0;j<conditions[i].length;j++) {
+      neededVariables[jc.ProductVariable.variable(conditions[i][j])] = product.variables[jc.ProductVariable.variable(conditions[i][j])];
+    }
+  }
+trace(neededVariables)
+  var permutationsOfConditions = jc.permutations(conditions);
+  for (var p=0; p<permutationsOfConditions.length; p++) {
+    $.each(neededVariables,function(name,v){v.remainingQuantity = v.quantity;trace(v)});
+    var conditionsByPriority = permutationsOfConditions[p];
+trace('conditionsByPriority',conditionsByPriority)
+    var scenario = {};
+    for (var priority=0; priority<conditionsByPriority.length; priority++) {
+      var cond = conditionsByPriority[priority];
+trace('for cond',cond.toString());
+
+      // find the max quantity available for this condition
+      var q = Infinity;
+      for (var i=0;i<cond.length;i++) {
+trace(q,i,cond,cond[i]);
+trace(product.values[cond[i]])
+        q = Math.min(q,product.values[cond[i]].max,product.values[cond[i]].variable.remainingQuantity);
+      }
+
+      // now remove that quantity from all variable involved in cond
+      for (var j=0;j<cond.length;j++) {
+        product.values[cond[j]].variable.remainingQuantity -= q;
+      }
+      scenario[cond.toString()] = q;
+    }
+    this.scenarii.push(scenario);
+trace(p,this.scenarii)
+  }
+}
+
+jc.Scenarii.prototype.span = function() {
+  return table().addRows(this.scenarii).span();
+}
+
 // Product ///////////////////////////////////////
 jc.Product = function(name){
   this.name = name;
   this.boms=[];
-  this.variables={};
+  this.variables={};  //direct access to variables
+  this.values={};     //direct access to values of variable
   this.parts={};
   this.variant = new jc.Variant();  // will be used as a global access of variables and conditions as well 
-                                 // as a calculation context
+                                    // as a calculation context
 }
 
 jc.Product.prototype.addBom = function(bom) {
@@ -308,20 +374,23 @@ trace('parts groupAndSort',part)
 
 jc.Product.prototype.updateVariables = function () {
   // updates all variables that are used in BOMs.
+  // as well as this.values that registers all values and their variable
   // also updates this.variant, the global variable that is used in calculation
 
   for (var i=0; i < this.boms.length; i++) {
     var b = this.boms[i];
     for (var n=0; n < b.condition.length; n++) {
-      var c = b.condition[n].split(jc.ProductVariable.SEPARATOR);
-      if (this.variables[c[0]]) {
-        var pv = this.variables[c[0]];
+      var value = b.condition[n];
+      var v = jc.ProductVariable.variable(value);
+      if (this.variables[v]) {
+        var pv = this.variables[v];
       }
       else {
-        var pv = new jc. ProductVariable(c[0],this);
-        this.variant[c[0]] = pv;
+        var pv = new jc.ProductVariable(v,this);
+        this.variant[v] = pv;
       }
-      this.variables[c[0]] = pv.add(b.condition[n]);
+      this.variables[v] = pv.add(value);
+      this.values[value] = pv[value];
     }
   }
   return this;
@@ -422,13 +491,20 @@ jc.ProductVariable = function(name,product) {
 
 jc.ProductVariable.SEPARATOR = '_';
 
+jc.ProductVariable.variable = function(value) {
+  // return the variable name of the value
+  return value.split(jc.ProductVariable.SEPARATOR)[0];
+}
+
 jc.ProductVariable.prototype.add = function(value,max){
+  // add a new value to a variable and give a max limit for the batch 
   if (this[value] == undefined) {
     this[value] = {};
     this[this.length++]=this[value];
   }  
   this[value].value=value;
   this[value].max=max || 0;
+  this[value].variable=this;
   return this;
 }
 
@@ -552,20 +628,28 @@ jc.Groups.prototype.span = function() {
 
 
 // Permutation ///////// could be in another module //////////////////////
+trace.push().off()
 jc.permutations = function(elements){ 
+trace('permutations('+elements+')');
   if (elements.length == 1) { 
-    return elements; 
+trace('return single ',elements);
+    return [elements]; 
   } 
   var res = []; 
   for (var i=0; i<elements.length; i++){ 
-    var first = elements[i];
-    var others = elements.slice(0,i).concat(elements.slice(i+1));
+    var others = $.makeArray(elements);
+    var first = others.splice(i,1);
+trace('first',first,'others',others)
     var p = jc.permutations(others);
-
+trace('p',p)
     for (var j=0;j<p.length;j++){
-      res.push([first].concat(p[j]))
+      var pj = p[j];
+      var r = $.merge($.makeArray(first),pj);
+trace('p['+j+']',p[j],pj,'r',r)
+      res.push(r)
     }
   }
+trace('return',res).pop();
   return res;
 }
 
