@@ -161,9 +161,13 @@
   // Row //////////////////////////////////////////////
 
   function Row(obj) {
+    // create a Row from an object
+    // only ownProperties (not inherited) are used is the Row
     this._ = {};
     for (var k in obj) {
-      this.setCell(k,obj[k]);
+      if (obj.hasOwnProperty(k)) {
+        this.setCell(k,obj[k]);
+      }
     }
   }
 
@@ -378,7 +382,7 @@
       for (var col in options.cols) {
         var c = options.cols[col];
         if (options.cols[col] != 0) {
-          var cell = jc.format(this[i]._[col],options);
+          var cell = jc.format(this.cell(i,col),options);
           var attrs = (c.style?'style="'+c.style+'"':'')+
                       (c.className?' class="'+c.className+'" ':'');
           h += ((col=="_id") || (options.cols[col].head))?'<th '+attrs+'>'+cell+'</th>':'<td '+attrs+'>'+cell+'</td>';
@@ -398,13 +402,6 @@
 
   // editor interface ////////////////////////////////////////////////////
     
-  Table.dragStartEvent = function(event) {
-a('dragstart')
-    event = event || window.event;
-    event.dataTransfer.effectAllowed = "move";
-    event.dataTransfer.setData('text',JSON.stringify({jcObject:event.target.jcObject,jcCol:event.target.innerHTML}))
-  }
-
   Table.prototype.edit = function(options) {
     // edit is similar to span, but gernerates HTML code in order to edit the object interactively
     // it will also set the code to AUTOEDIT class which means that it should no longer be modified by the user since it will
@@ -430,7 +427,6 @@ a('dragstart')
     return jc.html(h);
   }
 
-//***********************trouver the bug !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   Table.prototype.getEditableValue = function(editor) {
     return this.cell(Number(editor.attr('jcRow')),editor.attr('jcCol'));
   }

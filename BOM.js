@@ -43,94 +43,57 @@ jc.Part = function(name,product){
   this.product = product;
   this.needs = [];
   this.source = '';
+  this.conditions = {};
   this.mostDemandingPlan = new jc.PlanOfNeed();
 }
 
 jc.Part.prototype.add = function (quantity,condition,neededAt) {
-  var variables = [];
-  for (var i in condition) {
-    variables.push(condition[i].split(jc.ProductVariable.SEPARATOR)[0])
-  }
-  this.needs.push({quantity:quantity,condition:condition,variables:variables,neededAt:neededAt});
+  condition.sort();
+  this.needs.push({quantity:quantity,condition:condition,neededAt:neededAt});
+  this.conditions[condition.toString()]=condition;
   return this;
 }
 
-jc.Part.prototype.groupAndSort = function() {
-  this.groups = new jc.Groups();
-  var that = this;
-  $.each(this.needs,function(i,need) {that.groups.regroup(need.variables)});
-  $.each(this.needs,function(i,need) {need.group=that.groups.names[need.variables[0]]});
-  this.needs.sort(function(a,b) {return a.group-b.group});
-  return this;
-}
 
 jc.Part.prototype.code = function() {
   // returns executable source code that calculates the most demanding plan of need for all possible scenarii
-  // code will look like
-  //
-  //  with (this.product.variant) {
-  //    variable1.worst(function(){
-  //      add(7,[variable1_true],0);
-  //      add(8,[variable1_false],0);
-  //    });
-  //    variable1.worst(function(){
-  //      variable2.worst(function(){
-  //        add(10,[variable1_true,variable2_170],0);
-  //        ...
-  //      });
-  //    });
-  //  }
+  // the function has 2 parameters
+  // scenario
+  // .add(7,'width_170,setup_manual',0)
+  // .add(8,'width_210,setup_manual',0)
 
-  var currentGroup = undefined;
-  var nbVariables = 0;
-  var source = 'with(this.product.variant.clearPlan()) {\n';
-  var indent = '  ';
-  var that = this;
-  $.each(this.needs,function(i,row) {
-
-    if (currentGroup != row.group) {
-      for (var v=0; v<nbVariables; v++) {
-        source += (indent=indent.slice(0,-2))+'});\n';
-      }
-      nbVariables = 0;
-      for (var v in that.groups.groups[row.group]){
-        source += indent+that.groups.groups[row.group][v]+'.worst(function(){\n';
-        indent += '  ';
-        nbVariables++;
-      }
-      currentGroup = row.group;
-    }
-    source += indent+'add('+row.quantity+',['+row.condition+'],'+row.neededAt+');\n';
+  var source = 'scenario\n';
+  $.each(this.needs,function(i,need) {
+if (typeof need.quantity != 'number') throw new Error('need.quantity must be a number: is '+typeof need.quantity);
+    source += '.add('+need.quantity+',"'+need.condition.toString()+'",'+need.neededAt+')\n';
   });
-  for (var v=0; v<nbVariables; v++) {
-    source += (indent=indent.slice(0,-2))+'});\n';
-  }
-  source += '}';
   this.source = source;
   return this;
 }
 
 jc.Part.prototype.compile = function(){
   try {
-    this._computeNeeds = new Function(this.source);
+    this._computeNeeds = new Function('scenario',this.source);
   }
   catch (e) {
-    e.message = 'Part.compile: '+e.message;
-    e.source = this.source;
-    throw e;
+    throw new Error('Part.compile:'+e.message+'\n'+this.source);
   }
   return this;
 }
 
 jc.Part.prototype.computeNeeds = function(){
-trace('computeNeeds');
-  this._computeNeeds();
-  this.mostDemandingPlan = this.product.variant.plan;
+  var conditions = [];
+  for (var cond in this.conditions) {
+    conditions.push(this.conditions[cond]);
+  }
+  this.scenarii = new jc.Scenarii(this.product,conditions);
+  this.scenarii.computeNeeds(this._computeNeeds);
   return this;
 }
 
 jc.Part.prototype.span = function() {
   return '<fieldset><legend>'+this.name+'</legend>'+
+         jc.inspect(jc.keys(this.conditions),'conditions').span()+
          table().addRows(this.needs).span()+
          '<PRE class=CODEVIEW>'+this.source+'</PRE>'+
          this.mostDemandingPlan.span()+
@@ -269,11 +232,28 @@ jc.PlanOfNeed.prototype.toString = function() {
 
 jc.PlanOfNeed.prototype.span = function() {
   this.update();
-  return table('plan of need').addRows(this.plan).view({time:1,quantity:1,cumul:1});  
+  return table().addRows(this.plan).span({time:1,quantity:1,cumul:1});  
 }
 
 
 // Scenarii ///////////////////////////////////////////////////////////////////////////
+jc.Scenario = function() {
+  // create a new Scenario (without any condition quantities at this stage, will be added after creation by jc.Scenario)
+  this.planOfNeed = new jc.PlanOfNeed();
+}
+
+jc.Scenario.prototype.add = function(quantity,condString,neededAt) {
+  // add a new need to the plan of need of this scenario
+//trace(quantity,condString,neededAt);
+if ((typeof quantity != 'number') || (typeof condString != 'string') || (typeof neededAt != 'number')){
+a(typeof quantity,typeof condString,typeof neededAt,'quantity',quantity.prototype)}
+  this.planOfNeed.add(neededAt,quantity*this[condString]);
+  return this;
+}
+
+jc.Scenario.prototype.toString = function() {
+  return '[object jc.Scenario]';
+}
 
 jc.Scenarii = function(product,conditions) {
   // create all scenarii for conditions
@@ -287,7 +267,6 @@ jc.Scenarii = function(product,conditions) {
 //*** il faut éviter les doublons dans les conditions: à voir où est ce que l'on fait ce traitement
 //*** de même aucune condition ne doit possèder 2 fois la même variable genre ['width_170','width_210']
 
-trace('Scenarii for ',product.name)
   this.product = product;
   this.scenarii = [];
   var neededVariables = {};
@@ -296,22 +275,17 @@ trace('Scenarii for ',product.name)
       neededVariables[jc.ProductVariable.variable(conditions[i][j])] = product.variables[jc.ProductVariable.variable(conditions[i][j])];
     }
   }
-trace(neededVariables)
   var permutationsOfConditions = jc.permutations(conditions);
   for (var p=0; p<permutationsOfConditions.length; p++) {
-    $.each(neededVariables,function(name,v){v.remainingQuantity = v.quantity;trace(v)});
+    $.each(neededVariables,function(name,v){v.remainingQuantity = v.quantity});
     var conditionsByPriority = permutationsOfConditions[p];
-trace('conditionsByPriority',conditionsByPriority)
-    var scenario = {};
+    var scenario = new jc.Scenario();
     for (var priority=0; priority<conditionsByPriority.length; priority++) {
       var cond = conditionsByPriority[priority];
-trace('for cond',cond.toString());
 
       // find the max quantity available for this condition
       var q = Infinity;
       for (var i=0;i<cond.length;i++) {
-trace(q,i,cond,cond[i]);
-trace(product.values[cond[i]])
         q = Math.min(q,product.values[cond[i]].max,product.values[cond[i]].variable.remainingQuantity);
       }
 
@@ -322,12 +296,22 @@ trace(product.values[cond[i]])
       scenario[cond.toString()] = q;
     }
     this.scenarii.push(scenario);
-trace(p,this.scenarii)
   }
 }
 
+jc.Scenarii.prototype.computeNeeds = function(computeNeedFunc) {
+  for (var i = 0;i<this.scenarii.length;i++) {
+    computeNeedFunc(this.scenarii[i]);
+  }
+}
+
+jc.Scenarii.prototype.toString = function() {
+  return '[object jc.Scenarii] '+this.scenarii.length+' scenarii';
+}
+
 jc.Scenarii.prototype.span = function() {
-  return table().addRows(this.scenarii).span();
+  var h = table().addRows(this.scenarii).span();
+  return h;  
 }
 
 // Product ///////////////////////////////////////
@@ -360,15 +344,10 @@ jc.Product.prototype.updateParts = function () {
     var cond = bom.condition;
     var prod = this;
     bom.forEachLine(function(i,line) {
-trace('addPartNeed',line)
       prod.addPartNeed(line.part,line.quantity,cond,line.neededAt);
     })
   }
   
-  for (var part in this.parts) {
-trace('parts groupAndSort',part)
-    this.parts[part].groupAndSort();
-  }
   return this;
 }
 
@@ -463,7 +442,6 @@ jc.Variant.prototype.clearPlan = function(){
 
 jc.Variant.prototype.add = function(quantity,condition,neededAt){
   var cond = Math.min.apply(null,condition);
-trace(jc.inspect({quantity:quantity,condition:condition,min:cond,neededAt:neededAt}))
   this.plan.add(neededAt,quantity*cond);
   return this;
 }
@@ -541,7 +519,6 @@ jc.ProductVariable.prototype.worst = function(func) {
 
   for (var s=0; s<this.scenarii.length; s++) {
     var scenario = this.scenarii[s];
-trace('scenario',scenario)
     for (var i=0; i<this.length; i++) {
       var value = this[i].value;
       this.product.variant[value] = scenario[value];
@@ -550,7 +527,7 @@ trace('scenario',scenario)
     func(this.product.variant.clearPlan());
     mostDemandingPlan = mostDemandingPlan.max(this.product.variant.plan);
   }
-trace(mostDemandingPlan);  
+
   this.product.variant.plan = previousPlan.sum(mostDemandingPlan);
   return this;
 }
@@ -628,28 +605,21 @@ jc.Groups.prototype.span = function() {
 
 
 // Permutation ///////// could be in another module //////////////////////
-trace.push().off()
 jc.permutations = function(elements){ 
-trace('permutations('+elements+')');
   if (elements.length == 1) { 
-trace('return single ',elements);
     return [elements]; 
   } 
   var res = []; 
   for (var i=0; i<elements.length; i++){ 
     var others = $.makeArray(elements);
     var first = others.splice(i,1);
-trace('first',first,'others',others)
     var p = jc.permutations(others);
-trace('p',p)
     for (var j=0;j<p.length;j++){
       var pj = p[j];
       var r = $.merge($.makeArray(first),pj);
-trace('p['+j+']',p[j],pj,'r',r)
       res.push(r)
     }
   }
-trace('return',res).pop();
   return res;
 }
 

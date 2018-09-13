@@ -370,7 +370,6 @@
   jc.htmlAttribute = function(attr,value) {
     // write an attribute according to its type
     var h = ' '+attr+'='+(typeof value == 'number'?value:'"'+jc.toHtml(value).replace(/"/g,'&quot;')+'"');
-//a(h,typeof value)
     return h;
   }
 

@@ -22,7 +22,7 @@
 <BODY sizcache="1" sizset="0" designMode="on">
 <DIV id=menu class=TOOLBAR>
 <DIV><INPUT onclick=jc.hideCode(event) type=checkbox>hide codes</INPUT><INPUT onclick=jc.hideCut(event) type=checkbox>hide Cut</INPUT><INPUT onclick=jc.hideTest(event) type=checkbox>hide tests</INPUT><INPUT onclick=jc.hideTrace(event) type=checkbox>hide traces</INPUT><INPUT onclick=jc.autoRun(event) CHECKED type=checkbox>auto run</INPUT><BUTTON onclick=jc.selectElement(undefined);>hide ToolBars</BUTTON><BUTTON onclick=jc.print();>print...</BUTTON></DIV>
-<DIV><SPAN><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING>save</BUTTON><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON><BUTTON onclick=jc.cutBlock(jc.selectedElement);>&#8595; cut &#8595;</BUTTON></SPAN><SPAN id=objectToolBar></SPAN></DIV></DIV>
+<DIV><SPAN><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="COLOR: #8dff60" >&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING >save</BUTTON><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON><BUTTON onclick=jc.cutBlock(jc.selectedElement); >&#8595; cut &#8595;</BUTTON></SPAN><SPAN id=objectToolBar></SPAN></DIV></DIV>
 <DIV id=jcContent style="OVERFLOW: scroll; BORDER-TOP: medium none; HEIGHT: 650px; BORDER-RIGHT: medium none; BORDER-BOTTOM: medium none; BORDER-LEFT: medium none" sizcache="1" sizset="0"><PRE id=code0006 class=CODE contentEditable=false>jc.tableOfContent</PRE>
 <DIV id=out0006 class="OUTPUT SUCCESS">
 <DIV class=TOC0>1 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/BOM_documentation.hta#sect0004">The BOM module</A></DIV>
@@ -46,7 +46,7 @@
 <P>The Bom does not need to regroup similar parts, which means that the same part reference can be found in several lines. So it is perfectly possible to put the screws of a cover near the cover and the same screw near another component for that component.</P>
 <P>&nbsp;</P>
 <P>A Bom has a condition for which the Bom is valid</P></DIV><PRE id=code0011 class=CODE contentEditable=false>jc.vars.main170 = jc.bom('main170',['width_170'],
-    {part:'OS frame',quantity:1,neededAt:0},
+    {part:'OS frame',quantity:2,neededAt:0},
     {part:'GS frame',quantity:1,neededAt:0},
     {part:'beam 170',quantity:6,neededAt:0}
 )</PRE>
@@ -62,7 +62,7 @@
 <TBODY>
 <TR>
 <TH>OS&nbsp;frame</TH>
-<TD>1</TD>
+<TD>2</TD>
 <TD>0</TD></TR>
 <TR>
 <TH>GS&nbsp;frame</TH>
@@ -138,7 +138,7 @@
 <TBODY>
 <TR>
 <TH>OS&nbsp;frame</TH>
-<TD>1</TD>
+<TD>2</TD>
 <TD>0</TD></TR>
 <TR>
 <TH>GS&nbsp;frame</TH>
@@ -247,7 +247,7 @@
 <TBODY>
 <TR>
 <TH>OS&nbsp;frame</TH>
-<TD>1</TD>
+<TD>2</TD>
 <TD>0</TD></TR>
 <TR>
 <TH>GS&nbsp;frame</TH>
@@ -533,7 +533,7 @@
 <TBODY>
 <TR>
 <TH>OS&nbsp;frame</TH>
-<TD>1</TD>
+<TD>2</TD>
 <TD>0</TD></TR>
 <TR>
 <TH>GS&nbsp;frame</TH>
@@ -587,119 +587,132 @@
 <TD>0</TD></TR></TBODY></TABLE></FIELDSET></FIELDSET>
 <FIELDSET><LEGEND>Parts</LEGEND>
 <FIELDSET><LEGEND>OS frame</LEGEND>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] conditions</LEGEND>
+<TABLE class=INSPECT>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>width_170</TD></TR>
+<TR>
+<TH vAlign=top>1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>setup_manual,width_210</TD></TR>
+<TR>
+<TH vAlign=top>2</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>setup_automatic,width_210</TD></TR></TBODY></TABLE></FIELDSET></DIV>
 <TABLE>
 <THEAD>
 <TR>
 <TH>quantity</TH>
 <TH>condition</TH>
-<TH>variables</TH>
-<TH>neededAt</TH>
-<TH>group</TH></TR></THEAD>
+<TH>neededAt</TH></TR></THEAD>
 <TBODY>
 <TR>
-<TD>1</TD>
+<TD>2</TD>
 <TD>width_170</TD>
-<TD>width</TD>
-<TD>0</TD>
 <TD>0</TD></TR>
 <TR>
 <TD>1</TD>
 <TD>setup_manual,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
 <TD>0</TD></TR>
 <TR>
 <TD>1</TD>
 <TD>setup_automatic,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
 <TD>0</TD></TR></TBODY></TABLE><PRE class=CODEVIEW></PRE>
-<DIV><VAR>plan of need</VAR>
 <TABLE>
 <THEAD>
 <TR></TR></THEAD>
-<TBODY></TBODY></TABLE></DIV></FIELDSET>
+<TBODY></TBODY></TABLE></FIELDSET>
 <FIELDSET><LEGEND>GS frame</LEGEND>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] conditions</LEGEND>
+<TABLE class=INSPECT>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>width_170</TD></TR>
+<TR>
+<TH vAlign=top>1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>setup_manual,width_210</TD></TR>
+<TR>
+<TH vAlign=top>2</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>setup_automatic,width_210</TD></TR></TBODY></TABLE></FIELDSET></DIV>
 <TABLE>
 <THEAD>
 <TR>
 <TH>quantity</TH>
 <TH>condition</TH>
-<TH>variables</TH>
-<TH>neededAt</TH>
-<TH>group</TH></TR></THEAD>
+<TH>neededAt</TH></TR></THEAD>
 <TBODY>
 <TR>
 <TD>1</TD>
 <TD>width_170</TD>
-<TD>width</TD>
-<TD>0</TD>
 <TD>0</TD></TR>
 <TR>
 <TD>1</TD>
 <TD>setup_manual,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
 <TD>0</TD></TR>
 <TR>
 <TD>1</TD>
 <TD>setup_automatic,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
 <TD>0</TD></TR></TBODY></TABLE><PRE class=CODEVIEW></PRE>
-<DIV><VAR>plan of need</VAR>
 <TABLE>
 <THEAD>
 <TR></TR></THEAD>
-<TBODY></TBODY></TABLE></DIV></FIELDSET>
+<TBODY></TBODY></TABLE></FIELDSET>
 <FIELDSET><LEGEND>beam 170</LEGEND>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] conditions</LEGEND>
+<TABLE class=INSPECT>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>width_170</TD></TR></TBODY></TABLE></FIELDSET></DIV>
 <TABLE>
 <THEAD>
 <TR>
 <TH>quantity</TH>
 <TH>condition</TH>
-<TH>variables</TH>
-<TH>neededAt</TH>
-<TH>group</TH></TR></THEAD>
+<TH>neededAt</TH></TR></THEAD>
 <TBODY>
 <TR>
 <TD>6</TD>
 <TD>width_170</TD>
-<TD>width</TD>
-<TD>0</TD>
 <TD>0</TD></TR></TBODY></TABLE><PRE class=CODEVIEW></PRE>
-<DIV><VAR>plan of need</VAR>
 <TABLE>
 <THEAD>
 <TR></TR></THEAD>
-<TBODY></TBODY></TABLE></DIV></FIELDSET>
+<TBODY></TBODY></TABLE></FIELDSET>
 <FIELDSET><LEGEND>beam 210</LEGEND>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] conditions</LEGEND>
+<TABLE class=INSPECT>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>setup_manual,width_210</TD></TR>
+<TR>
+<TH vAlign=top>1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>setup_automatic,width_210</TD></TR></TBODY></TABLE></FIELDSET></DIV>
 <TABLE>
 <THEAD>
 <TR>
 <TH>quantity</TH>
 <TH>condition</TH>
-<TH>variables</TH>
-<TH>neededAt</TH>
-<TH>group</TH></TR></THEAD>
+<TH>neededAt</TH></TR></THEAD>
 <TBODY>
 <TR>
 <TD>6</TD>
 <TD>setup_manual,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
 <TD>0</TD></TR>
 <TR>
 <TD>6</TD>
 <TD>setup_automatic,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
 <TD>0</TD></TR></TBODY></TABLE><PRE class=CODEVIEW></PRE>
-<DIV><VAR>plan of need</VAR>
 <TABLE>
 <THEAD>
 <TR></TR></THEAD>
-<TBODY></TBODY></TABLE></DIV></FIELDSET></FIELDSET></DIV></DIV></DIV></DIV></DIV>
+<TBODY></TBODY></TABLE></FIELDSET></FIELDSET></DIV></DIV></DIV></DIV></DIV>
 <DIV id=sect0030 class=SECTION sizcache="1" sizset="9">
 <H3 class=SECTIONTITLE contentEditable=false>1.2.3 Scenarii</H3>
 <DIV class=SECTIONCONTAINER sizcache="1" sizset="9">
@@ -871,7 +884,7 @@
 <TBODY>
 <TR>
 <TH>OS&nbsp;frame</TH>
-<TD>1</TD>
+<TD>2</TD>
 <TD>0</TD></TR>
 <TR>
 <TH>GS&nbsp;frame</TH>
@@ -925,331 +938,251 @@
 <TD>0</TD></TR></TBODY></TABLE></FIELDSET></FIELDSET>
 <FIELDSET><LEGEND>Parts</LEGEND>
 <FIELDSET><LEGEND>OS frame</LEGEND>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] conditions</LEGEND>
+<TABLE class=INSPECT>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>width_170</TD></TR>
+<TR>
+<TH vAlign=top>1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>setup_manual,width_210</TD></TR>
+<TR>
+<TH vAlign=top>2</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>setup_automatic,width_210</TD></TR></TBODY></TABLE></FIELDSET></DIV>
 <TABLE>
 <THEAD>
 <TR>
 <TH>quantity</TH>
 <TH>condition</TH>
-<TH>variables</TH>
-<TH>neededAt</TH>
-<TH>group</TH></TR></THEAD>
+<TH>neededAt</TH></TR></THEAD>
 <TBODY>
 <TR>
-<TD>1</TD>
+<TD>2</TD>
 <TD>width_170</TD>
-<TD>width</TD>
-<TD>0</TD>
 <TD>0</TD></TR>
 <TR>
 <TD>1</TD>
 <TD>setup_manual,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
 <TD>0</TD></TR>
 <TR>
 <TD>1</TD>
 <TD>setup_automatic,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
 <TD>0</TD></TR></TBODY></TABLE><PRE class=CODEVIEW></PRE>
-<DIV><VAR>plan of need</VAR>
 <TABLE>
 <THEAD>
 <TR></TR></THEAD>
-<TBODY></TBODY></TABLE></DIV></FIELDSET>
+<TBODY></TBODY></TABLE></FIELDSET>
 <FIELDSET><LEGEND>GS frame</LEGEND>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] conditions</LEGEND>
+<TABLE class=INSPECT>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>width_170</TD></TR>
+<TR>
+<TH vAlign=top>1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>setup_manual,width_210</TD></TR>
+<TR>
+<TH vAlign=top>2</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>setup_automatic,width_210</TD></TR></TBODY></TABLE></FIELDSET></DIV>
 <TABLE>
 <THEAD>
 <TR>
 <TH>quantity</TH>
 <TH>condition</TH>
-<TH>variables</TH>
-<TH>neededAt</TH>
-<TH>group</TH></TR></THEAD>
+<TH>neededAt</TH></TR></THEAD>
 <TBODY>
 <TR>
 <TD>1</TD>
 <TD>width_170</TD>
-<TD>width</TD>
-<TD>0</TD>
 <TD>0</TD></TR>
 <TR>
 <TD>1</TD>
 <TD>setup_manual,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
 <TD>0</TD></TR>
 <TR>
 <TD>1</TD>
 <TD>setup_automatic,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
 <TD>0</TD></TR></TBODY></TABLE><PRE class=CODEVIEW></PRE>
-<DIV><VAR>plan of need</VAR>
 <TABLE>
 <THEAD>
 <TR></TR></THEAD>
-<TBODY></TBODY></TABLE></DIV></FIELDSET>
+<TBODY></TBODY></TABLE></FIELDSET>
 <FIELDSET><LEGEND>beam 170</LEGEND>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] conditions</LEGEND>
+<TABLE class=INSPECT>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>width_170</TD></TR></TBODY></TABLE></FIELDSET></DIV>
 <TABLE>
 <THEAD>
 <TR>
 <TH>quantity</TH>
 <TH>condition</TH>
-<TH>variables</TH>
-<TH>neededAt</TH>
-<TH>group</TH></TR></THEAD>
+<TH>neededAt</TH></TR></THEAD>
 <TBODY>
 <TR>
 <TD>6</TD>
 <TD>width_170</TD>
-<TD>width</TD>
-<TD>0</TD>
 <TD>0</TD></TR></TBODY></TABLE><PRE class=CODEVIEW></PRE>
-<DIV><VAR>plan of need</VAR>
 <TABLE>
 <THEAD>
 <TR></TR></THEAD>
-<TBODY></TBODY></TABLE></DIV></FIELDSET>
+<TBODY></TBODY></TABLE></FIELDSET>
 <FIELDSET><LEGEND>beam 210</LEGEND>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] conditions</LEGEND>
+<TABLE class=INSPECT>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>setup_manual,width_210</TD></TR>
+<TR>
+<TH vAlign=top>1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>setup_automatic,width_210</TD></TR></TBODY></TABLE></FIELDSET></DIV>
 <TABLE>
 <THEAD>
 <TR>
 <TH>quantity</TH>
 <TH>condition</TH>
-<TH>variables</TH>
-<TH>neededAt</TH>
-<TH>group</TH></TR></THEAD>
+<TH>neededAt</TH></TR></THEAD>
 <TBODY>
 <TR>
 <TD>6</TD>
 <TD>setup_manual,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
 <TD>0</TD></TR>
 <TR>
 <TD>6</TD>
 <TD>setup_automatic,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
 <TD>0</TD></TR></TBODY></TABLE><PRE class=CODEVIEW></PRE>
-<DIV><VAR>plan of need</VAR>
 <TABLE>
 <THEAD>
 <TR></TR></THEAD>
-<TBODY></TBODY></TABLE></DIV></FIELDSET></FIELDSET></DIV><PRE id=code0041 class=CODE contentEditable=false><P>trace.off();</P><P>new jc.Scenarii(product1,[['setup_manual','width_210'],['setup_automatic','width_210'],['width_170']])</P></PRE>
+<TBODY></TBODY></TABLE></FIELDSET></FIELDSET></DIV><PRE id=code0041 class=CODE contentEditable=false><P>new jc.Scenarii(product1,[['setup_manual','width_210'],['setup_automatic','width_210'],['width_170']])</P></PRE>
 <DIV id=out0041 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
 <TR>
+<TH>planOfNeed</TH>
 <TH>setup_manual,width_210</TH>
 <TH>setup_automatic,width_210</TH>
 <TH>width_170</TH></TR></THEAD>
 <TBODY>
 <TR>
+<TD>
+<TABLE>
+<THEAD>
+<TR></TR></THEAD>
+<TBODY></TBODY></TABLE></TD>
 <TD>7</TD>
 <TD>3</TD>
 <TD>0</TD></TR>
 <TR>
+<TD>
+<TABLE>
+<THEAD>
+<TR></TR></THEAD>
+<TBODY></TBODY></TABLE></TD>
 <TD>7</TD>
 <TD>0</TD>
 <TD>3</TD></TR>
 <TR>
+<TD>
+<TABLE>
+<THEAD>
+<TR></TR></THEAD>
+<TBODY></TBODY></TABLE></TD>
 <TD>3</TD>
 <TD>7</TD>
 <TD>0</TD></TR>
 <TR>
+<TD>
+<TABLE>
+<THEAD>
+<TR></TR></THEAD>
+<TBODY></TBODY></TABLE></TD>
 <TD>0</TD>
 <TD>7</TD>
 <TD>3</TD></TR>
 <TR>
+<TD>
+<TABLE>
+<THEAD>
+<TR></TR></THEAD>
+<TBODY></TBODY></TABLE></TD>
 <TD>4</TD>
 <TD>0</TD>
 <TD>6</TD></TR>
 <TR>
+<TD>
+<TABLE>
+<THEAD>
+<TR></TR></THEAD>
+<TBODY></TBODY></TABLE></TD>
 <TD>0</TD>
 <TD>4</TD>
 <TD>6</TD></TR></TBODY></TABLE></DIV></DIV></DIV>
 <DIV id=rich0024 class=RICHTEXT contentEditable=false></DIV>
-<DIV id=rich0022 class=RICHTEXT contentEditable=false></DIV><PRE id=code0023 class=CODE contentEditable=false><P>product1</P><P>.setConstraints({quantity:10,max:{'width_170':6,'width_210':7,'setup_manual':10,'setup_automatic':8}})
-.updateParts()
-.updateScenarii()
-product1.parts['OS frame'].code().compile().computeNeeds()
-product1</P></PRE>
+<DIV id=rich0022 class=RICHTEXT contentEditable=false></DIV><PRE id=code0023 class=CODE contentEditable=false><P>trace.on()</P><P>product1.parts['OS frame'].code().compile().computeNeeds()
+</P></PRE>
 <DIV id=out0023 class="OUTPUT SUCCESS">
-<H2>Product product1</H2>
-<FIELDSET><LEGEND>Variables</LEGEND><SPAN>ProductVariable <VAR>width</VAR> for 10<BR>
+<FIELDSET><LEGEND>OS frame</LEGEND>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] conditions</LEGEND>
+<TABLE class=INSPECT>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>width_170</TD></TR>
+<TR>
+<TH vAlign=top>1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>setup_manual,width_210</TD></TR>
+<TR>
+<TH vAlign=top>2</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>setup_automatic,width_210</TD></TR></TBODY></TABLE></FIELDSET></DIV>
 <TABLE>
 <THEAD>
 <TR>
-<TH>value</TH>
-<TH>max</TH></TR></THEAD>
+<TH>quantity</TH>
+<TH>condition</TH>
+<TH>neededAt</TH></TR></THEAD>
 <TBODY>
-<TR>
-<TH>width_170</TH>
-<TD>6</TD></TR>
-<TR>
-<TH>width_210</TH>
-<TD>7</TD></TR></TBODY></TABLE>
-<TABLE>
-<THEAD>
-<TR>
-<TH>width_170</TH>
-<TH>width_210</TH></TR></THEAD>
-<TBODY>
-<TR>
-<TD>6</TD>
-<TD>4</TD></TR>
-<TR>
-<TD>3</TD>
-<TD>7</TD></TR></TBODY></TABLE></SPAN><SPAN>ProductVariable <VAR>setup</VAR> for 10<BR>
-<TABLE>
-<THEAD>
-<TR>
-<TH>value</TH>
-<TH>max</TH></TR></THEAD>
-<TBODY>
-<TR>
-<TH>setup_manual</TH>
-<TD>10</TD></TR>
-<TR>
-<TH>setup_automatic</TH>
-<TD>8</TD></TR></TBODY></TABLE>
-<TABLE>
-<THEAD>
-<TR>
-<TH>setup_manual</TH>
-<TH>setup_automatic</TH></TR></THEAD>
-<TBODY>
-<TR>
-<TD>10</TD>
-<TD>0</TD></TR>
 <TR>
 <TD>2</TD>
-<TD>8</TD></TR></TBODY></TABLE></SPAN></FIELDSET>
-<FIELDSET><LEGEND>BOMs</LEGEND>
-<FIELDSET><LEGEND>BOM main170</LEGEND>
-<P>condition:(width_170)</P>
-<TABLE>
-<THEAD>
-<TR>
-<TH>part</TH>
-<TH>quantity</TH>
-<TH>neededAt</TH></TR></THEAD>
-<TBODY>
-<TR>
-<TH>OS&nbsp;frame</TH>
-<TD>1</TD>
-<TD>0</TD></TR>
-<TR>
-<TH>GS&nbsp;frame</TH>
-<TD>1</TD>
-<TD>0</TD></TR>
-<TR>
-<TH>beam&nbsp;170</TH>
-<TD>6</TD>
-<TD>0</TD></TR></TBODY></TABLE></FIELDSET>
-<FIELDSET><LEGEND>BOM main210_manual</LEGEND>
-<P>condition:(setup_manual &amp;&amp; width_210)</P>
-<TABLE>
-<THEAD>
-<TR>
-<TH>part</TH>
-<TH>quantity</TH>
-<TH>neededAt</TH></TR></THEAD>
-<TBODY>
-<TR>
-<TH>OS&nbsp;frame</TH>
-<TD>1</TD>
-<TD>0</TD></TR>
-<TR>
-<TH>GS&nbsp;frame</TH>
-<TD>1</TD>
-<TD>0</TD></TR>
-<TR>
-<TH>beam&nbsp;210</TH>
-<TD>6</TD>
-<TD>0</TD></TR></TBODY></TABLE></FIELDSET>
-<FIELDSET><LEGEND>BOM main210_auto</LEGEND>
-<P>condition:(setup_automatic &amp;&amp; width_210)</P>
-<TABLE>
-<THEAD>
-<TR>
-<TH>part</TH>
-<TH>quantity</TH>
-<TH>neededAt</TH></TR></THEAD>
-<TBODY>
-<TR>
-<TH>OS&nbsp;frame</TH>
-<TD>1</TD>
-<TD>0</TD></TR>
-<TR>
-<TH>GS&nbsp;frame</TH>
-<TD>1</TD>
-<TD>0</TD></TR>
-<TR>
-<TH>beam&nbsp;210</TH>
-<TD>6</TD>
-<TD>0</TD></TR></TBODY></TABLE></FIELDSET></FIELDSET>
-<FIELDSET><LEGEND>Parts</LEGEND>
-<FIELDSET><LEGEND>OS frame</LEGEND>
-<TABLE>
-<THEAD>
-<TR>
-<TH>quantity</TH>
-<TH>condition</TH>
-<TH>variables</TH>
-<TH>neededAt</TH>
-<TH>group</TH></TR></THEAD>
-<TBODY>
-<TR>
-<TD>1</TD>
 <TD>width_170</TD>
-<TD>width</TD>
-<TD>0</TD>
 <TD>0</TD></TR>
 <TR>
 <TD>1</TD>
 <TD>setup_manual,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
 <TD>0</TD></TR>
 <TR>
 <TD>1</TD>
 <TD>setup_automatic,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
-<TD>0</TD></TR>
+<TD>0</TD></TR></TBODY></TABLE><PRE class=CODEVIEW>scenario
+.add(2,"width_170",0)
+.add(1,"setup_manual,width_210",0)
+.add(1,"setup_automatic,width_210",0)
+</PRE>
+<TABLE>
+<THEAD>
+<TR></TR></THEAD>
+<TBODY></TBODY></TABLE></FIELDSET></DIV><PRE id=code0053 class=CODE contentEditable=false>product1.parts['OS frame'].scenarii</PRE>
+<DIV id=out0053 class="OUTPUT SUCCESS">
+<TABLE>
+<THEAD>
 <TR>
-<TD>1</TD>
-<TD>width_170</TD>
-<TD>width</TD>
-<TD>0</TD>
-<TD>0</TD></TR>
+<TH>planOfNeed</TH>
+<TH>width_170</TH>
+<TH>setup_manual,width_210</TH>
+<TH>setup_automatic,width_210</TH></TR></THEAD>
+<TBODY>
 <TR>
-<TD>1</TD>
-<TD>setup_manual,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
-<TD>0</TD></TR>
-<TR>
-<TD>1</TD>
-<TD>setup_automatic,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
-<TD>0</TD></TR></TBODY></TABLE><PRE class=CODEVIEW>with(this.product.variant.clearPlan()) {
-  width.worst(function(){
-    setup.worst(function(){
-      add(1,[width_170],0);
-      add(1,[setup_manual,width_210],0);
-      add(1,[setup_automatic,width_210],0);
-      add(1,[width_170],0);
-      add(1,[setup_manual,width_210],0);
-      add(1,[setup_automatic,width_210],0);
-    });
-  });
-}</PRE>
-<DIV><VAR>plan of need</VAR>
+<TD>
 <TABLE>
 <THEAD>
 <TR>
@@ -1259,55 +1192,13 @@ product1</P></PRE>
 <TBODY>
 <TR>
 <TD>0</TD>
-<TD>24</TD>
-<TD>24</TD></TR></TBODY></TABLE></DIV></FIELDSET>
-<FIELDSET><LEGEND>GS frame</LEGEND>
-<TABLE>
-<THEAD>
-<TR>
-<TH>quantity</TH>
-<TH>condition</TH>
-<TH>variables</TH>
-<TH>neededAt</TH>
-<TH>group</TH></TR></THEAD>
-<TBODY>
-<TR>
-<TD>1</TD>
-<TD>width_170</TD>
-<TD>width</TD>
-<TD>0</TD>
+<TD>16</TD>
+<TD>16</TD></TR></TBODY></TABLE></TD>
+<TD>6</TD>
+<TD>4</TD>
 <TD>0</TD></TR>
 <TR>
-<TD>1</TD>
-<TD>setup_manual,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
-<TD>0</TD></TR>
-<TR>
-<TD>1</TD>
-<TD>setup_automatic,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
-<TD>0</TD></TR>
-<TR>
-<TD>1</TD>
-<TD>width_170</TD>
-<TD>width</TD>
-<TD>0</TD>
-<TD>0</TD></TR>
-<TR>
-<TD>1</TD>
-<TD>setup_manual,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
-<TD>0</TD></TR>
-<TR>
-<TD>1</TD>
-<TD>setup_automatic,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
-<TD>0</TD></TR></TBODY></TABLE><PRE class=CODEVIEW></PRE>
-<DIV><VAR>plan of need</VAR>
+<TD>
 <TABLE>
 <THEAD>
 <TR>
@@ -1317,31 +1208,13 @@ product1</P></PRE>
 <TBODY>
 <TR>
 <TD>0</TD>
-<TD>24</TD>
-<TD>24</TD></TR></TBODY></TABLE></DIV></FIELDSET>
-<FIELDSET><LEGEND>beam 170</LEGEND>
-<TABLE>
-<THEAD>
-<TR>
-<TH>quantity</TH>
-<TH>condition</TH>
-<TH>variables</TH>
-<TH>neededAt</TH>
-<TH>group</TH></TR></THEAD>
-<TBODY>
-<TR>
+<TD>16</TD>
+<TD>16</TD></TR></TBODY></TABLE></TD>
 <TD>6</TD>
-<TD>width_170</TD>
-<TD>width</TD>
 <TD>0</TD>
-<TD>0</TD></TR>
+<TD>4</TD></TR>
 <TR>
-<TD>6</TD>
-<TD>width_170</TD>
-<TD>width</TD>
-<TD>0</TD>
-<TD>0</TD></TR></TBODY></TABLE><PRE class=CODEVIEW></PRE>
-<DIV><VAR>plan of need</VAR>
+<TD>
 <TABLE>
 <THEAD>
 <TR>
@@ -1351,43 +1224,13 @@ product1</P></PRE>
 <TBODY>
 <TR>
 <TD>0</TD>
-<TD>24</TD>
-<TD>24</TD></TR></TBODY></TABLE></DIV></FIELDSET>
-<FIELDSET><LEGEND>beam 210</LEGEND>
-<TABLE>
-<THEAD>
-<TR>
-<TH>quantity</TH>
-<TH>condition</TH>
-<TH>variables</TH>
-<TH>neededAt</TH>
-<TH>group</TH></TR></THEAD>
-<TBODY>
-<TR>
-<TD>6</TD>
-<TD>setup_manual,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
+<TD>13</TD>
+<TD>13</TD></TR></TBODY></TABLE></TD>
+<TD>3</TD>
+<TD>7</TD>
 <TD>0</TD></TR>
 <TR>
-<TD>6</TD>
-<TD>setup_automatic,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
-<TD>0</TD></TR>
-<TR>
-<TD>6</TD>
-<TD>setup_manual,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
-<TD>0</TD></TR>
-<TR>
-<TD>6</TD>
-<TD>setup_automatic,width_210</TD>
-<TD>setup,width</TD>
-<TD>0</TD>
-<TD>0</TD></TR></TBODY></TABLE><PRE class=CODEVIEW></PRE>
-<DIV><VAR>plan of need</VAR>
+<TD>
 <TABLE>
 <THEAD>
 <TR>
@@ -1397,5 +1240,40 @@ product1</P></PRE>
 <TBODY>
 <TR>
 <TD>0</TD>
-<TD>24</TD>
-<TD>24</TD></TR></TBODY></TABLE></DIV></FIELDSET></FIELDSET></DIV></DIV></DIV></DIV></DIV></DIV></BODY></HTML>
+<TD>10</TD>
+<TD>10</TD></TR></TBODY></TABLE></TD>
+<TD>0</TD>
+<TD>7</TD>
+<TD>3</TD></TR>
+<TR>
+<TD>
+<TABLE>
+<THEAD>
+<TR>
+<TH>time</TH>
+<TH>quantity</TH>
+<TH>cumul</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>0</TD>
+<TD>13</TD>
+<TD>13</TD></TR></TBODY></TABLE></TD>
+<TD>3</TD>
+<TD>0</TD>
+<TD>7</TD></TR>
+<TR>
+<TD>
+<TABLE>
+<THEAD>
+<TR>
+<TH>time</TH>
+<TH>quantity</TH>
+<TH>cumul</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>0</TD>
+<TD>10</TD>
+<TD>10</TD></TR></TBODY></TABLE></TD>
+<TD>0</TD>
+<TD>3</TD>
+<TD>7</TD></TR></TBODY></TABLE></DIV></DIV></DIV></DIV></DIV></DIV></BODY></HTML>
