@@ -231,7 +231,7 @@
   
 
   // Inspector ////////////////////////////////////////////////////////
-  jc.Inspector = function(obj,name,depth) {
+  jc.Inspector = function Inspector(obj,name,depth) {
     this.obj = obj;
     this.name = name || '';
     this.depth = depth || 1;
@@ -400,11 +400,23 @@
       return i;
     }
   }
+
+  jc.constructorName = function(name) {
+  // returns if name is a constructor name for a function 
+  // the last identified starting with a capital character
+  // 'jc' --> false
+  // 'Table' --> true
+  // 'jc.Table' --> true
+    if (typeof name !== 'string') return false;
+    return (name.search(/[A-Z]/) === 0);
+  }
+ 
     
   jc.help = function(func) {
   // returns the signature of the function and the first comment in a pretty html 
   // - func: the function to be inspected
   // if func is undefined returns all helps of all installed modules
+  // if func starts with a UpperCase it is considered as a constructor
     if (func == undefined) {
       var h = '';
       for (var module in jc.helps) {
@@ -414,8 +426,12 @@
     }
     var source = func.toString().split('\n');
     var comments = []
-    var m = source[0].match(/(function.*?\))/);
+    var m = source[0].match(/(function *([a-zA-Z0-9_$]*).*?\))/);
     var signature = m?m[0]:func.toString();  // if a jcFunc, the function keyword will not be found
+    var name = m && m[2];
+    var constructor = jc.constructorName(name)
+    if(constructor) comments.push('constructor for '+name+' objects');
+
     for (var i=1; i<source.length; i++) {
       var comment = source[i].match(/^\s*\/\/(.*)$/);
       if (comment && (comment.length ==2)) {
@@ -423,7 +439,7 @@
       }
       else break;
     }
-    return new jc.HTML('<b>'+signature+'</b><br>'+comments.join('<br>'));
+    return new jc.HTML('<b>'+signature+'</b><br>'+comments.join('<br>')+(constructor?jc.inspect(func.prototype,'methods').span():''));
   }
 
   jc.signature = function(func) {
@@ -926,6 +942,8 @@
   }
 
   jc.copyOutputToTest = function() {
+    if (jc.selectedElement == undefined) return;
+
     var out = jc.outputElement(jc.selectedElement);
     var test = jc.testElement(jc.selectedElement);
     if (test == undefined) {
@@ -938,6 +956,7 @@
     else {
       $(test).remove();
     }
+    jc.setModified(true);
   }
 
   jc.cutBlock = function(element,cut) {

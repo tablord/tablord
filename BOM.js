@@ -6,16 +6,21 @@
 jc.Bom = function(name,condition) {
   this.name = name;
   this.condition = condition.sort();  //important that we keep always the same order
-  this.lines = [];
+  this.lines = [];                    
 }
 
 jc.Bom.prototype.add = function(line){
+  // add a line to the bom
+  // the line is an object that has at least {part,quantity,neededAt}
+
   this.lines.push(line);
+  return this;
 }
 
 jc.Bom.prototype.forEachLine = function(func){
   // func must be function(lineNumber,line)
   $.each(this.lines,func);
+  return this;
 }
 
 jc.Bom.prototype.toString = function() {
@@ -88,6 +93,13 @@ jc.Part.prototype.computeNeeds = function(){
   }
   this.scenarii = new jc.Scenarii(this.product,conditions);
   this.scenarii.computeNeeds(this._computeNeeds);
+  this.mostDemandingPlan = this.scenarii.worst;
+  return this;
+}
+
+jc.Part.prototype.update = function() {
+  // update everything for this part
+  this.code().compile().computeNeeds();
   return this;
 }
 
@@ -96,7 +108,7 @@ jc.Part.prototype.span = function() {
          jc.inspect(jc.keys(this.conditions),'conditions').span()+
          table().addRows(this.needs).span()+
          '<PRE class=CODEVIEW>'+this.source+'</PRE>'+
-         this.mostDemandingPlan.span()+
+         '<fieldset><legend>most demanding plan</legend>'+this.mostDemandingPlan.span()+'</fieldset>'+
          '</fieldset>';
 }
 
@@ -169,12 +181,19 @@ jc.PlanOfNeed.prototype.max = function(other) {
   var cThis = 0;
   var cOther = 0;
   var cumul = 0;
-  var res = new jc. PlanOfNeed();
+  var res = new jc.PlanOfNeed();
 
   function processThis (This) {
     cThis += This.plan[iThis].quantity;
     if (cThis > cumul) {
-      res.push({time:This.plan[iThis].time,quantity:cThis-cumul,cumul:cThis});
+      var lastRes = res.plan[res.plan.length-1];
+      if (lastRes && (This.plan[iThis].time == lastRes.time)) {
+        lastRes.quantity += cThis-cumul;
+        lastRes.cumul = cThis;
+      }
+      else {
+        res.push({time:This.plan[iThis].time,quantity:cThis-cumul,cumul:cThis});
+      }
       cumul = cThis;
     }
     iThis++;
@@ -183,7 +202,14 @@ jc.PlanOfNeed.prototype.max = function(other) {
   function processOther (other) {
     cOther += other.plan[iOther].quantity;
     if (cOther > cumul) {
-      res.push({time:other.plan[iOther].time,quantity:cOther-cumul,cumul:cOther});
+      var lastRes = res.plan[res.plan.length-1];
+      if (lastRes && (other.plan[iOther].time == lastRes.time)) {
+        lastRes.quantity += cOther-cumul;
+        lastRes.cumul = cOther;
+      }
+      else {
+        res.push({time:other.plan[iOther].time,quantity:cOther-cumul,cumul:cOther});
+      }
       cumul = cOther;
     }
     iOther++;
@@ -232,6 +258,7 @@ jc.PlanOfNeed.prototype.toString = function() {
 
 jc.PlanOfNeed.prototype.span = function() {
   this.update();
+  if (this.plan.length==0) return jc.html('empty planOfNeed');
   return table().addRows(this.plan).span({time:1,quantity:1,cumul:1});  
 }
 
@@ -269,12 +296,15 @@ jc.Scenarii = function(product,conditions) {
 
   this.product = product;
   this.scenarii = [];
+  this.worst = new jc.PlanOfNeed();
+
   var neededVariables = {};
   for (var i=0;i<conditions.length;i++) {
     for (var j=0;j<conditions[i].length;j++) {
       neededVariables[jc.ProductVariable.variable(conditions[i][j])] = product.variables[jc.ProductVariable.variable(conditions[i][j])];
     }
   }
+
   var permutationsOfConditions = jc.permutations(conditions);
   for (var p=0; p<permutationsOfConditions.length; p++) {
     $.each(neededVariables,function(name,v){v.remainingQuantity = v.quantity});
@@ -301,7 +331,9 @@ jc.Scenarii = function(product,conditions) {
 
 jc.Scenarii.prototype.computeNeeds = function(computeNeedFunc) {
   for (var i = 0;i<this.scenarii.length;i++) {
-    computeNeedFunc(this.scenarii[i]);
+    var scenario = this.scenarii[i];
+    computeNeedFunc(scenario);
+    this.worst = this.worst.max(scenario.planOfNeed);
   }
 }
 
@@ -311,6 +343,7 @@ jc.Scenarii.prototype.toString = function() {
 
 jc.Scenarii.prototype.span = function() {
   var h = table().addRows(this.scenarii).span();
+  h += '<h3>worst</h3>'+this.worst.span();
   return h;  
 }
 
@@ -321,8 +354,6 @@ jc.Product = function(name){
   this.variables={};  //direct access to variables
   this.values={};     //direct access to values of variable
   this.parts={};
-  this.variant = new jc.Variant();  // will be used as a global access of variables and conditions as well 
-                                    // as a calculation context
 }
 
 jc.Product.prototype.addBom = function(bom) {
@@ -354,7 +385,6 @@ jc.Product.prototype.updateParts = function () {
 jc.Product.prototype.updateVariables = function () {
   // updates all variables that are used in BOMs.
   // as well as this.values that registers all values and their variable
-  // also updates this.variant, the global variable that is used in calculation
 
   for (var i=0; i < this.boms.length; i++) {
     var b = this.boms[i];
@@ -366,7 +396,6 @@ jc.Product.prototype.updateVariables = function () {
       }
       else {
         var pv = new jc.ProductVariable(v,this);
-        this.variant[v] = pv;
       }
       this.variables[v] = pv.add(value);
       this.values[value] = pv[value];
@@ -381,13 +410,13 @@ jc.Product.prototype.toString = function() {
 
 jc.Product.prototype.span = function() {
   var h='<h2>Product '+this.name+'</h2>';
-  h += '<fieldset><legend>Variables</legend>';
-  for (var vn in this.variables) {
-    h += this.variables[vn].span();
-  }
-  h += '</fieldset><fieldset><legend>BOMs</legend>';
+  h += '<fieldset><legend>BOMs</legend>';
   for (var i=0; i<this.boms.length; i++) {
     h += this.boms[i].span();
+  }
+  h += '</fieldset><fieldset><legend>Variables</legend>';
+  for (var vn in this.variables) {
+    h += this.variables[vn].span();
   }
   h += '</fieldset><fieldset><legend>Parts</legend>';
   for (var part in this.parts) {
@@ -411,9 +440,9 @@ jc.Product.prototype.setConstraints = function(scenario) {
   return this;
 }
 
-jc.Product.prototype.updateScenarii = function() {
-  for (var variable in this.variables) {
-    this.variables[variable].updateScenarii();
+jc.Product.prototype.update = function() {
+  for (var part in this.parts) {
+    this.parts[part].update();
   }
   return this;
 }
@@ -428,40 +457,24 @@ jc.product = function(name /*,boms*/) {
 
 
 
-// Variant /////////////////////////////////
-
-jc.Variant = function() {
-  this.plan= new jc. PlanOfNeed(); 
-}
-
-
-jc.Variant.prototype.clearPlan = function(){
-  this.plan= new jc. PlanOfNeed();
-  return this;
-}
-
-jc.Variant.prototype.add = function(quantity,condition,neededAt){
-  var cond = Math.min.apply(null,condition);
-  this.plan.add(neededAt,quantity*cond);
-  return this;
-}
-  
-jc.Variant.prototype.toString = function(){
-  return '[object Variant]';
-}
-
-jc.Variant.prototype.span = function () {
-  var h = jc.inspect(this).span();
-  h += this.plan.span();
-  return h;
-}
 // ProductVariable  ///////////////////////////////
 
-jc.ProductVariable = function(name,product) {
+jc.ProductVariable = function ProductVariable(name,product) {
+  // a ProductVariable has a name and an associated product.
+  // it is an array like of values that can be accessed either
+  // - by index (with .length = number of values)
+  // - by value, each value is defined as a property of the variable
+  // 
+  // a property .quantity represents the number of product used to calculate the scenarii
+  //
+  // each value is a simple object {value, max, variable}
+  // - value is a string composed with variableName_val like width_170 is a value of variable width
+  // - max is the maximum of product that can have this variant
+  // - variable is a back reference to the variable itself
+
   this.name = name;
   this.length = 0;
   this.quantity = 0;
-  this.scenarii = [];
   this.product = product;
 //this[n]       :array like of values  {value: ,max:}
 //this[value]   :access by value
@@ -486,52 +499,6 @@ jc.ProductVariable.prototype.add = function(value,max){
   return this;
 }
 
-jc.ProductVariable.prototype.updateScenarii = function() {
-  // remove any previous scenarii
-  this.scenarii = [];
-  var values=[];
-  for (var i=0; i<this.length; i++) {
-    values.push(this[i].value);
-  }
-  var permutationsOfValues = jc.permutations(values);
-  for (var i=0; i<permutationsOfValues.length; i++) {
-    var availlable = this.quantity;
-    var valuesByPriority = permutationsOfValues[i];
-    var scenario = {};
-    for (var priority=0; priority<valuesByPriority.length; priority++) {
-      var value = valuesByPriority[priority]
-      var q = Math.min(availlable,this[value].max)
-      availlable -= q;
-      scenario[value] = q;
-    }
-    this.scenarii.push(scenario);
-  }
-  return this;
-}
-
-jc.ProductVariable.prototype.worst = function(func) {
-  // func must be function() and modifies the variant of the product
-  // according to the result by calling Variants methods
-  // in particular add that add a new need
-
-  var mostDemandingPlan = new jc. PlanOfNeed();
-  var previousPlan = jc.copy(this.product.variant.plan);
-
-  for (var s=0; s<this.scenarii.length; s++) {
-    var scenario = this.scenarii[s];
-    for (var i=0; i<this.length; i++) {
-      var value = this[i].value;
-      this.product.variant[value] = scenario[value];
-    }
-    
-    func(this.product.variant.clearPlan());
-    mostDemandingPlan = mostDemandingPlan.max(this.product.variant.plan);
-  }
-
-  this.product.variant.plan = previousPlan.sum(mostDemandingPlan);
-  return this;
-}
-
 jc.ProductVariable.prototype.join = Array.prototype.join;
 
 jc.ProductVariable.prototype.toString = function() {
@@ -545,62 +512,9 @@ jc.ProductVariable.prototype.span = function(){
     t.add(this[i]);
   }
   h += t.span({cols:{value:{head:1},max:1}});
-  var t = table();
-  for (var i=0; i<this.scenarii.length; i++){
-    t.add(this.scenarii[i]);
-  }
-  return h+t.span()+'</span>';
+  return h+'</span>';
 }
 
-
-// Groups ////////////////////////////////////////////////////////////////
-// a class that regroups names that are linked togther 
-
-
-jc.Groups = function() {
-  this.names = {};  //{name1:1,name2:1,name3:0}
-  this.groups = {}; //{0:[name3],1:[name1,name2]}
-  this.nextGroupNumber = 0;
-}
-
-jc.Groups.prototype.regroup = function(names) {
-  //names: array of names
-  //regroup the different names under one single group number
-  //if names are not known in different groups, a new group number will be given
-  var currentGroupNumber = this.nextGroupNumber++;
-  var currentGroup = this.groups[currentGroupNumber] = [];  // new empty group
-  for (var i in names) {
-    var name = names[i];
-    var g = this.names[name];
-    if (g == undefined) {
-      currentGroup.push(name);
-      this.names[name] = currentGroupNumber;
-    }
-    else {
-      if (g != currentGroupNumber) { //we must merge g and currentGroup
-        for (var j in currentGroup) {
-          this.names[currentGroup[j]] = g;
-          this.groups[g].push(currentGroup[j]);
-        }
-        currentGroup = this.groups[g];
-        delete this.groups[currentGroupNumber];
-        currentGroupNumber = g;
-      }
-      //else nothing to do, since name is already in the right group
-    }
-  }
-  return this;
-}
-
-jc.Groups.prototype.toString = function() {
-  return '[object Groups]';
-}
-
-jc.Groups.prototype.span = function() {
-  return '<fieldset><label>'+this.toString()+'</label>'+jc.inspect(this.names,'names').span()+jc.inspect(this.groups,'groups').span()+'</fieldset>';
-}  
-      
-    
     
 
 
