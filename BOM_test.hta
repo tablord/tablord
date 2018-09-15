@@ -1,4 +1,4 @@
-<HTML sizset="1" sizcache="1" APPLICATIONNAME="D:\Documents\programmation\jcalc\jcalcV0\BOM_test.hta" xmlns="http://www.w3.org/1999/xhtml" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SCROLL="yes" SINGLEINSTANCE="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
+<HTML xmlns="http://www.w3.org/1999/xhtml" APPLICATIONNAME="D:\Documents\programmation\jcalc\jcalcV0\BOM_test.hta" sizcache="1" sizset="1" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SINGLEINSTANCE="yes" SCROLL="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
 <SCRIPT src="jquery-1.5.1.min.js"></SCRIPT>
 
 <SCRIPT class=UPDATE src="jcalcEdi.js"></SCRIPT>
@@ -19,17 +19,17 @@
 
 <SCRIPT src="finance.js"></SCRIPT>
 </HEAD>
-<BODY sizset="1" sizcache="1" designMode="on">
+<BODY sizcache="1" sizset="1" designMode="on">
 <DIV id=menu class=TOOLBAR>
 <DIV><INPUT onclick=jc.hideCode(event) type=checkbox>hide codes</INPUT><INPUT onclick=jc.hideCut(event) type=checkbox>hide Cut</INPUT><INPUT onclick=jc.hideTest(event) type=checkbox>hide tests</INPUT><INPUT onclick=jc.hideTrace(event) type=checkbox>hide traces</INPUT><INPUT onclick=jc.autoRun(event) CHECKED type=checkbox>auto run</INPUT><BUTTON onclick=jc.selectElement(undefined);>hide ToolBars</BUTTON><BUTTON onclick=jc.print();>print...</BUTTON></DIV>
-<DIV><SPAN><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="COLOR: #8dff60" >&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING>save</BUTTON><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); >&#8594;test</BUTTON><BUTTON onclick=jc.cutBlock(jc.selectedElement);>&#8595; cut &#8595;</BUTTON></SPAN><SPAN id=objectToolBar></SPAN></DIV></DIV>
-<DIV id=jcContent style="OVERFLOW: scroll; BORDER-TOP: medium none; HEIGHT: 650px; BORDER-RIGHT: medium none; BORDER-BOTTOM: medium none; BORDER-LEFT: medium none" sizset="1" sizcache="1">
-<DIV id=sect0007 class=SECTION sizset="1" sizcache="1">
+<DIV><SPAN><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING >save</BUTTON><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); >&#8594;test</BUTTON><BUTTON onclick=jc.cutBlock(jc.selectedElement);>&#8595; cut &#8595;</BUTTON></SPAN><SPAN id=objectToolBar></SPAN></DIV></DIV>
+<DIV id=jcContent style="OVERFLOW: scroll; BORDER-TOP: medium none; HEIGHT: 650px; BORDER-RIGHT: medium none; BORDER-BOTTOM: medium none; BORDER-LEFT: medium none" sizcache="1" sizset="1">
+<DIV id=sect0007 class=SECTION sizcache="1" sizset="1">
 <H1 class=SECTIONTITLE contentEditable=false>1 Test of BOM <SPAN id=code0020 class="CODE EMBEDDED" style="DISPLAY: none">jc.testStatus()</SPAN><SPAN id=out0020 class="OUTPUT SUCCESS" contentEditable=false>test&nbsp;Status:&nbsp;<SPAN class=SUCCESS>tests passed:15 failed:0</SPAN></SPAN></H1>
-<DIV class=SECTIONCONTAINER sizset="1" sizcache="1">
-<DIV id=sect0003 class=SECTION sizset="1" sizcache="1">
+<DIV class=SECTIONCONTAINER sizcache="1" sizset="1">
+<DIV id=sect0003 class=SECTION sizcache="1" sizset="1">
 <H2 class=SECTIONTITLE contentEditable=false>1.1 permutations</H2>
-<DIV class=SECTIONCONTAINER sizset="1" sizcache="1"><PRE id=code0004 class=CODE contentEditable=false><P>jc.inspect(jc.permutations(['a','b','c']),'',2)</P></PRE>
+<DIV class=SECTIONCONTAINER sizcache="1" sizset="1"><PRE id=code0004 class=CODE contentEditable=false><P>jc.inspect(jc.permutations(['a','b','c']),'',2)</P></PRE>
 <DIV id=out0004 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>[] </LEGEND>
@@ -232,9 +232,9 @@
 <TR>
 <TH vAlign=top>2</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>a</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV>
-<DIV id=sect0008 class=SECTION sizset="2" sizcache="1">
+<DIV id=sect0008 class=SECTION sizcache="1" sizset="2">
 <H2 class=SECTIONTITLE contentEditable=false>1.2 jc.PlanOfNeed</H2>
-<DIV class=SECTIONCONTAINER sizset="2" sizcache="1"><PRE id=code0009 class=CODE contentEditable=false>jc.vars.p1 = new jc.PlanOfNeed()</PRE>
+<DIV class=SECTIONCONTAINER sizcache="1" sizset="2"><PRE id=code0009 class=CODE contentEditable=false>jc.vars.p1 = new jc.PlanOfNeed()</PRE>
 <DIV id=out0009 class="OUTPUT SUCCESS">empty planOfNeed</DIV>
 <DIV id=test0009 class="TEST SUCCESS">empty planOfNeed</DIV><PRE id=code0011 class=CODE contentEditable=false>p1.add(0,5).add(2,7)</PRE>
 <DIV id=out0011 class="OUTPUT SUCCESS">
@@ -373,9 +373,9 @@
 <TD>2</TD>
 <TD>6</TD>
 <TD>12</TD></TR></TBODY></TABLE></DIV>
-<DIV id=sect0014 class=SECTION sizset="7" sizcache="1">
+<DIV id=sect0014 class=SECTION sizcache="1" sizset="7">
 <H3 class=SECTIONTITLE contentEditable=false>1.2.1 non regression test</H3>
-<DIV class=SECTIONCONTAINER sizset="7" sizcache="1"><PRE id=code0015 class=CODE contentEditable=false>jc.vars.p10 = (new jc.PlanOfNeed()).add(0,10)</PRE>
+<DIV class=SECTIONCONTAINER sizcache="1" sizset="7"><PRE id=code0015 class=CODE contentEditable=false>jc.vars.p10 = (new jc.PlanOfNeed()).add(0,10)</PRE>
 <DIV id=out0015 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
@@ -472,9 +472,9 @@
 <TD>0</TD>
 <TD>12</TD>
 <TD>12</TD></TR></TBODY></TABLE></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0024 class=SECTION sizset="11" sizcache="1">
+<DIV id=sect0024 class=SECTION sizcache="1" sizset="11">
 <H2 class=SECTIONTITLE contentEditable=false>1.3 jc.Bom</H2>
-<DIV class=SECTIONCONTAINER sizset="11" sizcache="1"><PRE id=code0025 class=CODE contentEditable=false>jc.vars.b1 = jc.bom('b1',['width_210','setup_manual'])</PRE>
+<DIV class=SECTIONCONTAINER sizcache="1" sizset="11"><PRE id=code0025 class=CODE contentEditable=false>jc.vars.b1 = jc.bom('b1',['width_210','setup_manual'])</PRE>
 <DIV id=out0025 class="OUTPUT SUCCESS">
 <FIELDSET><LEGEND>BOM b1</LEGEND>
 <P>condition:(setup_manual &amp;&amp; width_210)</P>
@@ -533,9 +533,9 @@
 <TD>1</TD></TR></TBODY></TABLE></FIELDSET></DIV><PRE id=code0029 class=CODE contentEditable=false>b1.toString()</PRE>
 <DIV id=out0029 class="OUTPUT SUCCESS">[object&nbsp;Bom&nbsp;b1]</DIV>
 <DIV id=test0029 class="TEST SUCCESS">[object&nbsp;Bom&nbsp;b1]</DIV></DIV></DIV>
-<DIV id=sect0030 class=SECTION sizset="14" sizcache="1">
+<DIV id=sect0030 class=SECTION sizcache="1" sizset="14">
 <H2 class=SECTIONTITLE contentEditable=false>1.4 jc.Product</H2>
-<DIV class=SECTIONCONTAINER sizset="14" sizcache="1"><PRE id=code0031 class=CODE contentEditable=false>jc.product('product1',<BR>&nbsp; jc.bom('main170',['width_170'],<BR>&nbsp;&nbsp;&nbsp; {part:'OS frame',quantity:2,neededAt:0},<BR>&nbsp;&nbsp;&nbsp; {part:'GS frame',quantity:1,neededAt:0},<BR>&nbsp;&nbsp;&nbsp; {part:'beam 170',quantity:6,neededAt:0}<BR>&nbsp; ),<BR>&nbsp; jc.bom('main210_manual',['width_210','setup_manual'],<BR>&nbsp;&nbsp;&nbsp; {part:'OS frame',quantity:1,neededAt:0},<BR>&nbsp;&nbsp;&nbsp; {part:'GS frame',quantity:1,neededAt:0},<BR>&nbsp;&nbsp;&nbsp; {part:'beam 210',quantity:6,neededAt:0}<BR>&nbsp; ),<BR>&nbsp; jc.bom('main210_auto',['width_210','setup_automatic'],<BR>&nbsp;&nbsp;&nbsp; {part:'OS frame',quantity:1,neededAt:0},<BR>&nbsp;&nbsp;&nbsp; {part:'GS frame',quantity:1,neededAt:0},<BR>&nbsp;&nbsp;&nbsp; {part:'beam 210',quantity:6,neededAt:0}<BR>&nbsp; )<BR>)</PRE>
+<DIV class=SECTIONCONTAINER sizcache="1" sizset="14"><PRE id=code0031 class=CODE contentEditable=false>jc.product('product1',<BR>&nbsp; jc.bom('main170',['width_170'],<BR>&nbsp;&nbsp;&nbsp; {part:'OS frame',quantity:2,neededAt:0},<BR>&nbsp;&nbsp;&nbsp; {part:'GS frame',quantity:1,neededAt:0},<BR>&nbsp;&nbsp;&nbsp; {part:'beam 170',quantity:6,neededAt:0}<BR>&nbsp; ),<BR>&nbsp; jc.bom('main210_manual',['width_210','setup_manual'],<BR>&nbsp;&nbsp;&nbsp; {part:'OS frame',quantity:1,neededAt:0},<BR>&nbsp;&nbsp;&nbsp; {part:'GS frame',quantity:1,neededAt:0},<BR>&nbsp;&nbsp;&nbsp; {part:'beam 210',quantity:6,neededAt:0}<BR>&nbsp; ),<BR>&nbsp; jc.bom('main210_auto',['width_210','setup_automatic'],<BR>&nbsp;&nbsp;&nbsp; {part:'OS frame',quantity:1,neededAt:0},<BR>&nbsp;&nbsp;&nbsp; {part:'GS frame',quantity:1,neededAt:0},<BR>&nbsp;&nbsp;&nbsp; {part:'beam 210',quantity:6,neededAt:0}<BR>&nbsp; )<BR>)</PRE>
 <DIV id=out0031 class="OUTPUT SUCCESS">
 <H2>Product product1</H2>
 <FIELDSET><LEGEND>BOMs</LEGEND>
@@ -1343,10 +1343,10 @@
 <TBODY>
 <TR>
 <TD>0</TD>
-<TD>60</TD>
-<TD>60</TD></TR></TBODY></TABLE></TD>
+<TD>42</TD>
+<TD>42</TD></TR></TBODY></TABLE></TD>
 <TD>7</TD>
-<TD>3</TD></TR>
+<TD>0</TD></TR>
 <TR>
 <TD>
 <TABLE>
@@ -1358,9 +1358,9 @@
 <TBODY>
 <TR>
 <TD>0</TD>
-<TD>60</TD>
-<TD>60</TD></TR></TBODY></TABLE></TD>
-<TD>3</TD>
+<TD>42</TD>
+<TD>42</TD></TR></TBODY></TABLE></TD>
+<TD>0</TD>
 <TD>7</TD></TR></TBODY></TABLE>
 <H3>worst</H3>
 <TABLE>
@@ -1372,5 +1372,55 @@
 <TBODY>
 <TR>
 <TD>0</TD>
-<TD>60</TD>
-<TD>60</TD></TR></TBODY></TABLE></DIV></DIV></DIV></DIV></DIV></DIV></BODY></HTML>
+<TD>42</TD>
+<TD>42</TD></TR></TBODY></TABLE></DIV>
+<DIV id=test0040 class=TEST>
+<TABLE>
+<THEAD>
+<TR>
+<TH>planOfNeed</TH>
+<TH>setup_manual,width_210</TH>
+<TH>setup_automatic,width_210</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>
+<TABLE>
+<THEAD>
+<TR>
+<TH>time</TH>
+<TH>quantity</TH>
+<TH>cumul</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>0</TD>
+<TD>42</TD>
+<TD>42</TD></TR></TBODY></TABLE></TD>
+<TD>7</TD>
+<TD>0</TD></TR>
+<TR>
+<TD>
+<TABLE>
+<THEAD>
+<TR>
+<TH>time</TH>
+<TH>quantity</TH>
+<TH>cumul</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>0</TD>
+<TD>42</TD>
+<TD>42</TD></TR></TBODY></TABLE></TD>
+<TD>0</TD>
+<TD>7</TD></TR></TBODY></TABLE>
+<H3>worst</H3>
+<TABLE>
+<THEAD>
+<TR>
+<TH>time</TH>
+<TH>quantity</TH>
+<TH>cumul</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>0</TD>
+<TD>42</TD>
+<TD>42</TD></TR></TBODY></TABLE></DIV></DIV></DIV></DIV></DIV></DIV></BODY></HTML>

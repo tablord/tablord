@@ -299,15 +299,18 @@ jc.Scenarii = function(product,conditions) {
   this.worst = new jc.PlanOfNeed();
 
   var neededVariables = {};
+  var neededValues ={};
   for (var i=0;i<conditions.length;i++) {
     for (var j=0;j<conditions[i].length;j++) {
       neededVariables[jc.ProductVariable.variable(conditions[i][j])] = product.variables[jc.ProductVariable.variable(conditions[i][j])];
+      neededValues[conditions[i][j]] = product.values[conditions[i][j]];
     }
   }
 
   var permutationsOfConditions = jc.permutations(conditions);
   for (var p=0; p<permutationsOfConditions.length; p++) {
     $.each(neededVariables,function(name,v){v.remainingQuantity = v.quantity});
+    $.each(neededValues,function(value,v){v.remainingQuantity = v.max});
     var conditionsByPriority = permutationsOfConditions[p];
     var scenario = new jc.Scenario();
     for (var priority=0; priority<conditionsByPriority.length; priority++) {
@@ -316,12 +319,13 @@ jc.Scenarii = function(product,conditions) {
       // find the max quantity available for this condition
       var q = Infinity;
       for (var i=0;i<cond.length;i++) {
-        q = Math.min(q,product.values[cond[i]].max,product.values[cond[i]].variable.remainingQuantity);
+        q = Math.min(q,product.values[cond[i]].remainingQuantity,product.values[cond[i]].variable.remainingQuantity);
       }
 
       // now remove that quantity from all variable involved in cond
       for (var j=0;j<cond.length;j++) {
         product.values[cond[j]].variable.remainingQuantity -= q;
+        product.values[cond[j]].remainingQuantity -= q;
       }
       scenario[cond.toString()] = q;
     }
