@@ -328,6 +328,13 @@
     return value;
   }
 
+  jc.sign = function(value){
+    // returns 0 if value==0
+    //         1 if value > 0
+    //        -1 if value < 0
+    return value===0?0:(value>0?1:-1);
+  }
+
   jc.purgeJQueryAttr = function(html) {
     // supress all jqueryxxx="yy" attributes, since they are meaningless for the user and also compromise the testability
     // since they depend on the context
