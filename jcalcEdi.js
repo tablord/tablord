@@ -335,6 +335,13 @@
     return value===0?0:(value>0?1:-1);
   }
 
+  // helpers specific to jcalc ////////////////////////////////////////////////////////////////////
+
+  jc.createVar = function(pathName,value) {
+    //pathName is a string using the dot notation
+
+  }
+
   jc.purgeJQueryAttr = function(html) {
     // supress all jqueryxxx="yy" attributes, since they are meaningless for the user and also compromise the testability
     // since they depend on the context
