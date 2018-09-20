@@ -639,23 +639,6 @@
 
 
 
-  jc.HTML.prototype.interactiveDiv = function(style/*,iElements*/) {
-    // adds an DIV that will allow interactivity of its internal component 
-    // since it will prevent bubbling events up to the EDI
-    // it will also create an internal DIV position:relative so that 
-    // internal component can be positionned in an absolute manner
-    // for all iElements passed in parameters .control() will be called
-
-    this.htmlCode += '<DIV class=INTERACTIVE style="'+style+'"><DIV style="position:relative;">';
-    for (var i=1; i< arguments.length; i++) {
-      var h = arguments[i].control()
-      this.htmlCode += h;
-    }
-    this.htmlCode += '</DIV></DIV>';
-    return this;
-  }
-
-
   jc.HTML.prototype.sendTo = function(jquerySelector){
     var that = this;
     $(jquerySelector).each(function(i,e){e.innerHTML = that.html});
@@ -684,13 +667,17 @@
     return new jc.HTML(htmlcode);
   }
 
+
   // interactive Elements ////////////////////////////////////////////////////////
-  jc.JcElement = function JcElement(id,css,innerHtml) {
-    //create a new JcElement that can be added inside an output.interactiveDiv
+  jc.JcElement = function JcElement(name,css,innerHtml,scene) {
+    //create a new JcElement that can be added inside scene
     //css is an object like {top:100,left:200....} that surcharge {top:0,left:0}
     //html is html code that will be used as innerHTML 
-    this.name = id;
+    //scene is the scene whom this element belongs to
+    this.name = name;
+    this.id = 'JcEl'+(jc.blockNumber++)
     this.html(innerHtml || '');
+    this.scene = scene;
     this._css = {top:0,left:0};
     this._attr = {};
     $.extend(this._css,css);
@@ -698,8 +685,6 @@
     this.a = {x:0,y:0}; //pixel/s2
     this.v = {x:0,y:0}; //pixel/s
     this.m = 1; //kg;
-    jc.vars[id] = this;
-    
   }
 
   jc.JcElement.prototype.attr = function(attr,newValue) {
@@ -707,8 +692,8 @@
     //   otherwise return the value of the attr atribute of the corresponding element
     //   note that if no HTML element exists, cached values will be used
     //   so the user code can use an element independently from beeing displayed
-    if (newValue === undefined) return $('#'+this.name).attr(attr) || this._attr[attr];
-    $('#'+this.name).attr(attr,newValue);
+    if (newValue === undefined) return $('#'+this.id).attr(attr) || this._attr[attr];
+    $('#'+this.id).attr(attr,newValue);
     this._attr[attr] = newValue;
     return this;
   }    
@@ -718,8 +703,8 @@
     //   otherwise return the value of the css atribute of the corresponding element
     //   note that if no HTML element exists, cached values will be used
     //   so the user code can use an element independently from beeing displayed
-    if (newValue === undefined) return $('#'+this.name).css(cssAttr) || this._css[cssAttr];
-    $('#'+this.name).css(cssAttr,newValue);
+    if (newValue === undefined) return $('#'+this.id).css(cssAttr) || this._css[cssAttr];
+    $('#'+this.id).css(cssAttr,newValue);
     this._css[cssAttr] = newValue;
     return this;
   }    
@@ -770,8 +755,8 @@
 
   jc.JcElement.prototype.html = function(newHtml) {
     // get or set the htmlContent of the Element
-    if (newHtml === undefined) return $('#'+this.name).html() || this._html;
-    $('#'+this.name).html(newHtml);
+    if (newHtml === undefined) return $('#'+this.id).html() || this._html;
+    $('#'+this.id).html(newHtml);
     this._html = newHtml;
     return this;
   }
@@ -798,7 +783,7 @@
     var thisElement = this;
     $.each(this.forces,function(name,forceFunc){
       if (!forceFunc) return;
-      var fe=forceFunc(thisElement,jc.vars[name]);
+      var fe=forceFunc(thisElement,thisElement.scene[name]);
       f.x += fe.x;
       f.y += fe.y;
     });
@@ -815,12 +800,28 @@
     return this;
   }
 
+  jc.JcElement.prototype.div = function(name,css,html) {
+    return this.scene.div(name,css,html);
+  }
+
+  jc.JcElement.prototype.value = function(name,html) {
+    return this.scene.value(name,html);
+  }
+
+  jc.JcElement.prototype.checkBox = function(name,css,html) {
+    return this.scene.checkBox(name,css,html);
+  }
+
+  jc.JcElement.prototype.end = function() {
+    return this.scene;
+  }
+
   jc.JcElement.prototype.toString = function() {
     return '[object JcElement '+this.name+']';
   }
 
   jc.JcElement.prototype.control = function() {
-    return '<DIV id='+this.name+' class=IELEMENT'+this.attributes()+this.style()+'>'+this._html+'</DIV>';
+    return '<DIV id='+this.id+' class=IELEMENT'+this.attributes()+this.style()+'>'+this._html+'</DIV>';
   }
 
   // forceFunctions ///////////////////////////////////////////
@@ -841,10 +842,9 @@
   }
   // JcValue //////////////////////////////////////////////////
 
-  jc.JcValue = function(id,text) {
-    jc.JcElement.call(this,id);
+  jc.JcValue = function(name,css,html,scene) {
+    jc.JcElement.call(this,name,css,html || name,scene);
     this._value = 0;
-    this.text = text || id;
   }
 
   $.extend(jc.JcValue.prototype,jc.JcElement.prototype);
@@ -853,8 +853,8 @@
     // when used without parameters, return the current value
     // (same as valueOf)
     // with a parameter set a new value
-    if (newValue===undefined) return ($('#'+this.name).val() || this._value);
-    $('#'+this.name).val(newValue);
+    if (newValue===undefined) return ($('#'+this.id).val() || this._value);
+    $('#'+this.id).val(newValue);
     this._value = newValue;
     return this;
   }
@@ -873,15 +873,14 @@
     // this checkBox will have the class IELEMENT and so will be positionned absolute
     // at the same time a JcCheckBox is created with the same id allowing to interact
     // easily with the checkBox in user code
-    return '<SPAN class=IELEMENT'+this.style()+'>'+this.text+'<INPUT id='+this.name+' type="number" value='+this._value+'></INPUT></SPAN>';
+    return '<SPAN class=IELEMENT'+this.style()+'>'+this._html+'<INPUT id='+this.id+' type="number" value='+this._value+'></INPUT></SPAN>';
   }
 
   // JcCheckBox //////////////////////////////////////////////////
 
-  jc.JcCheckBox = function(id,text) {
-    jc.JcElement.call(this,id);
+  jc.JcCheckBox = function(name,css,html,scene) {
+    jc.JcElement.call(this,name,css,html || name,scene);
     this._checked = false;
-    this.text = text;
   }
 
   $.extend(jc.JcCheckBox.prototype,jc.JcElement.prototype);
@@ -890,8 +889,8 @@
     // when used without parameters, return the current state of the corresponding checkBox (generally created with output.iCheckBox)
     // (same as valueOf)
     // with a parameter (true or false) set a new state to the checked attribute of the iCheckBox
-    if (newState===undefined) return ($('#'+this.name).attr('checked') || this._checked);
-    $('#'+this.name).attr('checked',newState);
+    if (newState===undefined) return ($('#'+this.id).attr('checked') || this._checked);
+    $('#'+this.id).attr('checked',newState);
     this._checked = newState;
     return this;
   }
@@ -910,7 +909,59 @@
     // this checkBox will have the class IELEMENT and so will be positionned absolute
     // at the same time a JcCheckBox is created with the same id allowing to interact
     // easily with the checkBox in user code
-    return '<SPAN class=IELEMENT'+this.style()+'><INPUT id='+this.name+' type="checkbox"'+(this._checked?' CHECKED>':'>')+this.text+'</INPUT></SPAN>';
+    return '<SPAN class=IELEMENT'+this.style()+'><INPUT id='+this.id+' type="checkbox"'+(this._checked?' CHECKED>':'>')+this._html+'</INPUT></SPAN>';
+  }
+
+  // Scene ///////////////////////////////////////////////////////////////////////
+
+  jc.Scene = function(name,css) {
+    this.length = 0;
+    this.name = name;
+    this._css = css || {};
+    this._attr = {};
+  }
+
+  $.extend(jc.Scene.prototype, jc.JcElement.prototype);
+
+  jc.Scene.prototype.div = function (name,css,innerHtml) {
+    var e = new jc.JcElement(name,css,innerHtml,this);
+    this[name] = e;
+    this[this.length++] = e;
+    return e;
+  }
+
+  jc.Scene.prototype.value = function (name,css,innerHtml) {
+    var e = new jc.JcValue(name,css,innerHtml,this);
+    this[name] = e;
+    this[this.length++] = e;
+    return e;
+  }
+
+  jc.Scene.prototype.checkBox = function (name,css,innerHtml) {
+    var e = new jc.JcCheckBox(name,css,innerHtml,this);
+    this[name] = e;
+    this[this.length++] = e;
+    return e;
+  }
+
+  jc.Scene.prototype.animate = function(deltaT$ms) {
+    var deltaT$ms = deltaT$ms || 100;
+    for (var i = 0;i<this.length-1;i++) {
+      this[i].animate(deltaT$ms)
+    }
+  }
+
+  jc.Scene.prototype.span = function() {
+    var h = '<DIV class=INTERACTIVE '+this.style()+'"><DIV style="position:relative;">';
+    for (var i=0; i< this.length; i++) {
+      h += this[i].control()
+    }
+    h += '</DIV></DIV>';
+    return jc.html(h);
+  }
+
+  jc.scene = function(name,css) {
+    return jc.vars[name] = new jc.Scene(name,css);
   }
 
   // helpers /////////////////////////////////////////////

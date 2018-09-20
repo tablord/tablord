@@ -22,10 +22,10 @@
 <BODY sizcache="1" sizset="1" hideTest="false" designMode="on">
 <DIV id=menu class=TOOLBAR>
 <DIV><INPUT onclick=jc.hideCode(event) type=checkbox>hide codes</INPUT><INPUT onclick=jc.hideCut(event) type=checkbox>hide Cut</INPUT><INPUT onclick=jc.hideTest(event) type=checkbox>hide tests</INPUT><INPUT onclick=jc.hideTrace(event) type=checkbox>hide traces</INPUT><INPUT onclick=jc.autoRun(event) CHECKED type=checkbox>auto run</INPUT><BUTTON onclick=jc.selectElement(undefined);>hide ToolBars</BUTTON><BUTTON onclick=jc.print();>print...</BUTTON></DIV>
-<DIV><SPAN><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.save(); id=saveBtn >save</BUTTON><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); >&#8594;test</BUTTON><BUTTON onclick=jc.cutBlock(jc.selectedElement);>&#8595; cut &#8595;</BUTTON></SPAN><SPAN id=objectToolBar></SPAN></DIV></DIV>
+<DIV><SPAN><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING >save</BUTTON><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON><BUTTON onclick=jc.cutBlock(jc.selectedElement);>&#8595; cut &#8595;</BUTTON></SPAN><SPAN id=objectToolBar></SPAN></DIV></DIV>
 <DIV id=jcContent style="OVERFLOW: scroll; BORDER-TOP: medium none; HEIGHT: 650px; BORDER-RIGHT: medium none; BORDER-BOTTOM: medium none; BORDER-LEFT: medium none" sizcache="1" sizset="1">
 <DIV id=sect0002 class=SECTION sizcache="1" sizset="1">
-<H1 class=SECTIONTITLE contentEditable=false>1 tests of JcalcEdi <SPAN id=code0015 class="CODE EMBEDDED" style="DISPLAY: none">jc.testStatus()</SPAN><SPAN id=out0015 class="OUTPUT SUCCESS" contentEditable=false>test&nbsp;Status:&nbsp;<SPAN class=SUCCESS>tests passed:42 failed:0</SPAN></SPAN>&nbsp;</H1>
+<H1 class=SECTIONTITLE contentEditable=false>1 tests of JcalcEdi <SPAN id=code0015 class="CODE EMBEDDED" style="DISPLAY: none">jc.testStatus()</SPAN><SPAN id=out0015 class="OUTPUT SUCCESS" contentEditable=false><SPAN class=ERROR>tests passed:42 failed:2</SPAN></SPAN>&nbsp;</H1>
 <DIV class=SECTIONCONTAINER sizcache="1" sizset="1">
 <DIV id=sect0017 class=SECTION sizcache="1" sizset="1">
 <H2 class=SECTIONTITLE contentEditable=false>1.1 Consitence of rendering results</H2>
@@ -162,7 +162,7 @@
 <DIV class=SECTIONCONTAINER sizcache="1" sizset="42"><PRE id=code0079 class=CODE contentEditable=false>jc.help(jc.Inspector)</PRE>
 <DIV id=out0079 class="OUTPUT SUCCESS"><B>function Inspector(obj,name,depth)</B><BR>constructor for Inspector objects
 <DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
+<FIELDSET><LEGEND>{} methods</LEGEND>
 <TABLE class=INSPECT>
 <TBODY>
 <TR>
@@ -174,7 +174,7 @@
 <TR>
 <TH vAlign=top>span</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><B>function (depth)</B><BR></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
-<DIV id=test0079 class=TEST><B>function Inspector(obj,name,depth)</B><BR>constructor for Inspector objects 
+<DIV id=test0079 class="TEST ERROR"><B>function Inspector(obj,name,depth)</B><BR>constructor for Inspector objects 
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE class=INSPECT>
@@ -189,7 +189,7 @@
 <TH vAlign=top>span</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><B>function (depth)</B><BR></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0087 class=CODE contentEditable=false>jc.help(jc.Inspector.prototype.legend)</PRE>
 <DIV id=out0087 class="OUTPUT SUCCESS"><B>function(obj)</B><BR>&nbsp;returns&nbsp;the&nbsp;legend&nbsp;for&nbsp;a&nbsp;given&nbsp;object</DIV>
-<DIV id=test0087 class=TEST><B>function(obj)</B><BR>&nbsp;returns&nbsp;the&nbsp;legend&nbsp;for&nbsp;a&nbsp;given&nbsp;object</DIV></DIV></DIV>
+<DIV id=test0087 class="TEST SUCCESS"><B>function(obj)</B><BR>&nbsp;returns&nbsp;the&nbsp;legend&nbsp;for&nbsp;a&nbsp;given&nbsp;object</DIV></DIV></DIV>
 <DIV id=sect0007 class=SECTION sizcache="1" sizset="44">
 <H2 class=SECTIONTITLE contentEditable=false>1.6 jc.inspect</H2>
 <DIV class=SECTIONCONTAINER sizcache="1" sizset="44"><PRE id=code0008 class=CODE contentEditable=false>jc.inspect({one:1,two:2},'my label')</PRE>
@@ -235,6 +235,7 @@
 <DIV id=sect0043 class=SECTION sizcache="1" sizset="49">
 <H2 class=SECTIONTITLE contentEditable=false>1.8 trace</H2>
 <DIV class=SECTIONCONTAINER sizcache="1" sizset="49"><PRE id=code0046 class=CODE contentEditable=false><P>trace.on();</P><P>for (var i = 0;i&lt;=5;i++) {</P><P>  trace(i,'string ');</P><P>}</P><P>trace.messages // normally never use like this, just to test trace</P></PRE>
+<DIV id=out0046 class="OUTPUT SUCCESS">
 <DIV class=TRACE>6 traces:
 <TABLE class=DEBUG>
 <TBODY>
@@ -249,14 +250,13 @@
 <TR>
 <TD class=TRACE>4<SPAN class=INSPECT>"string&nbsp;"</SPAN></TD></TR>
 <TR>
-<TD class=TRACE>5<SPAN class=INSPECT>"string&nbsp;"</SPAN></TD></TR></TBODY></TABLE></DIV>
-<DIV id=out0046 class="OUTPUT SUCCESS">0<SPAN class=INSPECT>"string&nbsp;"</SPAN>,1<SPAN class=INSPECT>"string&nbsp;"</SPAN>,2<SPAN class=INSPECT>"string&nbsp;"</SPAN>,3<SPAN class=INSPECT>"string&nbsp;"</SPAN>,4<SPAN class=INSPECT>"string&nbsp;"</SPAN>,5<SPAN class=INSPECT>"string&nbsp;"</SPAN></DIV>
-<DIV id=test0046 class="TEST SUCCESS">0<SPAN class=INSPECT>"string&nbsp;"</SPAN>,1<SPAN class=INSPECT>"string&nbsp;"</SPAN>,2<SPAN class=INSPECT>"string&nbsp;"</SPAN>,3<SPAN class=INSPECT>"string&nbsp;"</SPAN>,4<SPAN class=INSPECT>"string&nbsp;"</SPAN>,5<SPAN class=INSPECT>"string&nbsp;"</SPAN></DIV></DIV></DIV>
+<TD class=TRACE>5<SPAN class=INSPECT>"string&nbsp;"</SPAN></TD></TR></TBODY></TABLE></DIV>0<SPAN class=INSPECT>"string&nbsp;"</SPAN>,1<SPAN class=INSPECT>"string&nbsp;"</SPAN>,2<SPAN class=INSPECT>"string&nbsp;"</SPAN>,3<SPAN class=INSPECT>"string&nbsp;"</SPAN>,4<SPAN class=INSPECT>"string&nbsp;"</SPAN>,5<SPAN class=INSPECT>"string&nbsp;"</SPAN></DIV>
+<DIV id=test0046 class="TEST ERROR">0<SPAN class=INSPECT>"string&nbsp;"</SPAN>,1<SPAN class=INSPECT>"string&nbsp;"</SPAN>,2<SPAN class=INSPECT>"string&nbsp;"</SPAN>,3<SPAN class=INSPECT>"string&nbsp;"</SPAN>,4<SPAN class=INSPECT>"string&nbsp;"</SPAN>,5<SPAN class=INSPECT>"string&nbsp;"</SPAN></DIV></DIV></DIV>
 <DIV id=sect0074 class=SECTION sizcache="1" sizset="50">
 <H2 class=SECTIONTITLE contentEditable=false>1.9 Interactive and animation</H2>
-<DIV class=SECTIONCONTAINER sizcache="1" sizset="50"><PRE id=code0075 class=CODE contentEditable=false><P>output.interactiveDiv('height:400;width:600',</P><P>  new jc.JcElement('square',{width:50,height:50,border:'solid red 5px',top:100,left:150})</P><P>)</P><P>jc.vars.squareTop=jc.vars.squareLeft=50;</P></PRE>
+<DIV class=SECTIONCONTAINER sizcache="1" sizset="50"><PRE id=code0075 class=CODE contentEditable=false><P>jc.vars.squareTop=jc.vars.squareLeft=50;</P><P>&nbsp;</P><P>jc.scene('scene1',{height:400,width:600})</P><P>.div('square',{width:50,height:50,border:'solid red 5px',top:100,left:150})</P><P>.end()</P><P>&nbsp;</P></PRE>
 <DIV id=out0075 class="OUTPUT SUCCESS">
-<DIV class=INTERACTIVE style="HEIGHT: 400px; WIDTH: 600px">
+<DIV class=INTERACTIVE style="HEIGHT: 400px; WIDTH: 600px" ?>
 <DIV style="POSITION: relative">
-<DIV id=square class=IELEMENT style="BORDER-TOP: red 5px solid; HEIGHT: 50px; BORDER-RIGHT: red 5px solid; WIDTH: 50px; BORDER-BOTTOM: red 5px solid; LEFT: 175px; BORDER-LEFT: red 5px solid; TOP: 51px"></DIV></DIV></DIV>50</DIV><PRE id=code0076 class=CODE contentEditable=false><P>squareTop = jc.limit(squareTop + Math.random()*10-5,0,400);</P><P>squareLeft = jc.limit(squareLeft + Math.random()*10-5,0,600);</P><P>square.top(squareTop).left(squareLeft);</P><P>jc.animate(10);</P></PRE>
-<DIV id=out0076 class="OUTPUT SUCCESS">Sat&nbsp;Sep&nbsp;15&nbsp;16:35:59&nbsp;UTC+0200&nbsp;2018</DIV></DIV></DIV></DIV></DIV></DIV></BODY></HTML>
+<DIV id=JcEl89 class=IELEMENT style="BORDER-TOP: red 5px solid; HEIGHT: 50px; BORDER-RIGHT: red 5px solid; WIDTH: 50px; BORDER-BOTTOM: red 5px solid; LEFT: 99px; BORDER-LEFT: red 5px solid; TOP: 91px"></DIV></DIV></DIV></DIV><PRE id=code0076 class=CODE contentEditable=false><P>squareTop = jc.limit(squareTop + Math.random()*10-5,0,400);</P><P>squareLeft = jc.limit(squareLeft + Math.random()*10-5,0,600);</P><P>scene1.square.top(squareTop).left(squareLeft);</P><P>jc.animate(10);</P></PRE>
+<DIV id=out0076 class="OUTPUT SUCCESS">Thu&nbsp;Sep&nbsp;20&nbsp;21:51:47&nbsp;UTC+0200&nbsp;2018</DIV></DIV></DIV></DIV></DIV></DIV></BODY></HTML>

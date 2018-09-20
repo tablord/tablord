@@ -1226,9 +1226,11 @@
   }
 
   jc.displayResult = function(result,output) {
-      var h = jc.format(result);    // result has to be calculated first, since programmer can use trace in functions like span()
-      output.outputElement.innerHTML = output.html(h).toString();
-      $(output.outputElement).removeClass('ERROR').addClass('SUCCESS').before(trace.span().toString());
+    $(output.outputElement)
+    .empty().removeClass('ERROR').addClass('SUCCESS')
+    .append(((result !== undefined) && result.$) || jc.format(result).toString())
+    .prepend(output.toString())
+    .prepend(trace.span().toString())
   }
 
   jc.displayError = function(error,output) {
