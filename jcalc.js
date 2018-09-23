@@ -675,8 +675,8 @@
     //html is html code that will be used as innerHTML 
     //scene is the scene whom this element belongs to
     this.name = name;
-    this.id = 'JcEl'+(jc.blockNumber++)
-    this.html(innerHtml || '');
+    this.id = 'JcEl'+jc.pad(jc.JcElement.idNumber++,4);
+    this._html = innerHtml || '';
     this.scene = scene;
     this._css = {top:0,left:0};
     this._attr = {};
@@ -686,6 +686,8 @@
     this.v = {x:0,y:0}; //pixel/s
     this.m = 1; //kg;
   }
+
+  jc.JcElement.idNumber = 0;
 
   jc.JcElement.prototype.attr = function(attr,newValue) {
     // if newValue exists, set a new value and return the element
@@ -796,7 +798,6 @@
     this.v.y += this.a.y * deltaT;
     this.left(this.left() + this.v.x * deltaT);
     this.top( this.top()  + this.v.y * deltaT);
-//    this.html('a:'+this.a.x.toFixed(2)+':'+this.a.y.toFixed(2));
     return this;
   }
 
@@ -810,6 +811,11 @@
 
   jc.JcElement.prototype.checkBox = function(name,css,html) {
     return this.scene.checkBox(name,css,html);
+  }
+
+  jc.JcElement.prototype.trace = function(/*objects*/){
+    trace(arguments);
+    return this;
   }
 
   jc.JcElement.prototype.end = function() {
@@ -914,7 +920,7 @@
 
   // Scene ///////////////////////////////////////////////////////////////////////
 
-  jc.Scene = function(name,css) {
+  jc.Scene = function Scene(name,css) {
     this.length = 0;
     this.name = name;
     this._css = css || {};
@@ -946,7 +952,7 @@
 
   jc.Scene.prototype.animate = function(deltaT$ms) {
     var deltaT$ms = deltaT$ms || 100;
-    for (var i = 0;i<this.length-1;i++) {
+    for (var i = 0;i<this.length;i++) {
       this[i].animate(deltaT$ms)
     }
   }

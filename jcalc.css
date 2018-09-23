@@ -177,6 +177,12 @@ pre {
   border:solid blue 3px;
   color: blue;
 }
+.TEST.ERROR {
+  background-color: b6fff7;
+  border:solid red 3px;
+  color: black;
+}
+
 .DIFFSAME,
 .USERSUCCESS,
 .SUCCESS {

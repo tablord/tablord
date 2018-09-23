@@ -1,8 +1,22 @@
+// jcalcEdi.js
+//
+// This is the core of jcalc both defining the jc namespace that holds all global variables and functions
+// and where all EDI behaviour is coded
+// 
+// it needs the jcalc.js library and jquery (for now 1.5.1)
+//
+// (CC-BY-SA 2018) according to https://creativecommons.org/
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
   // global variables /////////////////////////////////////////////////
 
   var jc = {name:'JCalc',
             version:'0.1',
             authors:['Marc Nicole'],
+            rights:'CC-BY-SA 2018',
             selectedElement:undefined,
             output: undefined,
                         //a new Output is created for each code. 
@@ -66,7 +80,7 @@
            };
 
 
-  jc.credits = {name:jc.name,version:jc.version,authors:jc.authors};
+  jc.credits = {name:jc.name,version:jc.version,authors:jc.authors,rights:jc.rights};
   jc.helps = {'jc.credits':jc.credits};
 
   // classical formating functions
@@ -137,7 +151,13 @@
   }
 
   // JSON ///////////////////////////////////////////////////////////
+  //
+  // a replacement for ECMA5+ 
 
+  try {
+    var test = JSON == undefined; // in ECMA3 JSON doesn't exist and will make this statement crash
+  }
+  catch (e) {
     JSON = {};
     JSON.stringify = function(obj){
       if (typeof obj == 'number') {
@@ -162,7 +182,7 @@
       
       return obj.toJson();
     }
-    
+  }    
 
   // debug //////////////////////////////////////////////////////////
 
@@ -735,7 +755,7 @@
     url = url || text;
     var entry = jc.tableOfContent.find(url);
     if (entry) {
-      return new jc.HTML('<a href="#'+entry.sectionId+'">'+text+'</a>');
+      return new jc.HTML('<a class=LINK href="#'+entry.sectionId+'">'+text+'</a>');
     }
     return new jc.HTML('<span class=INVALIDLINK title="#'+url+' is not found in the table of content">'+text+'</span>');
   }
@@ -807,34 +827,31 @@
   jc.hideCode = function(event) {
     var button = event.target || window.event.srcElement; //IE7 compatibility
     $('.CODE').toggleClass('HIDDEN',button.checked);
-    button.scrollIntoView();
-    window.document.body.hideCode=button.checked;
+    $('body').attr('hideCode',button.checked);
   }
 
   jc.hideCut = function(event) {
     var button = event.target || window.event.srcElement; //IE7 compatibility
     $('.CUT').toggleClass('HIDDEN',button.checked);
-    button.scrollIntoView();
-    window.document.body.hideCut=button.checked;
+    $('body').attr('hideCut',button.checked);
   }
       
   jc.hideTest = function(event) {
     var button = event.target || window.event.srcElement; //IE7 compatibility
     $('.TEST').toggleClass('HIDDEN',button.checked);
-    button.scrollIntoView();
-    window.document.body.hideTest=button.checked;
+    $('body').attr('hideTest',button.checked);
   }
       
   jc.hideTrace = function(event) {
     var button = event.target || window.event.srcElement; //IE7 compatibility
     $('.TRACE').toggleClass('HIDDEN',button.checked);
-    button.scrollIntoView();
-    window.document.body.hideTrace=button.checked;
+    $('body').attr('hideTrace',button.checked);
   }
 
-  jc.autoRun = function(event) {
+  jc.setAutoRun = function(event) {
     var button = event.target || window.event.srcElement; //IE7 compatibility
-    jc.autoRun = window.document.body.autoRun=button.checked;
+    jc.autoRun = button.checked;
+    $('body').attr('autoRun',jc.autoRun);
   }
 
   jc.print = function() {
@@ -851,11 +868,11 @@
     jc.menu$ =  $(
     '<DIV id=menu class=TOOLBAR>'+
       '<DIV>'+
-        '<INPUT onclick="jc.hideCode(event)"'+(window.document.body.hideCode===true?' checked':'')+' type=checkbox>hide codes</INPUT>'+
-        '<INPUT onclick="jc.hideCut(event)"'+(window.document.body.hideCut===true?' checked':'')+' type=checkbox>hide Cut</INPUT>'+
-        '<INPUT onclick="jc.hideTest(event)"'+(window.document.body.hideTest===true?' checked':'')+' type=checkbox>hide tests</INPUT>'+
-        '<INPUT onclick="jc.hideTrace(event)"'+(window.document.body.hideTrace===true?' checked':'')+' type=checkbox>hide traces</INPUT>'+
-        '<INPUT onclick="jc.autoRun(event)"'+(jc.autoRun?' checked':'')+' type=checkbox>auto run</INPUT>'+
+        '<INPUT onclick="jc.hideCode(event)"'+($('body').attr('hideCode')==='true'?' checked':'')+' type=checkbox>hide codes</INPUT>'+
+        '<INPUT onclick="jc.hideCut(event)"'+($('body').attr('hideCut')==='true'?' checked':'')+' type=checkbox>hide Cut</INPUT>'+
+        '<INPUT onclick="jc.hideTest(event)"'+($('body').attr('hideTest')==='true'?' checked':'')+' type=checkbox>hide tests</INPUT>'+
+        '<INPUT onclick="jc.hideTrace(event)"'+($('body').attr('hideTrace')==='true'?' checked':'')+' type=checkbox>hide traces</INPUT>'+
+        '<INPUT onclick="jc.setAutoRun(event)"'+(jc.autoRun?' checked':'')+' type=checkbox>auto run</INPUT>'+
         '<BUTTON onclick=jc.selectElement(undefined);>hide ToolBars</BUTTON>'+
         '<BUTTON onclick="jc.print();">print...</BUTTON>'+
       '</DIV>'+
@@ -864,11 +881,12 @@
            '<BUTTON id=runUntilSelectedBtn onclick=jc.execUntilSelected(); style="color: #8dff60;">&#9658;|</BUTTON>'+
            '<BUTTON id=runAllBtn onclick=jc.execAll(); style="color: #8dff60;">&#9658;&#9658;</BUTTON>'+
            '<BUTTON id=stopAnimation onclick=jc.clearTimers(); style="color: red">&#9632;</BUTTON>'+
+           '<BUTTON id="clearOutputsBtn" onclick="jc.clearOutputs();">clear outputs</BUTTON>'+
            '<BUTTON id="saveBtn" onclick="jc.save();">save</BUTTON>'+
-           '<SPAN id=codeId>no element</SPAN>'+
-           '<BUTTON onclick=jc.showOutputHtml(this);>show html</BUTTON>'+
-           '<BUTTON onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON>'+
-           '<BUTTON onclick=jc.cutBlock(jc.selectedElement);>&#8595; cut &#8595;</BUTTON>'+
+           '<SPAN id=codeId>no selection</SPAN>'+
+           '<BUTTON id="showHtmlBtn" onclick=jc.showOutputHtml(this);>show html</BUTTON>'+
+           '<BUTTON id="toTestBtn" onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON>'+
+           '<BUTTON id="cutBtn" onclick=jc.cutBlock(jc.selectedElement);>&#8595; cut &#8595;</BUTTON>'+
         '</SPAN>'+
         '<SPAN id=objectToolBar></SPAN>'+
       '</DIV>'+
@@ -876,6 +894,7 @@
     $('BODY').prepend(jc.menu$);
 
     jc.objectToolBar$ = jc.menu$.find('#objectToolBar');
+    jc.selectionBtns$ = $('#showHtmlBtn').add('#toTestBtn').add('#cutBtn').attr('disabled',true);
 
     $('#richTextToolBar').remove(); // kill anything previouly in the saved document
     jc.richTextToolBar$ =  $('<SPAN id=richTextToolBar class=TOOLBAR></SPAN>')
@@ -928,6 +947,10 @@
       $('*').removeClass('SUCCESS ERROR');
     }
     jc.setUpToDate.state = state;
+  }
+  
+  jc.clearOutputs = function() {
+    $('.OUTPUT').remove();
   }
 
   jc.save = function() {
@@ -1094,10 +1117,12 @@
     jc.selectedElement = element;
     if (element == undefined){
       $('#codeId').text('no selection');
+      jc.selectionBtns$.attr('disabled',true);
       jc.detachLocalToolBars();
       return;
     }
     jc.menu$.show(500);
+    jc.selectionBtns$.attr('disabled',false);
     $('#codeId').text(element.id);
     jc.moveLocalToolBars(element);
     $(element).addClass('SELECTED');
@@ -1230,7 +1255,7 @@
     .empty().removeClass('ERROR').addClass('SUCCESS')
     .append(((result !== undefined) && result.$) || jc.format(result).toString())
     .prepend(output.toString())
-    .prepend(trace.span().toString())
+    .before(trace.span().toString()) // traces are not part of the result
   }
 
   jc.displayError = function(error,output) {
@@ -1340,6 +1365,7 @@
     jc.clearTimers();
     jc.finalizations = [];
     jc.vars = {}; // run from fresh
+    jc.JcElement.idNumber = 0;
     jc.simulation = new Simulation('_simulation');
     jc.tableOfContent.updateSections();
     jc.$editables(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
@@ -1353,6 +1379,7 @@
     jc.clearTimers();
     jc.finalizations = [];
     jc.vars = {}; // run from fresh
+    jc.JcElement.idNumber = 0;
     jc.tableOfContent.updateSections();
     jc.$editables(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
     $('*').removeClass('SUCCESS').removeClass('ERROR')
@@ -1401,21 +1428,21 @@
   jc.showOutputHtml = function(checkBox) {
     var out = jc.outputElement(jc.selectedElement) || {id:'no output',innerHTML:''};
     var test = jc.testElement(jc.selectedElement) || {id:'no test',innerHTML:''};
-    window.alert(out.id+':\n'+out.innerHTML+'\n\n'+
+    var diff = '';
+    if (out && test) {
+      var i = 0;
+      var hout  = jc.trimHtml(out.innerHTML)
+      var htest = jc.trimHtml(test.innerHTML)
+      while ((i<hout.length) && (i<htest.length) && (hout.charAt(i) === htest.charAt(i))) {
+        i++;
+      }
+      diff = 'first difference at position '+i+'\n'+
+             'out :'+hout.slice(i,i+20)+'\n'+
+             'test:'+htest.slice(i,i+20)+'\n\n';
+    }  
+    window.alert(diff+
+                 out.id+':\n'+out.innerHTML+'\n\n'+
                  test.id+':\n'+test.innerHTML);
-/*
-    var outHtmlId = 'html'+jc.selectedElement.id;
-    var outHtml = window.document.getElementById(outHtmlId);
-    if (!checkBox.checked && outHtml) {
-      outHtml.outerHTML = '';
-    }
-    var out = jc.outputElement(jc.selectedElement) || jc.selectedElement;
-    if (outHtml == undefined) {
-      out.insertAdjacentHTML('afterend','<DIV id='+outHtmlId+' class=DEBUG>html</DIV>');
-      var outHtml = window.document.getElementById(outHtmlId);
-    }
-    outHtml.innerHTML = jc.toHtml(out.innerHTML);
-*/
   }
 
 
@@ -1467,14 +1494,15 @@
     $('.SECTION').live("click",jc.sectionClick);
     $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
     $('.INTERACTIVE').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
+    $('.LINK').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
     jc.findblockNumber();
     jc.initToolBars();
     if ($('.CODE').add('.SECTION').add('.RICHTEXT').length == 0) {  // if really empty sheet
       jc.content$.append(jc.bottomToolBar$)
     }
     $(window).resize(jc.resize).bind('beforeunload',jc.beforeUnload);
-
-    if (window.document.body.autoRun!==false) jc.execAll();
+    jc.autoRun = $('body').attr('autoRun')!==false;
+    if (jc.autoRun) jc.execAll();
     jc.resize();
   });  
   
