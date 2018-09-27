@@ -337,6 +337,18 @@
     return o;
   }
 
+  jc.findInArrayOfObject = function(criteria,a) {
+    // find the first object in the array of object a that has all criteria true
+    // example jc.findInArrayOfObject({toto:5},[{toto:1,tutu:5},{toto:5}])
+    // will return 1
+    next: for (var i=0; i<a.length; i++) {
+      for (var k in criteria) {
+        if (a[i][k] !== criteria[k]) continue next;
+      }
+      return i;
+    }
+  }
+
   jc.pad = function(integer,numberOfDigits){
     return ('00000000000000000'+integer).slice(-numberOfDigits);
   }
@@ -423,18 +435,18 @@
     return html.replace(/\<.*?style\="DISPLAY\: none".*?\<\/.*?\>/g,'').replace(/\<.*?\>/g,'');
   }
 
-  jc.findInArrayOfObject = function(criteria,a) {
-    // find the first object in the array of object a that has all criteria true
-    // example jc.findInArrayOfObject({toto:5},[{toto:1,tutu:5},{toto:5}])
-    // will return 1
-    next: for (var i=0; i<a.length; i++) {
-      for (var k in criteria) {
-        if (a[i][k] !== criteria[k]) continue next;
-      }
-      return i;
-    }
+  // helpers for functions ///////////////////////////////////////// 
+    
+  jc.signature = function(func) {
+    // returns only the signature of the function
+    return func.toString().match(/(function.*?\))/)[0];
   }
 
+  jc.functionName = function (func) {
+    // returns the name of the function or '' if an anonymous function
+    return func.toString().match(/function *([a-zA-Z0-9_$]*)/)[1];
+  }
+    
   jc.constructorName = function(name) {
   // returns if name is a constructor name for a function 
   // the last identified starting with a capital character
@@ -444,8 +456,7 @@
     if (typeof name !== 'string') return false;
     return (name.search(/[A-Z]/) === 0);
   }
- 
-    
+
   jc.help = function(func) {
   // returns the signature of the function and the first comment in a pretty html 
   // - func: the function to be inspected
@@ -476,10 +487,6 @@
     return new jc.HTML('<b>'+signature+'</b><br>'+comments.join('<br>')+(constructor?jc.inspect(func.prototype,'methods').span():''));
   }
 
-  jc.signature = function(func) {
-    // returns only the signature of the function
-    return func.toString().match(/(function.*?\))/)[0];
-  }
 
   // navigation within document ////////////////////////////////////////////////////////
   jc.sectionBeingExecuted$ = function() {

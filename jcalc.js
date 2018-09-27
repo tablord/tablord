@@ -823,7 +823,7 @@
   }
 
   jc.JcElement.prototype.toString = function() {
-    return '[object JcElement '+this.name+']';
+    return '[object '+jc.functionName(this.constructor)+' '+this.name+']';
   }
 
   jc.JcElement.prototype.control = function() {
@@ -848,7 +848,7 @@
   }
   // JcValue //////////////////////////////////////////////////
 
-  jc.JcValue = function(name,css,html,scene) {
+  jc.JcValue = function JcValue(name,css,html,scene) {
     jc.JcElement.call(this,name,css,html || name,scene);
     this._value = 0;
   }
@@ -869,10 +869,6 @@
     // returns the state of the checked attribute
     return this.value();
   }
- 
-  jc.JcValue.prototype.toString = function() {
-    return '[object JcValue '+this.name+']';
-  }
 
   jc.JcValue.prototype.control = function() {
     // return the HTML code for a checkBox with id=id and text as content
@@ -880,6 +876,24 @@
     // at the same time a JcCheckBox is created with the same id allowing to interact
     // easily with the checkBox in user code
     return '<SPAN class=IELEMENT'+this.style()+'>'+this._html+'<INPUT id='+this.id+' type="number" value='+this._value+'></INPUT></SPAN>';
+  }
+
+  // JcFileName //////////////////////////////////////////////////
+
+  jc.JcFileName = function JcFileName(name,css,html,scene) {
+    jc.JcElement.call(this,name,css,html || name,scene);
+    this._value = 0;
+  }
+
+  $.extend(jc.JcValue.prototype,jc.JcValue.prototype);
+
+
+  jc.JcFileName.prototype.control = function() {
+    // return the HTML code for a checkBox with id=id and text as content
+    // this checkBox will have the class IELEMENT and so will be positionned absolute
+    // at the same time a JcCheckBox is created with the same id allowing to interact
+    // easily with the checkBox in user code
+    return '<SPAN class=IELEMENT'+this.style()+'>'+this._html+'<INPUT id='+this.id+' type="file" value='+this._value+'></INPUT></SPAN>';
   }
 
   // JcCheckBox //////////////////////////////////////////////////
@@ -906,10 +920,6 @@
     return this.checked();
   }
  
-  jc.JcCheckBox.prototype.toString = function() {
-    return '[object JcCheckBox]';
-  }
-
   jc.JcCheckBox.prototype.control = function() {
     // return the HTML code for a checkBox with id=id and text as content
     // this checkBox will have the class IELEMENT and so will be positionned absolute
@@ -934,6 +944,16 @@
     this[name] = e;
     this[this.length++] = e;
     return e;
+  }
+
+  jc.Scene.prototype.control = function(objectAsControl,css) {
+    // add any object that can act as a control ie: that has
+    //   .name 
+    //   .control(css)
+    //   .animate()
+
+    this[objectAsControl.name] = objectAsControl;
+    this[this.length++] = objectAsControl;
   }
 
   jc.Scene.prototype.value = function (name,css,innerHtml) {
