@@ -270,14 +270,25 @@
       l = jc.signature(this.obj);
     }
     else {
-      l = this.obj.toString();
+window.alert('before to string')
+      l = this.obj.toString('from legend');
+window.alert('after to string l='+l)
     } 
     return l;
   }
 
   jc.Inspector.prototype.toString = function (){
+    // display the object hold by the inspector as a string
+
+    // BE CARFULL IN DEBUGGING THAT FUNCTION: DO NOT CALL a(....), 
+    // since it will create an inspector recursivelly
+    // use window.alert instead !!
+window.alert('inspector.toString')
     var r = this.legend(this.obj)+' '+this.name+'\n';
-    for (var k in this.obj) { r += k+':  '+this.obj[k]+'\n' };
+    for (var k in this.obj) {
+window.alert('for k='+k)
+      r += k+':  '+this.obj[k]+'\n' 
+    };
     return r;
   }
 
@@ -301,6 +312,7 @@
     var r = '<DIV class=INSPECT><fieldset><legend>'+this.legend(this.obj)+' '+this.name+'</legend>';
     r += '<table class=INSPECT>';
     for (var k in this.obj) {
+      if (k==='constructor') continue;
       r += '<tr><th valign="top">'+k+'</th><td valign="top" style="text-align:left;">'+
            (  (typeof this.obj[k] == 'function')?jc.help(this.obj[k]):
                  ((depth == 1)?jc.toHtml(this.obj[k]):jc.inspect(this.obj[k]).span(depth-1))
@@ -317,6 +329,26 @@
     return new jc.Inspector(obj,name,depth);
   }
 
+  jc.heir = function (p) {
+    // return an heir of p
+    if (p==null) throw TypeError();
+    if (Object.create) return Object.create(p);
+    var t=typeof p;
+    if (t !== "object" && t !== "function") throw TypeError();
+    function F(){};
+    F.prototype = p;
+    return new F();
+  }
+
+  jc.makeInheritFrom = function(newClass,ancestorClass) {
+    // make a newClass inherit from another ancestorClass
+    // return this
+    if (newClass == undefined)  throw new Error("makeInheritFrom: newClass is undefined");
+    if (ancestorClass == undefined) throw new Error("makeInheritFrom: ancestorClass is undefined");
+    newClass.prototype = jc.heir(ancestorClass.prototype);
+    newClass.prototype.constructor = newClass;
+    return newClass;
+  }
 
   jc.keys = function(obj) {
     // returns an Array with all keys (=properties) of an object
@@ -511,7 +543,9 @@
   }
 
   jc.helps.jc = {inspect:jc.inspect,
-                 keys:jc.keys,copy:jc.copy,pad:jc.pad,toString:jc.toString,toHtml:jc.toHtml,
+                 keys:jc.keys,copy:jc.copy,pad:jc.pad,
+                 inherit:jc.inherit,
+                 toString:jc.toString,toHtml:jc.toHtml,
                  codeExample:jc.codeExample,findInArrayOfObject:jc.findInArrayOfObject,help:jc.help,testStatus:jc.testStatus,
                  /*tableOfContent:jc.tableOfContent,*/link:jc.link
   };

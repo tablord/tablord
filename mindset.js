@@ -75,9 +75,6 @@ jc.JcWordCloud = function(name,css,wordIndex,scene) {
 
 $.extend(jc.JcWordCloud.prototype,jc.JcElement.prototype);
 
-
-
-
 jc.WordIndex.prototype.control = function() {
   var h = '<DIV id='+this.id+' class=IELEMENT'+this.attributes()+this.style()+'>';
   for (var i = 0; i<this.elements.length; i++) {
@@ -86,3 +83,5 @@ jc.WordIndex.prototype.control = function() {
   h += '</DIV>';
   return h;
 }
+
+

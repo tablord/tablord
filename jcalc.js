@@ -682,6 +682,7 @@
     this._attr = {};
     $.extend(this._css,css);
     this.forces = {};
+    this.f = {x:0,y:0}; //Newton
     this.a = {x:0,y:0}; //pixel/s2
     this.v = {x:0,y:0}; //pixel/s
     this.m = 1; //kg;
@@ -772,6 +773,11 @@
     return this;
   }
 
+  jc.JcElement.prototype.prepareAnimation = function() {
+    this.f = {x:0,y:0};
+    this.p = {x:this.left(),y:this.top()};
+  }
+
   jc.JcElement.prototype.animate = function(deltaT$ms) {
     // calculate all forces on this element, then calculate a new acceleration, speed and position
 
@@ -780,24 +786,24 @@
     }
 
     var deltaT = (deltaT$ms || 100)/1000;
-    var f = {x:0,y:0};
     var friction = {x:0,y:0,u:10};
     var thisElement = this;
+    
     $.each(this.forces,function(name,forceFunc){
       if (!forceFunc) return;
       var fe=forceFunc(thisElement,thisElement.scene[name]);
-      f.x += fe.x;
-      f.y += fe.y;
+      thisElement.f.x += fe.x;
+      thisElement.f.y += fe.y;
     });
     var v = dist(this.v);
     friction.x = v!=0?- this.v.x/v*friction.u:0;
     friction.y = v!=0?- this.v.y/v*friction.u:0;
-    this.a.x =  (f.x+friction.x) / this.m;
-    this.a.y =  (f.y+friction.y) / this.m;
+    this.a.x =  (this.f.x+friction.x) / this.m;
+    this.a.y =  (this.f.y+friction.y) / this.m;
     this.v.x += this.a.x * deltaT;
     this.v.y += this.a.y * deltaT;
-    this.left(this.left() + this.v.x * deltaT);
-    this.top( this.top()  + this.v.y * deltaT);
+    this.left(this.p.x += this.v.x * deltaT);
+    this.top( this.p.y += this.v.y * deltaT);
     return this;
   }
 
@@ -822,7 +828,8 @@
     return this.scene;
   }
 
-  jc.JcElement.prototype.toString = function() {
+  jc.JcElement.prototype.toString = function(who) {
+if(who) a('jcElement.toString('+who+'):"'+this.name+'"',this.constructor.toString('self'))
     return '[object '+jc.functionName(this.constructor)+' '+this.name+']';
   }
 
@@ -852,8 +859,8 @@
     jc.JcElement.call(this,name,css,html || name,scene);
     this._value = 0;
   }
-
-  $.extend(jc.JcValue.prototype,jc.JcElement.prototype);
+ 
+  jc.makeInheritFrom(jc.JcValue,jc.JcElement);
 
   jc.JcValue.prototype.value = function(newValue) {
     // when used without parameters, return the current value
@@ -885,8 +892,7 @@
     this._value = 0;
   }
 
-  $.extend(jc.JcValue.prototype,jc.JcValue.prototype);
-
+  jc.makeInheritFrom(jc.JcFileName,jc.JcElement);
 
   jc.JcFileName.prototype.control = function() {
     // return the HTML code for a checkBox with id=id and text as content
@@ -903,7 +909,7 @@
     this._checked = false;
   }
 
-  $.extend(jc.JcCheckBox.prototype,jc.JcElement.prototype);
+  jc.makeInheritFrom(jc.JcCheckBox,jc.JcElement);
 
   jc.JcCheckBox.prototype.checked = function(newState) {
     // when used without parameters, return the current state of the corresponding checkBox (generally created with output.iCheckBox)
@@ -935,9 +941,10 @@
     this.name = name;
     this._css = css || {};
     this._attr = {};
+    this.repulsion = 500;
   }
 
-  $.extend(jc.Scene.prototype, jc.JcElement.prototype);
+  jc.makeInheritFrom(jc.Scene,jc.JcElement);
 
   jc.Scene.prototype.div = function (name,css,innerHtml) {
     var e = new jc.JcElement(name,css,innerHtml,this);
@@ -946,6 +953,7 @@
     return e;
   }
 
+/*************
   jc.Scene.prototype.control = function(objectAsControl,css) {
     // add any object that can act as a control ie: that has
     //   .name 
@@ -955,6 +963,7 @@
     this[objectAsControl.name] = objectAsControl;
     this[this.length++] = objectAsControl;
   }
+*/
 
   jc.Scene.prototype.value = function (name,css,innerHtml) {
     var e = new jc.JcValue(name,css,innerHtml,this);
@@ -972,6 +981,30 @@
 
   jc.Scene.prototype.animate = function(deltaT$ms) {
     var deltaT$ms = deltaT$ms || 100;
+    var fx,fy;
+    var w = this.width();
+    var h = this.height();
+
+    for (var i = 0;i<this.length;i++) {
+      this[i].prepareAnimation();
+    }
+
+    // repulse all elements
+    for (var i = 0;i<this.length;i++) {
+      // symetric repulsion forces from the others
+      for (var j = i+1;j<this.length;j++) {
+        fx = jc.limit(this.repulsion/(this[i].p.x - this[j].p.x),-10,10);
+        fy = jc.limit(this.repulsion/(this[i].p.y - this[j].p.y),-10,10);
+        this[i].f.x += fx;
+        this[j].f.x -= fx;
+        this[i].f.y += fy;
+        this[j].f.y -= fy;
+      }
+
+      // repulsion from borders exists only 
+      this[i].f.x += jc.limit(this[i].p.x,0,w) - this[i].p.x;
+      this[i].f.y += jc.limit(this[i].p.y,0,h) - this[i].p.y;
+    }
     for (var i = 0;i<this.length;i++) {
       this[i].animate(deltaT$ms)
     }
