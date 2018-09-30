@@ -1,4 +1,4 @@
-<HTML sizset="0" sizcache="1" xmlns="http://www.w3.org/1999/xhtml" APPLICATIONNAME="D:\Documents\programmation\jcalc\jcalcV0\mindset_test.hta" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SINGLEINSTANCE="yes" SCROLL="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
+<HTML APPLICATIONNAME="D:\Documents\programmation\jcalc\jcalcV0\mindset_test.hta" xmlns="http://www.w3.org/1999/xhtml" sizcache="1" sizset="0" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SCROLL="yes" SINGLEINSTANCE="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
 <SCRIPT src="jquery-1.5.1.min.js"></SCRIPT>
 
 <SCRIPT class=UPDATE src="jcalcEdi.js"></SCRIPT>
@@ -21,11 +21,11 @@
 
 <SCRIPT src="mindset.js"></SCRIPT>
 </HEAD>
-<BODY sizset="0" sizcache="1" designMode="on">
+<BODY sizcache="1" sizset="0" designMode="on">
 <DIV id=menu class=TOOLBAR>
 <DIV><INPUT onclick=jc.hideCode(event) type=checkbox>hide codes</INPUT><INPUT onclick=jc.hideCut(event) type=checkbox>hide Cut</INPUT><INPUT onclick=jc.hideTest(event) type=checkbox>hide tests</INPUT><INPUT onclick=jc.hideTrace(event) type=checkbox>hide traces</INPUT><INPUT onclick=jc.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT><BUTTON onclick=jc.selectElement(undefined);>hide ToolBars</BUTTON><BUTTON onclick=jc.print();>print...</BUTTON></DIV>
-<DIV><SPAN><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn>clear outputs</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING >save</BUTTON><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.showOutputHtml(this); disabled id=showHtmlBtn>show html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); disabled id=toTestBtn>&#8594;test</BUTTON><BUTTON onclick=jc.cutBlock(jc.selectedElement); disabled id=cutBtn>&#8595; cut &#8595;</BUTTON></SPAN><SPAN id=objectToolBar></SPAN></DIV></DIV>
-<DIV id=jcContent style="OVERFLOW: scroll; BORDER-TOP: medium none; HEIGHT: 650px; BORDER-RIGHT: medium none; BORDER-BOTTOM: medium none; BORDER-LEFT: medium none" sizset="0" sizcache="1"><PRE id=code0002 class=CODE contentEditable=false><P>jc.vars.db = [</P><P>{message:'I am so happy to be here',category:'feeling'},</P><P>{message:'I hate to be here',category:'feeling'}</P><P>]</P></PRE>
+<DIV><SPAN><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="COLOR: #8dff60" >&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn>clear outputs</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING>save</BUTTON><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.showOutputHtml(this); disabled id=showHtmlBtn>show html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); disabled id=toTestBtn>&#8594;test</BUTTON><BUTTON onclick=jc.cutBlock(jc.selectedElement); disabled id=cutBtn>&#8595; cut &#8595;</BUTTON></SPAN><SPAN id=objectToolBar></SPAN></DIV></DIV>
+<DIV id=jcContent style="OVERFLOW: scroll; BORDER-TOP: medium none; HEIGHT: 650px; BORDER-RIGHT: medium none; BORDER-BOTTOM: medium none; BORDER-LEFT: medium none" sizcache="1" sizset="0"><PRE id=code0002 class=CODE contentEditable=false><P>jc.vars.db = [</P><P>{message:'I am so happy to be here',category:'feeling'},</P><P>{message:'I hate to be here',category:'feeling'}</P><P>]</P></PRE>
 <DIV id=out0002 class="OUTPUT SUCCESS">[object Object],[object Object]</DIV><PRE id=code0003 class=CODE contentEditable=false><P>trace.on();</P><P>jc.vars.index = new jc.WordIndex(db,{message:1,category:10});</P><P>jc.inspect(index.index)</P></PRE>
 <DIV id=out0003 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
@@ -63,126 +63,15 @@
 <DIV id=JcEl0000 class=INTERACTIVE style="HEIGHT: 400px; LEFT: 0px; TOP: 0px" ?>
 <DIV style="POSITION: relative">
 <DIV id=JcEl0001 class=IELEMENT style="BORDER-TOP: red 1px solid; HEIGHT: 400px; BORDER-RIGHT: red 1px solid; WIDTH: 800px; BORDER-BOTTOM: red 1px solid; LEFT: 0px; BORDER-LEFT: red 1px solid; TOP: 0px">
-<DIV id=JcEl0002 class=IELEMENT style="LEFT: 322px; TOP: 147px">I</DIV>
-<DIV id=JcEl0003 class=IELEMENT style="LEFT: 352px; TOP: 161px">am</DIV>
-<DIV id=JcEl0004 class=IELEMENT style="LEFT: 382px; TOP: 176px">so</DIV>
-<DIV id=JcEl0005 class=IELEMENT style="LEFT: 366px; TOP: 131px">happy</DIV>
-<DIV id=JcEl0006 class=IELEMENT style="LEFT: 338px; TOP: 192px">to</DIV>
-<DIV id=JcEl0007 class=IELEMENT style="LEFT: 363px; TOP: 193px">be</DIV>
-<DIV id=JcEl0008 class=IELEMENT style="LEFT: 320px; TOP: 173px">here</DIV>
-<DIV id=JcEl0009 class=IELEMENT style="LEFT: 341px; TOP: 130px">feeling</DIV>
-<DIV id=JcEl0010 class=IELEMENT style="LEFT: 383px; TOP: 150px">hate</DIV></DIV></DIV></DIV></DIV><PRE id=code0007 class=CODE contentEditable=false><P>jc.animate(100);</P><P>cloud.animate(100);</P></PRE>
-<DIV id=out0007 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV><PRE id=code0009 class=CODE contentEditable=false>jc.inspect(cloud)</PRE>
-<DIV id=out0009 class="OUTPUT SUCCESS">
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[object Scene cloud] </LEGEND>
-<TABLE class=INSPECT>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;JcWordCloud&nbsp;index]</TD></TR>
-<TR>
-<TH vAlign=top>name</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>cloud</TD></TR>
-<TR>
-<TH vAlign=top>id</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>JcEl0000</TD></TR>
-<TR>
-<TH vAlign=top>_html</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top></TD></TR>
-<TR>
-<TH vAlign=top>scene</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>undefined</TD></TR>
-<TR>
-<TH vAlign=top>_css</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;Object]</TD></TR>
-<TR>
-<TH vAlign=top>_attr</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;Object]</TD></TR>
-<TR>
-<TH vAlign=top>forces</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;Object]</TD></TR>
-<TR>
-<TH vAlign=top>f</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;Object]</TD></TR>
-<TR>
-<TH vAlign=top>a</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;Object]</TD></TR>
-<TR>
-<TH vAlign=top>v</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;Object]</TD></TR>
-<TR>
-<TH vAlign=top>m</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR>
-<TR>
-<TH vAlign=top>length</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR>
-<TR>
-<TH vAlign=top>repulsion</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>500</TD></TR>
-<TR>
-<TH vAlign=top>index</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;JcWordCloud&nbsp;index]</TD></TR>
-<TR>
-<TH vAlign=top>div</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function (name,css,innerHtml)</B><BR></TD></TR>
-<TR>
-<TH vAlign=top>value</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function (name,css,innerHtml)</B><BR></TD></TR>
-<TR>
-<TH vAlign=top>checkBox</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function (name,css,innerHtml)</B><BR></TD></TR>
-<TR>
-<TH vAlign=top>animate</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(deltaT$ms)</B><BR></TD></TR>
-<TR>
-<TH vAlign=top>span</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function()</B><BR></TD></TR>
-<TR>
-<TH vAlign=top>wordCloud</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(name,css,wordIndex)</B><BR>&nbsp;create&nbsp;a&nbsp;new&nbsp;JcWordCloud&nbsp;and&nbsp;add&nbsp;it&nbsp;to&nbsp;the&nbsp;scene</TD></TR>
-<TR>
-<TH vAlign=top>attr</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(attr,newValue)</B><BR>&nbsp;if&nbsp;newValue&nbsp;exists,&nbsp;set&nbsp;a&nbsp;new&nbsp;value&nbsp;and&nbsp;return&nbsp;the&nbsp;element<BR>&nbsp;&nbsp;&nbsp;otherwise&nbsp;return&nbsp;the&nbsp;value&nbsp;of&nbsp;the&nbsp;attr&nbsp;atribute&nbsp;of&nbsp;the&nbsp;corresponding&nbsp;element<BR>&nbsp;&nbsp;&nbsp;note&nbsp;that&nbsp;if&nbsp;no&nbsp;HTML&nbsp;element&nbsp;exists,&nbsp;cached&nbsp;values&nbsp;will&nbsp;be&nbsp;used<BR>&nbsp;&nbsp;&nbsp;so&nbsp;the&nbsp;user&nbsp;code&nbsp;can&nbsp;use&nbsp;an&nbsp;element&nbsp;independently&nbsp;from&nbsp;beeing&nbsp;displayed</TD></TR>
-<TR>
-<TH vAlign=top>css</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(cssAttr,newValue)</B><BR>&nbsp;if&nbsp;newValue&nbsp;exists,&nbsp;set&nbsp;a&nbsp;new&nbsp;value&nbsp;and&nbsp;return&nbsp;the&nbsp;element<BR>&nbsp;&nbsp;&nbsp;otherwise&nbsp;return&nbsp;the&nbsp;value&nbsp;of&nbsp;the&nbsp;css&nbsp;atribute&nbsp;of&nbsp;the&nbsp;corresponding&nbsp;element<BR>&nbsp;&nbsp;&nbsp;note&nbsp;that&nbsp;if&nbsp;no&nbsp;HTML&nbsp;element&nbsp;exists,&nbsp;cached&nbsp;values&nbsp;will&nbsp;be&nbsp;used<BR>&nbsp;&nbsp;&nbsp;so&nbsp;the&nbsp;user&nbsp;code&nbsp;can&nbsp;use&nbsp;an&nbsp;element&nbsp;independently&nbsp;from&nbsp;beeing&nbsp;displayed</TD></TR>
-<TR>
-<TH vAlign=top>top</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(newValue)</B><BR>&nbsp;if&nbsp;newValue&nbsp;exists,&nbsp;set&nbsp;a&nbsp;new&nbsp;value&nbsp;and&nbsp;return&nbsp;the&nbsp;element<BR>&nbsp;&nbsp;&nbsp;otherwise&nbsp;return&nbsp;the&nbsp;value&nbsp;of&nbsp;the&nbsp;top&nbsp;of&nbsp;the&nbsp;corresponding&nbsp;element</TD></TR>
-<TR>
-<TH vAlign=top>left</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(newValue)</B><BR>&nbsp;if&nbsp;newValue&nbsp;exists,&nbsp;set&nbsp;a&nbsp;new&nbsp;value&nbsp;and&nbsp;return&nbsp;the&nbsp;element<BR>&nbsp;&nbsp;&nbsp;otherwise&nbsp;return&nbsp;the&nbsp;value&nbsp;of&nbsp;the&nbsp;left&nbsp;of&nbsp;the&nbsp;corresponding&nbsp;element</TD></TR>
-<TR>
-<TH vAlign=top>height</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(newValue)</B><BR>&nbsp;if&nbsp;newValue&nbsp;exists,&nbsp;set&nbsp;a&nbsp;new&nbsp;value&nbsp;and&nbsp;return&nbsp;the&nbsp;element<BR>&nbsp;&nbsp;&nbsp;otherwise&nbsp;return&nbsp;the&nbsp;value&nbsp;of&nbsp;the&nbsp;height&nbsp;of&nbsp;the&nbsp;corresponding&nbsp;element</TD></TR>
-<TR>
-<TH vAlign=top>width</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(newValue)</B><BR>&nbsp;if&nbsp;newValue&nbsp;exists,&nbsp;set&nbsp;a&nbsp;new&nbsp;value&nbsp;and&nbsp;return&nbsp;the&nbsp;element<BR>&nbsp;&nbsp;&nbsp;otherwise&nbsp;return&nbsp;the&nbsp;value&nbsp;of&nbsp;the&nbsp;top&nbsp;of&nbsp;the&nbsp;corresponding&nbsp;element</TD></TR>
-<TR>
-<TH vAlign=top>attributes</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function()</B><BR>&nbsp;return&nbsp;all&nbsp;stored&nbsp;attributes</TD></TR>
-<TR>
-<TH vAlign=top>style</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function()</B><BR>&nbsp;return&nbsp;the&nbsp;style&nbsp;attribute&nbsp;based&nbsp;on&nbsp;._css</TD></TR>
-<TR>
-<TH vAlign=top>html</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(newHtml)</B><BR>&nbsp;get&nbsp;or&nbsp;set&nbsp;the&nbsp;htmlContent&nbsp;of&nbsp;the&nbsp;Element</TD></TR>
-<TR>
-<TH vAlign=top>addForces</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(forces)</B><BR>&nbsp;add&nbsp;new&nbsp;forces<BR>&nbsp;forces&nbsp;is&nbsp;an&nbsp;object&nbsp;{jcElement:forceFunction,....}<BR>&nbsp;forceFunction&nbsp;can&nbsp;be&nbsp;generated&nbsp;by&nbsp;jc.spring&nbsp;or&nbsp;any&nbsp;function(thisElement,&nbsp;otherElement)&nbsp;that&nbsp;return&nbsp;a&nbsp;force{x,y}<BR>&nbsp;or&nbsp;undefined&nbsp;to&nbsp;cancel&nbsp;the&nbsp;force&nbsp;produced&nbsp;by&nbsp;a&nbsp;given&nbsp;element</TD></TR>
-<TR>
-<TH vAlign=top>prepareAnimation</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function()</B><BR></TD></TR>
-<TR>
-<TH vAlign=top>trace</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(/*objects*/)</B><BR></TD></TR>
-<TR>
-<TH vAlign=top>end</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function()</B><BR></TD></TR>
-<TR>
-<TH vAlign=top>toString</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function()</B><BR></TD></TR>
-<TR>
-<TH vAlign=top>control</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function()</B><BR></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></BODY></HTML>
+<DIV id=JcEl0002 class=IELEMENT style="LEFT: 309px; TOP: 100px">I
+<DIV class=IELEMENT style="TOP: 30px; BACKGROUND-COLOR: red" top="300">toto</DIV></DIV>
+<DIV id=JcEl0003 class=IELEMENT style="LEFT: 441px; TOP: 310px">am</DIV>
+<DIV id=JcEl0004 class=IELEMENT style="LEFT: 528px; TOP: 255px">so</DIV>
+<DIV id=JcEl0005 class=IELEMENT style="LEFT: 286px; TOP: 200px">happy</DIV>
+<DIV id=JcEl0006 class=IELEMENT style="LEFT: 418px; TOP: 177px">to</DIV>
+<DIV id=JcEl0007 class=IELEMENT style="LEFT: 550px; TOP: 155px">be</DIV>
+<DIV id=JcEl0008 class=IELEMENT style="LEFT: 395px; TOP: 45px">here</DIV>
+<DIV id=JcEl0009 class=IELEMENT style="LEFT: 341px; TOP: 286px">feeling</DIV>
+<DIV id=JcEl0010 class=IELEMENT style="LEFT: 496px; TOP: 68px">hate</DIV></DIV></DIV></DIV></DIV><PRE id=code0007 class=CODE contentEditable=false><P>jc.animate(100);</P><P>cloud.animate(100);</P></PRE>
+<DIV id=out0007 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV><PRE id=code0009 class=CODE contentEditable=false><P>jc.vars.my$ = $('&lt;div class=IELEMENT style="background-color:red;"&gt;gros blabla&lt;/div&gt;')</P><P>my$.text('toto').css('top',30)</P><P>$('#JcEl0002').append(my$.attr('top',300))</P></PRE>
+<DIV id=out0009 class="OUTPUT SUCCESS">JQuery of 1 elements<BR>0: <CODE class=INSPECTHTML>&lt;DIV&nbsp;id=JcEl0002&nbsp;class=IELEMENT&nbsp;style="LEFT:&nbsp;543px;&nbsp;TOP:&nbsp;86px"&gt;&lt;DIV&nbsp;class=IELEMENT&nbsp;style="TOP:&nbsp;30px;&nbsp;BACKGROUND-COLOR:&nbsp;red"&nbsp;top="300"&gt;toto&lt;/DIV&gt;&lt;/DIV&gt;</CODE></DIV></DIV></BODY></HTML>
