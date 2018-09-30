@@ -1295,7 +1295,9 @@
   jc.displayResult = function(result,output) {
     $(output.outputElement)
     .empty().removeClass('ERROR').addClass('SUCCESS')
-    .append(((result !== undefined) && result.$) || jc.format(result).toString())
+    .append(((result !== undefined) && (typeof result.node$ === 'function') && result.node$() )
+            || jc.format(result).toString()
+           )
     .prepend(output.toString())
     .before(trace.span().toString()) // traces are not part of the result
   }
@@ -1407,7 +1409,7 @@
     jc.clearTimers();
     jc.finalizations = [];
     jc.vars = {}; // run from fresh
-    jc.JcElement.idNumber = 0;
+    jc.IElement.idNumber = 0;
     jc.simulation = new Simulation('_simulation');
     jc.tableOfContent.updateSections();
     jc.$editables(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
@@ -1421,7 +1423,7 @@
     jc.clearTimers();
     jc.finalizations = [];
     jc.vars = {}; // run from fresh
-    jc.JcElement.idNumber = 0;
+    jc.IElement.idNumber = 0;
     jc.tableOfContent.updateSections();
     jc.$editables(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
     $('*').removeClass('SUCCESS').removeClass('ERROR')
