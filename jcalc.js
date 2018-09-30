@@ -729,12 +729,14 @@
   jc.JcElement.prototype.height = function(newValue) {
     // if newValue exists, set a new value and return the element
     //   otherwise return the value of the height of the corresponding element
+    if (newValue === undefined) return this._css.height;
     return this.css('height',newValue);
   }
 
   jc.JcElement.prototype.width = function(newValue) {
     // if newValue exists, set a new value and return the element
     //   otherwise return the value of the top of the corresponding element
+    if (newValue === undefined) return this._css.width;
     return this.css('width',newValue);
   }
 
@@ -786,7 +788,7 @@
     }
 
     var deltaT = (deltaT$ms || 100)/1000;
-    var friction = {x:0,y:0,u:10};
+    var friction = {x:0,y:0,u:50};
     var thisElement = this;
     
     $.each(this.forces,function(name,forceFunc){
@@ -828,8 +830,7 @@
     return this.scene;
   }
 
-  jc.JcElement.prototype.toString = function(who) {
-if(who) a('jcElement.toString('+who+'):"'+this.name+'"',this.constructor.toString('self'))
+  jc.JcElement.prototype.toString = function() {
     return '[object '+jc.functionName(this.constructor)+' '+this.name+']';
   }
 
@@ -842,11 +843,10 @@ if(who) a('jcElement.toString('+who+'):"'+this.name+'"',this.constructor.toStrin
     // return a function that tries to keep 2 elements at a distance of d
     // with a spring of strength of k
     //
-    var friction = 10;
     k = k || 1;
     d = d || 100;
     return function springForce(thisElement,otherElement) {
-      var delta = {x:otherElement.left()-thisElement.left(),y:otherElement.top()-thisElement.top()};
+      var delta = {x:otherElement.p.x-thisElement.p.x,y:otherElement.p.y-thisElement.p.y};
       var dist = Math.sqrt(Math.pow(delta.x,2)+Math.pow(delta.y,2));
       var force = (dist-d)*k;
       var f= {x:delta.x/dist*force,y:delta.y/dist*force};
@@ -937,10 +937,8 @@ if(who) a('jcElement.toString('+who+'):"'+this.name+'"',this.constructor.toStrin
   // Scene ///////////////////////////////////////////////////////////////////////
 
   jc.Scene = function Scene(name,css) {
+    jc.JcElement.call(this,name,css || {});
     this.length = 0;
-    this.name = name;
-    this._css = css || {};
-    this._attr = {};
     this.repulsion = 500;
   }
 
@@ -952,18 +950,6 @@ if(who) a('jcElement.toString('+who+'):"'+this.name+'"',this.constructor.toStrin
     this[this.length++] = e;
     return e;
   }
-
-/*************
-  jc.Scene.prototype.control = function(objectAsControl,css) {
-    // add any object that can act as a control ie: that has
-    //   .name 
-    //   .control(css)
-    //   .animate()
-
-    this[objectAsControl.name] = objectAsControl;
-    this[this.length++] = objectAsControl;
-  }
-*/
 
   jc.Scene.prototype.value = function (name,css,innerHtml) {
     var e = new jc.JcValue(name,css,innerHtml,this);
@@ -1011,7 +997,7 @@ if(who) a('jcElement.toString('+who+'):"'+this.name+'"',this.constructor.toStrin
   }
 
   jc.Scene.prototype.span = function() {
-    var h = '<DIV class=INTERACTIVE '+this.style()+'"><DIV style="position:relative;">';
+    var h = '<DIV id='+this.id+' class=INTERACTIVE '+this.style()+'"><DIV style="position:relative;">';
     for (var i=0; i< this.length; i++) {
       h += this[i].control()
     }

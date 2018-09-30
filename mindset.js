@@ -63,19 +63,21 @@ jc.WordIndex.prototype.add = function(arrayOfObjects,fieldSet,wordRegExp) {
 
 // JcElements to view WordIndex ///////////////////////////////////////////////
 
-jc.JcWordCloud = function(name,css,wordIndex,scene) {
+jc.JcWordCloud = function JcWordCloud(name,css,wordIndex,scene) {
   jc.JcElement.call(this,name,css,'',scene);
+  var width  = css.width || 400;
+  var height = css.height || 400;
   this.wordIndex = wordIndex;
   this.elements = [];
-  for (var i = 0; i<wordIndex.index.length; i++) {
-    this.elements.push(new Jc.Element(this.name+i,{},wordIndex.Index[i],scene));
-//TODO, ajouter les ressorts entre les mots de l'index: ?? = ajouter déjà les objets????
+  this.repulsionForce = jc.spring(200,1);
+  for (var w in wordIndex.index) {
+    this.elements.push(new jc.JcElement(this.name+'__'+w,{top:Math.random()*height,left:Math.random()*width},w,scene));
   }
 }
 
-$.extend(jc.JcWordCloud.prototype,jc.JcElement.prototype);
+jc.makeInheritFrom(jc.JcWordCloud,jc.JcElement);
 
-jc.WordIndex.prototype.control = function() {
+jc.JcWordCloud.prototype.control = function() {
   var h = '<DIV id='+this.id+' class=IELEMENT'+this.attributes()+this.style()+'>';
   for (var i = 0; i<this.elements.length; i++) {
     h += this.elements[i].control();
@@ -84,4 +86,61 @@ jc.WordIndex.prototype.control = function() {
   return h;
 }
 
+jc.JcWordCloud.prototype.animate = function(deltaT$ms){
+  var ei,ej,f;
+  var w = this.width();
+  var h = this.height();
+  for (var i = 0;i<this.elements.length;i++) {
+    this.elements[i].prepareAnimation();
+  }
+  // repulse all elements
+  for (var i = 0;i<this.elements.length;i++) {
+    ei = this.elements[i];
+    // symetric repulsion forces from the others
+    for (var j = i+1;j<this.elements.length;j++) {
+      ej = this.elements[j];
+      f = this.repulsionForce(ei,ej);
+      ei.f.x += f.x;
+      ej.f.x -= f.x;
+      ei.f.y += f.y;
+      ej.f.y -= f.y;
+    }
+    // bounce on borders 
+    var eiw = 100;
+    var eih =  20;
+    if ((ei.p.x<0) && (ei.v.x<0)) {
+      ei.p.x = 0;
+      ei.v.x = - ei.v.x*0.8;
+    }
+    if ((ei.p.x+eiw>w) && (ei.v.x > 0)) {
+      ei.p.x = w-eiw;
+      ei.v.x = - ei.v.x*0.8;
+    }
+    if ((ei.p.y<0) && (ei.v.y<0)) {
+      ei.p.y = 0;
+      ei.v.y = - ei.v.y*0.8;
+    }
+    if ((ei.p.y+eih>h) && (ei.v.y > 0)) {
+      ei.p.y = h-eih;
+      ei.v.y = - ei.v.y*0.8;
+    }
+  }
+  for (var i = 0;i<this.elements.length;i++) {
+    this.elements[i].animate(deltaT$ms);
+  }
+
+  return this;
+}
+
+jc.Scene.prototype.wordCloud = function(name,css,wordIndex) {
+  // create a new JcWordCloud and add it to the scene
+  var e = new jc.JcWordCloud(name,css,wordIndex,this);
+  this[name]=e;
+  this[this.length++] = e;
+  return e;
+}
+
+jc.JcElement.prototype.wordCloud = function (name,css,wordIndex) {
+  return this.scene.wordCloud(name,css,wordIndex);
+}
 

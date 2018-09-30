@@ -270,9 +270,7 @@
       l = jc.signature(this.obj);
     }
     else {
-window.alert('before to string')
       l = this.obj.toString('from legend');
-window.alert('after to string l='+l)
     } 
     return l;
   }
@@ -283,10 +281,8 @@ window.alert('after to string l='+l)
     // BE CARFULL IN DEBUGGING THAT FUNCTION: DO NOT CALL a(....), 
     // since it will create an inspector recursivelly
     // use window.alert instead !!
-window.alert('inspector.toString')
     var r = this.legend(this.obj)+' '+this.name+'\n';
     for (var k in this.obj) {
-window.alert('for k='+k)
       r += k+':  '+this.obj[k]+'\n' 
     };
     return r;
@@ -342,19 +338,24 @@ window.alert('for k='+k)
 
   jc.makeInheritFrom = function(newClass,ancestorClass) {
     // make a newClass inherit from another ancestorClass
+    // workaround for the lack of Object.create() in IE7
+    // TODO: in IE7 brings an issue since the "constructor" property of ".prototype" becomes enumerable
+    //       for newClass. be carefull not to create infinite recursive loop by scanning all properties
+    //       that will include "constructor", a reference to itself!
     // return this
-    if (newClass == undefined)  throw new Error("makeInheritFrom: newClass is undefined");
-    if (ancestorClass == undefined) throw new Error("makeInheritFrom: ancestorClass is undefined");
+    if (typeof newClass !== 'function') throw new Error("makeInheritFrom: newClass is not a function");
+    if (typeof ancestorClass !== 'function') throw new Error("makeInheritFrom: ancestorClass is not a function");
     newClass.prototype = jc.heir(ancestorClass.prototype);
     newClass.prototype.constructor = newClass;
     return newClass;
   }
 
   jc.keys = function(obj) {
-    // returns an Array with all keys (=properties) of an object
+    // returns an Array with all keys (=non inherited properties) of an object
+    // replacement for ECMA5 
     var res = [];
     for (var k in obj) {
-      res.push(k);
+      if (obj.hasOwnProperty(k)) res.push(k);
     }
     return res;
   }
@@ -782,11 +783,11 @@ window.alert('for k='+k)
       return this.toc[jc.findInArrayOfObject({title:title},this.toc)];
     },
     span : function() {
-      var h = '';
+      var h = '<DIV class=INTERACTIVE>';
       $.each(this.toc,function(i,t){
         h += '<div class=TOC'+t.level+'>'+t.number+' <a href="#'+t.sectionId+'">'+t.title+'</a></div>'
       });
-      return new jc.HTML(h);
+      return new jc.HTML(h+'</DIV>');
     }
   };
     
