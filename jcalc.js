@@ -669,7 +669,7 @@
 
 
   // interactive Elements ////////////////////////////////////////////////////////
-  jc.IElement = function JcElement(name,css,innerHtml,scene) {
+  jc.IElement = function IElement(name,css,innerHtml,scene) {
     //create a new JcElement that can be added inside scene
     //css is an object like {top:100,left:200....} that surcharge {top:0,left:0}
     //html is html code that will be used as innerHTML 
@@ -722,6 +722,27 @@
     return this;
   }
 
+  jc.IElement.prototype.html = function(newValue) {
+    // if newValue === undefined, return the current value of html
+    // else set the new value
+    if (newValue == undefined) return this.$.html();
+    this.$.html(newValue);
+    return this;
+  }
+
+  jc.IElement.prototype.css = function(name,newValue) {
+    // if newValue === undefined, return the current value of html
+    // else set the new value
+    // can also be used with an object like {top:50,left:50,....}
+    if (typeof name === 'object') {
+      this.$.css(name);
+      return this;
+    }
+    if (newValue == undefined) return this.$.css(name);
+    this.$.css(name,newValue);
+    return this;
+  }
+
 
   jc.IElement.prototype.addForces = function(forces) {
     // add new forces
@@ -769,15 +790,15 @@
   }
 
   jc.IElement.prototype.div = function(name,css,html) {
-    return this.scene.div(name,css,html);
+    return this.scene.add(new jc.IElement(name,css,html,this.scene));
   }
 
   jc.IElement.prototype.value = function(name,html) {
-    return this.scene.value(name,html);
+    return this.scene.add(new jc.IValue(name,css,html,this.scene));
   }
 
   jc.IElement.prototype.checkBox = function(name,css,html) {
-    return this.scene.checkBox(name,css,html);
+    return this.scene.add(new jc.ICheckBox(name,css,html,this.scene));
   }
 
   jc.IElement.prototype.trace = function(/*objects*/){
@@ -791,6 +812,10 @@
 
   jc.IElement.prototype.toString = function() {
     return '[object '+jc.functionName(this.constructor)+' '+this.name+']';
+  }
+
+  jc.IElement.prototype.element$ = function() {
+    return this.$;
   }
 
 
@@ -868,8 +893,8 @@
     // when used without parameters, return the current state of the corresponding checkBox (generally created with output.iCheckBox)
     // (same as valueOf)
     // with a parameter (true or false) set a new state to the checked attribute of the iCheckBox
-    if (newState===undefined) return this.$.attr('checked');
-    this.$.attr('checked',newState);
+    if (newState===undefined) return this.$.children().attr('checked');
+    this.$.children().attr('checked',newState);
     return this;
   }
   
@@ -888,38 +913,23 @@
 
   // Scene ///////////////////////////////////////////////////////////////////////
 
-  jc.Scene = function Scene(name,css) {
-    jc.IElement.call(this,name,css || {});
+  jc.Scene = function Scene(name,css,html,scene) {
+    jc.IElement.call(this,name,css || {},html || '',scene);
     this.length = 0;
-    this.repulsion = 500;
   }
 
   jc.makeInheritFrom(jc.Scene,jc.IElement);
 
   jc.Scene.prototype.create$ = function(css,html) {
-    return $('<DIV class=INTERACTIVE>').css(css).html(html).append('<DIV style="position:relative;">');
+    return $('<DIV class=SCENE>').css(css).html(html).append('<DIV class=SCENECONTAINER>');
   }
 
-  jc.Scene.prototype.div = function (name,css,innerHtml) {
-    var e = new jc.IElement(name,css,innerHtml,this);
-    this[name] = e;
-    this[this.length++] = e;
-    return e;
-  }
-
-  jc.Scene.prototype.value = function (name,css,innerHtml) {
-    var e = new jc.IValue(name,css,innerHtml,this);
-    this[name] = e;
-    this[this.length++] = e;
-    return e;
-  }
-
-  jc.Scene.prototype.checkBox = function (name,css,innerHtml) {
-    var e = new jc.ICheckBox(name,css,innerHtml,this);
-    this[name] = e;
-    this[this.length++] = e;
-    return e;
-  }
+  jc.Scene.prototype.add = function(iElement) {
+    // add an IElement to the Scene;
+    this[iElement.name] = iElement;
+    this[this.length++] = iElement;
+    return iElement;
+  }    
 
   jc.Scene.prototype.animate = function(deltaT$ms) {
     var deltaT$ms = deltaT$ms || 100;
@@ -936,13 +946,17 @@
   jc.Scene.prototype.node$ = function() {
     var pos$ = this.$.children();
     for (var i=0; i< this.length; i++) {
-      pos$.append(this[i].$)
+      pos$.append(this[i].element$())
     }
     return this.$;
   }
 
   jc.scene = function(name,css) {
-    return jc.vars[name] = new jc.Scene(name,css);
+    // creates a new Scene and return a fake IElement that has scene as "parent" 
+    // so that method chaining is only done at IElement level
+    var scene = new jc.Scene(name,css);
+    jc.vars[name] = scene;
+    return new jc.IElement('fake',{},'',scene); 
   }
 
   // helpers /////////////////////////////////////////////

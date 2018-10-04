@@ -1,3 +1,13 @@
+:root {
+  box-sizing: border-box;
+}
+
+*,
+::before,
+::after {
+  box-sizing: inherit;
+}
+
 body {
   font-family: Arial;
   font-size: 10pt;
@@ -80,7 +90,7 @@ p {
 pre {
   font-family: courier;
   font-size: 14px;      
-  background-color: f2f9a8;
+  background-color: #f2f9a8;
   margin: 0px;
   padding: 0px;
 }
@@ -111,7 +121,7 @@ pre {
 .CODEVIEW {
   font-family: courier;
   font-size: 14px;      
-  background-color: bbf9a8;
+  background-color: #bbf9a8;
   border:solid green 1px;
   margin: 0px;
   padding: 0px;
@@ -121,7 +131,7 @@ pre {
 .CODE {
   font-family: courier;
   font-size: 14px;      
-  background-color: f2f9a8;
+  background-color: #f2f9a8;
   margin: 0px;
   padding: 0px;
 }
@@ -132,53 +142,53 @@ pre {
 }
 
 .EMBEDDED {
-  background-color: ffb848;
+  background-color: #ffb848;
 }
 
 .EDITOR {
-  background-color: b9a3c1;
+  background-color: #b9a3c1;
 }
 
 .EDITOR.undefined {
-  background-color: b9a3C1;
+  background-color: #b9a3C1;
   color : white;
 }
 
 .EDITOR.number {
-  background-color: b9a3c1;
+  background-color: #b9a3c1;
   color : blue;
   text-align: right;
 }
 .EDITOR.string {
-  background-color: b9a3c1;
+  background-color: #b9a3c1;
   color : red;
   text-align: left;
 }
 .EDITOR.function {
-  background-color: f2f9a8;
+  background-color: #f2f9a8;
 }
 
 .OUTPUTEXAMPLE,
 .OUTPUT {
-  background-color: b7b7b7;
+  background-color: #b7b7b7;
   color: 828282;
   margin: 0px;
   padding: 0px;
 }
 
 .TESTEXAMPLE{
-  background-color: b6fff7;
+  background-color: #b6fff7;
   border:solid blue 3px;
   color: blue;
 }
 
 .TEST {
-  background-color: b6fff7;
+  background-color: #b6fff7;
   border:solid blue 3px;
   color: blue;
 }
 .TEST.ERROR {
-  background-color: b6fff7;
+  background-color: #b6fff7;
   border:solid red 3px;
   color: black;
 }
@@ -186,25 +196,25 @@ pre {
 .DIFFSAME,
 .USERSUCCESS,
 .SUCCESS {
-  background-color: 8dff60;
+  background-color: #8dff60;
   color: black;
 }
 
 .INFO  {
-  background-color: b6fff7;
+  background-color: #b6fff7;
 }
 
 .TRACE,
 .DEBUG {
   font-size: 14px;      
-  background-color: b6fff7;
+  background-color: #b6fff7;
   border:solid blue 1px;
 }
 
 .DIFFERENT,
 .USERERROR,
 .ERROR {
-  background-color: ff4d4d;
+  background-color: #ff4d4d;
   color: black;
 }
 
@@ -224,7 +234,7 @@ pre {
   padding: 0px;
   margin: 0px;
   color: 004129;
-  background-color: 00ffa2;
+  background-color: #00ffa2;
   font-family: courier;
   font-size: 14px;      
 }
@@ -243,7 +253,7 @@ pre {
 }
 
 .CUT {
-  background-color: b7b7b7;
+  background-color: #b7b7b7;
   color: 828282;
   font-size: 8px;
 }
@@ -263,14 +273,14 @@ pre {
 }
 
 .DIFF.EQUAL {
-  background-color: 8dff60;
+  background-color: #8dff60;
 }
 .DIFF.DEL {
-  background-color: ffb848;
+  background-color: #ffb848;
   color: red;
 }
 .DIFF.ADD {
-  background-color: ffb848;
+  background-color: #ffb848;
   color: green;
 }
 
@@ -278,15 +288,27 @@ pre {
   background-color:yellow;
 }
 
-.INTERACTIVE {
+.SCENE {
   background-color:cyan;
+}
+
+.SCENECONTAINER {
+  position: relative;
+  /*must have no border!! */
+  height:100%;
 }
 
 .IELEMENT {
   position:absolute;
 }
 
-#menu,
+#menu {
+  position:fixed;
+  top:0;
+  left:0;
+  background-color: #909090;
+}  
+
 button {
-  background-color: 909090;
+  background-color: #909090;
 }  

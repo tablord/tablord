@@ -119,7 +119,7 @@
   jc.resize = function() {
     var viewPort = jc.getViewPortSize();
     $('#jcContent')
-      .height(viewPort.height-$('#menu').outerHeight(true)-30)
+      .height(viewPort.height-$('#menu').outerHeight(true)-30)  //TODO IE7 seems not to understand box-sizing ==> horrible magic number of 30 to compensate scroll bar
       .width($('#menu').width);
   }
 
@@ -866,28 +866,28 @@
     return window.document.getElementById(element.id.replace(/code/,"test"));
   }
 
-  jc.hideCode = function(event) {
+  jc.showCode = function(event) {
     var button = event.target || window.event.srcElement; //IE7 compatibility
-    $('.CODE').toggleClass('HIDDEN',button.checked);
-    $('body').attr('hideCode',button.checked);
+    $('.CODE').toggleClass('HIDDEN',!button.checked);
+    $('body').attr('showCode',button.checked);
   }
 
-  jc.hideCut = function(event) {
+  jc.showCut = function(event) {
     var button = event.target || window.event.srcElement; //IE7 compatibility
-    $('.CUT').toggleClass('HIDDEN',button.checked);
-    $('body').attr('hideCut',button.checked);
+    $('.CUT').toggleClass('HIDDEN',!button.checked);
+    $('body').attr('showCut',button.checked);
   }
       
-  jc.hideTest = function(event) {
+  jc.showTest = function(event) {
     var button = event.target || window.event.srcElement; //IE7 compatibility
-    $('.TEST').toggleClass('HIDDEN',button.checked);
-    $('body').attr('hideTest',button.checked);
+    $('.TEST').toggleClass('HIDDEN',!button.checked);
+    $('body').attr('showTest',button.checked);
   }
       
-  jc.hideTrace = function(event) {
+  jc.showTrace = function(event) {
     var button = event.target || window.event.srcElement; //IE7 compatibility
-    $('.TRACE').toggleClass('HIDDEN',button.checked);
-    $('body').attr('hideTrace',button.checked);
+    $('.TRACE').toggleClass('HIDDEN',!button.checked);
+    $('body').attr('showTrace',button.checked);
   }
 
   jc.setAutoRun = function(event) {
@@ -907,33 +907,41 @@
       
   jc.initToolBars = function() {
     $('#menu').remove();
+    var b$ = $('BODY');
     jc.menu$ =  $(
     '<DIV id=menu class=TOOLBAR>'+
       '<DIV>'+
-        '<INPUT onclick="jc.hideCode(event)"'+($('body').attr('hideCode')==='true'?' checked':'')+' type=checkbox>hide codes</INPUT>'+
-        '<INPUT onclick="jc.hideCut(event)"'+($('body').attr('hideCut')==='true'?' checked':'')+' type=checkbox>hide Cut</INPUT>'+
-        '<INPUT onclick="jc.hideTest(event)"'+($('body').attr('hideTest')==='true'?' checked':'')+' type=checkbox>hide tests</INPUT>'+
-        '<INPUT onclick="jc.hideTrace(event)"'+($('body').attr('hideTrace')==='true'?' checked':'')+' type=checkbox>hide traces</INPUT>'+
+        '<INPUT onclick="jc.showCode(event)"'+(b$.attr('showCode')=='true'?' checked':'')+' type=checkbox>codes</INPUT>'+
+        '<INPUT onclick="jc.showCut(event)"'+(b$.attr('showCut')=='true'?' checked':'')+' type=checkbox>cuts</INPUT>'+
+        '<INPUT onclick="jc.showTest(event)"'+(b$.attr('showTest')=='true'?' checked':'')+' type=checkbox>tests</INPUT>'+
+        '<INPUT onclick="jc.showTrace(event)"'+(b$.attr('showTrace')=='true'?' checked':'')+' type=checkbox>traces</INPUT>'+
         '<INPUT onclick="jc.setAutoRun(event)"'+(jc.autoRun?' checked':'')+' type=checkbox>auto run</INPUT>'+
-        '<BUTTON onclick=jc.selectElement(undefined);>hide ToolBars</BUTTON>'+
-        '<BUTTON onclick="jc.print();">print...</BUTTON>'+
       '</DIV>'+
       '<DIV>'+
         '<SPAN>'+ 
            '<BUTTON id=runUntilSelectedBtn onclick=jc.execUntilSelected(); style="color: #8dff60;">&#9658;|</BUTTON>'+
            '<BUTTON id=runAllBtn onclick=jc.execAll(); style="color: #8dff60;">&#9658;&#9658;</BUTTON>'+
            '<BUTTON id=stopAnimation onclick=jc.clearTimers(); style="color: red">&#9632;</BUTTON>'+
-           '<BUTTON id="clearOutputsBtn" onclick="jc.clearOutputs();">clear outputs</BUTTON>'+
+           '<BUTTON id="clearOutputsBtn" onclick="jc.clearOutputs();">clear</BUTTON>'+
            '<BUTTON id="saveBtn" onclick="jc.save();">save</BUTTON>'+
+           '<BUTTON onclick="jc.print();">print</BUTTON>'+
            '<SPAN id=codeId>no selection</SPAN>'+
-           '<BUTTON id="showHtmlBtn" onclick=jc.showOutputHtml(this);>show html</BUTTON>'+
+           '<BUTTON id="showHtmlBtn" onclick=jc.showOutputHtml(this);>&#8594;html</BUTTON>'+
            '<BUTTON id="toTestBtn" onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON>'+
            '<BUTTON id="cutBtn" onclick=jc.cutBlock(jc.selectedElement);>&#8595; cut &#8595;</BUTTON>'+
         '</SPAN>'+
         '<SPAN id=objectToolBar></SPAN>'+
       '</DIV>'+
     '</DIV>');
+    var h=0;
+    var w=0;
     $('BODY').prepend(jc.menu$);
+    // make all button the same size
+    jc.menu$.find('button').each(function(i,e){
+      w=Math.max(w,e.offsetWidth);
+      h=Math.max(h,e.offsetHeight);
+    }).width(w).height(h);
+
 
     jc.objectToolBar$ = jc.menu$.find('#objectToolBar');
     jc.selectionBtns$ = $('#showHtmlBtn').add('#toTestBtn').add('#cutBtn').attr('disabled',true);
@@ -1004,7 +1012,7 @@
     jc.selectElement(undefined);
     var fso = new ActiveXObject("Scripting.FileSystemObject");
     var file = fso.OpenTextFile(fileName,2,true);
-    var html = new jc.HTML(window.document.documentElement.outerHTML)
+    var html = new jc.HTML('<!DOCTYPE html>\n'+window.document.documentElement.outerHTML)
     file.Write(html.removeJQueryAttr().toAscii());
     file.Close();
     jc.setModified(false);
@@ -1165,7 +1173,7 @@
     }
     jc.menu$.show(500);
     jc.selectionBtns$.attr('disabled',false);
-    $('#codeId').text(element.id);
+    $('#codeId').html(element.id+'<SPAN style="color:red;cursor:pointer;" onclick="jc.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
     jc.moveLocalToolBars(element);
     $(element).addClass('SELECTED');
     jc.$editables(element).attr('contentEditable',true);
@@ -1509,7 +1517,7 @@
     
   jc.upgradeFramework = function() {
     // upgrades the sheet framework from previous versions
-
+    
     $('*').removeClass('OLD').removeClass('AUTOEXEC');// not in use anymore
     $('.OUTPUT').add('.CODE').add('.RICHTEXT').removeAttr('onclick');  // no longer in the HTML but bound dynamically
     $('.RICHTEXT .CODE').add('.SECTIONTITLE .CODE').addClass('EMBEDDED');        // reserved for code inside another element
@@ -1517,9 +1525,19 @@
 
     // since v0.0110 the menu is fixed in a #menu DIV and all sheet is contained in a #jcContent DIV
     jc.content$ = $('#jcContent').css('border','none');
+    var b$ = $('BODY');
     if (jc.content$.length == 0) {                                   
-      $('BODY').wrapInner('<DIV id=jcContent style="overflow:scroll;"/>');
+      b$.wrapInner('<DIV id=jcContent style="overflow:scroll;"/>');
     }
+    // since v0.0145 the <body> attributes hideCodes,hideCut,hideTest,hideTrace are deprecated
+    b$.attr('showCode' ,b$.attr('hideCode')!=false)
+      .attr('showCut'  ,b$.attr('hideCut')!=false)
+      .attr('showTest' ,b$.attr('hideTest')!=false)
+      .attr('showTrace',b$.attr('hideTrace')!=false)
+      .removeAttr('hideCode')
+      .removeAttr('hideCut')
+      .removeAttr('hideTest')
+      .removeAttr('hideTrace')
   }
 
 
@@ -1527,6 +1545,9 @@
     // upgrades ////////////////////////////////////////////////////
     jc.upgradeModules();
     jc.upgradeFramework();
+    if (window.document.compatMode != 'CSS1Compat') {
+      window.alert('your document must have <!DOCTYPE html> as first line in order to run properly: please save and re-run it');
+    }
 
     // prepare the sheet ///////////////////////////////////////////
     $('.SELECTED').removeClass('SELECTED');

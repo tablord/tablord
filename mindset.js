@@ -63,30 +63,28 @@ jc.WordIndex.prototype.add = function(arrayOfObjects,fieldSet,wordRegExp) {
 
 // JcElements to view WordIndex ///////////////////////////////////////////////
 
-jc.JcWordCloud = function JcWordCloud(name,css,wordIndex,scene) {
-  jc.JcElement.call(this,name,css,'',scene);
+jc.IWordCloud = function JcWordCloud(name,css,wordIndex,scene) {
+  jc.IElement.call(this,name,css,'',scene);
   var width  = css.width || 400;
   var height = css.height || 400;
   this.wordIndex = wordIndex;
   this.elements = [];
   this.repulsionForce = jc.spring(200,1);
   for (var w in wordIndex.index) {
-    this.elements.push(new jc.JcElement(this.name+'__'+w,{top:Math.random()*height,left:Math.random()*width},w,scene));
+    this.elements.push(new jc.IElement(this.name+'__'+w,{top:Math.random()*height,left:Math.random()*width},w,scene));
   }
 }
 
-jc.makeInheritFrom(jc.JcWordCloud,jc.JcElement);
+jc.makeInheritFrom(jc.IWordCloud,jc.IElement);
 
-jc.JcWordCloud.prototype.control = function() {
-  var h = '<DIV id='+this.id+' class=IELEMENT'+this.attributes()+this.style()+'>';
+jc.IWordCloud.prototype.node$ = function(css,html) {
   for (var i = 0; i<this.elements.length; i++) {
-    h += this.elements[i].control();
+    this.$.append(this.elements[i].node$());
   }
-  h += '</DIV>';
-  return h;
+  return this.$;
 }
 
-jc.JcWordCloud.prototype.animate = function(deltaT$ms){
+jc.IWordCloud.prototype.animate = function(deltaT$ms){
   var ei,ej,f;
   var w = this.width();
   var h = this.height();
@@ -132,15 +130,7 @@ jc.JcWordCloud.prototype.animate = function(deltaT$ms){
   return this;
 }
 
-jc.Scene.prototype.wordCloud = function(name,css,wordIndex) {
-  // create a new JcWordCloud and add it to the scene
-  var e = new jc.JcWordCloud(name,css,wordIndex,this);
-  this[name]=e;
-  this[this.length++] = e;
-  return e;
-}
-
-jc.JcElement.prototype.wordCloud = function (name,css,wordIndex) {
-  return this.scene.wordCloud(name,css,wordIndex);
+jc.IElement.prototype.wordCloud = function (name,css,wordIndex) {
+    return this.scene.add(new jc.IWordCloud(name,css,wordIndex,this.scene));
 }
 
