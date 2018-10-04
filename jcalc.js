@@ -793,7 +793,7 @@
     return this.scene.add(new jc.IElement(name,css,html,this.scene));
   }
 
-  jc.IElement.prototype.value = function(name,html) {
+  jc.IElement.prototype.value = function(name,css,html) {
     return this.scene.add(new jc.IValue(name,css,html,this.scene));
   }
 

@@ -133,7 +133,7 @@ pre {
   font-size: 14px;      
   background-color: #f2f9a8;
   margin: 0px;
-  padding: 0px;
+  padding:0px;
 }
 
 
@@ -288,6 +288,7 @@ pre {
   background-color:yellow;
 }
 
+.INTERACTIVE,
 .SCENE {
   background-color:cyan;
 }
@@ -302,11 +303,17 @@ pre {
   position:absolute;
 }
 
+#jcContent {
+  margin-top:3em;
+}
+
 #menu {
   position:fixed;
   top:0;
   left:0;
+  right:0;
   background-color: #909090;
+  z-index:100;
 }  
 
 button {

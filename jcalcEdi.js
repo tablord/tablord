@@ -116,12 +116,6 @@
     return {width:d.body.clientWidth, height:d.body.clientHeight};
   }
 
-  jc.resize = function() {
-    var viewPort = jc.getViewPortSize();
-    $('#jcContent')
-      .height(viewPort.height-$('#menu').outerHeight(true)-30)  //TODO IE7 seems not to understand box-sizing ==> horrible magic number of 30 to compensate scroll bar
-      .width($('#menu').width);
-  }
 
   //JQuery extentions /////////////////////////////////////////////////
   $.prototype.span = function() {
@@ -898,11 +892,7 @@
 
   jc.print = function() {
     jc.selectElement(undefined);
-    jc.menu$.hide();
-    jc.content$.css('overflow','visible');
     window.print();
-    jc.content$.css('overflow','scroll');
-    jc.resize();
   }
       
   jc.initToolBars = function() {
@@ -1524,10 +1514,10 @@
     $('#localToolBar').add('.BOTTOMTOOLBAR').add('.TOOLBAR').remove();           // no longer saved with the document and must be regenerated at init
 
     // since v0.0110 the menu is fixed in a #menu DIV and all sheet is contained in a #jcContent DIV
-    jc.content$ = $('#jcContent').css('border','none');
+    jc.content$ = $('#jcContent').removeAttr('style');
     var b$ = $('BODY');
     if (jc.content$.length == 0) {                                   
-      b$.wrapInner('<DIV id=jcContent style="overflow:scroll;"/>');
+      b$.wrapInner('<DIV id=jcContent/>');
     }
     // since v0.0145 the <body> attributes hideCodes,hideCut,hideTest,hideTrace are deprecated
     b$.attr('showCode' ,b$.attr('hideCode')!=false)
@@ -1558,6 +1548,7 @@
     $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR').live("click",jc.outClick);
     $('.SECTION').live("click",jc.sectionClick);
     $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
+    $('.SCENE').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
     $('.INTERACTIVE').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
     $('.LINK').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
     jc.findblockNumber();
@@ -1565,10 +1556,9 @@
     if ($('.CODE').add('.SECTION').add('.RICHTEXT').length == 0) {  // if really empty sheet
       jc.content$.append(jc.bottomToolBar$)
     }
-    $(window).resize(jc.resize).bind('beforeunload',jc.beforeUnload);
+    $(window).bind('beforeunload',jc.beforeUnload);
     jc.autoRun = $('body').attr('autoRun')!==false;
     if (jc.autoRun) jc.execAll();
-    jc.resize();
   });  
   
   window.onerror = jc.errorHandler;
