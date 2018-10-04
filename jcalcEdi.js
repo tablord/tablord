@@ -119,10 +119,11 @@
 
   //JQuery extentions /////////////////////////////////////////////////
   $.prototype.span = function() {
-    var s = [];
+    var s = ['<ol start=0>'];
     for (var i=0; i < this.length; i++) {
-      s.push(i+': <code class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(jc.purgeJQueryAttr(this[i].outerHTML)))+'</code>');
+      s.push('<li class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(jc.purgeJQueryAttr(this[i].outerHTML)))+'</li>');
     }
+    s.push('</ol>');
     return new jc.HTML('JQuery of '+this.length+' elements<br>'+s.join('<br>'));
   }  
 
@@ -433,8 +434,8 @@
     // transform htmlCode in such a manner that the code can be visualised in a <pre>...
     return String(code)
              .replace(/&/g,"&amp;")
-             .replace(/</g,"&lt;")
              .replace(/>/g,"&gt;")
+             .replace(/</g,"<wbr>&lt;")  //indicate that < is a good point to wrap line if necessary
              .replace(/ /g,"&nbsp;")
              .replace(/\r/g,'')
              .replace(/\n/g,"<br>");
@@ -898,6 +899,20 @@
   jc.initToolBars = function() {
     $('#menu').remove();
     var b$ = $('BODY');
+
+    jc.objectToolBar$ = $(
+      '<DIV id=objectToolBar></DIV>'
+    );
+
+    jc.selectionToolBar$ = $(
+      '<DIV>'+
+        '<SPAN id=codeId>no selection</SPAN>'+
+        '<BUTTON id="showHtmlBtn" onclick=jc.showOutputHtml(this);>&#8594;html</BUTTON>'+
+        '<BUTTON id="toTestBtn" onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON>'+
+        '<BUTTON id="cutBtn" onclick=jc.cutBlock(jc.selectedElement);>&#8595; cut &#8595;</BUTTON>'+
+      '</DIV>'
+    ).append(jc.objectToolBar$).hide();
+
     jc.menu$ =  $(
     '<DIV id=menu class=TOOLBAR>'+
       '<DIV>'+
@@ -908,33 +923,25 @@
         '<INPUT onclick="jc.setAutoRun(event)"'+(jc.autoRun?' checked':'')+' type=checkbox>auto run</INPUT>'+
       '</DIV>'+
       '<DIV>'+
-        '<SPAN>'+ 
-           '<BUTTON id=runUntilSelectedBtn onclick=jc.execUntilSelected(); style="color: #8dff60;">&#9658;|</BUTTON>'+
-           '<BUTTON id=runAllBtn onclick=jc.execAll(); style="color: #8dff60;">&#9658;&#9658;</BUTTON>'+
-           '<BUTTON id=stopAnimation onclick=jc.clearTimers(); style="color: red">&#9632;</BUTTON>'+
-           '<BUTTON id="clearOutputsBtn" onclick="jc.clearOutputs();">clear</BUTTON>'+
-           '<BUTTON id="saveBtn" onclick="jc.save();">save</BUTTON>'+
-           '<BUTTON onclick="jc.print();">print</BUTTON>'+
-           '<SPAN id=codeId>no selection</SPAN>'+
-           '<BUTTON id="showHtmlBtn" onclick=jc.showOutputHtml(this);>&#8594;html</BUTTON>'+
-           '<BUTTON id="toTestBtn" onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON>'+
-           '<BUTTON id="cutBtn" onclick=jc.cutBlock(jc.selectedElement);>&#8595; cut &#8595;</BUTTON>'+
-        '</SPAN>'+
-        '<SPAN id=objectToolBar></SPAN>'+
+        '<BUTTON id=runUntilSelectedBtn onclick=jc.execUntilSelected(); style="color: #8dff60;">&#9658;|</BUTTON>'+
+        '<BUTTON id=runAllBtn onclick=jc.execAll(); style="color: #8dff60;">&#9658;&#9658;</BUTTON>'+
+        '<BUTTON id=stopAnimation onclick=jc.clearTimers(); style="color: red">&#9632;</BUTTON>'+
+        '<BUTTON id="clearOutputsBtn" onclick="jc.clearOutputs();">clear</BUTTON>'+
+        '<BUTTON id="saveBtn" onclick="jc.save();">save</BUTTON>'+
+        '<BUTTON onclick="jc.print();">print</BUTTON>'+
       '</DIV>'+
-    '</DIV>');
+    '</DIV>')
+    .append(jc.selectionToolBar$)
+
+    $('BODY').prepend(jc.menu$);
+
+    // make all button the same size
     var h=0;
     var w=0;
-    $('BODY').prepend(jc.menu$);
-    // make all button the same size
     jc.menu$.find('button').each(function(i,e){
       w=Math.max(w,e.offsetWidth);
       h=Math.max(h,e.offsetHeight);
     }).width(w).height(h);
-
-
-    jc.objectToolBar$ = jc.menu$.find('#objectToolBar');
-    jc.selectionBtns$ = $('#showHtmlBtn').add('#toTestBtn').add('#cutBtn').attr('disabled',true);
 
     $('#richTextToolBar').remove(); // kill anything previouly in the saved document
     jc.richTextToolBar$ =  $('<SPAN id=richTextToolBar class=TOOLBAR></SPAN>')
@@ -1157,12 +1164,12 @@
     jc.selectedElement = element;
     if (element == undefined){
       $('#codeId').text('no selection');
-      jc.selectionBtns$.attr('disabled',true);
+      jc.selectionToolBar$.hide();
       jc.detachLocalToolBars();
       return;
     }
-    jc.menu$.show(500);
-    jc.selectionBtns$.attr('disabled',false);
+    jc.menu$.show();
+    jc.selectionToolBar$.show(500);
     $('#codeId').html(element.id+'<SPAN style="color:red;cursor:pointer;" onclick="jc.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
     jc.moveLocalToolBars(element);
     $(element).addClass('SELECTED');
