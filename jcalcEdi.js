@@ -56,25 +56,25 @@
             },
 
             errorHandler:function(message,url,line) {
-                var out  = jc.output.outputElement;
-                if (out) {
-                  if (url) {
-                    out.innerHTML = message+'<br>'+url+' line:'+line+'<br>'+trace.span();
-                  }
-                  else {
-                    var tag = (out.tagName=='SPAN')?'SPAN':'PRE';  // if span, one can only insert span, not div
-                    var code = jc.errorHandler.code || '';
-                    var faults = message.match(/« (.+?) »/);
-                    if (faults != null) {
-                      var fault = faults[1];
-                      code = code.replace(new RegExp(fault,'g'),'<SPAN class="ERROR">'+fault+'</SPAN>');
-                    }
-                    out.innerHTML = trace.span()+message+'<'+tag+' class="CODEINERROR">'+code+'</'+tag+'>';
-                  }
-                  $(out).removeClass('SUCCESS').addClass('ERROR');
-                  out.scrollIntoView();
-                  return true;
+              var out  = jc.output.outputElement;
+              if (out) {
+                if (url) {
+                  out.innerHTML = message+'<br>'+url+' line:'+line+'<br>'+trace.span();
                 }
+                else {
+                  var code = jc.errorHandler.code || '';
+                  var faults = message.match(/« (.+?) »/);
+                  if (faults != null) {
+                    var fault = faults[1];
+                    code = jc.output.codeElement.innerHTML.replace(new RegExp(fault,'g'),'<SPAN class="WRONG">'+fault+'</SPAN>');
+                    $(jc.output.codeElement).html(code).find('.ERROR').click();
+                  }
+                  out.innerHTML = trace.span()+message;
+                }
+                $(out).removeClass('SUCCESS').addClass('ERROR');
+                out.scrollIntoView();
+                return true;
+              }
               return false;
             }
            };
@@ -129,6 +129,11 @@
 
   $.prototype.toString = function(){
     return '[object JQuery] length:'+ this.length;
+  }
+
+  $.prototype.asNode = function() {
+    var query = this;
+    return {node$:function() {return query}}
   }
 
   // edi related functions ////////////////////////////////////////////
@@ -903,13 +908,15 @@
     jc.objectToolBar$ = $(
       '<DIV id=objectToolBar></DIV>'
     );
+    
+    jc.helpToolBar$ = $('<DIV>search</DIV>').append('<INPUT>').append('<DIV>');
 
     jc.selectionToolBar$ = $(
       '<DIV>'+
         '<SPAN id=codeId>no selection</SPAN>'+
+        '<BUTTON id="cutBtn" onclick=jc.cutBlock(jc.selectedElement);>cut</BUTTON>'+
         '<BUTTON id="showHtmlBtn" onclick=jc.showOutputHtml(this);>&#8594;html</BUTTON>'+
         '<BUTTON id="toTestBtn" onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON>'+
-        '<BUTTON id="cutBtn" onclick=jc.cutBlock(jc.selectedElement);>&#8595; cut &#8595;</BUTTON>'+
       '</DIV>'
     ).append(jc.objectToolBar$).hide();
 
@@ -1307,26 +1314,11 @@
     .before(trace.span().toString()) // traces are not part of the result
   }
 
-  jc.displayError = function(error,output) {
-    if (error.message) {
-      if (error.message == "Erreur d'execution inconnue") {
-        error.message += "this block can not be displayed in a {{ inline code}}; use a separate code block"
-      }
-      var faults = error.message.match(/« (.+?) »/);
-      if (faults != null) {
-        var fault = faults[1];
-        var code = (error.code || '').replace(new RegExp(fault,'g'),'<SPAN class="ERROR">'+fault+'</SPAN>');
-      }
-      error = error.name+': '+error.message;
-    }
-    var tag = (output.outputElement.tagName=='SPAN')?'SPAN':'PRE';  // if span, one can only insert span, not div
-    output.outputElement.innerHTML = trace.span()+error+(code?'<'+tag+' class="CODEINERROR">'+code+'</'+tag+'>':'');
-    $(output.outputElement).removeClass('SUCCESS').addClass('ERROR');
-  }
-
-
   jc.execCode = function(element) {
     if ($(element).hasClass('DELETED')) return;
+    // clear if any previous WRONG marker
+    var wrong$ = $('.WRONG',element);
+    if (wrong$.length > 0) wrong$.replaceWith(function(i,c){return c});
 
     var out  = jc.outputElement(element);
     var test = jc.testElement(element)

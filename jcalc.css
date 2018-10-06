@@ -219,6 +219,7 @@ pre {
 
 .DIFFERENT,
 .USERERROR,
+.WRONG,
 .ERROR {
   background-color: #ff4d4d;
   color: black;
@@ -307,6 +308,10 @@ pre {
 
 .IELEMENT {
   position:absolute;
+}
+
+.IELEMENT.FOCUSED {
+  font-size: 2em;
 }
 
 #jcContent {

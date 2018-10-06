@@ -488,6 +488,10 @@
     this.tagsEnd = [];
   }
 
+  jc.HTML.prototype.asNode = function() {
+    var html = this;
+    return {node$:function() {return $(html.toString())},html:html}
+  }
 
   jc.HTML.prototype.toString = function() {
     return this.htmlCode+this.tagsEnd.join('');
@@ -669,7 +673,7 @@
 
 
   // interactive Elements ////////////////////////////////////////////////////////
-  jc.IElement = function IElement(name,css,innerHtml,scene) {
+  jc.IElement = function IElement(name,css,innerHtml,scene,obj) {
     //create a new JcElement that can be added inside scene
     //css is an object like {top:100,left:200....} that surcharge {top:0,left:0}
     //html is html code that will be used as innerHTML 
@@ -682,6 +686,7 @@
     this.v = {x:0,y:0}; //pixel/s
     this.m = 1; //kg;
     this.$ = this.create$(css||{top:0,left:0},innerHtml || '');
+    this.$[0].IElement = this; // special attribute back to the IElement
     this.$.$end = this;
   }
 
@@ -755,18 +760,50 @@
 
   jc.IElement.prototype.prepareAnimation = function() {
     this.f = {x:0,y:0};
-    this.p = {x:this.left()+0*this.width()/2,y:this.top()+0*this.height()/2};
+    if (!this.p) this.p = {x:this.left()+this.width()/2,y:this.top()+this.height()/2};
+    return this;
   }
 
+  jc.IElement.prototype.applyForceWith = function(otherIElement,force){
+    //apply a force between this and the otherIElement
+    f = force(this,otherIElement);
+    this.f.x += f.x;
+    this.f.y += f.y;
+    otherIElement.f.x -= f.x;
+    otherIElement.f.y -= f.y;
+    return this;
+  }
+
+  jc.IElement.prototype.bounceOnBorders = function(top,left,bottom,right) {
+    // modifies position and velocity in order to keep p inside a rectangle
+    if ((this.p.x<left) && (ei.v.x<0)) {
+      this.p.x = left;
+      this.v.x = - this.v.x*0.8;
+    }
+    if ((this.p.x>right) && (this.v.x > 0)) {
+      this.p.x = right;
+      this.v.x = - this.v.x*0.8;
+    }
+    if ((this.p.y<top) && (this.v.y<0)) {
+      this.p.y = top;
+      this.v.y = - this.v.y*0.8;
+    }
+    if ((this.p.y>bottom) && (this.v.y > 0)) {
+      this.p.y = bottom;
+      this.v.y = - this.v.y*0.8;
+    }
+    return this;
+  }
+    
   jc.IElement.prototype.animate = function(deltaT$ms) {
     // calculate all forces on this element, then calculate a new acceleration, speed and position
-
+//********* TODO: clean code *************
     function dist(vector){
       return Math.sqrt(Math.pow(vector.x,2)+Math.pow(vector.y,2));
     }
 
     var deltaT = (deltaT$ms || 100)/1000;
-    var friction = {x:0,y:0,u:50};
+    var friction = {x:0,y:0,u:1};
     var thisElement = this;
     
     $.each(this.forces,function(name,forceFunc){
@@ -775,17 +812,18 @@
       thisElement.f.x += fe.x;
       thisElement.f.y += fe.y;
     });
-    var v = dist(this.v);
-    friction.x = v!=0?- this.v.x/v*friction.u:0;
-    friction.y = v!=0?- this.v.y/v*friction.u:0;
+
+    friction.x = -this.v.x*friction.u;
+    friction.y = -this.v.y*friction.u;
+
     this.a.x =  (this.f.x+friction.x) / this.m;
     this.a.y =  (this.f.y+friction.y) / this.m;
     this.v.x += this.a.x * deltaT;
     this.v.y += this.a.y * deltaT;
     this.p.x += this.v.x * deltaT;
     this.p.y += this.v.y * deltaT;
-    this.left(this.p.x - 0*this.width()/2)
-        .top( this.p.y - 0*this.height()/2);
+    this.left(this.p.x - this.width()/2)
+        .top( this.p.y - this.height()/2);
     return this;
   }
 
@@ -824,16 +862,50 @@
     // return a function that tries to keep 2 elements at a distance of d
     // with a spring of strength of k
     //
-    k = k || 1;
-    d = d || 100;
+    k = k !== undefined ? k:1;
+    d = d !== undefined ? d:100;
     return function springForce(thisElement,otherElement) {
-      var delta = {x:otherElement.p.x-thisElement.p.x,y:otherElement.p.y-thisElement.p.y};
-      var dist = Math.sqrt(Math.pow(delta.x,2)+Math.pow(delta.y,2));
-      var force = (dist-d)*k;
-      var f= dist>0?{x:delta.x/dist*force,y:delta.y/dist*force}:{x:force,y:force};
+      var f = {};
+      f.delta = {x:otherElement.p.x-thisElement.p.x,y:otherElement.p.y-thisElement.p.y};
+      f.dist = Math.sqrt(Math.pow(f.delta.x,2)+Math.pow(f.delta.y,2));
+      f.force = (f.dist-d)*k;
+      if (f.dist>0) {
+        f.x = f.delta.x/f.dist*f.force;
+        f.y = f.delta.y/f.dist*f.force;
+      }
+      else{
+        f.x = f.force;
+        f.y = f.force
+      }
       return f;      
     }
   }
+
+  jc.ySpring = function(k) {
+    // return a function that tries to keep 2 elements at the same y
+    // with a spring of strength of k
+    //
+    k = k !== undefined ? k:1;
+    return function springForce(thisElement,otherElement) {
+      var f = {};
+      f.dist = otherElement.p.y-thisElement.p.y;
+      f.x = 0;      
+      f.y = (f.dist)*k;
+      return f;      
+    }
+  }
+
+  jc.repulseIElements = function(iElements,repulsionForce){
+    // repulse all iElements between them by repulseForce
+    
+    for (var i = 0;i<iElements.length;i++) {
+      for (var j = i+1;j<iElements.length;j++) {
+        iElements[i].applyForceWith(iElements[j],repulsionForce);
+      }
+    }
+  }
+    
+
   // JcValue //////////////////////////////////////////////////
 
   jc.IValue = function JcValue(name,css,html,scene) {
