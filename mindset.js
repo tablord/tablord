@@ -136,7 +136,12 @@ jc.IWordCloud.prototype.animate = function(deltaT$ms){
 
   // the focused word is only attracted by the center
   if (this.focusedWord) {
-    this.focusedWord.f = this.focusedForce(this.focusedWord,{p:{x:w*(this.focusedWord.obj?0.66:0.33),y:h*0.5}});
+    if (this.focusedWord.obj) {
+      this.focusedWord.f = this.focusedForce(this.focusedWord,{p:{x:w*0.66,y:h*0.5}});
+    }
+    else {
+      this.focusedWord.f = this.focusedForce(this.focusedWord,{p:{x:w*0.33,y:h*0.5}});
+    }
   }
 
 

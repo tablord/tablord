@@ -269,8 +269,11 @@
     else if ($.isFunction(this.obj)) {
       l = jc.signature(this.obj);
     }
+    else if (this.obj === null) {
+      l = 'null';
+    }
     else {
-      l = this.obj.toString('from legend');
+      l = this.obj.toString();
     } 
     return l;
   }
@@ -291,19 +294,22 @@
   jc.Inspector.prototype.span = function (depth){
     depth = depth || this.depth;
     if (this.obj === undefined) {
-      return '<SPAN style=color:red;>undefined</SPAN>';
+      return '<SPAN class="INSPECT META">undefined</SPAN>';
+    }
+    if (this.obj === null) {
+      return '<SPAN class="INSPECT META">null</SPAN>';
     }
     if (typeof this.obj === 'number') {
       return this.obj.toString();
     }
     if (this.obj === '') {
-      return '<SPAN style=color:red;>empty string</SPAN>';
+      return '<SPAN class="INSPECT META">empty string</SPAN>';
     }
     if (typeof this.obj === 'string') {
       return '<SPAN class=INSPECT>'+jc.toHtml(JSON.stringify(this.obj))+'</SPAN>';
     }
     if (this.obj.toGMTString !== undefined) {
-      return '<SPAN style=color:red;>'+this.obj.toString()+' (ms:'+this.obj.valueOf()+')</SPAN>';
+      return '<SPAN class="INSPECT META">'+this.obj.toString()+' (ms:'+this.obj.valueOf()+')</SPAN>';
     }
     var r = '<DIV class=INSPECT><fieldset><legend>'+this.legend(this.obj)+' '+this.name+'</legend>';
     r += '<table class=INSPECT>';

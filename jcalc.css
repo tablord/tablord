@@ -232,6 +232,10 @@ pre {
   border:solid yellow 1px;
 }
 
+.META {
+  color: red;
+}
+
 .INSPECT {
   padding: 2px;
   margin: 0px;
