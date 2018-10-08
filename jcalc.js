@@ -774,6 +774,13 @@
     return this;
   }
 
+  jc.IElement.prototype.applyForceToAll = function(iElements,force) {
+    // apply a force between this and each element of iElements
+    for (var i = 0;i<iElements.length;i++) {
+      this.applyForceWith(iElements[i],force);
+    }
+  }
+
   jc.IElement.prototype.bounceOnBorders = function(top,left,bottom,right) {
     // modifies position and velocity in order to keep p inside a rectangle
     if ((this.p.x<left) && (this.v.x<0)) {

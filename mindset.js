@@ -60,6 +60,9 @@ jc.IWordCloud.prototype.element$ = function() {
                                {top:Math.random()*100,left:Math.random()*100},
                                this.objectCaption(obj),
                                this);
+    objIE.$.addClass('CLOUD OBJECT');
+    objIE.obj = obj;
+    objIE.wordsIE = {};
     this.objsIE.push(objIE);
 
     objIndex = {};
@@ -73,17 +76,19 @@ jc.IWordCloud.prototype.element$ = function() {
         if (obj.hasOwnProperty(f)) scan(obj[f],1);
       }          
     }
-    for (var w in objIndex) {
-      var e = this.wordsIE[w]
+    for (var word in objIndex) {
+      var e = this.wordsIE[word]
       if (e==undefined) {
-        e = new jc.IElement(w,{top:Math.random()*100,left:Math.random()*100},w,this);
+        e = new jc.IElement(word,{top:Math.random()*100,left:Math.random()*100},word,this);
+        e.$.addClass('CLOUD WORD');
         e.objectsIE = [];
         e.rank = 0;
         this.$.append(e.element$().css('cursor','pointer').click(jc.IWordCloud.clickHandler));
       }
-      e.rank += objIndex[w];
+      e.rank += objIndex[word];
       e.objectsIE.push(objIE);
-      this.wordsIE[w] = e;
+      this.wordsIE[word] = e;
+      objIE.wordsIE[word] = e;
     }
     this.$.append(objIE.element$().css('cursor','pointer').click(jc.IWordCloud.clickHandler));
   }
@@ -91,18 +96,18 @@ jc.IWordCloud.prototype.element$ = function() {
   return this.$;
 }
 
-jc.IWordCloud.prototype.focus = function(word) {
-  if (this.focusedWord) this.focusedWord.$.removeClass('FOCUSED');
-  this.focusedWord = word;
-  this.focusedWord.$.addClass('FOCUSED');
+jc.IWordCloud.prototype.focus = function(iE) {
+  if (this.focusedIE) this.focusedIE.$.removeClass('FOCUSED');
+  this.focusedIE = iE;
+  this.focusedIE.$.addClass('FOCUSED');
 }
 
 jc.IWordCloud.prototype.animate = function(deltaT$ms){
   var ei,ej,f;
   var w = this.width();
   var h = this.height();
-  for (var w in this.wordsIE) {
-    this.wordsIE[w].prepareAnimation();
+  for (var word in this.wordsIE) {
+    this.wordsIE[word].prepareAnimation();
   }
   for (var i = 0;i<this.objsIE.length;i++) {
     this.objsIE[i].prepareAnimation();
@@ -111,18 +116,22 @@ jc.IWordCloud.prototype.animate = function(deltaT$ms){
   jc.repulseIElements(jc.values(this.wordsIE),this.repulsionForce);
   jc.repulseIElements(this.objsIE,this.repulsionForce);
 
-  // the focused word is only attracted by the center
-  if (this.focusedWord) {
-    if (this.focusedWord.obj) {
-      this.focusedWord.f = this.focusedForce(this.focusedWord,{p:{x:w*0.66,y:h*0.5}});
+  // the focused iElement is only attracted by the center
+  if (this.focusedIE) {
+    if (this.focusedIE.obj) {
+      this.focusedIE.applyForceToAll(jc.values(this.focusedIE.wordsIE),this.focusedForce);
+      this.focusedIE.f = this.focusedForce(this.focusedIE,{p:{x:w*0.66,y:h*0.5}});
     }
     else {
-      this.focusedWord.f = this.focusedForce(this.focusedWord,{p:{x:w*0.33,y:h*0.5}});
+      for (var i = 0; i<this.focusedIE.objectsIE.length;i++) {
+        this.focusedIE.applyForceWith(this.focusedIE.objectsIE[i],this.focusedForce);
+      }
+      this.focusedIE.f = this.focusedForce(this.focusedIE,{p:{x:w*0.33,y:h*0.5}});
     }
   }
 
-  for (var w in this.wordsIE) {
-    this.wordsIE[w]
+  for (word in this.wordsIE) {
+    this.wordsIE[word]
     .bounceOnBorders(0,0,h,w)
     .animate(deltaT$ms);
   }
