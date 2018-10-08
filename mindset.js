@@ -5,29 +5,39 @@
 // CC-BY-SA Marc Nicole 2018
 /////////////////////////////////////////////////////////////////////////////////
 
-jc.WordIndex = function (arrayOfObjects,objHtml,fieldSet,wordRegExp) {
-  // create a new WordIndex by scanning all string fields of
-  // the objects in ArrayOfObjects
-  // objHtml a function(obj) that returns how to display obj in html
-  // fieldSet limits the search to the fields described and give a given ponderation to the different fields
-  //   f.ex: {name:5,description:1} will give an importance 5 time bigger
-  //   to a word in the field name than in description
-  //   if undefined, all own properties (not inherited) will be used
-  // wordRegExp: a RegExp expression in order to find the words. must be global
-  //   by default /\w+/g
-  this.objHtml = objHtml;
-  this.index = {};
+
+// IWordCloud  ///////////////////////////////////////////////
+
+jc.IWordCloud = function JcWordCloud(name,css,arrayOfObjects,objectCaption,scene) {
+  // create a new WordClould
+  // name is mandatory and will be assigned to the IElement
+  // arrayOfObject: an array of object that will be analysed
+  // objectCaption: either a the field name specifying which field of the object is used as object caption
+  //                or a function(obj) returning the html code to be used as object caption
+  // scene: the scene that contains the WordCloud
+
+  jc.IElement.call(this,name,css,'',scene);
   this.objects = arrayOfObjects;
-  this.add(arrayOfObjects,fieldSet,wordRegExp);
+  this.wordsIE = {};
+  this.objsIE  = [];
+  this.objectCaption = typeof objectCaption === 'function'?objectCaption:function(o) {return o[objectCaption].toString()};
+  this.repulsionForce = jc.spring(200,1);
+  this.focusedForce = jc.spring(0,5);
+  this.wordRegExp = /\w+/g;
 }
 
-jc.WordIndex.prototype.add = function(arrayOfObjects,fieldSet,wordRegExp) {
-  // complement the index with a new array of objects
-  var obj,f,s,m,objIndex;
-  wordRegExp = wordRegExp || /\w+/g;
+jc.makeInheritFrom(jc.IWordCloud,jc.IElement);
 
-  var index = this.index;
- 
+jc.IWordCloud.clickHandler = function(event) {
+  // eventHandler for click on elements
+  event.currentTarget.IElement.scene.focus(event.currentTarget.IElement);
+}
+
+jc.IWordCloud.prototype.element$ = function() {
+  // create the worldCloud Element and all neccessary internal IElements
+  var objIndex;
+  var wordRegExp = this.wordRegExp;
+
   function scan(field,weight) {
     if (weight===0) return;
     var word;
@@ -42,73 +52,42 @@ jc.WordIndex.prototype.add = function(arrayOfObjects,fieldSet,wordRegExp) {
       }
     }
   }    
- 
-  this.objects.concat(arrayOfObjects);    
 
-  for (var i=0; i<arrayOfObjects.length; i++) {
-    obj = arrayOfObjects[i];
+
+  for (var i = 0; i<this.objects.length;i++) {
+    var obj = this.objects[i];
+    var objIE = new jc.IElement(this.name+'_'+i,
+                               {top:Math.random()*100,left:Math.random()*100},
+                               this.objectCaption(obj),
+                               this);
+    this.objsIE.push(objIE);
+
     objIndex = {};
-    if (fieldSet) {
-      for (f in fieldSet) {
+    if (this.fieldSet) {
+      for (var f in fieldSet) {
         scan(obj[f],fieldSet[f]);
       }          
     }
     else {
-      for (f in obj) {
+      for (var f in obj) {
         if (obj.hasOwnProperty(f)) scan(obj[f],1);
       }          
     }
     for (var w in objIndex) {
-      if (index[w] === undefined) index[w]=[];
-      index[w].push({r:objIndex[w],o:obj});
+      var e = this.wordsIE[w]
+      if (e==undefined) {
+        e = new jc.IElement(w,{top:Math.random()*100,left:Math.random()*100},w,this);
+        e.objectsIE = [];
+        e.rank = 0;
+        this.$.append(e.element$().css('cursor','pointer').click(jc.IWordCloud.clickHandler));
+      }
+      e.rank += objIndex[w];
+      e.objectsIE.push(objIE);
+      this.wordsIE[w] = e;
     }
-  }
-}
-
-
-// JcElements to view WordIndex ///////////////////////////////////////////////
-
-jc.IWordCloud = function JcWordCloud(name,css,wordIndex,scene) {
-  jc.IElement.call(this,name,css,'',scene);
-  var width  = css.width || 400;
-  var height = css.height || 400;
-  this.wordIndex = wordIndex;
-  this.words = [];
-  this.objs  = [];
-  this.repulsionForce = jc.spring(200,1);
-  this.focusedForce = jc.spring(0,5);
-  for (var w in wordIndex.index) {
-    this.words.push(new jc.IElement(this.name+'__'+w,{top:Math.random()*height,left:Math.random()*width},w,this));
-  }
-  for (var i=0;i<wordIndex.objects.length;i++) {
-    var e = new jc.IElement(
-      this.name+'__O'+i,
-      {top:Math.random()*height,left:Math.random()*width},
-      this.wordIndex.objHtml(wordIndex.objects[i]),
-      this
-    )
-    e.$.css('color','red');
-    e.obj = wordIndex.objects[i];
-    this.objs.push(e);
+    this.$.append(objIE.element$().css('cursor','pointer').click(jc.IWordCloud.clickHandler));
   }
 
-  this.focusedWord = this.words[0];
-}
-
-jc.makeInheritFrom(jc.IWordCloud,jc.IElement);
-
-jc.IWordCloud.clickHandler = function(event) {
-  // eventHandler for click on elements
-  event.currentTarget.IElement.scene.focus(event.currentTarget.IElement);
-}
-
-jc.IWordCloud.prototype.element$ = function(css,html) {
-  for (var i = 0; i<this.words.length; i++) {
-    this.$.append(this.words[i].element$().css('cursor','pointer').click(jc.IWordCloud.clickHandler));
-  }
-  for (var i = 0; i<this.objs.length; i++) {
-    this.$.append(this.objs[i].element$().css('cursor','pointer').click(jc.IWordCloud.clickHandler));
-  }
   return this.$;
 }
 
@@ -122,17 +101,15 @@ jc.IWordCloud.prototype.animate = function(deltaT$ms){
   var ei,ej,f;
   var w = this.width();
   var h = this.height();
-  for (var i = 0;i<this.words.length;i++) {
-    this.words[i].prepareAnimation();
+  for (var w in this.wordsIE) {
+    this.wordsIE[w].prepareAnimation();
   }
-  for (var i = 0;i<this.objs.length;i++) {
-    this.objs[i].prepareAnimation();
+  for (var i = 0;i<this.objsIE.length;i++) {
+    this.objsIE[i].prepareAnimation();
   }
   
-  
-  jc.repulseIElements(this.words,this.repulsionForce);
-  jc.repulseIElements(this.objs,this.repulsionForce);
-
+  jc.repulseIElements(jc.values(this.wordsIE),this.repulsionForce);
+  jc.repulseIElements(this.objsIE,this.repulsionForce);
 
   // the focused word is only attracted by the center
   if (this.focusedWord) {
@@ -144,21 +121,20 @@ jc.IWordCloud.prototype.animate = function(deltaT$ms){
     }
   }
 
-
-  for (var i = 0;i<this.words.length;i++) {
-    this.words[i]
+  for (var w in this.wordsIE) {
+    this.wordsIE[w]
     .bounceOnBorders(0,0,h,w)
     .animate(deltaT$ms);
   }
-  for (var i = 0;i<this.objs.length;i++) {
-    this.objs[i]
+  for (var i = 0;i<this.objsIE.length;i++) {
+    this.objsIE[i]
     .bounceOnBorders(0,0,h,w)
     .animate(deltaT$ms);
   }
   return this;
 }
 
-jc.IElement.prototype.wordCloud = function (name,css,wordIndex) {
-    return this.scene.add(new jc.IWordCloud(name,css,wordIndex,this.scene));
+jc.IElement.prototype.wordCloud = function (name,css,arrayOfObjects,objectCaption) {
+  return this.scene.add(new jc.IWordCloud(name,css,arrayOfObjects,objectCaption,this.scene));
 }
 

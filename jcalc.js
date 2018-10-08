@@ -673,7 +673,7 @@
 
 
   // interactive Elements ////////////////////////////////////////////////////////
-  jc.IElement = function IElement(name,css,innerHtml,scene,obj) {
+  jc.IElement = function IElement(name,css,innerHtml,scene) {
     //create a new JcElement that can be added inside scene
     //css is an object like {top:100,left:200....} that surcharge {top:0,left:0}
     //html is html code that will be used as innerHTML 
@@ -776,7 +776,7 @@
 
   jc.IElement.prototype.bounceOnBorders = function(top,left,bottom,right) {
     // modifies position and velocity in order to keep p inside a rectangle
-    if ((this.p.x<left) && (ei.v.x<0)) {
+    if ((this.p.x<left) && (this.v.x<0)) {
       this.p.x = left;
       this.v.x = - this.v.x*0.8;
     }

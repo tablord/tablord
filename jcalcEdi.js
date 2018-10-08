@@ -366,6 +366,15 @@
     return res;
   }
 
+  jc.values = function(obj) {
+    // returns an Array with all values of all non inherited properties of an object
+    var res = [];
+    for (var k in obj) {
+      if (obj.hasOwnProperty(k)) res.push(obj[k]);
+    }
+    return res;
+  }
+
   jc.copy = function(obj) {
     // makes a copy of obj this version only copies the first level
     // does not copy any inheritance (result is an Object instance)
