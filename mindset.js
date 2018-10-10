@@ -21,8 +21,9 @@ jc.IWordCloud = function JcWordCloud(name,css,arrayOfObjects,objectCaption,scene
   this.wordsIE = {};
   this.objsIE  = [];
   this.objectCaption = typeof objectCaption === 'function'?objectCaption:function(o) {return o[objectCaption].toString()};
-  this.repulsionForce = jc.spring(200,1);
+  this.repulsionForce = jc.spring(150,1);
   this.focusedForce = jc.spring(0,5);
+  this.wordObjectForce = jc.ySpring(2);
   this.wordRegExp = /\w+/g;
 }
 
@@ -57,7 +58,7 @@ jc.IWordCloud.prototype.element$ = function() {
   for (var i = 0; i<this.objects.length;i++) {
     var obj = this.objects[i];
     var objIE = new jc.IElement(this.name+'_'+i,
-                               {top:Math.random()*100,left:Math.random()*100},
+                               {top:500+Math.random()*200,left:800+Math.random()*200},
                                this.objectCaption(obj),
                                this);
     objIE.$.addClass('CLOUD OBJECT');
@@ -79,7 +80,7 @@ jc.IWordCloud.prototype.element$ = function() {
     for (var word in objIndex) {
       var e = this.wordsIE[word]
       if (e==undefined) {
-        e = new jc.IElement(word,{top:Math.random()*100,left:Math.random()*100},word,this);
+        e = new jc.IElement(word,{top:300+Math.random()*200,left:300+Math.random()*200},word,this);
         e.$.addClass('CLOUD WORD');
         e.objectsIE = [];
         e.rank = 0;
@@ -119,13 +120,11 @@ jc.IWordCloud.prototype.animate = function(deltaT$ms){
   // the focused iElement is only attracted by the center
   if (this.focusedIE) {
     if (this.focusedIE.obj) {
-      this.focusedIE.applyForceToAll(jc.values(this.focusedIE.wordsIE),this.focusedForce);
+      this.focusedIE.applyForceToAll(jc.values(this.focusedIE.wordsIE),this.wordObjectForce);
       this.focusedIE.f = this.focusedForce(this.focusedIE,{p:{x:w*0.66,y:h*0.5}});
     }
     else {
-      for (var i = 0; i<this.focusedIE.objectsIE.length;i++) {
-        this.focusedIE.applyForceWith(this.focusedIE.objectsIE[i],this.focusedForce);
-      }
+      this.focusedIE.applyForceToAll(this.focusedIE.objectsIE,this.wordObjectForce);
       this.focusedIE.f = this.focusedForce(this.focusedIE,{p:{x:w*0.33,y:h*0.5}});
     }
   }
