@@ -107,28 +107,60 @@
     return jc.inspect(this.types,this.toString(),2).span();
   }
 
-  jc.Graph.prototype.createCloud = function(name,css) {
-  // returns a cloud with elements representing nodes that have a dist != Infinity
-    var force = jc.spring(100,1);
+  jc.Graph.prototype.createCloud = function(name,css,maxDist) {
+  // returns a cloud with elements representing nodes that have a dist <= maxDist
+    this.cloud = jc.cloud(name || (this.name+'_scene'),css || {height:400});
+    this.cloud.maxDist = (maxDist == undefined?Infinity:maxDist);
+    this.cloud.centripetalForce = function(iE,center) {
+      var dist = iE.node.dist;
+      return jc.spring(dist*100,0.1)(iE,center);
+    }
+    this.linkForce = jc.spring(100,1);
+    this.updateCloud();
+    return this.cloud;
+  }
 
-    var cloud = jc.cloud(name || (this.name+'_scene'),css || {height:400});
+  jc.Graph.prototype.updateCloud = function() {
+  // update the node.iE
+    var cloud = this.cloud;
+    var linkForce = this.linkForce;
     this.eachNode(function(node) {
-      if (node.dist != Infinity) {
-        node.iE = cloud.div(node.id(),{top:100,left:100},node.caption());
+      if (node.dist <= cloud.maxDist) {
+        if (node.iE == undefined) {
+          node.iE = cloud.div(node.id(),{top:100,left:100,cursor:'pointer'},node.caption());
+          node.iE.$.click(jc.Graph.clickHandler);
+          node.iE.node = node;
+        }
       }
       else {
+        cloud.remove(node.iE);
         node.iE = undefined;
       }
     });
     this.eachNode(function(node) {
       if (node.iE) {
+        node.iE.clearForces();
         for (var i = 0; i<node.links.length; i++) {
-          if (node.links[i].iE) node.iE.addForce(node.links[i].iE,force);
+          if (node.links[i].iE) node.iE.addForce(node.links[i].iE,linkForce);
         }
+        cloud.container$.append(node.iE.$);
       }
     });
-    return cloud;
+    return this.cloud;
   }
+
+  jc.Graph.clickHandler = function(event) {
+    event.currentTarget.IElement.node.graph.focus(event.currentTarget.IElement.node);
+  }
+    
+  jc.Graph.prototype.focus = function(node) {
+    if (this.focusedNode) this.focusedNode.iE.$.removeClass('FOCUSED');
+    this.focusedNode = node;
+    node.setDist();
+    this.updateCloud();
+    this.focusedNode.iE.$.addClass('FOCUSED');
+  }
+
 
   jc.graph = function(name) {
     var g = new jc.Graph(name);

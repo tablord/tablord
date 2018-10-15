@@ -25,10 +25,10 @@
 <BODY sizset="0" sizcache="1" showTrace="true" showTest="true" showCut="true" showCode="true" designMode="on">
 <DIV id=menu class=TOOLBAR>
 <DIV><INPUT onclick=jc.showCode(event) type=checkbox>codes</INPUT><INPUT onclick=jc.showCut(event) type=checkbox>cuts</INPUT><INPUT onclick=jc.showTest(event) type=checkbox>tests</INPUT><INPUT onclick=jc.showTrace(event) type=checkbox>traces</INPUT><INPUT onclick=jc.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
-<DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
+<DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px">save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
 <DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
 <DIV id=objectToolBar></DIV></DIV></DIV>
-<DIV id=jcContent sizset="0" sizcache="1"><PRE id=code0002 class=CODE contentEditable=false><P>jc.graph('graph')</P><P>graph.node('object','n1').linkWith('object','n2').linkWith('object','n3');</P><P>graph.node('object','n2').linkWith('category','c1').linkWith('category','c2');</P><P>graph</P></PRE>
+<DIV id=jcContent sizset="0" sizcache="1"><PRE id=code0002 class=CODE contentEditable=false><P>jc.graph('graph')</P><P>graph.node('object','n1').linkWith('object','n2').linkWith('object','n3');</P><P>graph.node('object','n2').linkWith('category','c1').linkWith('category','c2');</P><P>graph.node('object','n3').linkWith('category','c1');</P><P>graph.node('object','n4').linkWith('category','c1');</P><P>graph.node('object','n5').linkWith('category','c1');</P><P>graph</P></PRE>
 <DIV id=out0002 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} [object Graph graph]</LEGEND>
@@ -49,7 +49,13 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(object_n2&nbsp;dist:Infinity)]</TD></TR>
 <TR>
 <TH vAlign=top>n3</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(object_n3&nbsp;dist:Infinity)]</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(object_n3&nbsp;dist:Infinity)]</TD></TR>
+<TR>
+<TH vAlign=top>n4</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(object_n4&nbsp;dist:Infinity)]</TD></TR>
+<TR>
+<TH vAlign=top>n5</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(object_n5&nbsp;dist:Infinity)]</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TH vAlign=top>category</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>
@@ -83,7 +89,13 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(object_n2&nbsp;dist:1)]</TD></TR>
 <TR>
 <TH vAlign=top>n3</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(object_n3&nbsp;dist:1)]</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(object_n3&nbsp;dist:1)]</TD></TR>
+<TR>
+<TH vAlign=top>n4</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(object_n4&nbsp;dist:3)]</TD></TR>
+<TR>
+<TH vAlign=top>n5</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(object_n5&nbsp;dist:3)]</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TH vAlign=top>category</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>
@@ -117,7 +129,13 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(object_n2&nbsp;dist:1)]</TD></TR>
 <TR>
 <TH vAlign=top>n3</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(object_n3&nbsp;dist:3)]</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(object_n3&nbsp;dist:3)]</TD></TR>
+<TR>
+<TH vAlign=top>n4</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(object_n4&nbsp;dist:3)]</TD></TR>
+<TR>
+<TH vAlign=top>n5</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(object_n5&nbsp;dist:3)]</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TH vAlign=top>category</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>
@@ -130,8 +148,10 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(category_c1&nbsp;dist:2)]</TD></TR>
 <TR>
 <TH vAlign=top>c2</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(category_c2&nbsp;dist:0)]</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0008 class=CODE contentEditable=false><P>graph.node('category','c2').setDist(0,function(n,d){return d&lt;2});</P><P>graph</P></PRE>
-<DIV id=out0008 class="OUTPUT SUCCESS">
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(category_c2&nbsp;dist:0)]</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0010 class=CODE contentEditable=false>graph.createCloud('graphCloud',{height:400},2)</PRE>
+<DIV id=out0010 class="OUTPUT ERROR">L&#8217;objet ne gère pas la propriété ou la méthode « findInArray »<BR>file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc.js line:1054<BR></DIV><PRE id=code0012 class=CODE contentEditable=false><P>jc.inspect(graphCloud[0].$.html());</P><P>&nbsp;</P></PRE>
+<DIV id=out0012 class=OUTPUT><SPAN class=INSPECT>"n1"</SPAN></DIV><PRE id=code0014 class=CODE contentEditable=false><P>graphCloud.animate(100)</P><P>jc.animate(100)</P><P>graph</P></PRE>
+<DIV id=out0014 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} [object Graph graph]</LEGEND>
 <TABLE class=INSPECT>
@@ -151,7 +171,13 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(object_n2&nbsp;dist:1)]</TD></TR>
 <TR>
 <TH vAlign=top>n3</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(object_n3&nbsp;dist:Infinity)]</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(object_n3&nbsp;dist:3)]</TD></TR>
+<TR>
+<TH vAlign=top>n4</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(object_n4&nbsp;dist:3)]</TD></TR>
+<TR>
+<TH vAlign=top>n5</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(object_n5&nbsp;dist:3)]</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TH vAlign=top>category</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>
@@ -164,13 +190,4 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(category_c1&nbsp;dist:2)]</TD></TR>
 <TR>
 <TH vAlign=top>c2</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(category_c2&nbsp;dist:0)]</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0010 class=CODE contentEditable=false>graph.createCloud('graphCloud')</PRE>
-<DIV id=out0010 class="OUTPUT SUCCESS">
-<DIV class=SCENE style="HEIGHT: 400px">
-<DIV class=SCENECONTAINER>
-<DIV class=IELEMENT style="LEFT: 100px; TOP: 100px">n1</DIV>
-<DIV class=IELEMENT style="LEFT: 100px; TOP: 100px">n2</DIV>
-<DIV class=IELEMENT style="LEFT: 100px; TOP: 100px">c1</DIV>
-<DIV class=IELEMENT style="LEFT: 100px; TOP: 100px">c2</DIV></DIV></DIV></DIV><PRE id=code0012 class=CODE contentEditable=false><P>jc.inspect(graphCloud[0].$.html());</P><P>&nbsp;</P></PRE>
-<DIV id=out0012 class="OUTPUT SUCCESS"><SPAN class=INSPECT>"n1"</SPAN></DIV><PRE id=code0014 class=CODE contentEditable=false><P>graphCloud.animate(100)</P><P>jc.animate(100)</P></PRE>
-<DIV id=out0014 class="OUTPUT ERROR">« focusForce » est indéfini<BR>file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc.js line:1065<BR></DIV></DIV></BODY></HTML>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;GraphNode&nbsp;(category_c2&nbsp;dist:0)]</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></BODY></HTML>

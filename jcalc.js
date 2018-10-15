@@ -763,6 +763,11 @@
     return this;
   }
 
+  jc.IElement.prototype.clearForces = function() {
+  // remove all forces on an IElement
+    this.forces = {};
+  }
+
   jc.IElement.prototype.prepareAnimation = function() {
     this.f = {x:0,y:0};
     if (!this.p) this.p = {x:this.left()+this.width()/2,y:this.top()+this.height()/2};
@@ -811,7 +816,7 @@
     // calculate all forces on this element, then calculate a new acceleration, speed and position
 
     var deltaT = (deltaT$ms || 100)/1000;
-    var friction = {x:0,y:0,u:0.1};
+    var friction = {x:0,y:0,u:1};
     var thisElement = this;
     
     $.each(this.forces,function(name,forceFunc){
@@ -906,13 +911,44 @@
     }
   }
 
+  jc.repulseForce = function repulseForce(iE1,iE2) {
+  // standard repulse force between 2 elements
+    var dist2 = jc.dist2(iE1.p,iE2.p);
+    var k = 100;
+    var f = {x:0,y:0};
+    if (dist2 > 0) {
+      f.x = (iE1.p.x-iE2.p.x) / dist2 * k;
+      f.y = (iE1.p.y-iE2.p.y) / dist2 * k;
+    }
+    else {
+      f.x = k;
+      f.y = k;
+    }
+    return f;
+  }
+
+  jc.centripetalForce = jc.spring(0,1);
+
+
   jc.repulseIElements = function(iElements,repulsionForce){
-    // repulse all iElements between them by repulseForce
+  // repulse all iElements between them by repulseForce
     
     for (var i = 0;i<iElements.length;i++) {
       for (var j = i+1;j<iElements.length;j++) {
         iElements[i].applyForceWith(iElements[j],repulsionForce);
       }
+    }
+  }
+
+  jc.repulseAndCenterIElements = function(iElements,repulsionForce,centripetalForce,center){
+  // repulse all iElements between them by repulseForce
+  // and attract all to center {x,y}
+    var iECenter = {f:{x:0,y:0},p:center};
+    for (var i = 0;i<iElements.length;i++) {
+      for (var j = i+1;j<iElements.length;j++) {
+        iElements[i].applyForceWith(iElements[j],repulsionForce);
+      }
+      iElements[i].applyForceWith(iECenter,centripetalForce);
     }
   }
     
@@ -1006,15 +1042,30 @@
   jc.makeInheritFrom(jc.Scene,jc.IElement);
 
   jc.Scene.prototype.create$ = function(css,html) {
-    return $('<DIV class=SCENE>').css(css).html(html).append('<DIV class=SCENECONTAINER>');
+    this.container$ = $('<DIV class=SCENECONTAINER>');
+    return $('<DIV class=SCENE>').css(css).html(html).append(this.container$);
   }
 
   jc.Scene.prototype.add = function(iElement) {
     // add an IElement to the Scene;
     this[iElement.name] = iElement;
     this[this.length++] = iElement;
+    this.container$.append(iElement.element$())
     return iElement;
   }    
+
+  jc.Scene.prototype.remove = function(iElement) {
+  // remove iElement from the sceen
+  // it does'nt destroy the iElement itself
+  // but it also detach the DOM element so it is no longer part of the DOM tree
+    if (iElement == undefined) return this;
+    var pos = $.inArray(iElement,this);
+    if (pos === -1) throw new Error ("can't remove iElement "+iElement.name+" from scene "+this.name+" since it doesn't belongs to that scene");
+    Array.prototype.splice.call(this,pos,1);
+    delete this[iElement.name];
+    iElement.$.detach();
+    return this;
+  }
 
   jc.Scene.prototype.animate = function(deltaT$ms) {
     var deltaT$ms = deltaT$ms || 100;
@@ -1029,10 +1080,6 @@
   }
 
   jc.Scene.prototype.node$ = function() {
-    var pos$ = this.$.children();
-    for (var i=0; i< this.length; i++) {
-      pos$.append(this[i].element$())
-    }
     return this.$;
   }
 
@@ -1048,26 +1095,28 @@
 
   jc.Cloud = function Cloud(name,css,html) {
     jc.Scene.call(this,name,css,html);
-    this.focusForce = jc.spring(0,0.1);    
-    this.center = new jc.IElement('center',{});
+    this.repulseForce = jc.repulseForce;    
+    this.centripetalForce = jc.centripetalForce;
   }
 
   jc.makeInheritFrom(jc.Cloud,jc.Scene);
 
   jc.Cloud.prototype.animate = function(deltaT$ms) {
     var deltaT$ms = deltaT$ms || 100;
-    this.center.p = {x:this.width()/2,y:this.height()/2};
+    var center = {x:this.width()/2,y:this.height()/2};
+    var t = 0;
+    var l = 0;
+    var b = this.height();
+    var r = this.width();
 
     for (var i = 0;i<this.length;i++) {
       this[i].prepareAnimation();
     }
 
-    for (var i = 0;i<this.length;i++) {
-      this[i].applyForceWith(this.center,this.focusForce);
-    }
+    jc.repulseAndCenterIElements(this,this.repulseForce,this.centripetalForce,center);
 
     for (var i = 0;i<this.length;i++) {
-      this[i].animate(deltaT$ms)
+      this[i].bounceOnBorders(t,l,b,r).animate(deltaT$ms);
     }
   }
 

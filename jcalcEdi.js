@@ -191,7 +191,7 @@
   function a(/*objects*/) {
     var message = '';
     for (var i=0; i<arguments.length; i++){
-      message += jc.inspect(arguments[i]);
+      message += jc.inspect(arguments[i]).toString();
     }
     window.alert(message);
   }
@@ -257,7 +257,7 @@
     this.depth = depth || 1;
   }
   
-  jc.Inspector.prototype.legend = function(obj) {
+  jc.Inspector.prototype.legend = function() {
     // returns the legend for a given object
     var l;
     if ($.isPlainObject(this.obj)) {
@@ -272,21 +272,25 @@
     else if (this.obj === null) {
       l = 'null';
     }
+    else if (this.obj === undefined) {
+      l = 'undefined';
+    }
     else {
       l = this.obj.toString();
     } 
     return l;
   }
 
+    
   jc.Inspector.prototype.toString = function (){
     // display the object hold by the inspector as a string
 
     // BE CARFULL IN DEBUGGING THAT FUNCTION: DO NOT CALL a(....), 
     // since it will create an inspector recursivelly
     // use window.alert instead !!
-    var r = this.legend(this.obj)+' '+this.name+'\n';
+    var r = this.legend()+' '+this.name+'\n';
     for (var k in this.obj) {
-      r += k+':  '+this.obj[k]+'\n' 
+      r += k+':  '+jc.summary(this.obj[k])+'\n' 
     };
     return r;
   }
@@ -311,7 +315,7 @@
     if (this.obj.toGMTString !== undefined) {
       return '<SPAN class="INSPECT META">'+this.obj.toString()+' (ms:'+this.obj.valueOf()+')</SPAN>';
     }
-    var r = '<DIV class=INSPECT><fieldset><legend>'+this.legend(this.obj)+' '+this.name+'</legend>';
+    var r = '<DIV class=INSPECT><fieldset><legend>'+this.legend()+' '+this.name+'</legend>';
     r += '<table class=INSPECT>';
     for (var k in this.obj) {
       if (k==='constructor') continue;
@@ -325,6 +329,24 @@
   }
 
   // general purpose helpers ////////////////////////////////////////////
+
+  jc.summary = function(obj) {
+    // return a 1 line summary of obj
+    var l;
+    if ($.isFunction(obj)) {
+      l = jc.signature(obj);
+    }
+    else if (obj === null) {
+      l = 'null';
+    }
+    else if (obj === undefined) {
+      l = 'undefined';
+    }
+    else {
+      l = obj.toString();
+    } 
+    return l;
+  }
 
 
   jc.inspect = function(obj,name,depth){
@@ -401,6 +423,9 @@
     return ('00000000000000000'+integer).slice(-numberOfDigits);
   }
 
+
+  // Math helpers /////////////////
+
   jc.limit = function (value,min,max) {
     // return value bounded by min and max
     if (value < min) return min;
@@ -413,6 +438,16 @@
     //         1 if value > 0
     //        -1 if value < 0
     return value===0?0:(value>0?1:-1);
+  }
+
+  jc.dist2 = function(p1,p2) {
+  // return dist^2 between 2 points {x,y}
+    return Math.pow(p1.x-p2.x,2)+Math.pow(p1.y-p2.y,2);
+  }
+
+  jc.dist = function(p1,p2) {
+  // return the distance between 2 points {x,y}
+    return Math.sqrt(jc.dist2(p1,p2));
   }
 
   // helpers specific to jcalc ////////////////////////////////////////////////////////////////////
