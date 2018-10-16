@@ -31,6 +31,8 @@
   // creates a bidirectional link with the node (type,node)
   // if this node doesn't already exist or if the type doesn't already exists
   //   it will be created
+  // if name == undefined nothing is done
+    if (name == undefined) return this;
 
     var node = this.graph.node(type,name);
     if ($.inArray(node,this.links) == -1) this.links.push(node);
@@ -57,6 +59,10 @@
       this.links[i].setDist(dist+1,callback);      
     }
     return this;
+  }
+
+  jc.GraphNode.prototype.focus = function () {
+    this.graph.focus(this);
   }
 
   jc.GraphNode.prototype.toString = function() {
@@ -146,6 +152,8 @@
         cloud.container$.append(node.iE.$);
       }
     });
+    
+    if (this.focusedNode) this.focusedNode.iE.$.addClass('FOCUSED');
     return this.cloud;
   }
 
@@ -157,8 +165,8 @@
     if (this.focusedNode) this.focusedNode.iE.$.removeClass('FOCUSED');
     this.focusedNode = node;
     node.setDist();
+    if (this.cloud == undefined) return;
     this.updateCloud();
-    this.focusedNode.iE.$.addClass('FOCUSED');
   }
 
 
