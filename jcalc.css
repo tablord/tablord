@@ -149,6 +149,8 @@ pre {
 
 .EMBEDDED {
   background-color: #ffb848;
+  color:red;
+  display:none;
 }
 
 .EDITOR {

@@ -828,7 +828,7 @@
         currentNumbers.length = level+1;
         var number = currentNumbers.join('.');
         var t = title.innerHTML.replace(/^[\d\.]*(\s|\&nbsp;)*/,'');
-        title.outerHTML = '<H'+(level+1)+' class=SECTIONTITLE contentEditable='+(e===jc.selectedElement)+'>'+number+' '+t+'</H'+(level+1)+'>';
+        title.outerHTML = '<H'+(level+1)+' class=SECTIONTITLE contentEditable=true>'+number+' '+t+'</H'+(level+1)+'>';
         jc.tableOfContent.toc.push({number:number,level:level,title:jc.textContent(t),sectionId:e.id});
       });
     },
@@ -1134,7 +1134,7 @@
     // insert a new richText DIV 
     // -beforeThatElement is where it must be inserted (usually the topToolBox, but can be any Element)
     jc.blockNumber++;
-    var newRichText = window.document.createElement('<DIV id='+jc.blockId('rich')+' class=RICHTEXT contentEditable=false>');
+    var newRichText = window.document.createElement('<DIV id='+jc.blockId('rich')+' class=RICHTEXT contentEditable=true>');
     beforeThatElement.parentNode.insertBefore(newRichText,beforeThatElement);
     jc.selectElement(newRichText);
     jc.setModified(true);
@@ -1216,8 +1216,9 @@
       // remove the old selection
       $(e).removeClass('SELECTED');
       jc.$editables(e)
-        .attr('contentEditable',false)
+        //!!!!.attr('contentEditable',false)
         .each(function(i,e){jc.reformatRichText(e)});
+      //!!!$('.CODE',e).css('width','2px');
     }
 
     // set the new selection
@@ -1233,13 +1234,14 @@
     $('#codeId').html(element.id+'<SPAN style="color:red;cursor:pointer;" onclick="jc.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
     jc.moveLocalToolBars(element);
     $(element).addClass('SELECTED');
-    jc.$editables(element).attr('contentEditable',true);
+    //!!!!jc.$editables(element)//.attr('contentEditable',true);
+    //!!!$('.CODE',element).css('width','auto');
     element.focus();
   }
 
   // EDI eventHandlers ///////////////////////////////////////////////////////////////
 
-  jc.codeClick = function(event) {
+  jc.codeFocus = function(event) {
     var code = event.currentTarget; // not target, since target can be an child element, not the div itself
     if ($(code).hasClass('EMBEDDED')) {
       return true; //EMBEDDED code is ruled by its container (richText / section...) so let the event bubble
@@ -1248,8 +1250,9 @@
     return false;  // prevent bubbling
   }
 
+/*
   jc.outClick = function(event) {
-    if (event.target.tagName == 'A') {/*a link, just let the system do*/ return true}
+    if (event.target.tagName == 'A') {/a link, just let the system do/ return true}
     var element = event.currentTarget; // not target, since target can be an child element, not the div itself
     var code = window.document.getElementById(element.id.replace(/out/,"code"))
     if ($(code).hasClass('EMBEDDED')) {
@@ -1264,14 +1267,15 @@
 
     return false;  // prevent bubbling
   }
+*/
 
-  jc.richTextClick = function(event) {
+  jc.richTextFocus = function(event) {
     var rich = event.currentTarget; // the user clicked on an internal part (title or container).parentNode
     jc.selectElement(rich);
     return false;  // prevent bubbling
   }
 
-  jc.sectionClick = function(event) {
+  jc.sectionFocus = function(event) {
     var section = event.currentTarget; // the user clicked on an internal part (title or container).parentNode
     if (!$(section).hasClass('SECTION')) window.alert("ouups: on click sur un element interne d'une section, mais currentTarget n'est pas une SECTION");
     jc.selectElement(section);
@@ -1301,6 +1305,8 @@
     jc.setModified(true);
   }
 
+
+//TODO ??? focus???
   jc.elementEditor = function(event) {
     // generic editor event handler for click and keypress
     // assumes that the DOM element that has a class=EDITOR also has an id="name of the corresponding JCalc element"
@@ -1508,9 +1514,9 @@
     while ((idx=h.search(mark))!=-1) {
       jc.blockNumber++;
       if (h.charAt(idx+2) == '#') {
-        h = h.replace(mark,'<SPAN class="CODE EMBEDDED" id='+ jc.blockId('code')+' style="DISPLAY: none;">jc.link("$1")</SPAN><SPAN class=OUTPUT contentEditable=false id='+ jc.blockId('out')+'>no output</SPAN>');
+        h = h.replace(mark,'<SPAN class="CODE EMBEDDED" id='+ jc.blockId('code')+'>jc.link("$1")</SPAN><SPAN class=OUTPUT contentEditable=false id='+ jc.blockId('out')+'>no output</SPAN>');
       }
-      h = h.replace(mark,'<SPAN class="CODE EMBEDDED" id='+ jc.blockId('code')+' style="DISPLAY: none;">$1</SPAN><SPAN class=OUTPUT contentEditable=false id='+ jc.blockId('out')+'>no output</SPAN>');
+      h = h.replace(mark,'<SPAN class="CODE EMBEDDED COUCOU" id='+ jc.blockId('code')+'>$1</SPAN><SPAN class=OUTPUT contentEditable=false id='+ jc.blockId('out')+'>no output</SPAN>');
       change = true; 
     }
     if (change) {
@@ -1564,7 +1570,7 @@
     $('.OUTPUT').add('.CODE').add('.RICHTEXT').removeAttr('onclick');  // no longer in the HTML but bound dynamically
     $('.RICHTEXT .CODE').add('.SECTIONTITLE .CODE').addClass('EMBEDDED');        // reserved for code inside another element
     $('#localToolBar').add('.BOTTOMTOOLBAR').add('.TOOLBAR').remove();           // no longer saved with the document and must be regenerated at init
-
+    $('.CODE').attr('contentEditable','true'); //!!!!
     // since v0.0110 the menu is fixed in a #menu DIV and all sheet is contained in a #jcContent DIV
     jc.content$ = $('#jcContent').removeAttr('style');
     var b$ = $('BODY');
@@ -1593,12 +1599,12 @@
 
     // prepare the sheet ///////////////////////////////////////////
     $('.SELECTED').removeClass('SELECTED');
-    $('.CODE').live("click",jc.codeClick).live("keypress",jc.editorKeyPress);
-    $('.RICHTEXT').live("click",jc.richTextClick).live("keypress",jc.richTextKeyPress);
+    $('.CODE').live("focus",jc.codeFocus).live("keypress",jc.editorKeyPress);
+    $('.RICHTEXT').live("focus",jc.richTextFocus).live("keypress",jc.richTextKeyPress);
+    $('.SECTION').live("focus",jc.sectionFocus);
     $('.SECTIONTITLE').live("keypress",jc.sectionTitleKeyPress);
     $('.EDITOR').live("change",jc.Editor.eventHandler).live("click",jc.Editor.eventHandler);
-    $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR').live("click",jc.outClick);
-    $('.SECTION').live("click",jc.sectionClick);
+    $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR')//*****.live("click",jc.outClick);
     $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
     $('.SCENE').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
     $('.INTERACTIVE').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
