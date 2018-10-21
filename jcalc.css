@@ -304,6 +304,10 @@ pre {
   background-color:cyan;
 }
 
+.INTERACTIVE > [contenteditable=true] {
+  background-color:#b9a3c1;
+}
+
 .SCENECONTAINER {
   position: relative;
   /*must have no border!! */
@@ -316,6 +320,10 @@ pre {
 
 .IELEMENT.FOCUSED {
   font-size: 2em;
+}
+
+.IELEMENT.FOCUSED::before {
+  content:"focus:";
 }
 
 .CLOUD.WORD {

@@ -20,7 +20,16 @@
   }
 
   jc.GraphNode.prototype.caption = function() {
-    return this._caption || this.name;
+    return this._caption?'<span title='+this.name+'>'+this._caption+'</span>':this.name;
+  }
+
+  jc.GraphNode.prototype.css = function() {
+    return this.graph.typesCss[this.type] || {};
+  }
+
+  jc.GraphNode.prototype.setCaption = function(caption) {
+    this._caption = caption;
+    return this;
   }
 
   jc.GraphNode.prototype.id = function() {
@@ -31,15 +40,41 @@
   // creates a bidirectional link with the node (type,node)
   // if this node doesn't already exist or if the type doesn't already exists
   //   it will be created
-  // if name == undefined nothing is done
-    if (name == undefined) return this;
-
+  // if name === undefined nothing is done
+    if (name === undefined) return this;
     var node = this.graph.node(type,name);
+    this.linkNode(node);
+    return this;
+  }
+
+  jc.GraphNode.prototype.linkNode = function(node){
+  // link with a node
+    if (node == undefined) return this;
     if ($.inArray(node,this.links) == -1) this.links.push(node);
     if ($.inArray(this,node.links) == -1) node.links.push(this);
     return this;
   }
   
+  jc.GraphNode.prototype.linkCategories = function(categories,type,delimiter) {
+  // link this node with the categories
+  // - categories: a string containing categories separated by delimiters. if undefined==> does nothing
+  // - type      : type unde which every category is registred as a node. by default type = "categories"
+  // - delimiter : a string or RegExp. by default / +/
+  // a node (type,category) is created for each category
+
+    if (categories === undefined) return this;
+    type = type || 'categories';
+    delimiter = delimiter || / +/;
+    var catArray = categories.split(delimiter);
+    for (var i = 0;i<catArray.length;i++) {
+      var c = this.graph.node(type,catArray[i]);
+      this.linkNode(c);
+      c.linkWith('_',type);
+    }
+    return this;
+  }
+    
+
   jc.GraphNode.prototype.setDist = function(dist,callback) {
   // recursively set the distance to this node and all links
   // YET all links have a distance of 1... may be changed in the future if needed
@@ -78,6 +113,7 @@
 
     this.name = name;
     this.types = {};
+    this.typesCss = {};
   }
 
   jc.makeInheritFrom(jc.Graph,jc.IElement);
@@ -134,7 +170,7 @@
       if (node.dist <= cloud.maxDist) {
         if (node.iE == undefined) {
           node.iE = cloud.div(node.id(),{top:100,left:100,cursor:'pointer'},node.caption());
-          node.iE.$.click(jc.Graph.clickHandler);
+          node.iE.$.click(jc.Graph.clickHandler).css(node.css());
           node.iE.node = node;
         }
       }

@@ -66,8 +66,11 @@
                   var faults = message.match(/« (.+?) »/);
                   if (faults != null) {
                     var fault = faults[1];
-                    code = jc.output.codeElement.innerHTML.replace(new RegExp(fault,'g'),'<SPAN class="WRONG">'+fault+'</SPAN>');
-                    $(jc.output.codeElement).html(code).find('.ERROR').click();
+                    code = jc.output.codeElement.innerHTML
+                             .replace(/ /g,'&nbsp;')
+                             .replace(new RegExp(fault,'g'),'<SPAN class="WRONG">'+fault+'</SPAN>');
+                    jc.output.codeElement.innerHTML = code
+                    jc.selectElement(jc.output.codeElement);
                   }
                   out.innerHTML = trace.span()+message;
                 }
@@ -973,10 +976,10 @@
     jc.menu$ =  $(
     '<DIV id=menu class=TOOLBAR>'+
       '<DIV>'+
-        '<INPUT onclick="jc.showCode(event)"'+(b$.attr('showCode')=='true'?' checked':'')+' type=checkbox>codes</INPUT>'+
-        '<INPUT onclick="jc.showCut(event)"'+(b$.attr('showCut')=='true'?' checked':'')+' type=checkbox>cuts</INPUT>'+
-        '<INPUT onclick="jc.showTest(event)"'+(b$.attr('showTest')=='true'?' checked':'')+' type=checkbox>tests</INPUT>'+
-        '<INPUT onclick="jc.showTrace(event)"'+(b$.attr('showTrace')=='true'?' checked':'')+' type=checkbox>traces</INPUT>'+
+        '<INPUT onclick="jc.showCode(event)"'+(b$.attr('showCode')=="true"?' checked':'')+' type=checkbox>codes</INPUT>'+
+        '<INPUT onclick="jc.showCut(event)"'+(b$.attr('showCut')=="true"?' checked':'')+' type=checkbox>cuts</INPUT>'+
+        '<INPUT onclick="jc.showTest(event)"'+(b$.attr('showTest')=="true"?' checked':'')+' type=checkbox>tests</INPUT>'+
+        '<INPUT onclick="jc.showTrace(event)"'+(b$.attr('showTrace')=="true"?' checked':'')+' type=checkbox>traces</INPUT>'+
         '<INPUT onclick="jc.setAutoRun(event)"'+(jc.autoRun?' checked':'')+' type=checkbox>auto run</INPUT>'+
       '</DIV>'+
       '<DIV>'+
@@ -1569,14 +1572,14 @@
       b$.wrapInner('<DIV id=jcContent/>');
     }
     // since v0.0145 the <body> attributes hideCodes,hideCut,hideTest,hideTrace are deprecated
-    b$.attr('showCode' ,b$.attr('hideCode')!=false)
-      .attr('showCut'  ,b$.attr('hideCut')!=false)
-      .attr('showTest' ,b$.attr('hideTest')!=false)
-      .attr('showTrace',b$.attr('hideTrace')!=false)
-      .removeAttr('hideCode')
+    if (b$.attr('hideCode')) b$.attr('showCode' ,b$.attr('hideCode')!=false);
+    if (b$.attr('hideCut') ) b$.attr('showCut'  ,b$.attr('hideCut')!=false);
+    if (b$.attr('hideTest')) b$.attr('showTest' ,b$.attr('hideTest')!=false);
+    if (b$.attr('hideCode')) b$.attr('showTrace',b$.attr('hideTrace')!=false);
+    b$.removeAttr('hideCode')
       .removeAttr('hideCut')
       .removeAttr('hideTest')
-      .removeAttr('hideTrace')
+      .removeAttr('hideTrace');
   }
 
 
