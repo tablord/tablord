@@ -38,6 +38,8 @@
             inAnimation:false,    // true when execution take place through jc.animate()
             modified:false,       // file is modified
 
+            templates:{},         // all native, locally defined and imported templates
+
             vars:{},              // where all user variables are stored
 
             autoRun:true,
@@ -86,7 +88,7 @@
   jc.credits = {name:jc.name,version:jc.version,authors:jc.authors,rights:jc.rights};
   jc.helps = {'jc.credits':jc.credits};
 
-  // classical formating functions
+  // classical formating functions ////////////////////////////////////////////
   jc.toFixed = function(decimals) {
     // returns a fomating function(obj) that formats the number with fixed decimals
     var f = function (n) {return n.toFixed(decimals)};
@@ -455,10 +457,6 @@
 
   // helpers specific to jcalc ////////////////////////////////////////////////////////////////////
 
-  jc.createVar = function(pathName,value) {
-    //pathName is a string using the dot notation
-
-  }
 
   jc.purgeJQueryAttr = function(html) {
     // supress all jqueryxxx="yy" attributes, since they are meaningless for the user and also compromise the testability
@@ -862,7 +860,82 @@
     return $(element).parentsUntil('BODY').filter('.SECTION').length;
   }
 
+  // Template //////////////////////////////////////////////////////////////////////////
+
+  jc.Template = function(){};
+
+  jc.Template.prototype.insertBefore = function(element) {
+    var newElement$ = this.node$();
+    newElement$.insertBefore(element);
+    jc.selectElement(newElement$[0]);
+    jc.setModified(true);
+    jc.run();
+  }
+
+  jc.Template.prototype.insertAfter  = function(element) {
+    var element$ = $(element);
+    if (element$.hasClass('CODE')) {
+      if (element$.next().hasClass('OUTPUT')) element$=element$.next();
+      if (element$.next().hasClass('TEST')) element$=element$.next();
+    }
+    var newElement$ = this.node$();
+    newElement$.insertAfter(element$);
+    jc.selectElement(newElement$[0]);
+    jc.setModified(true);
+    jc.run();
+  }
+
+  jc.templates = {
+    code: {
+      name    : 'code',
+      url     : 'code',
+      insertBefore : jc.Template.prototype.insertBefore,
+      insertAfter  : jc.Template.prototype.insertAfter,
+      node$ : function() {
+        jc.blockNumber++;
+        return $('<PRE class="ELEMENT CODE" id='+jc.blockId('code')+'>');
+      }
+    },
+
+    richText: {
+      name : 'richText',
+      url  : 'richText',
+      insertBefore : jc.Template.prototype.insertBefore,
+      insertAfter  : jc.Template.prototype.insertAfter,
+      node$ : function() {
+        jc.blockNumber++;
+        return $('<DIV  class="ELEMENT RICHTEXT" id='+jc.blockId('rich')+'>');
+      }
+    },
+
+    section: {
+      name : 'section',
+      url  : 'section',
+      insertBefore : jc.Template.prototype.insertBefore,
+      insertAfter  : jc.Template.prototype.insertAfter,
+      node$ : function() {
+        jc.blockNumber++;
+        var n$ = $('<DIV  class="ELEMENT SECTION" id='+jc.blockId('sect')+'></DIV>')
+                 .append('<H1 class=SECTIONTITLE></H1>')
+                 .append('<DIV class=CONTAINER></DIV>');
+        return n$;
+      }
+    },
+
+    paste: {
+      name : 'paste',
+      url  : 'paste',
+      insertBefore : jc.Template.prototype.insertBefore,
+      insertAfter  : jc.Template.prototype.insertAfter,
+      node$ : function() {
+        return $('.CUT').detach().removeClass('CUT');
+      }
+    }
+  }   
+
+  //////////////////////////////////////////////////////////////////////////////////////
   // EDI ///////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
 
   jc.richedit = {
     exec:      function(command,value) {window.document.execCommand(command,false,value || null)},
@@ -906,8 +979,7 @@
     var out = window.document.getElementById(outId);
     if (out == undefined) {
       var tag = (element.tagName=='SPAN'?'SPAN':'DIV');
-      out = $('<'+tag+' class=OUTPUT id='+outId+'>no output</'+tag+'>')[0];
-      $(out).insertAfter(element);
+      $('<'+tag+' class=OUTPUT id='+outId+'>no output</'+tag+'>').insertAfter(element);
     }
     return out;
   }
@@ -964,14 +1036,21 @@
     
     jc.helpToolBar$ = $('<DIV>search</DIV>').append('<INPUT>').append('<DIV>');
 
-    jc.selectionToolBar$ = $(
-      '<DIV>'+
-        '<SPAN id=codeId>no selection</SPAN>'+
-        '<BUTTON id="cutBtn" onclick=jc.cutBlock(jc.selectedElement);>cut</BUTTON>'+
-        '<BUTTON id="showHtmlBtn" onclick=jc.showOutputHtml(this);>&#8594;html</BUTTON>'+
-        '<BUTTON id="toTestBtn" onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON>'+
-      '</DIV>'
-    ).append(jc.objectToolBar$).hide();
+    jc.templateChoice$ = $('<SELECT>');
+    for (var t in jc.templates) {
+      jc.templateChoice$.append('<OPTION value="'+jc.templates[t].url+'">'+jc.templates[t].name+'</OPTION>');
+    }
+
+    jc.selectionToolBar$ = $('<DIV>')
+      .append('<SPAN id=codeId>no selection</SPAN>')
+      .append('<BUTTON id="cutBtn" onclick=jc.cutBlock(jc.selectedElement);>cut</BUTTON>')
+      .append('<BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement)">&#8593;</BUTTON>')
+      .append(jc.templateChoice$)
+      .append('<BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement)">&#8595;</BUTTON>')
+      .append('<BUTTON id="showHtmlBtn" onclick=jc.showOutputHtml(this);>&#8594;html</BUTTON>')
+      .append('<BUTTON id="toTestBtn" onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON>')
+      .append(jc.objectToolBar$)
+      .hide();
 
     jc.menu$ =  $(
     '<DIV id=menu class=TOOLBAR>'+
@@ -1017,26 +1096,6 @@
       .append('<BUTTON onclick=jc.richedit.ul();>&#8226;</BUTTON>')
       .append('<BUTTON onclick=jc.richedit.pre();>{}</BUTTON>')
     
-    $('#topToolBar').remove();
-    jc.topToolBar$ = $('<DIV id=topToolBar class=TOOLBAR/>')
-      .append('<BUTTON onclick="jc.insertNewSection(this.parentNode);">&#8593; new section &#8593;</BUTTON>')
-      .append('<BUTTON onclick="jc.insertNewRichText(this.parentNode);">&#8593; new richtext &#8593;</BUTTON>')
-      .append('<BUTTON onclick="jc.insertNewCodeBlock(this.parentNode);">&#8593; new code &#8593;</BUTTON>')
-      .append('<BUTTON onclick="jc.paste(this.parentNode);">&#8593; paste &#8593;</BUTTON>')
-
-    $('#insideToolBar').remove();
-    jc.insideToolBar$ = $('<DIV id=insideToolBar class=TOOLBAR/>')
-      .append('<BUTTON onclick=jc.insertNewSection(this.parentNode);>new section</BUTTON>')
-      .append('<BUTTON onclick=jc.insertNewRichText(this.parentNode);>new rich text</BUTTON>')
-      .append('<BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>new code</BUTTON>')
-      .append('<BUTTON onclick=jc.paste(this.parentNode);>paste</BUTTON>')
-
-    $('#bottomToolBar').remove();
-    jc.bottomToolBar$ = $('<DIV id=bottomToolBar class=TOOLBAR></DIV>')
-      .append('<BUTTON onclick=jc.insertNewSection(this.parentNode);>&#8595; new section &#8595;</BUTTON>')
-      .append('<BUTTON onclick=jc.insertNewRichText(this.parentNode);>&#8595; new rich text &#8595;</BUTTON>')
-      .append('<BUTTON onclick=jc.insertNewCodeBlock(this.parentNode);>&#8595; new code &#8595;</BUTTON>')
-      .append('<BUTTON onclick=jc.paste(this.parentNode);>&#8595; paste &#8595;</BUTTON>')
   }
 
   jc.setModified = function(state) {
@@ -1117,86 +1176,6 @@
     $('.CUT').remove();
   }
 
-  jc.insertNewCodeBlock = function(beforeThatElement) {
-    // insert a new code and output DIV 
-    // -beforeThatElement is where it must be inserted (usually the topToolBar, but can be any Element)
-    jc.blockNumber++;
-    var newCode = window.document.createElement('<PRE class=CODE id='+jc.blockId('code')+' contentEditable=true>');
-    var newOutput = jc.outputElement(newCode);
-    beforeThatElement.parentNode.insertBefore(newCode,beforeThatElement);
-    beforeThatElement.parentNode.insertBefore(newOutput,beforeThatElement);
-    jc.selectElement(newCode);
-    jc.setModified(true);
-    jc.run();
-  }
-
-  jc.insertNewRichText = function(beforeThatElement) {
-    // insert a new richText DIV 
-    // -beforeThatElement is where it must be inserted (usually the topToolBox, but can be any Element)
-    jc.blockNumber++;
-    var newRichText = window.document.createElement('<DIV id='+jc.blockId('rich')+' class=RICHTEXT contentEditable=false>');
-    beforeThatElement.parentNode.insertBefore(newRichText,beforeThatElement);
-    jc.selectElement(newRichText);
-    jc.setModified(true);
-    jc.run()
-  }
-
-  jc.insertNewSection = function(beforeThatElement) {
-    //insert a new section that consist of one title and one div as futur container of embeeded elements
-    jc.blockNumber++;
-    var $parents = $(beforeThatElement).parentsUntil('BODY');
-    var currentLevel = $parents.length+1;
-    var newSection = window.document.createElement('<DIV id='+jc.blockId('sect')+' class=SECTION>');
-    var title = window.document.createElement('<H'+currentLevel+' class=SECTIONTITLE contentEditable=true>');
-    var container = window.document.createElement('<DIV class=SECTIONCONTAINER>');
-    newSection.appendChild(title);
-    newSection.appendChild(container);
-    beforeThatElement.parentNode.insertBefore(newSection,beforeThatElement);
-    jc.tableOfContent.updateSections();
-    jc.selectElement(newSection);
-    jc.setModified(true);
-    jc.run();
-  }
-
-  jc.paste = function(beforeThatElement) {
-    jc.setModified(true);
-    var $cut = $('.CUT').detach().removeClass('CUT');
-    $(beforeThatElement).before($cut);
-    jc.run();
-  }
-
-  jc.detachLocalToolBars = function() {
-    // detach local tool bars
-    jc.topToolBar$.add(jc.bottomToolBar$).add(jc.insideToolBar$).detach();
-  }
-
-  jc.moveLocalToolBars = function(element) {
-    if (element == undefined) throw new Error('moveLocalToolBar(undefined) is forbidden');
-
-    jc.detachLocalToolBars();
-    
-    if ($(element).hasClass('EMBEDDED')) {
-      return;
-    }
-
-    $(element).before(jc.topToolBar$);
-    lastElementOfBlock = jc.testElement(element) || jc.outputElement(element) || element;
-    $(lastElementOfBlock).after(jc.bottomToolBar$);
-    jc.objectToolBar$.children().detach();
-                                            
-    if ($(element).hasClass('SECTION')) {
-      var container$ = $('.SECTIONCONTAINER',element).first()
-      if (container$.children().length == 0) {
-        container$.append(jc.insideToolBar$);
-      }
-    }
-    else {
-      if ($(element).hasClass('RICHTEXT')) {
-        jc.objectToolBar$.append(jc.richTextToolBar$);
-      }
-    }
-  }
-
 
   jc.$editables = function(element) {
     // returns a JQuery of the tags that are editable in element
@@ -1225,13 +1204,11 @@
     if (element == undefined){
       $('#codeId').text('no selection');
       jc.selectionToolBar$.hide();
-      jc.detachLocalToolBars();
       return;
     }
     jc.menu$.show();
     jc.selectionToolBar$.show(500);
     $('#codeId').html(element.id+'<SPAN style="color:red;cursor:pointer;" onclick="jc.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
-    jc.moveLocalToolBars(element);
     $(element).addClass('SELECTED');
     jc.$editables(element).attr('contentEditable',true);
     element.focus();
@@ -1239,42 +1216,34 @@
 
   // EDI eventHandlers ///////////////////////////////////////////////////////////////
 
-  jc.codeClick = function(event) {
-    var code = event.currentTarget; // not target, since target can be an child element, not the div itself
-    if ($(code).hasClass('EMBEDDED')) {
-      return true; //EMBEDDED code is ruled by its container (richText / section...) so let the event bubble
+  jc.bodyKeyDown = function(event) {
+    // special keys at EDI level
+/*
+    switch (event.keyCode) {
+      case 120: 
+        jc.templateChoice$.val('code');
+        break;
+      case 121:
+        jc.templateChoice$.val('richText');
+        break;
+      case 122:
+        jc.templateChoice$.val('section');
+        break;
+      case 123:
+        jc.templateChoice$.val('paste');
+        break;
     }
-    jc.selectElement(code);
-    return false;  // prevent bubbling
+*/
+    return true;
   }
 
-  jc.outClick = function(event) {
-    if (event.target.tagName == 'A') {/*a link, just let the system do*/ return true}
+
+  jc.elementClick = function(event) {
     var element = event.currentTarget; // not target, since target can be an child element, not the div itself
-    var code = window.document.getElementById(element.id.replace(/out/,"code"))
-    if ($(code).hasClass('EMBEDDED')) {
+    if ($(element).hasClass('EMBEDDED')) {
       return true; //EMBEDDED code is ruled by its container (richText / section...) so let the event bubble
     }
-    if (jc.selectedElement === code) {
-      jc.run(code);
-    }
-    else {
-      jc.selectElement(code);
-    }
-
-    return false;  // prevent bubbling
-  }
-
-  jc.richTextClick = function(event) {
-    var rich = event.currentTarget; // the user clicked on an internal part (title or container).parentNode
-    jc.selectElement(rich);
-    return false;  // prevent bubbling
-  }
-
-  jc.sectionClick = function(event) {
-    var section = event.currentTarget; // the user clicked on an internal part (title or container).parentNode
-    if (!$(section).hasClass('SECTION')) window.alert("ouups: on click sur un element interne d'une section, mais currentTarget n'est pas une SECTION");
-    jc.selectElement(section);
+    jc.selectElement(element);
     return false;  // prevent bubbling
   }
 
@@ -1360,7 +1329,7 @@
   jc.displayResult = function(result,output) {
     $(output.outputElement)
     .empty().removeClass('ERROR').addClass('SUCCESS')
-    .append(((result !== undefined) && (typeof result.node$ === 'function') && result.node$() )
+    .append(((result !== undefined) && (result !== null) && (typeof result.node$ === 'function') && result.node$() )
             || jc.format(result).toString()
            )
     .prepend(output.toString())
@@ -1453,6 +1422,12 @@
     }
   }
 
+  jc.updateContainers = function() {
+    // make sure that containers are never empty (= have a fake element)
+    // and that no fake element remains if there is another element inside the container
+    $('.ELEMENT.EMPTY:not(:only-child)').remove();
+    $('.CONTAINER:empty').append('<DIV class="ELEMENT EMPTY">empty container: click here to add an element</DIV>');
+  }
  
   jc.execAll = function() {
     $('.TRACE').remove();
@@ -1462,6 +1437,7 @@
     jc.IElement.idNumber = 0;
     jc.simulation = new Simulation('_simulation');
     jc.tableOfContent.updateSections();
+    jc.updateContainers();
     jc.$editables(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
     $('.CODE').each(function(i,e) {jc.execCode(e);});
     jc.finalize();
@@ -1475,6 +1451,7 @@
     jc.vars = {}; // run from fresh
     jc.IElement.idNumber = 0;
     jc.tableOfContent.updateSections();
+    jc.updateContainers();
     jc.$editables(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
     $('*').removeClass('SUCCESS').removeClass('ERROR')
     var $codes = $('.CODE');
@@ -1564,6 +1541,10 @@
     $('.OUTPUT').add('.CODE').add('.RICHTEXT').removeAttr('onclick');  // no longer in the HTML but bound dynamically
     $('.RICHTEXT .CODE').add('.SECTIONTITLE .CODE').addClass('EMBEDDED');        // reserved for code inside another element
     $('#localToolBar').add('.BOTTOMTOOLBAR').add('.TOOLBAR').remove();           // no longer saved with the document and must be regenerated at init
+    $('#topToolBar').remove();     // no longer in use since v0160
+    $('#insideToolBar').remove();  // no longer in use since v0160
+    $('#bottomToolBar').remove();  // no longer in use since v0160
+    $('.CODE').add('.RICHTEXT').add('SECTION').addClass('ELEMENT'); // since v160 all ELEMENT are selectable
 
     // since v0.0110 the menu is fixed in a #menu DIV and all sheet is contained in a #jcContent DIV
     jc.content$ = $('#jcContent').removeAttr('style');
@@ -1571,6 +1552,7 @@
     if (jc.content$.length == 0) {                                   
       b$.wrapInner('<DIV id=jcContent/>');
     }
+
     // since v0.0145 the <body> attributes hideCodes,hideCut,hideTest,hideTrace are deprecated
     if (b$.attr('hideCode')) b$.attr('showCode' ,b$.attr('hideCode')!=false);
     if (b$.attr('hideCut') ) b$.attr('showCut'  ,b$.attr('hideCut')!=false);
@@ -1590,15 +1572,14 @@
     if (window.document.compatMode != 'CSS1Compat') {
       window.alert('your document must have <!DOCTYPE html> as first line in order to run properly: please save and re-run it');
     }
-
     // prepare the sheet ///////////////////////////////////////////
     $('.SELECTED').removeClass('SELECTED');
-    $('.CODE').live("click",jc.codeClick).live("keypress",jc.editorKeyPress);
-    $('.RICHTEXT').live("click",jc.richTextClick).live("keypress",jc.richTextKeyPress);
+    $('.ELEMENT').live("click",jc.elementClick);
+    $('.CODE').live("keypress",jc.editorKeyPress);
+    $('.RICHTEXT').live("keypress",jc.richTextKeyPress);
     $('.SECTIONTITLE').live("keypress",jc.sectionTitleKeyPress);
     $('.EDITOR').live("change",jc.Editor.eventHandler).live("click",jc.Editor.eventHandler);
-    $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR').live("click",jc.outClick);
-    $('.SECTION').live("click",jc.sectionClick);
+    $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR');
     $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
     $('.SCENE').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
     $('.INTERACTIVE').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
@@ -1609,6 +1590,7 @@
       jc.content$.append(jc.bottomToolBar$)
     }
     $(window).bind('beforeunload',jc.beforeUnload);
+    $('body').keydown(jc.bodyKeyDown);
     jc.autoRun = $('body').attr('autoRun')!==false;
     if (jc.autoRun) jc.execAll();
   });  
