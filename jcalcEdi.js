@@ -885,53 +885,50 @@
     jc.run();
   }
 
-  jc.templates = {
-    code: {
-      name    : 'code',
-      url     : 'code',
-      insertBefore : jc.Template.prototype.insertBefore,
-      insertAfter  : jc.Template.prototype.insertAfter,
-      node$ : function() {
-        jc.blockNumber++;
-        return $('<PRE class="ELEMENT CODE" id='+jc.blockId('code')+'>');
-      }
-    },
+  jc.template = function(newTemplate) {
+    $.extend(true,newTemplate,jc.Template.prototype);
+    jc.templates[newTemplate.url] = newTemplate;
+    if (newTemplate.name == undefined) newTemplate.name = newTeplate.url.match(/^.*\/([\w\._$]+).htm[l]?$/i)[1];
+    return newTemplate;
+  }
 
-    richText: {
-      name : 'richText',
-      url  : 'richText',
-      insertBefore : jc.Template.prototype.insertBefore,
-      insertAfter  : jc.Template.prototype.insertAfter,
-      node$ : function() {
-        jc.blockNumber++;
-        return $('<DIV  class="ELEMENT RICHTEXT" id='+jc.blockId('rich')+'>');
-      }
-    },
-
-    section: {
-      name : 'section',
-      url  : 'section',
-      insertBefore : jc.Template.prototype.insertBefore,
-      insertAfter  : jc.Template.prototype.insertAfter,
-      node$ : function() {
-        jc.blockNumber++;
-        var n$ = $('<DIV  class="ELEMENT SECTION" id='+jc.blockId('sect')+'></DIV>')
-                 .append('<H1 class=SECTIONTITLE></H1>')
-                 .append('<DIV class=CONTAINER></DIV>');
-        return n$;
-      }
-    },
-
-    paste: {
-      name : 'paste',
-      url  : 'paste',
-      insertBefore : jc.Template.prototype.insertBefore,
-      insertAfter  : jc.Template.prototype.insertAfter,
-      node$ : function() {
-        return $('.CUT').detach().removeClass('CUT');
-      }
+  jc.template({
+    name    : 'code',
+    url     : 'code',
+    node$ : function() {
+      jc.blockNumber++;
+      return $('<PRE class="ELEMENT CODE" id='+jc.blockId('code')+'>');
     }
-  }   
+  });
+
+  jc.template({
+    name : 'richText',
+    url  : 'richText',
+    node$ : function() {
+      jc.blockNumber++;
+      return $('<DIV  class="ELEMENT RICHTEXT" id='+jc.blockId('rich')+'>');
+    }
+  });
+
+  jc.template({
+    name : 'section',
+    url  : 'section',
+    node$ : function() {
+      jc.blockNumber++;
+      var n$ = $('<DIV  class="ELEMENT SECTION" id='+jc.blockId('sect')+'></DIV>')
+               .append('<H1 class=SECTIONTITLE></H1>')
+               .append('<DIV class=CONTAINER></DIV>');
+      return n$;
+    }
+  });
+
+  jc.template({
+    name : 'paste',
+    url  : 'paste',
+    node$ : function() {
+      return $('.CUT').detach().removeClass('CUT');
+    }
+  });
 
   //////////////////////////////////////////////////////////////////////////////////////
   // EDI ///////////////////////////////////////////////////////////////////////////////
@@ -1573,6 +1570,10 @@
       window.alert('your document must have <!DOCTYPE html> as first line in order to run properly: please save and re-run it');
     }
     // prepare the sheet ///////////////////////////////////////////
+    if ($('.ELEMENT').length === 0) {
+a($('.ELEMENT'))
+      $('body').append('<DIV class="ELEMENT EMPTY">empty sheet, click here to add Element</DIV>');
+    }
     $('.SELECTED').removeClass('SELECTED');
     $('.ELEMENT').live("click",jc.elementClick);
     $('.CODE').live("keypress",jc.editorKeyPress);
