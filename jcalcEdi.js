@@ -885,12 +885,22 @@
     jc.run();
   }
 
+  jc.Template.prototype.node$ = function() {
+    if (this.html == undefined) throw new Error('in order to define a template at least define .html or node$()');
+    return $(this.html);
+  }
+
+  jc.updateTemplateChoice = function () {}; // dummy so far, will be trully defined later on when creating menu;
+
   jc.template = function(newTemplate) {
-    $.extend(true,newTemplate,jc.Template.prototype);
+    newTemplate = $.extend(true,{},jc.Template.prototype,newTemplate);
+    if (newTemplate.url == undefined) newTemplate.url = newTemplate.name;
     jc.templates[newTemplate.url] = newTemplate;
-    if (newTemplate.name == undefined) newTemplate.name = newTeplate.url.match(/^.*\/([\w\._$]+).htm[l]?$/i)[1];
+    if (newTemplate.name == undefined) newTemplate.name = newTemplate.url.match(/^.*\/([\w\._$]+).htm[l]?$/i)[1];
+    jc.updateTemplateChoice();
     return newTemplate;
   }
+
 
   jc.template({
     name    : 'code',
@@ -1022,7 +1032,14 @@
     jc.selectElement(undefined);
     window.print();
   }
-      
+     
+  jc.updateTemplateChoice = function() {
+    jc.templateChoice$.empty();
+    for (var t in jc.templates) {
+      jc.templateChoice$.append('<OPTION value="'+jc.templates[t].url+'">'+jc.templates[t].name+'</OPTION>');
+    }
+  } 
+
   jc.initToolBars = function() {
     $('#menu').remove();
     var b$ = $('BODY');
@@ -1034,9 +1051,7 @@
     jc.helpToolBar$ = $('<DIV>search</DIV>').append('<INPUT>').append('<DIV>');
 
     jc.templateChoice$ = $('<SELECT>');
-    for (var t in jc.templates) {
-      jc.templateChoice$.append('<OPTION value="'+jc.templates[t].url+'">'+jc.templates[t].name+'</OPTION>');
-    }
+    jc.updateTemplateChoice();
 
     jc.selectionToolBar$ = $('<DIV>')
       .append('<SPAN id=codeId>no selection</SPAN>')
@@ -1207,7 +1222,9 @@
     jc.selectionToolBar$.show(500);
     $('#codeId').html(element.id+'<SPAN style="color:red;cursor:pointer;" onclick="jc.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
     $(element).addClass('SELECTED');
-    jc.$editables(element).attr('contentEditable',true);
+    if (!$(element).hasClass('EMPTY')) {
+      jc.$editables(element).attr('contentEditable',true);
+    }
     element.focus();
   }
 
@@ -1423,7 +1440,7 @@
     // make sure that containers are never empty (= have a fake element)
     // and that no fake element remains if there is another element inside the container
     $('.ELEMENT.EMPTY:not(:only-child)').remove();
-    $('.CONTAINER:empty').append('<DIV class="ELEMENT EMPTY">empty container: click here to add an element</DIV>');
+    $('.CONTAINER:empty').append('<DIV class="ELEMENT EMPTY" contentEditable=false>empty container: click here to add an element</DIV>');
   }
  
   jc.execAll = function() {
@@ -1544,13 +1561,15 @@
     $('.CODE').add('.RICHTEXT').add('SECTION').addClass('ELEMENT'); // since v160 all ELEMENT are selectable
 
     // since v0.0110 the menu is fixed in a #menu DIV and all sheet is contained in a #jcContent DIV
-    jc.content$ = $('#jcContent').removeAttr('style');
+    jc.content$ = $('#jcContent').removeAttr('style').addClass('CONTAINER');
     var b$ = $('BODY');
     if (jc.content$.length == 0) {                                   
-      b$.wrapInner('<DIV id=jcContent/>');
+      b$.wrapInner('<DIV id=jcContent class="CONTAINER"/>');
     }
 
+
     // since v0.0145 the <body> attributes hideCodes,hideCut,hideTest,hideTrace are deprecated
+    var b$ = $('BODY');
     if (b$.attr('hideCode')) b$.attr('showCode' ,b$.attr('hideCode')!=false);
     if (b$.attr('hideCut') ) b$.attr('showCut'  ,b$.attr('hideCut')!=false);
     if (b$.attr('hideTest')) b$.attr('showTest' ,b$.attr('hideTest')!=false);
@@ -1570,10 +1589,6 @@
       window.alert('your document must have <!DOCTYPE html> as first line in order to run properly: please save and re-run it');
     }
     // prepare the sheet ///////////////////////////////////////////
-    if ($('.ELEMENT').length === 0) {
-a($('.ELEMENT'))
-      $('body').append('<DIV class="ELEMENT EMPTY">empty sheet, click here to add Element</DIV>');
-    }
     $('.SELECTED').removeClass('SELECTED');
     $('.ELEMENT').live("click",jc.elementClick);
     $('.CODE').live("keypress",jc.editorKeyPress);
@@ -1587,9 +1602,6 @@ a($('.ELEMENT'))
     $('.LINK').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
     jc.findblockNumber();
     jc.initToolBars();
-    if ($('.CODE').add('.SECTION').add('.RICHTEXT').length == 0) {  // if really empty sheet
-      jc.content$.append(jc.bottomToolBar$)
-    }
     $(window).bind('beforeunload',jc.beforeUnload);
     $('body').keydown(jc.bodyKeyDown);
     jc.autoRun = $('body').attr('autoRun')!==false;
