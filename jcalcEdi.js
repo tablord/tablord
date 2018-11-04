@@ -826,7 +826,7 @@
         currentNumbers.length = level+1;
         var number = currentNumbers.join('.');
         var t = title.innerHTML.replace(/^[\d\.]*(\s|\&nbsp;)*/,'');
-        title.outerHTML = '<H'+(level+1)+' class=SECTIONTITLE contentEditable='+(e===jc.selectedElement)+'>'+number+' '+t+'</H'+(level+1)+'>';
+        title.outerHTML = '<H'+(level+1)+' class="SECTIONTITLE EDITABLE" contentEditable='+(e===jc.selectedElement)+'>'+number+' '+t+'</H'+(level+1)+'>';
         jc.tableOfContent.toc.push({number:number,level:level,title:jc.textContent(t),sectionId:e.id});
       });
     },
@@ -861,8 +861,9 @@
   }
 
   // Template //////////////////////////////////////////////////////////////////////////
-
+ 
   jc.Template = function(){};
+  jc.Template.urlBase = 'http://tablord.com/templates/';
 
   jc.Template.prototype.insertBefore = function(element) {
     var newElement$ = this.node$();
@@ -889,16 +890,52 @@
     if (this.html == undefined) throw new Error('in order to define a template at least define .html or node$()');
     return $(this.html);
   }
+  
 
   jc.updateTemplateChoice = function () {}; // dummy so far, will be trully defined later on when creating menu;
 
   jc.template = function(newTemplate) {
+    // create a new template and register it
+    // it will inherit from jc.Template 
+    // newTemplate is a simple object that must at least define
+    // .name: a name like an id
+    // or
+    // .url: where is located the description of the template
+    // and must define one of the 3
+    // .fields: {field1:type,field2:type....}
+    //          field1 is the name of the field
+    //          type is one of the string 'number','string','function'
+    //    if fields is defined, standard html code will automatically be generated
+    //    so do not define .fields if you want to define .html
+    // .html: a string representing the html code of the template
+    // .node$: a function() returning a DOM Element; normally not defined and inherited form jc.Template
+    if (newTemplate.url == undefined) newTemplate.url = jc.Template.urlBase+newTemplate.name+'.html';
+    if (newTemplate.fields) {
+      var h = '<DIV class="ELEMENT" itemscope itemtype="'+newTemplate.url+'"><TABLE width="100%">';
+      for (f in newTemplate.fields) {
+        h += '<TR><TH>'+f+'</TH><TD class=LEFT width="90%"><DIV class="FIELD EDITABLE" itemprop="'+f+'"></DIV></TD></TR>';
+      }
+      newTemplate.html = h + '</TABLE></DIV>';
+    }
     newTemplate = $.extend(true,{},jc.Template.prototype,newTemplate);
-    if (newTemplate.url == undefined) newTemplate.url = newTemplate.name;
     jc.templates[newTemplate.url] = newTemplate;
     if (newTemplate.name == undefined) newTemplate.name = newTemplate.url.match(/^.*\/([\w\._$]+).htm[l]?$/i)[1];
     jc.updateTemplateChoice();
     return newTemplate;
+  }
+
+  jc.template.data = function(url) {
+    // get all data from all templates in the document having the itemtype=url
+    var data = [];
+    var templates$ = $('[itemtype="'+url+'"]');
+    templates$.each(function(i,e){
+      var item = {};
+      $('[itemprop]',e).each(function(i,p){
+        item[p.itemprop] = $(p).text();
+      });
+      data.push(item);
+    });
+    return data;
   }
 
 
@@ -907,7 +944,7 @@
     url     : 'code',
     node$ : function() {
       jc.blockNumber++;
-      return $('<PRE class="ELEMENT CODE" id='+jc.blockId('code')+'>');
+      return $('<PRE class="ELEMENT CODE EDITABLE" id='+jc.blockId('code')+'>');
     }
   });
 
@@ -916,7 +953,7 @@
     url  : 'richText',
     node$ : function() {
       jc.blockNumber++;
-      return $('<DIV  class="ELEMENT RICHTEXT" id='+jc.blockId('rich')+'>');
+      return $('<DIV  class="ELEMENT RICHTEXT EDITABLE" id='+jc.blockId('rich')+'>');
     }
   });
 
@@ -926,7 +963,7 @@
     node$ : function() {
       jc.blockNumber++;
       var n$ = $('<DIV  class="ELEMENT SECTION" id='+jc.blockId('sect')+'></DIV>')
-               .append('<H1 class=SECTIONTITLE></H1>')
+               .append('<H1 class="SECTIONTITLE EDITABLE"></H1>')
                .append('<DIV class=CONTAINER></DIV>');
       return n$;
     }
@@ -1034,10 +1071,13 @@
   }
      
   jc.updateTemplateChoice = function() {
+    var currentValue = jc.templateChoice$.val();
     jc.templateChoice$.empty();
     for (var t in jc.templates) {
-      jc.templateChoice$.append('<OPTION value="'+jc.templates[t].url+'">'+jc.templates[t].name+'</OPTION>');
+      jc.templateChoice$.append('<OPTION value="'+jc.templates[t].url+'">'+
+                                 jc.templates[t].name+'</OPTION>');
     }
+    jc.templateChoice$.val(currentValue)
   } 
 
   jc.initToolBars = function() {
@@ -1189,10 +1229,11 @@
   }
 
 
-  jc.$editables = function(element) {
-    // returns a JQuery of the tags that are editable in element
-    if ($(element).hasClass('SECTION')) return $(element.firstChild);
-    return $(element);
+  jc.editables$ = function(element) {
+    // returns a JQuery of the tags that are editable in element (JQuery can be .length==0 if nothing is editable)
+    var e$ = $(element);
+    if (e$.hasClass('EDITABLE')) return e$;
+    return e$.find('.EDITABLE');
   }
 
 
@@ -1206,7 +1247,7 @@
       
       // remove the old selection
       $(e).removeClass('SELECTED');
-      jc.$editables(e)
+      jc.editables$(e)
         .attr('contentEditable',false)
         .each(function(i,e){jc.reformatRichText(e)});
     }
@@ -1222,9 +1263,7 @@
     jc.selectionToolBar$.show(500);
     $('#codeId').html(element.id+'<SPAN style="color:red;cursor:pointer;" onclick="jc.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
     $(element).addClass('SELECTED');
-    if (!$(element).hasClass('EMPTY')) {
-      jc.$editables(element).attr('contentEditable',true);
-    }
+    jc.editables$(element).attr('contentEditable',true);
     element.focus();
   }
 
@@ -1280,7 +1319,7 @@
     }
   }
 
-  jc.sectionTitleKeyPress = function(event) {
+  jc.editableKeyPress = function(event) {
     jc.setModified(true);
   }
 
@@ -1452,7 +1491,7 @@
     jc.simulation = new Simulation('_simulation');
     jc.tableOfContent.updateSections();
     jc.updateContainers();
-    jc.$editables(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
+    jc.editables$(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
     $('.CODE').each(function(i,e) {jc.execCode(e);});
     jc.finalize();
     jc.setUpToDate(true);
@@ -1466,7 +1505,7 @@
     jc.IElement.idNumber = 0;
     jc.tableOfContent.updateSections();
     jc.updateContainers();
-    jc.$editables(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
+    jc.editables$(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
     $('*').removeClass('SUCCESS').removeClass('ERROR')
     var $codes = $('.CODE');
     if ($(jc.selectedElement).hasClass('CODE')){
@@ -1558,15 +1597,14 @@
     $('#topToolBar').remove();     // no longer in use since v0160
     $('#insideToolBar').remove();  // no longer in use since v0160
     $('#bottomToolBar').remove();  // no longer in use since v0160
-    $('.CODE').add('.RICHTEXT').add('SECTION').addClass('ELEMENT'); // since v160 all ELEMENT are selectable
-
+    $('.CODE').add('.RICHTEXT').add('.SECTION').addClass('ELEMENT'); // since v160 all ELEMENT are selectable
+    $('.CODE:not(.EMBEDDED)').add('.RICHTEXT').add('.SECTIONTITLE').addClass('EDITABLE'); // since v160 EDITABLE tags will be set to contentEditable=true /false when the itself or its parent is selected
     // since v0.0110 the menu is fixed in a #menu DIV and all sheet is contained in a #jcContent DIV
     jc.content$ = $('#jcContent').removeAttr('style').addClass('CONTAINER');
     var b$ = $('BODY');
     if (jc.content$.length == 0) {                                   
       b$.wrapInner('<DIV id=jcContent class="CONTAINER"/>');
     }
-
 
     // since v0.0145 the <body> attributes hideCodes,hideCut,hideTest,hideTrace are deprecated
     var b$ = $('BODY');
@@ -1593,7 +1631,7 @@
     $('.ELEMENT').live("click",jc.elementClick);
     $('.CODE').live("keypress",jc.editorKeyPress);
     $('.RICHTEXT').live("keypress",jc.richTextKeyPress);
-    $('.SECTIONTITLE').live("keypress",jc.sectionTitleKeyPress);
+    $('.EDITABLE').live("keypress",jc.editableKeyPress);
     $('.EDITOR').live("change",jc.Editor.eventHandler).live("click",jc.Editor.eventHandler);
     $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR');
     $('.TEST').removeClass('SUCCESS').removeClass('ERROR');

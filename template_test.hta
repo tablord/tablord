@@ -20,22 +20,72 @@
 
 <SCRIPT src="finance.js"></SCRIPT>
 </HEAD>
-<BODY sizset="0" sizcache="1"  designMode="on">
+<BODY sizset="0" sizcache="1"  showTrace="true" showTest="true" showCut="true" showCode="true" designMode="on">
 <DIV id=menu class=TOOLBAR>
-<DIV><INPUT onclick=jc.showCode(event) type=checkbox>codes</INPUT><INPUT onclick=jc.showCut(event) type=checkbox>cuts</INPUT><INPUT onclick=jc.showTest(event) type=checkbox>tests</INPUT><INPUT onclick=jc.showTrace(event) type=checkbox>traces</INPUT><INPUT onclick=jc.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
+<DIV><INPUT onclick=jc.showCode(event) CHECKED type=checkbox>codes</INPUT><INPUT onclick=jc.showCut(event) CHECKED type=checkbox>cuts</INPUT><INPUT onclick=jc.showTest(event) CHECKED type=checkbox>tests</INPUT><INPUT onclick=jc.showTrace(event) CHECKED type=checkbox>traces</INPUT><INPUT onclick=jc.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
 <DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
-<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick=jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement) style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><SELECT ><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION><OPTION value=email>email</OPTION></SELECT><BUTTON onclick=jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement) style="HEIGHT: 23px; WIDTH: 43px" >&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
+<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick=jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement) style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION><OPTION value=http://tablord.com/templates/email.html>email</OPTION><OPTION value=http://tablord.com/templates/person.html>person</OPTION><OPTION value=http://tablord.com/templates/product.html>product</OPTION></SELECT><BUTTON onclick=jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement) style="HEIGHT: 23px; WIDTH: 43px" >&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
 <DIV id=objectToolBar></DIV></DIV></DIV>
 <DIV id=jcContent class=CONTAINER sizset="0" sizcache="1">
 <DIV id=sect0003 class="ELEMENT SECTION" sizset="0" sizcache="1">
-<H1 class=SECTIONTITLE contentEditable=false>1 Test Templates</H1>
-<DIV class=CONTAINER sizset="0" sizcache="1"><PRE id=code0004 class="ELEMENT CODE" contentEditable=false><P>jc.template({name:'email',html:'&lt;DIV class="INTERACTIVE ELEMENT"&gt;&lt;SELECT itemprop="purpose" style="width:10%"&gt;&lt;OPTION&gt;office&lt;/OPTION&gt;&lt;OPTION&gt;home&lt;OPTION&gt;&lt;/SELECT&gt;&lt;SPAN itemprop="email" style="width:80%;background-color:cyan;" contentEditable=true&gt;&lt;/SPAN&gt;&lt;/DIV&gt;'});</P><P>&nbsp;</P></PRE>
-<DIV id=out0004 class="OUTPUT SUCCESS">
-<DIV class="INTERACTIVE ELEMENT"><SELECT style="WIDTH: 10%" itemprop="purpose"><OPTION selected>office</OPTION><OPTION>home<OPTION></OPTION></SELECT><SPAN contentEditable=true style="WIDTH: 80%; BACKGROUND-COLOR: cyan" itemprop="email"></SPAN></DIV></DIV></DIV></DIV><PRE id=code0002 class="ELEMENT CODE" contentEditable=false></PRE>
-<DIV id=out0002 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV>
-<DIV class=ELEMENT contentEditable=false><SELECT style="WIDTH: 10%"  itemprop="purpose"><OPTION>office</OPTION><OPTION selected>home<OPTION></OPTION></SELECT><SPAN class=string contentEditable=true style="WIDTH: 80%; BACKGROUND-COLOR: cyan" itemprop="email">asdfasdfa</SPAN></DIV>
-<DIV id=rich0007 class="ELEMENT RICHTEXT" contentEditable=false>
-<P>le problème est que selectElement change sans autre contentEditable.&nbsp; il faut signaler que l'ELEMENT n'est pas editable en temps que tel.&nbsp; ajouter une class EDITABLE? Si on a déja INTERACTIVE ELEMENT, on peut ne pas changer contentEditable</P>
-<P>&nbsp;</P>
-<P>repenser au passage jc.$editable, car trop spécifique et figé</P></DIV><PRE id=code0006 class="ELEMENT CODE" contentEditable=false></PRE>
-<DIV id=out0006 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV></DIV></BODY></HTML>
+<H1 class="SECTIONTITLE EDITABLE" contentEditable=false>1 Test Templates</H1>
+<DIV class=CONTAINER sizset="0" sizcache="1"><PRE id=code0004 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.template({name:'email',html:'&lt;DIV class="ELEMENT"&gt;&lt;SELECT itemprop="purpose" style="width:10%"&gt;&lt;OPTION&gt;office&lt;/OPTION&gt;&lt;OPTION&gt;home&lt;OPTION&gt;&lt;/SELECT&gt;&lt;SPAN class=EDITABLE itemprop="email" style="width:80%;"&gt;&lt;/SPAN&gt;&lt;/DIV&gt;'});</P><P>jc.template({name:'person',html:'&lt;DIV class="ELEMENT" itemscope itemtype="http://tablord.com/templates/person.html"&gt;'+</P><P>                                '&lt;SPAN style="border-bottom:cyan solid 1px; width:80%;"&gt;firstName    &lt;/SPAN&gt;&lt;SPAN class=EDITABLE itemprop="firstName" class=EDITABLE style="width:80%;"&gt;&lt;/SPAN&gt;&lt;BR&gt;'+</P><P>                                '&lt;SPAN style="width:19%;"&gt;lastName&lt;/SPAN&gt;&lt;SPAN class=EDITABLE itemprop="lastName" class=EDITABLE style="width:80%;"&gt;&lt;/SPAN&gt;&lt;BR&gt;'+</P><P>                                'emails&lt;DIV class=CONTAINER&gt;&lt;/DIV&gt;'+</P><P>                                '&lt;/DIV&gt;'});</P><P>void jc.template({name:'product',fields:{productId:{},productName:{}}});</P></PRE>
+<DIV id=out0004 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV></DIV></DIV>
+<DIV class=ELEMENT><SELECT style="WIDTH: 10%" itemprop="purpose"><OPTION selected>office</OPTION><OPTION>home<OPTION></OPTION></SELECT><SPAN class=EDITABLE contentEditable=false style="WIDTH: 80%; BORDER-BOTTOM: grey 1px solid" itemprop="email"><A href="mailto:marc9nicole@gmail.com">marc9nicole@gmail.com</A></SPAN></DIV>
+<DIV class=ELEMENT><SELECT style="WIDTH: 10%" itemprop="purpose"><OPTION selected>office</OPTION><OPTION>home<OPTION></OPTION></SELECT><SPAN class=EDITABLE contentEditable=false style="WIDTH: 80%" itemprop="email"> 
+<P><A href="mailto:marc.nicole@tablord.com">marc.nicole@tablord.com</A></P></SPAN></DIV>
+<DIV class=ELEMENT itemscope itemtype="http://tablord.com/templates/product.html">
+<TABLE width="100%">
+<TBODY>
+<TR>
+<TH>productId</TH>
+<TD class=LEFT width="90%">
+<DIV class="FIELD EDITABLE" contentEditable=false itemprop="productId">123456</DIV></TD></TR>
+<TR>
+<TH>productName</TH>
+<TD class=LEFT width="90%">
+<DIV class="FIELD EDITABLE" contentEditable=false itemprop="productName">best product</DIV></TD></TR></TBODY></TABLE></DIV>
+<DIV class=ELEMENT itemscope itemtype="http://tablord.com/templates/product.html">
+<TABLE width="100%">
+<TBODY>
+<TR>
+<TH>productId</TH>
+<TD class=LEFT width="90%">
+<DIV class="FIELD EDITABLE" contentEditable=false itemprop="productId">123457</DIV></TD></TR>
+<TR>
+<TH>productName</TH>
+<TD class=LEFT width="90%">
+<DIV class="FIELD EDITABLE" contentEditable=false itemprop="productName">greatest product</DIV></TD></TR></TBODY></TABLE></DIV>
+<DIV class=ELEMENT itemscope itemtype="http://tablord.com/templates/product.html">
+<TABLE width="100%">
+<TBODY>
+<TR>
+<TH>productId</TH>
+<TD class=LEFT width="90%">
+<DIV class="FIELD EDITABLE" contentEditable=false itemprop="productId">123458</DIV></TD></TR>
+<TR>
+<TH>productName</TH>
+<TD class=LEFT width="90%">
+<DIV class="FIELD EDITABLE" contentEditable=false itemprop="productName">awsome product</DIV></TD></TR></TBODY></TABLE></DIV><PRE id=code0006 class="ELEMENT CODE EDITABLE" contentEditable=false>table().addRows(jc.template.data('http://tablord.com/templates/product.html'))</PRE>
+<DIV id=out0006 class="OUTPUT SUCCESS">
+<TABLE>
+<THEAD>
+<TR>
+<TH>productId</TH>
+<TH>productName</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>123456</TD>
+<TD>best&nbsp;product</TD></TR>
+<TR>
+<TD>123457</TD>
+<TD>greatest&nbsp;product</TD></TR>
+<TR>
+<TD>123458</TD>
+<TD>awsome&nbsp;product</TD></TR></TBODY></TABLE></DIV><PRE id=code0008 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.html('&lt;dl&gt;&lt;dt&gt;def hgkhjhjhff&nbsp; gf&lt;dd&gt;data&lt;dt&gt;def2&lt;dd class="EDITABLE FIELD"&gt;data2&lt;/dl&gt;')</PRE>
+<DIV id=out0008 class="OUTPUT SUCCESS">
+<DL>
+<DT>def hgkhjhjhff gf
+<DD>data
+<DT>def2
+<DD class="EDITABLE FIELD">data2</DD></DL></DIV></DIV></BODY></HTML>

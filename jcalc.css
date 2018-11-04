@@ -10,16 +10,16 @@
 
 body {
   font-family: Arial;
-  font-size: 10pt;
+/*  font-size: 10pt;*/
   color: black;
 }
 tbody {
   font-family: Arial;
-  font-size: 8pt;
+  font-size: 1em; 
 }
 thead {
   font-family: Arial;
-  font-size: 10pt;
+  font-size: 1em;
 }
 h1 {
   font-size: 18pt;
@@ -62,7 +62,7 @@ ol,ul,li {
 }
 
 table {
-  border: 0px solid black;
+  border: none;
 }
 
 th {
@@ -96,26 +96,35 @@ p {
 pre {
   font-family: courier;
   font-size: 14px;      
-  background-color: #f2f9a8;
   margin: 0px;
   padding: 0px;
 }
 
-.SELECTED {
-  border: 3px solid #909090;
+.ELEMENT {
+  padding: 3px;
+}
+.ELEMENT.EMPTY {
+  color: grey;
+}
+.ELEMENT.SELECTED {
+  padding:0px;
+  border: 3px solid grey;
 }
 
-.SELECTED * {
-  border: solid blue 0px;
+.FIELD.EDITABLE {
+  border-bottom: solid grey 1px;
 }
+
 
 .COLLAPSED {
   height: 100px;
   overflow: scroll;
 }
+
 .HIDDEN {
   display: none;
 }
+
 .HIDDEN.SELECTED {
   display:block;
 }
@@ -138,14 +147,14 @@ pre {
   font-family: courier;
   font-size: 14px;      
   background-color: #f2f9a8;
+  border: none;
   margin: 0px;
-  padding:0px;
 }
-
 
 .AUTOEDIT {
   color: red;
 }
+
 
 .EMBEDDED {
   background-color: #ffb848;
@@ -199,6 +208,11 @@ pre {
   color: black;
 }
 
+.RICHTEXT {
+  border:none;
+}
+
+
 .DIFFSAME,
 .USERSUCCESS,
 .SUCCESS {
@@ -239,6 +253,7 @@ pre {
 .INSPECT {
   padding: 2px;
   margin: 0px;
+  font-size: 11px;
 }
 
 .INSPECTHTML {
@@ -250,9 +265,6 @@ pre {
   font-size: 14px;      
 }
 
-.RICHTEXT {
-  color: black;
-}
 
 .SMSTATE,
 .SMTRANSITION {
@@ -271,16 +283,15 @@ pre {
 
 .SECTION {
   padding-left: 3px;
-  marging-bottom: 5px;
+}
+
+.SECTIONTITLE {
+  border:none;
 }
 
 .CONTAINER {
   padding-left: 25px;
   border-left: grey solid 1px;
-}
-
-.ELEMENT.EMPTY {
-  color: grey;
 }
 
 .INVALIDLINK {
@@ -346,6 +357,7 @@ pre {
   right:0;
   background-color: #909090;
   z-index:100;
+  font-size:12px;
 }  
 
 button {
