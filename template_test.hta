@@ -23,8 +23,8 @@
 <BODY sizset="0" sizcache="1"  showTrace="true" showTest="true" showCut="true" showCode="true" designMode="on">
 <DIV id=menu class=TOOLBAR>
 <DIV><INPUT onclick=jc.showCode(event) CHECKED type=checkbox>codes</INPUT><INPUT onclick=jc.showCut(event) CHECKED type=checkbox>cuts</INPUT><INPUT onclick=jc.showTest(event) CHECKED type=checkbox>tests</INPUT><INPUT onclick=jc.showTrace(event) CHECKED type=checkbox>traces</INPUT><INPUT onclick=jc.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
-<DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
-<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick=jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement) style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION><OPTION value=http://tablord.com/templates/email.html>email</OPTION><OPTION value=http://tablord.com/templates/person.html>person</OPTION><OPTION value=http://tablord.com/templates/product.html>product</OPTION></SELECT><BUTTON onclick=jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement) style="HEIGHT: 23px; WIDTH: 43px" >&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
+<DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60" >&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
+<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick=jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement) style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION><OPTION value=http://tablord.com/templates/email.html>email</OPTION><OPTION value=http://tablord.com/templates/person.html>person</OPTION><OPTION value=http://tablord.com/templates/product.html>product</OPTION></SELECT><BUTTON onclick=jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement) style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
 <DIV id=objectToolBar></DIV></DIV></DIV>
 <DIV id=jcContent class=CONTAINER sizset="0" sizcache="1">
 <DIV id=sect0003 class="ELEMENT SECTION" sizset="0" sizcache="1">
@@ -44,7 +44,7 @@
 <TR>
 <TH>productName</TH>
 <TD class=LEFT width="90%">
-<DIV class="FIELD EDITABLE" contentEditable=false itemprop="productName">best product</DIV></TD></TR></TBODY></TABLE></DIV>
+<DIV class="FIELD EDITABLE" contentEditable=false itemprop="productName">best product <SPAN id=code0014 class="CODE EMBEDDED" style="DISPLAY: none">2+3</SPAN><SPAN id=out0014 class="OUTPUT SUCCESS" contentEditable=false>5</SPAN></DIV></TD></TR></TBODY></TABLE></DIV>
 <DIV class=ELEMENT itemscope itemtype="http://tablord.com/templates/product.html">
 <TABLE width="100%">
 <TBODY>
@@ -76,16 +76,20 @@
 <TBODY>
 <TR>
 <TD>123456</TD>
-<TD>best&nbsp;product</TD></TR>
+<TD>best&nbsp;product&nbsp;<WBR>&lt;SPAN&nbsp;id=code0014&nbsp;class="CODE&nbsp;EMBEDDED"&nbsp;style="DISPLAY:&nbsp;none"&gt;2+3<WBR>&lt;/SPAN&gt;<WBR>&lt;SPAN&nbsp;id=out0014&nbsp;class="OUTPUT&nbsp;SUCCESS"&nbsp;contentEditable=false&gt;5<WBR>&lt;/SPAN&gt;</TD></TR>
 <TR>
 <TD>123457</TD>
 <TD>greatest&nbsp;product</TD></TR>
 <TR>
 <TD>123458</TD>
-<TD>awsome&nbsp;product</TD></TR></TBODY></TABLE></DIV><PRE id=code0008 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.html('&lt;dl&gt;&lt;dt&gt;def hgkhjhjhff&nbsp; gf&lt;dd&gt;data&lt;dt&gt;def2&lt;dd class="EDITABLE FIELD"&gt;data2&lt;/dl&gt;')</PRE>
+<TD>awsome&nbsp;product</TD></TR></TBODY></TABLE></DIV><PRE id=code0008 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.html('&lt;div id=t2 itemscope&gt;&lt;div id=t2_1 itemprop="t2_1" itemscope&gt;t2_1&lt;div id=t2_1_1 class=EDITABLE itemprop="p1"&gt;t2_1_1&lt;/div&gt;&lt;div id=t2_1_2 class=EDITABLE itemprop="p2"&gt;t2_1_2&lt;/div&gt;&lt;/div&gt;'+</P><P>                   '&lt;div id=t2_2&gt;t2_2&lt;div id=t2_2_1 class=EDITABLE itemprop="p1"&gt;t2_2_1&lt;/div&gt;&lt;div id=t2_2_2 class=EDITABLE itemprop="p2"&gt;t2_2_2&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;')</P></PRE>
 <DIV id=out0008 class="OUTPUT SUCCESS">
-<DL>
-<DT>def hgkhjhjhff gf
-<DD>data
-<DT>def2
-<DD class="EDITABLE FIELD">data2</DD></DL></DIV></DIV></BODY></HTML>
+<DIV id=t2 itemscope>
+<DIV id=t2_1 itemprop="t2_1" itemscope>t2_1
+<DIV id=t2_1_1 class=EDITABLE itemprop="p1">p1</DIV>
+<DIV id=t2_1_2 class=EDITABLE itemprop="p2">p2</DIV></DIV>
+<DIV id=t2_2>t2_2
+<DIV id=t2_2_1 class=EDITABLE itemprop="p1">P1</DIV>
+<DIV id=t2_2_2 class=EDITABLE itemprop="p2">&nbsp;</DIV></DIV></DIV></DIV><PRE id=code0010 class="ELEMENT CODE EDITABLE" contentEditable=false><P>JSON.stringify(jc.template.getElements$Data($('#t2')))</P></PRE>
+<DIV id=out0010 class="OUTPUT SUCCESS">{"t2_1":{"p1":"t2_1_1",<BR>"p2":"t2_1_2"},<BR>"p1":"t2_2_1",<BR>"p2":"t2_2_2"}</DIV><PRE id=code0012 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.template.setElements$WithData($('#t2'),{t2_1:{p1:'p1',p2:'p2'},p1:'P1'})</PRE>
+<DIV id=out0012 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV></DIV></BODY></HTML>

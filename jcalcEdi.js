@@ -568,7 +568,7 @@
       }
       else break;
     }
-    return new jc.HTML('<b>'+signature+'</b><br>'+comments.join('<br>')+(constructor?jc.inspect(func.prototype,'methods').span():''));
+    return new jc.HTML('<div class=HELP><b>'+signature+'</b><br>'+comments.join('<br>')+(constructor?jc.inspect(func.prototype,'methods').span():'')+'</DIV>');
   }
 
 
@@ -924,20 +924,69 @@
     return newTemplate;
   }
 
+  jc.template.setElements$WithData = function(elements$,data){
+    // set all itemprop elements with data (recurse through children and data)
+    elements$.each(function(i,element){
+      var e$ = $(element);
+      var itemprop = element.itemprop;
+      if (itemprop !== undefined) {
+        if (e$.hasClass('EDITABLE')) {
+          e$.html(data[itemprop]===undefined?'':data[itemprop]);  //TODO JSON ???
+          return;
+        }
+        else if (element.itemscope !== undefined) {
+          jc.template.setElements$WithData(e$.children(),data[itemprop]); 
+        } 
+        else throw new Error('an element with itemprop must either be an itemscope or be class=EDITABLE\n'+jc.format(element));
+      }
+      else {  // this node is not an itemprop, look in its children with the same data
+        jc.template.setElements$WithData(e$.children(),data); 
+      }
+    });
+  }
+
+  jc.template.getElements$Data = function(elements$){
+    // get all itemprop elements with data (recurse through children and data)
+    var data = {};
+    elements$.each(function(i,element){
+      var e$ = $(element);
+      var itemprop = element.itemprop;
+      if (itemprop !== undefined) {
+        if (e$.hasClass('EDITABLE')) {
+          data[itemprop] = e$.html();
+        }
+        else if (element.itemscope !== undefined) {
+          data[itemprop] = jc.template.getElements$Data(e$.children()); 
+        } 
+        else throw new Error('an element with itemprop must either be an itemscope or be class=EDITABLE\n'+jc.format(element));
+      }
+      else {  // this node is not an itemprop, look if its children have data
+        $.extend(true,data,jc.template.getElements$Data(e$.children())); 
+      }
+    });
+    return data;
+  }
+
+
   jc.template.data = function(url) {
     // get all data from all templates in the document having the itemtype=url
     var data = [];
     var templates$ = $('[itemtype="'+url+'"]');
     templates$.each(function(i,e){
-      var item = {};
-      $('[itemprop]',e).each(function(i,p){
-        item[p.itemprop] = $(p).text();
-      });
-      data.push(item);
+      data.push(jc.template.getElements$Data($(e)));
     });
     return data;
   }
 
+  jc.template.convert$to = function(elements$,url) {
+    // convert all elements contained in the jQuery elements$
+    // to template(url)
+    elements$.each(function(i,e){
+      var data = e.jcData || {}; // retrieve stored data from a previous convertion if any
+      $.extend(true,data,jc.template.data(e)); // overwrite with all current values
+      e.jcData = data;
+    });
+  }
 
   jc.template({
     name    : 'code',
