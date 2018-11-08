@@ -497,9 +497,51 @@
              .replace(/\n/g,"<br>");
   }
 
+  jc.isJSid = function (id) {
+    // return true id id is a javaScript id 
+    return id.match(/^[\w$]+\w*$/) !== null;
+  }
+
+  jc.toJScode = function(obj,stringQuote) {
+    // return a string representing obj that can be interpreted by eval
+    // stringQuote is by default ' but can be set to "
+    stringQuote = stringQuote || "'";
+    if (typeof obj == 'number') {
+      return obj.toString();
+    }
+    else if (typeof obj == 'string') {
+      if (stringQuote === '"') {
+        return '"'+obj.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,"\\n")+'"';
+      }
+      else {
+        return "'"+obj.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,"\\n")+"'";
+      }
+    }
+    else if ($.isPlainObject(obj)) {
+      var sa=[];
+      $.each(obj, function(name,value) {
+        if (!jc.isJSid(name)) name = jc.toJScode(name,stringQuote);
+        sa.push(name+':'+jc.toJScode(value,stringQuote))
+      });
+      return '{'+sa.join(',')+'}';
+    }
+    else if ($.isArray(obj)) {
+      var sa=[];
+      $.each(obj, function(i,value) {sa.push(jc.toJScode(value,stringQuote))});
+      return '['+sa.join(',')+']';
+    }
+    else if (obj === undefined) {
+      return 'undefined';
+    }
+    else if (typeof obj === 'function') {
+      return obj.toString();
+    }
+    return obj.toJson();
+  }
+
   jc.htmlAttribute = function(attr,value) {
     // write an attribute according to its type
-    var h = ' '+attr+'='+(typeof value == 'number'?value:'"'+jc.toHtml(value).replace(/"/g,'&quot;')+'"');
+    var h = ' '+attr+'='+(typeof value == 'number'?value:'"'+jc.toHtml(value).replace(/"/g,'&quote;')+'"');
     return h;
   }
 
@@ -978,14 +1020,13 @@
     return data;
   }
 
-  jc.template.convert$to = function(elements$,url) {
-    // convert all elements contained in the jQuery elements$
-    // to template(url)
-    elements$.each(function(i,e){
-      var data = e.jcData || {}; // retrieve stored data from a previous convertion if any
-      $.extend(true,data,jc.template.data(e)); // overwrite with all current values
-      e.jcData = data;
-    });
+  jc.template.convertTo = function(element,url) {
+    // convert element to template(url)
+    var e$ = $(element);
+    var data = jc.template.getElements$Data(e$);
+    var new$ = jc.templates[url].node$();
+    jc.template.setElements$WithData(new$,data);
+    e$.replaceWith(new$);
   }
 
   jc.template({
@@ -1146,6 +1187,7 @@
       .append('<SPAN id=codeId>no selection</SPAN>')
       .append('<BUTTON id="cutBtn" onclick=jc.cutBlock(jc.selectedElement);>cut</BUTTON>')
       .append('<BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement)">&#8593;</BUTTON>')
+      .append('<BUTTON onclick="jc.template.convertTo(jc.selectedElement,jc.templateChoice$.val())">&#8596;</BUTTON>')
       .append(jc.templateChoice$)
       .append('<BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement)">&#8595;</BUTTON>')
       .append('<BUTTON id="showHtmlBtn" onclick=jc.showOutputHtml(this);>&#8594;html</BUTTON>')
