@@ -954,7 +954,7 @@
     if (newTemplate.url == undefined) newTemplate.url = jc.Template.urlBase+newTemplate.name+'.html';
     if (newTemplate.fields) {
       var h = '<DIV class="ELEMENT" itemscope itemtype="'+newTemplate.url+'"><TABLE width="100%">';
-      for (f in newTemplate.fields) {
+      for (var f in newTemplate.fields) {
         h += '<TR><TH>'+f+'</TH><TD class=LEFT width="90%"><DIV class="FIELD EDITABLE" itemprop="'+f+'"></DIV></TD></TR>';
       }
       newTemplate.html = h + '</TABLE></DIV>';
@@ -963,7 +963,7 @@
     jc.templates[newTemplate.url] = newTemplate;
     if (newTemplate.name == undefined) newTemplate.name = newTemplate.url.match(/^.*\/([\w\._$]+).htm[l]?$/i)[1];
     jc.updateTemplateChoice();
-    return newTemplate;
+    return 'template '+newTemplate.name+' created ['+newTemplate.url+']';
   }
 
   jc.template.setElements$WithData = function(elements$,data){
@@ -1023,9 +1023,10 @@
   jc.template.convertTo = function(element,url) {
     // convert element to template(url)
     var e$ = $(element);
-    var data = jc.template.getElements$Data(e$);
+    var data = $.extend(true,element.itemData || {},jc.template.getElements$Data(e$));
     var new$ = jc.templates[url].node$();
     jc.template.setElements$WithData(new$,data);
+    new$[0].itemData = data; // keep data in a element property so it can retrieve lost in case of a convertion mistake (not handling all fields)
     e$.replaceWith(new$);
   }
 
