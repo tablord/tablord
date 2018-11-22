@@ -94,4 +94,5 @@ jc.fso = {
   }
 }
 
+jc.shell = new ActiveXObject("WScript.Shell");
   

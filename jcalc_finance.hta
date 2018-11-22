@@ -1,4 +1,5 @@
-<HTML sizset="0" sizcache="1" APPLICATIONNAME="D:\Documents\programmation\jcalc\jcalcV0\jcalc_finance.hta" xmlns="http://www.w3.org/1999/xhtml" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="JCalc: Finance Documentation" SCROLL="yes" SINGLEINSTANCE="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
+<!DOCTYPE html>
+<HTML xmlns="http://www.w3.org/1999/xhtml" APPLICATIONNAME="D:\Documents\programmation\jcalc\jcalcV0\jcalc_finance.hta" sizcache="1" sizset="0" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="JCalc: Finance Documentation" SINGLEINSTANCE="yes" SCROLL="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
 <SCRIPT src="jquery-1.5.1.min.js"></SCRIPT>
 
 <SCRIPT src="jcalcEdi.js"></SCRIPT>
@@ -19,20 +20,31 @@
 
 <SCRIPT src="finance.js"></SCRIPT>
 </HEAD>
-<BODY sizset="0" sizcache="1" designMode="on">
-<DIV id=sect0012 class=SECTION sizset="0" sizcache="1">
-<H1 class=SECTIONTITLE contentEditable=false>1 Finance module</H1>
-<DIV class=SECTIONCONTAINER sizset="0" sizcache="1">
-<DIV id=rich0013 class=RICHTEXT contentEditable=false>the purpose of the finance.js module is to help in business plan and the simulation of financial situations</DIV>
-<DIV id=sect0014 class=SECTION sizset="0" sizcache="1">
-<H2 class=SECTIONTITLE contentEditable=false>1.1 Starting Example</H2>
-<DIV class=SECTIONCONTAINER sizset="0" sizcache="1">
-<DIV id=rich0015 class=RICHTEXT contentEditable=false sizset="0" sizcache="1">
+<BODY sizcache="1" sizset="0"  designMode="on">
+<DIV id=menu class=TOOLBAR>
+<DIV><INPUT onclick=jc.showCode(event) type=checkbox>codes</INPUT><INPUT onclick=jc.showCut(event) type=checkbox>cuts</INPUT><INPUT onclick=jc.showTest(event) type=checkbox>tests</INPUT><INPUT onclick=jc.showTrace(event) type=checkbox>traces</INPUT><INPUT onclick=jc.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
+<DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
+<DIV style="DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick=jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement) style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick=jc.template.convertTo(jc.selectedElement,jc.templateChoice$.val()) style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION></SELECT><BUTTON onclick=jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement) style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
+<DIV id=objectToolBar></DIV></DIV></DIV>
+<DIV id=jcContent class=CONTAINER>
+<DIV id=sect0012 class="SECTION ELEMENT" sizcache="1" sizset="0">
+<H1 class="SECTIONTITLE EDITABLE" contentEditable=false>1 Finance module</H1>
+<DIV class=SECTIONCONTAINER sizcache="1" sizset="0">
+<DIV id=rich0013 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>the purpose of the finance.js module is to help in business plan and the simulation of financial situations</DIV>
+<DIV id=sect0014 class="SECTION ELEMENT" sizcache="1" sizset="0">
+<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1 Starting Example</H2>
+<DIV class=SECTIONCONTAINER sizcache="1" sizset="0">
+<DIV id=rich0015 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="0">
 <P>the CashFlow class is the basic bloc of this module</P>
 <P>in order to instanciate a new CashFlow object just use the </P>
-<P sizset="0" sizcache="1"><SPAN id=code0018 class="CODE EMBEDDED" style="DISPLAY: none">jc.help(jc.cashFlow)</SPAN><SPAN id=out0018 class="OUTPUT SUCCESS" contentEditable=false><B>function Account(name,currency,startDate,endDate)</B><BR>&nbsp;returns&nbsp;a&nbsp;new&nbsp;Account&nbsp;object&nbsp;of&nbsp;type&nbsp;'main'</SPAN></P>
+<P sizcache="1" sizset="0"><SPAN id=code0018 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.help(jc.cashFlow)</SPAN><SPAN id=out0018 class="OUTPUT SUCCESS" contentEditable=false>
+<DIV class=HELP><B>function Account(name,currency,startDate,endDate)</B><BR>constructor for Account objects<BR>&nbsp;returns&nbsp;a&nbsp;new&nbsp;Account&nbsp;object&nbsp;of&nbsp;type&nbsp;'main'
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} methods</LEGEND>
+<TABLE class=INSPECT>
+<TBODY></TBODY></TABLE></FIELDSET></DIV></DIV></SPAN></P>
 <P>&nbsp;</P>
-<P>&nbsp;</P></DIV><PRE id=code0021 class=CODE contentEditable=false><P>jc.cashFlow('myBusiness','CHF','2019/1/1','2029/1/1')</P></PRE>
+<P>&nbsp;</P></DIV><PRE id=code0021 class="CODE ELEMENT EDITABLE" contentEditable=false><P>jc.cashFlow('myBusiness','CHF','2019/1/1','2029/1/1')</P></PRE>
 <DIV id=out0021 class="OUTPUT SUCCESS"><VAR>myBusiness</VAR>
 <TABLE>
 <THEAD>
@@ -40,10 +52,10 @@
 <TH>date</TH>
 <TH>subject</TH></TR></THEAD>
 <TBODY></TBODY></TABLE></DIV>
-<DIV id=rich0022 class=RICHTEXT contentEditable=false>
+<DIV id=rich0022 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>so far so good, but not much inside. like with table or variable, this CashFlow has a name and it has been added to v so it is accessible like a global variable</P>
 <P>&nbsp;</P>
-<P>let assume that the first thing is to inject some cash from your own savings</P></DIV><PRE id=code0023 class=CODE contentEditable=false>myBusiness.recieve('2019/2/1','initial cash from my own savings',100000)</PRE>
+<P>let assume that the first thing is to inject some cash from your own savings</P></DIV><PRE id=code0023 class="CODE ELEMENT EDITABLE" contentEditable=false>myBusiness.recieve('2019/2/1','initial cash from my own savings',100000)</PRE>
 <DIV id=out0023 class="OUTPUT SUCCESS"><VAR>myBusiness</VAR>
 <TABLE>
 <THEAD>
@@ -58,7 +70,7 @@
 <TD style="TEXT-ALIGN: left">initial&nbsp;cash&nbsp;from&nbsp;my&nbsp;own&nbsp;savings</TD>
 <TD>100000.00</TD>
 <TD>100000.00</TD></TR></TBODY></TABLE></DIV>
-<DIV id=rich0024 class=RICHTEXT contentEditable=false>Wow now some cash is inside the company, but as usual, things start and you have to pay the first bills</DIV><PRE id=code0025 class=CODE contentEditable=false><P>myBusiness</P><P>.pay('2019/3/1','registration fees',20000)</P><P>.pay('2019/3/15','lawers status redaction',4000)</P></PRE>
+<DIV id=rich0024 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>Wow now some cash is inside the company, but as usual, things start and you have to pay the first bills</DIV><PRE id=code0025 class="CODE ELEMENT EDITABLE" contentEditable=false><P>myBusiness</P><P>.pay('2019/3/1','registration fees',20000)</P><P>.pay('2019/3/15','lawers status redaction',4000)</P></PRE>
 <DIV id=out0025 class="OUTPUT SUCCESS"><VAR>myBusiness</VAR>
 <TABLE>
 <THEAD>
@@ -83,9 +95,9 @@
 <TD style="TEXT-ALIGN: left">lawers&nbsp;status&nbsp;redaction</TD>
 <TD>-4000.00</TD>
 <TD>76000.00</TD></TR></TBODY></TABLE></DIV>
-<DIV id=rich0026 class=RICHTEXT contentEditable=false sizset="4" sizcache="1">
-<P sizset="4" sizcache="1">As you see the methods receive or pay allow method chaining so you can simple call .pay in a serial manner. As usual in <SPAN id=code0027 class="CODE EMBEDDED" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0027 class="OUTPUT SUCCESS" contentEditable=false>JCalc</SPAN> if the result of a code block is an object, its .span() method will be called and so we can visualize the result.</P>
-<P>Now we just pay some bills without taking care to the structure or nature of the things. But now we will have some fixed cost since we just sign a rent contract for an office for 1 year. So let start to be a bit more structured, even if this is now mandatory</P></DIV><PRE id=code0028 class=CODE contentEditable=false><P>myBusiness.account('fixedCost')</P><P>  .pay('2019/3/30','initial down payment',2000)</P></PRE>
+<DIV id=rich0026 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="4">
+<P sizcache="1" sizset="4">As you see the methods receive or pay allow method chaining so you can simple call .pay in a serial manner. As usual in <SPAN id=code0027 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0027 class="OUTPUT SUCCESS" contentEditable=false>JCalc</SPAN> if the result of a code block is an object, its .span() method will be called and so we can visualize the result.</P>
+<P>Now we just pay some bills without taking care to the structure or nature of the things. But now we will have some fixed cost since we just sign a rent contract for an office for 1 year. So let start to be a bit more structured, even if this is now mandatory</P></DIV><PRE id=code0028 class="CODE ELEMENT EDITABLE" contentEditable=false><P>myBusiness.account('fixedCost')</P><P>  .pay('2019/3/30','initial down payment',2000)</P></PRE>
 <DIV id=out0028 class="OUTPUT SUCCESS"><VAR>fixedCost</VAR>
 <TABLE>
 <THEAD>
@@ -100,7 +112,7 @@
 <TD style="TEXT-ALIGN: left">initial&nbsp;down&nbsp;payment</TD>
 <TD>-2000.00</TD>
 <TD>-2000.00</TD></TR></TBODY></TABLE></DIV>
-<DIV id=rich0029 class=RICHTEXT contentEditable=false>The beauty is that it is a sub cashFlow, that is still accessible from the main business plan and is fully part of the main one:</DIV><PRE id=code0030 class=CODE contentEditable=false><P>myBusiness</P></PRE>
+<DIV id=rich0029 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>The beauty is that it is a sub cashFlow, that is still accessible from the main business plan and is fully part of the main one:</DIV><PRE id=code0030 class="CODE ELEMENT EDITABLE" contentEditable=false><P>myBusiness</P></PRE>
 <DIV id=out0030 class="OUTPUT SUCCESS"><VAR>myBusiness</VAR>
 <TABLE>
 <THEAD>
@@ -130,9 +142,9 @@
 <TD style="TEXT-ALIGN: left">initial&nbsp;down&nbsp;payment</TD>
 <TD>-2000.00</TD>
 <TD>74000.00</TD></TR></TBODY></TABLE></DIV>
-<DIV id=rich0031 class=RICHTEXT contentEditable=false>
+<DIV id=rich0031 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>You can see that the initial down payment is also present at the upper level. So you can structure your cash flow in several accounts that are now accessible through the main cashFlow either through the . or [] notation .</P>
-<P>We can now add the monthly bill for the rental of the office. In order to do so we can use the <STRONG>.monthly</STRONG> method. this method returns a <STRONG>PermanentOrder</STRONG> object that has also a <STRONG>pay</STRONG> method, almost identical to the pay method of a CashFlow. like usual, pay allows method chainning, so if needed, several payements can be done in the same month. An <STRONG>.end</STRONG> method closes all payement that have to be done monthly.</P></DIV><PRE id=code0032 class=CODE contentEditable=false><P>myBusiness.fixedCost</P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">  .monthly('2019/3/30','2020/3/30')</FONT></P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">    .pay('office rental',1000)</FONT></P><P><FONT style="BACKGROUND-COLOR: #f2f9a8"></FONT>&nbsp; .end()</P></PRE>
+<P>We can now add the monthly bill for the rental of the office. In order to do so we can use the <STRONG>.monthly</STRONG> method. this method returns a <STRONG>PermanentOrder</STRONG> object that has also a <STRONG>pay</STRONG> method, almost identical to the pay method of a CashFlow. like usual, pay allows method chainning, so if needed, several payements can be done in the same month. An <STRONG>.end</STRONG> method closes all payement that have to be done monthly.</P></DIV><PRE id=code0032 class="CODE ELEMENT EDITABLE" contentEditable=false><P>myBusiness.fixedCost</P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">  .monthly('2019/3/30','2020/3/30')</FONT></P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">    .pay('office rental',1000)</FONT></P><P><FONT style="BACKGROUND-COLOR: #f2f9a8"></FONT>&nbsp; .end()</P></PRE>
 <DIV id=out0032 class="OUTPUT SUCCESS"><VAR>fixedCost</VAR>
 <TABLE>
 <THEAD>
@@ -207,7 +219,7 @@
 <TD style="TEXT-ALIGN: left">office&nbsp;rental</TD>
 <TD>-1000.00</TD>
 <TD>-14000.00</TD></TR></TBODY></TABLE></DIV>
-<DIV id=rich0039 class=RICHTEXT contentEditable=false>As on the previous example we have written one <STRONG>.end()</STRONG>, we are still on the level of <EM>fixedCost</EM>. if we had put another <STRONG>.end()</STRONG> we would be on the level of <EM>myBusiness</EM>.</DIV><PRE id=code0034 class=CODE contentEditable=false>myBusiness</PRE>
+<DIV id=rich0039 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>As on the previous example we have written one <STRONG>.end()</STRONG>, we are still on the level of <EM>fixedCost</EM>. if we had put another <STRONG>.end()</STRONG> we would be on the level of <EM>myBusiness</EM>.</DIV><PRE id=code0034 class="CODE ELEMENT EDITABLE" contentEditable=false>myBusiness</PRE>
 <DIV id=out0034 class="OUTPUT SUCCESS"><VAR>myBusiness</VAR>
 <TABLE>
 <THEAD>
@@ -297,7 +309,7 @@
 <TD style="TEXT-ALIGN: left">office&nbsp;rental</TD>
 <TD>-1000.00</TD>
 <TD>62000.00</TD></TR></TBODY></TABLE></DIV>
-<DIV id=rich0047 class=RICHTEXT contentEditable=false>CashFlow object can work this different currencies, so you can pay a bill in a differents currency</DIV><PRE id=code0036 class=CODE contentEditable=false>myBusiness.pay('2019/3/1','consulting fees',1000,'EUR')</PRE>
+<DIV id=rich0047 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>CashFlow object can work this different currencies, so you can pay a bill in a differents currency</DIV><PRE id=code0036 class="CODE ELEMENT EDITABLE" contentEditable=false>myBusiness.pay('2019/3/1','consulting fees',1000,'EUR')</PRE>
 <DIV id=out0036 class="OUTPUT SUCCESS"><VAR>myBusiness</VAR>
 <TABLE>
 <THEAD>
@@ -409,7 +421,7 @@
 <TD style="TEXT-ALIGN: left">office&nbsp;rental</TD>
 <TD>-1000.00</TD>
 <TD>60850.57</TD>
-<TD></TD></TR></TBODY></TABLE></DIV><PRE id=code0037 class=CODE contentEditable=false>myBusiness.fixedCost</PRE>
+<TD></TD></TR></TBODY></TABLE></DIV><PRE id=code0037 class="CODE ELEMENT EDITABLE" contentEditable=false>myBusiness.fixedCost</PRE>
 <DIV id=out0037 class="OUTPUT SUCCESS"><VAR>fixedCost</VAR>
 <TABLE>
 <THEAD>
@@ -484,24 +496,65 @@
 <TD style="TEXT-ALIGN: left">office&nbsp;rental</TD>
 <TD>-1000.00</TD>
 <TD>-14000.00</TD></TR></TBODY></TABLE></DIV></DIV></DIV>
-<DIV id=sect0052 class=SECTION sizset="11" sizcache="1">
-<H2 class=SECTIONTITLE contentEditable=false>1.2 Budget</H2>
-<DIV class=SECTIONCONTAINER sizset="11" sizcache="1">
-<DIV id=rich0053 class=RICHTEXT contentEditable=false>
-<P>A special form of Account is a Budget. in order to create a budget you can use the <STRONG>.budget</STRONG> method of Account (or Budget since Budget is special form of Account)</P></DIV><PRE id=code0054 class=CODE contentEditable=false><P>myBusiness</P><P>.budget('productDev')</P><P>  .budget('R&amp;D',100000).name('R_D')</P><P>    .pay('2019/3/25','hours',10500)</P><P>    .pay('2019/4/25','hours',11700)</P><P>  .end()</P></PRE>
+<DIV id=sect0052 class="SECTION ELEMENT" sizcache="1" sizset="11">
+<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.2 Budget</H2>
+<DIV class=SECTIONCONTAINER sizcache="1" sizset="11">
+<DIV id=rich0053 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
+<P>A special form of Account is a Budget. in order to create a budget you can use the <STRONG>.budget</STRONG> method of Account (or Budget since Budget is special form of Account)</P></DIV><PRE id=code0054 class="CODE ELEMENT EDITABLE" contentEditable=false><P>myBusiness</P><P>.budget('productDev')</P><P>  .budget('R&amp;D',100000).name('R_D')</P><P>    .pay('2019/3/25','hours',10500)</P><P>    .pay('2019/4/25','hours',11700)</P><P>  .end()</P></PRE>
 <DIV id=out0054 class="OUTPUT SUCCESS"><VAR>productDev</VAR>
+<FIELDSET><LEGEND>payments</LEGEND>
 <TABLE>
 <THEAD>
 <TR>
-<TH>subject</TH></TR></THEAD>
+<TH>date</TH>
+<TH>subject</TH>
+<TH>amount$CHF</TH>
+<TH>budgetAdjustment</TH>
+<TH>productDev$CHF</TH></TR></THEAD>
 <TBODY>
 <TR>
-<TD style="TEXT-ALIGN: left">R&amp;D</TD></TR>
+<TD>2019-01-01</TD>
+<TD>R&amp;D</TD>
+<TD>100000.00</TD>
+<TD>true</TD>
+<TD>100000.00</TD></TR>
 <TR>
-<TD style="TEXT-ALIGN: left">hours</TD></TR>
+<TD>2019-03-25</TD>
+<TD>hours</TD>
+<TD>-10500.00</TD>
+<TD></TD>
+<TD>89500.00</TD></TR>
 <TR>
-<TD style="TEXT-ALIGN: left">hours</TD></TR></TBODY></TABLE></DIV>
-<DIV id=rich0057 class=RICHTEXT contentEditable=false>if you look at a budget, you will see the budgetAdjustment records, but if you look at an account, you will not see them. Those records are transported, but are neither taken into account, nor visualized</DIV><PRE id=code0056 class=CODE contentEditable=false>myBusiness</PRE>
+<TD>2019-04-25</TD>
+<TD>hours</TD>
+<TD>-11700.00</TD>
+<TD></TD>
+<TD>77800.00</TD></TR></TBODY></TABLE></FIELDSET>
+<FIELDSET><LEGEND>spending summary</LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH>total Budget:</TH>
+<TD>100000</TD></TR>
+<TR>
+<TH>total Paid:</TH>
+<TD>22200</TD></TR>
+<TR>
+<TH>% Paid:</TH>
+<TD>22.2</TD></TR></TBODY></TABLE></FIELDSET>
+<FIELDSET><LEGEND>calendar</LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH>start:</TH>
+<TD>2019-01-01</TD></TR>
+<TR>
+<TH>estimated end Date:</TH>
+<TD>2019-11-16</TD></TR>
+<TR>
+<TH>declared end date:</TH>
+<TD>2029-01-01</TD></TR></TBODY></TABLE></FIELDSET></DIV>
+<DIV id=rich0057 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>if you look at a budget, you will see the budgetAdjustment records, but if you look at an account, you will not see them. Those records are transported, but are neither taken into account, nor visualized</DIV><PRE id=code0056 class="CODE ELEMENT EDITABLE" contentEditable=false>myBusiness</PRE>
 <DIV id=out0056 class="OUTPUT SUCCESS"><VAR>myBusiness</VAR>
 <TABLE>
 <THEAD>
@@ -626,7 +679,7 @@
 <TD>-1000.00</TD>
 <TD>38650.57</TD>
 <TD></TD></TR></TBODY></TABLE></DIV>
-<DIV id=rich0058 class=RICHTEXT contentEditable=false>unless you specifically ask for it throught the span options <STRONG>showBudgetAdjustmentInAccount</STRONG>. please note that in order to set the options, you have to call <STRONG>.span(options)</STRONG> explicitely.</DIV><PRE id=code0059 class=CODE contentEditable=false>myBusiness.span({showBudgetAdjustmentInAccount:true})</PRE>
+<DIV id=rich0058 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>unless you specifically ask for it throught the span options <STRONG>showBudgetAdjustmentInAccount</STRONG>. please note that in order to set the options, you have to call <STRONG>.span(options)</STRONG> explicitely.</DIV><PRE id=code0059 class="CODE ELEMENT EDITABLE" contentEditable=false>myBusiness.span({showBudgetAdjustmentInAccount:true})</PRE>
 <DIV id=out0059 class="OUTPUT SUCCESS"><VAR>myBusiness</VAR>
 <TABLE>
 <THEAD>
@@ -778,32 +831,47 @@
 <TD></TD>
 <TD>38650.57</TD>
 <TD></TD></TR></TBODY></TABLE></DIV></DIV></DIV>
-<DIV id=sect0061 class=SECTION sizset="14" sizcache="1">
-<H2 class=SECTIONTITLE contentEditable=false>1.3 Task</H2>
-<DIV class=SECTIONCONTAINER sizset="14" sizcache="1">
-<DIV id=rich0062 class=RICHTEXT contentEditable=false>Task is a special budget that has a .taskSummary method in order to help collect task information amoung a project</DIV><PRE id=code0063 class=CODE contentEditable=false><P>R_D</P><P>.task('étude ergonomique',10000)</P><P>.end()</P><P>.task('conception maquette impression 3d',3000)</P><P>  .pay('2019/3/20','modèle CAO',1000)</P><P>.end()</P><P>.collectInfo('taskSummary').span({format:{number:jc.toFixed(2)},cols:{name:{head:1},'*':1}})</P></PRE>
+<DIV id=sect0061 class="SECTION ELEMENT" sizcache="1" sizset="14">
+<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.3 Task</H2>
+<DIV class=SECTIONCONTAINER sizcache="1" sizset="14">
+<DIV id=rich0062 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>Task is a special budget that has a .taskSummary method in order to help collect task information amoung a project</DIV><PRE id=code0063 class="CODE ELEMENT EDITABLE" contentEditable=false><P>R_D</P><P>.task('étude ergonomique',10000)</P><P>.end()</P><P>.task('conception maquette impression 3d',3000)</P><P>  .pay('2019/3/20','modèle CAO',1000)</P><P>.end()</P><P>.collectInfo('taskSummary').span({format:{number:jc.toFixed(2)},cols:{name:{head:1},'*':1}})</P></PRE>
 <DIV id=out0063 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
 <TR>
 <TH>name</TH>
-<TH>*</TH></TR></THEAD>
+<TH>startDate</TH>
+<TH>estimatedEndDate</TH>
+<TH>budget</TH>
+<TH>paid</TH>
+<TH>remaing</TH>
+<TH>percentDone</TH></TR></THEAD>
 <TBODY>
 <TR>
 <TH>étude&nbsp;ergonomique</TH>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD>2019-01-01</TD>
+<TD>NaN-aN-aN</TD>
+<TD>10000.00</TD>
+<TD>0.00</TD>
+<TD>10000.00</TD>
+<TD>0.00</TD></TR>
 <TR>
 <TH>conception&nbsp;maquette&nbsp;impression&nbsp;3d</TH>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR></TBODY></TABLE></DIV></DIV></DIV>
-<DIV id=sect0039 class=SECTION sizset="15" sizcache="1">
-<H2 class=SECTIONTITLE contentEditable=false>1.4 Reference Guide</H2>
-<DIV class=SECTIONCONTAINER sizset="15" sizcache="1">
-<DIV id=sect0047 class=SECTION sizset="15" sizcache="1">
-<H3 class=SECTIONTITLE contentEditable=false>1.4.1 Order</H3>
-<DIV class=SECTIONCONTAINER sizset="15" sizcache="1">
-<DIV id=rich0048 class=RICHTEXT contentEditable=false>
+<TD>2019-01-01</TD>
+<TD>NaN-aN-aN</TD>
+<TD>3000.00</TD>
+<TD>1000.00</TD>
+<TD>2000.00</TD>
+<TD>33.33</TD></TR></TBODY></TABLE></DIV></DIV></DIV>
+<DIV id=sect0039 class="SECTION ELEMENT" sizcache="1" sizset="15">
+<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.4 Reference Guide</H2>
+<DIV class=SECTIONCONTAINER sizcache="1" sizset="15">
+<DIV id=sect0047 class="SECTION ELEMENT" sizcache="1" sizset="15">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.4.1 Order</H3>
+<DIV class=SECTIONCONTAINER sizcache="1" sizset="15">
+<DIV id=rich0048 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>The Order class is the basic of all finance module.</P>
-<P>The users never create this with a new Order, but Order are added internally by <STRONG>.pay</STRONG>, <STRONG>.recieve</STRONG> of Accounts and PermanentOrders</P></DIV><PRE id=code0049 class=CODE contentEditable=false>jc.inspect(jc.finance.Order.prototype,'Order')</PRE>
+<P>The users never create this with a new Order, but Order are added internally by <STRONG>.pay</STRONG>, <STRONG>.recieve</STRONG> of Accounts and PermanentOrders</P></DIV><PRE id=code0049 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect(jc.finance.Order.prototype,'Order')</PRE>
 <DIV id=out0049 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} Order</LEGEND>
@@ -811,33 +879,41 @@
 <TBODY>
 <TR>
 <TH vAlign=top>initCurrency</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(currency)</B><BR>&nbsp;for&nbsp;internal&nbsp;use&nbsp;only:&nbsp;prepare&nbsp;the&nbsp;order&nbsp;for&nbsp;currency</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(currency)</B><BR>&nbsp;for&nbsp;internal&nbsp;use&nbsp;only:&nbsp;prepare&nbsp;the&nbsp;order&nbsp;for&nbsp;currency</DIV></TD></TR>
 <TR>
 <TH vAlign=top>name</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(name)</B><BR>&nbsp;adds&nbsp;this&nbsp;object&nbsp;to&nbsp;v&nbsp;either&nbsp;under&nbsp;name&nbsp;or&nbsp;if&nbsp;omitted&nbsp;under&nbsp;this._name<BR>&nbsp;this&nbsp;makes&nbsp;an&nbsp;embeeded&nbsp;object&nbsp;directly&nbsp;accessible.<BR>&nbsp;throw&nbsp;an&nbsp;error&nbsp;if&nbsp;name&nbsp;already&nbsp;exists<BR>&nbsp;return&nbsp;this&nbsp;for&nbsp;method&nbsp;chaining.</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(name)</B><BR>&nbsp;adds&nbsp;this&nbsp;object&nbsp;to&nbsp;v&nbsp;either&nbsp;under&nbsp;name&nbsp;or&nbsp;if&nbsp;omitted&nbsp;under&nbsp;this._name<BR>&nbsp;this&nbsp;makes&nbsp;an&nbsp;embeeded&nbsp;object&nbsp;directly&nbsp;accessible.<BR>&nbsp;throw&nbsp;an&nbsp;error&nbsp;if&nbsp;name&nbsp;already&nbsp;exists<BR>&nbsp;return&nbsp;this&nbsp;for&nbsp;method&nbsp;chaining.</DIV></TD></TR>
 <TR>
 <TH vAlign=top>convertTo</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(currency)</B><BR>&nbsp;for&nbsp;internal&nbsp;use&nbsp;only:&nbsp;add&nbsp;a&nbsp;new&nbsp;amount$curency&nbsp;field&nbsp;to&nbsp;all&nbsp;._payments&nbsp;if&nbsp;needed</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(currency)</B><BR>&nbsp;for&nbsp;internal&nbsp;use&nbsp;only:&nbsp;add&nbsp;a&nbsp;new&nbsp;amount$curency&nbsp;field&nbsp;to&nbsp;all&nbsp;._payments&nbsp;if&nbsp;needed</DIV></TD></TR>
 <TR>
 <TH vAlign=top>setDate</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(date)</B><BR>&nbsp;set&nbsp;the&nbsp;date.<BR>&nbsp;the&nbsp;main&nbsp;purpose&nbsp;of&nbsp;this&nbsp;method&nbsp;is&nbsp;to&nbsp;be&nbsp;overridden&nbsp;so&nbsp;it&nbsp;can&nbsp;adjust&nbsp;the&nbsp;date&nbsp;in&nbsp;permanent&nbsp;orders</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(date)</B><BR>&nbsp;set&nbsp;the&nbsp;date.<BR>&nbsp;the&nbsp;main&nbsp;purpose&nbsp;of&nbsp;this&nbsp;method&nbsp;is&nbsp;to&nbsp;be&nbsp;overridden&nbsp;so&nbsp;it&nbsp;can&nbsp;adjust&nbsp;the&nbsp;date&nbsp;in&nbsp;permanent&nbsp;orders</DIV></TD></TR>
 <TR>
 <TH vAlign=top>execute</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(currency,date)</B><BR>&nbsp;if&nbsp;currency&nbsp;!=&nbsp;undefined,&nbsp;also&nbsp;creates&nbsp;a&nbsp;field&nbsp;for&nbsp;that&nbsp;currency&nbsp;if&nbsp;needed<BR>&nbsp;if&nbsp;date&nbsp;!=&nbsp;undefined&nbsp;calls&nbsp;.setDate(date)&nbsp;to&nbsp;change&nbsp;the&nbsp;date<BR>&nbsp;returns&nbsp;an&nbsp;array&nbsp;of&nbsp;one&nbsp;single&nbsp;payment</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(currency,date)</B><BR>&nbsp;if&nbsp;currency&nbsp;!=&nbsp;undefined,&nbsp;also&nbsp;creates&nbsp;a&nbsp;field&nbsp;for&nbsp;that&nbsp;currency&nbsp;if&nbsp;needed<BR>&nbsp;if&nbsp;date&nbsp;!=&nbsp;undefined&nbsp;calls&nbsp;.setDate(date)&nbsp;to&nbsp;change&nbsp;the&nbsp;date<BR>&nbsp;returns&nbsp;an&nbsp;array&nbsp;of&nbsp;one&nbsp;single&nbsp;payment</DIV></TD></TR>
 <TR>
 <TH vAlign=top>collectInfo</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(funcName,array)</B><BR>&nbsp;if&nbsp;funcName&nbsp;is&nbsp;found,&nbsp;executes&nbsp;it&nbsp;and&nbsp;push&nbsp;the&nbsp;result&nbsp;in&nbsp;array<BR>&nbsp;if&nbsp;not&nbsp;it&nbsp;tries&nbsp;in&nbsp;the&nbsp;possible&nbsp;sub&nbsp;orders&nbsp;<BR>&nbsp;note&nbsp;that&nbsp;is&nbsp;will&nbsp;collect&nbsp;the&nbsp;info&nbsp;at&nbsp;the&nbsp;level&nbsp;where&nbsp;it&nbsp;first&nbsp;find&nbsp;funcName</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(funcName,array)</B><BR>&nbsp;if&nbsp;funcName&nbsp;is&nbsp;found,&nbsp;executes&nbsp;it&nbsp;and&nbsp;push&nbsp;the&nbsp;result&nbsp;in&nbsp;array<BR>&nbsp;if&nbsp;not&nbsp;it&nbsp;tries&nbsp;in&nbsp;the&nbsp;possible&nbsp;sub&nbsp;orders&nbsp;<BR>&nbsp;note&nbsp;that&nbsp;is&nbsp;will&nbsp;collect&nbsp;the&nbsp;info&nbsp;at&nbsp;the&nbsp;level&nbsp;where&nbsp;it&nbsp;first&nbsp;find&nbsp;funcName</DIV></TD></TR>
 <TR>
 <TH vAlign=top>span</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function()</B><BR></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function()</B><BR></DIV></TD></TR>
 <TR>
 <TH vAlign=top>toString</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function()</B><BR></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV>
-<DIV id=sect0040 class=SECTION sizset="16" sizcache="1">
-<H3 class=SECTIONTITLE contentEditable=false>1.4.2 Account</H3>
-<DIV class=SECTIONCONTAINER sizset="16" sizcache="1">
-<DIV id=rich0041 class=RICHTEXT contentEditable=false>
-<P>The&nbsp;Account class is the most important building bloc of this module.</P></DIV><PRE id=code0045 class=CODE contentEditable=false>jc.inspect(jc.finance.Account.prototype,'Account')</PRE>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function()</B><BR></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV>
+<DIV id=sect0040 class="SECTION ELEMENT" sizcache="1" sizset="16">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.4.2 Account</H3>
+<DIV class=SECTIONCONTAINER sizcache="1" sizset="16">
+<DIV id=rich0041 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
+<P>The&nbsp;Account class is the most important building bloc of this module.</P></DIV><PRE id=code0045 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect(jc.finance.Account.prototype,'Account')</PRE>
 <DIV id=out0045 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} Account</LEGEND>
@@ -845,56 +921,72 @@
 <TBODY>
 <TR>
 <TH vAlign=top>initCurrency</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(currency)</B><BR>&nbsp;for&nbsp;internal&nbsp;use&nbsp;only:&nbsp;prepare&nbsp;the&nbsp;order&nbsp;for&nbsp;currency</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(currency)</B><BR>&nbsp;for&nbsp;internal&nbsp;use&nbsp;only:&nbsp;prepare&nbsp;the&nbsp;order&nbsp;for&nbsp;currency</DIV></TD></TR>
 <TR>
 <TH vAlign=top>name</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(name)</B><BR>&nbsp;adds&nbsp;this&nbsp;object&nbsp;to&nbsp;v&nbsp;either&nbsp;under&nbsp;name&nbsp;or&nbsp;if&nbsp;omitted&nbsp;under&nbsp;this._name<BR>&nbsp;this&nbsp;makes&nbsp;an&nbsp;embeeded&nbsp;object&nbsp;directly&nbsp;accessible.<BR>&nbsp;throw&nbsp;an&nbsp;error&nbsp;if&nbsp;name&nbsp;already&nbsp;exists<BR>&nbsp;return&nbsp;this&nbsp;for&nbsp;method&nbsp;chaining.</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(name)</B><BR>&nbsp;adds&nbsp;this&nbsp;object&nbsp;to&nbsp;v&nbsp;either&nbsp;under&nbsp;name&nbsp;or&nbsp;if&nbsp;omitted&nbsp;under&nbsp;this._name<BR>&nbsp;this&nbsp;makes&nbsp;an&nbsp;embeeded&nbsp;object&nbsp;directly&nbsp;accessible.<BR>&nbsp;throw&nbsp;an&nbsp;error&nbsp;if&nbsp;name&nbsp;already&nbsp;exists<BR>&nbsp;return&nbsp;this&nbsp;for&nbsp;method&nbsp;chaining.</DIV></TD></TR>
 <TR>
 <TH vAlign=top>convertTo</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(currency)</B><BR>&nbsp;for&nbsp;internal&nbsp;use&nbsp;only:&nbsp;add&nbsp;a&nbsp;new&nbsp;amount$curency&nbsp;field&nbsp;to&nbsp;all&nbsp;._payments&nbsp;if&nbsp;needed</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(currency)</B><BR>&nbsp;for&nbsp;internal&nbsp;use&nbsp;only:&nbsp;add&nbsp;a&nbsp;new&nbsp;amount$curency&nbsp;field&nbsp;to&nbsp;all&nbsp;._payments&nbsp;if&nbsp;needed</DIV></TD></TR>
 <TR>
 <TH vAlign=top>setDate</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(date)</B><BR>&nbsp;set&nbsp;the&nbsp;date.<BR>&nbsp;the&nbsp;main&nbsp;purpose&nbsp;of&nbsp;this&nbsp;method&nbsp;is&nbsp;to&nbsp;be&nbsp;overridden&nbsp;so&nbsp;it&nbsp;can&nbsp;adjust&nbsp;the&nbsp;date&nbsp;in&nbsp;permanent&nbsp;orders</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(date)</B><BR>&nbsp;set&nbsp;the&nbsp;date.<BR>&nbsp;the&nbsp;main&nbsp;purpose&nbsp;of&nbsp;this&nbsp;method&nbsp;is&nbsp;to&nbsp;be&nbsp;overridden&nbsp;so&nbsp;it&nbsp;can&nbsp;adjust&nbsp;the&nbsp;date&nbsp;in&nbsp;permanent&nbsp;orders</DIV></TD></TR>
 <TR>
 <TH vAlign=top>execute</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(currency)</B><BR>&nbsp;execute&nbsp;all&nbsp;orders&nbsp;in&nbsp;order&nbsp;to&nbsp;create&nbsp;the&nbsp;._payments&nbsp;<BR>&nbsp;it&nbsp;will&nbsp;also&nbsp;recalculate&nbsp;all&nbsp;nested&nbsp;orders<BR>&nbsp;DOESN'T&nbsp;update&nbsp;the&nbsp;balance<BR>&nbsp;returns&nbsp;the&nbsp;array&nbsp;of&nbsp;._payments</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(currency)</B><BR>&nbsp;execute&nbsp;all&nbsp;orders&nbsp;in&nbsp;order&nbsp;to&nbsp;create&nbsp;the&nbsp;._payments&nbsp;<BR>&nbsp;it&nbsp;will&nbsp;also&nbsp;recalculate&nbsp;all&nbsp;nested&nbsp;orders<BR>&nbsp;DOESN'T&nbsp;update&nbsp;the&nbsp;balance<BR>&nbsp;returns&nbsp;the&nbsp;array&nbsp;of&nbsp;._payments</DIV></TD></TR>
 <TR>
 <TH vAlign=top>collectInfo</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(funcName,array)</B><BR>&nbsp;if&nbsp;funcName&nbsp;is&nbsp;found,&nbsp;executes&nbsp;it&nbsp;and&nbsp;push&nbsp;the&nbsp;result&nbsp;in&nbsp;array<BR>&nbsp;if&nbsp;not&nbsp;it&nbsp;tries&nbsp;in&nbsp;the&nbsp;possible&nbsp;sub&nbsp;orders&nbsp;<BR>&nbsp;note&nbsp;that&nbsp;is&nbsp;will&nbsp;collect&nbsp;the&nbsp;info&nbsp;at&nbsp;the&nbsp;level&nbsp;where&nbsp;it&nbsp;first&nbsp;find&nbsp;funcName</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(funcName,array)</B><BR>&nbsp;if&nbsp;funcName&nbsp;is&nbsp;found,&nbsp;executes&nbsp;it&nbsp;and&nbsp;push&nbsp;the&nbsp;result&nbsp;in&nbsp;array<BR>&nbsp;if&nbsp;not&nbsp;it&nbsp;tries&nbsp;in&nbsp;the&nbsp;possible&nbsp;sub&nbsp;orders&nbsp;<BR>&nbsp;note&nbsp;that&nbsp;is&nbsp;will&nbsp;collect&nbsp;the&nbsp;info&nbsp;at&nbsp;the&nbsp;level&nbsp;where&nbsp;it&nbsp;first&nbsp;find&nbsp;funcName</DIV></TD></TR>
 <TR>
 <TH vAlign=top>span</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(options)</B><BR></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(options)</B><BR></DIV></TD></TR>
 <TR>
 <TH vAlign=top>toString</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function()</B><BR></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function()</B><BR></DIV></TD></TR>
 <TR>
 <TH vAlign=top>account</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(name,currency,startDate,endDate)</B><BR>&nbsp;create&nbsp;a&nbsp;new&nbsp;account&nbsp;inside&nbsp;a&nbsp;Account&nbsp;object<BR>&nbsp;returns&nbsp;the&nbsp;newly&nbsp;created&nbsp;account&nbsp;for&nbsp;method&nbsp;chaining&nbsp;(use&nbsp;.end()&nbsp;to&nbsp;get&nbsp;this&nbsp;again</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(name,currency,startDate,endDate)</B><BR>&nbsp;create&nbsp;a&nbsp;new&nbsp;account&nbsp;inside&nbsp;a&nbsp;Account&nbsp;object<BR>&nbsp;returns&nbsp;the&nbsp;newly&nbsp;created&nbsp;account&nbsp;for&nbsp;method&nbsp;chaining&nbsp;(use&nbsp;.end()&nbsp;to&nbsp;get&nbsp;this&nbsp;again</DIV></TD></TR>
 <TR>
 <TH vAlign=top>budget</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(name,initialBudget,currency,startDate,endDate)</B><BR>&nbsp;create&nbsp;a&nbsp;new&nbsp;budget&nbsp;inside&nbsp;a&nbsp;CashFlow&nbsp;object<BR>&nbsp;a&nbsp;budget&nbsp;is&nbsp;like&nbsp;an&nbsp;account&nbsp;but&nbsp;it&nbsp;has&nbsp;a&nbsp;special&nbsp;field&nbsp;budget$currency<BR>&nbsp;a&nbsp;.pay&nbsp;or&nbsp;.recieve&nbsp;changes&nbsp;the&nbsp;account$currency&nbsp;field&nbsp;and&nbsp;the&nbsp;budget&nbsp;field<BR>&nbsp;but&nbsp;.adjust&nbsp;only&nbsp;affects&nbsp;the&nbsp;budget&nbsp;field</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(name,initialBudget,currency,startDate,endDate)</B><BR>&nbsp;create&nbsp;a&nbsp;new&nbsp;budget&nbsp;inside&nbsp;a&nbsp;CashFlow&nbsp;object<BR>&nbsp;a&nbsp;budget&nbsp;is&nbsp;like&nbsp;an&nbsp;account&nbsp;but&nbsp;it&nbsp;has&nbsp;a&nbsp;special&nbsp;field&nbsp;budget$currency<BR>&nbsp;a&nbsp;.pay&nbsp;or&nbsp;.recieve&nbsp;changes&nbsp;the&nbsp;account$currency&nbsp;field&nbsp;and&nbsp;the&nbsp;budget&nbsp;field<BR>&nbsp;but&nbsp;.adjust&nbsp;only&nbsp;affects&nbsp;the&nbsp;budget&nbsp;field</DIV></TD></TR>
 <TR>
 <TH vAlign=top>task</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(name,initialBudget,currency,startDate,endDate)</B><BR>&nbsp;create&nbsp;a&nbsp;new&nbsp;task&nbsp;inside&nbsp;a&nbsp;CashFlow&nbsp;object<BR>&nbsp;a&nbsp;task&nbsp;is&nbsp;like&nbsp;an&nbsp;budget&nbsp;but&nbsp;has&nbsp;a&nbsp;.taskSummary()&nbsp;method&nbsp;that&nbsp;help&nbsp;colect&nbsp;task&nbsp;info</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(name,initialBudget,currency,startDate,endDate)</B><BR>&nbsp;create&nbsp;a&nbsp;new&nbsp;task&nbsp;inside&nbsp;a&nbsp;CashFlow&nbsp;object<BR>&nbsp;a&nbsp;task&nbsp;is&nbsp;like&nbsp;an&nbsp;budget&nbsp;but&nbsp;has&nbsp;a&nbsp;.taskSummary()&nbsp;method&nbsp;that&nbsp;help&nbsp;colect&nbsp;task&nbsp;info</DIV></TD></TR>
 <TR>
 <TH vAlign=top>recieve</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(date,subject,amount,currency)</B><BR>&nbsp;add&nbsp;an&nbsp;order&nbsp;of&nbsp;receiving&nbsp;amount&nbsp;at&nbsp;date.&nbsp;<BR>&nbsp;currency&nbsp;is&nbsp;optional&nbsp;and&nbsp;uses&nbsp;by&nbsp;default&nbsp;this&nbsp;CashFlow&nbsp;currency</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(date,subject,amount,currency)</B><BR>&nbsp;add&nbsp;an&nbsp;order&nbsp;of&nbsp;receiving&nbsp;amount&nbsp;at&nbsp;date.&nbsp;<BR>&nbsp;currency&nbsp;is&nbsp;optional&nbsp;and&nbsp;uses&nbsp;by&nbsp;default&nbsp;this&nbsp;CashFlow&nbsp;currency</DIV></TD></TR>
 <TR>
 <TH vAlign=top>pay</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(date,subject,amount,currency)</B><BR>&nbsp;add&nbsp;an&nbsp;order&nbsp;of&nbsp;payment&nbsp;of&nbsp;amount<BR>&nbsp;currency&nbsp;is&nbsp;optional&nbsp;and&nbsp;uses&nbsp;by&nbsp;default&nbsp;this&nbsp;CashFlow&nbsp;currency</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(date,subject,amount,currency)</B><BR>&nbsp;add&nbsp;an&nbsp;order&nbsp;of&nbsp;payment&nbsp;of&nbsp;amount<BR>&nbsp;currency&nbsp;is&nbsp;optional&nbsp;and&nbsp;uses&nbsp;by&nbsp;default&nbsp;this&nbsp;CashFlow&nbsp;currency</DIV></TD></TR>
 <TR>
 <TH vAlign=top>monthly</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(startDate,endDate)</B><BR>&nbsp;returns&nbsp;a&nbsp;PermanentOrder&nbsp;object&nbsp;configured&nbsp;to&nbsp;execute<BR>&nbsp;the&nbsp;associated&nbsp;payments&nbsp;every&nbsp;month&nbsp;starting&nbsp;with&nbsp;startDate&nbsp;and&nbsp;ending&nbsp;<BR>&nbsp;returns&nbsp;the&nbsp;new&nbsp;PermanentOrders&nbsp;for&nbsp;method&nbsp;chainning</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(startDate,endDate)</B><BR>&nbsp;returns&nbsp;a&nbsp;PermanentOrder&nbsp;object&nbsp;configured&nbsp;to&nbsp;execute<BR>&nbsp;the&nbsp;associated&nbsp;payments&nbsp;every&nbsp;month&nbsp;starting&nbsp;with&nbsp;startDate&nbsp;and&nbsp;ending&nbsp;<BR>&nbsp;returns&nbsp;the&nbsp;new&nbsp;PermanentOrders&nbsp;for&nbsp;method&nbsp;chainning</DIV></TD></TR>
 <TR>
 <TH vAlign=top>update</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function()</B><BR>&nbsp;update&nbsp;the&nbsp;balance&nbsp;field&nbsp;of&nbsp;each&nbsp;records<BR>&nbsp;as&nbsp;records&nbsp;are&nbsp;shared&nbsp;between&nbsp;the&nbsp;different&nbsp;levels&nbsp;of&nbsp;cashFlow&nbsp;<BR>&nbsp;this&nbsp;function&nbsp;has&nbsp;to&nbsp;be&nbsp;called&nbsp;before&nbsp;reading&nbsp;any&nbsp;balance&nbsp;field<BR>&nbsp;as&nbsp;Account,&nbsp;it&nbsp;takes&nbsp;into&nbsp;account&nbsp;only&nbsp;true&nbsp;payments,&nbsp;not&nbsp;budgetAdjustments</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function()</B><BR>&nbsp;update&nbsp;the&nbsp;balance&nbsp;field&nbsp;of&nbsp;each&nbsp;records<BR>&nbsp;as&nbsp;records&nbsp;are&nbsp;shared&nbsp;between&nbsp;the&nbsp;different&nbsp;levels&nbsp;of&nbsp;cashFlow&nbsp;<BR>&nbsp;this&nbsp;function&nbsp;has&nbsp;to&nbsp;be&nbsp;called&nbsp;before&nbsp;reading&nbsp;any&nbsp;balance&nbsp;field<BR>&nbsp;as&nbsp;Account,&nbsp;it&nbsp;takes&nbsp;into&nbsp;account&nbsp;only&nbsp;true&nbsp;payments,&nbsp;not&nbsp;budgetAdjustments</DIV></TD></TR>
 <TR>
 <TH vAlign=top>end</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function()</B><BR>&nbsp;returns&nbsp;the&nbsp;PARENT&nbsp;cashFlow&nbsp;in&nbsp;order&nbsp;to&nbsp;continue&nbsp;method&nbsp;chainning</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV>
-<DIV id=sect0046 class=SECTION sizset="17" sizcache="1">
-<H3 class=SECTIONTITLE contentEditable=false>1.4.3 PermanentOrders</H3>
-<DIV class=SECTIONCONTAINER sizset="17" sizcache="1">
-<DIV id=rich0047 class=RICHTEXT contentEditable=false>PermanentOrders are created through CashFlow methods <STRONG>.permanantOrders .yearly .monthly&nbsp;</STRONG>and<STRONG> .weekly.</STRONG></DIV><PRE id=code0050 class=CODE contentEditable=false>jc.inspect(jc.finance.PermanentOrders.prototype)</PRE>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function()</B><BR>&nbsp;returns&nbsp;the&nbsp;PARENT&nbsp;cashFlow&nbsp;in&nbsp;order&nbsp;to&nbsp;continue&nbsp;method&nbsp;chainning</DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV>
+<DIV id=sect0046 class="SECTION ELEMENT" sizcache="1" sizset="17">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.4.3 PermanentOrders</H3>
+<DIV class=SECTIONCONTAINER sizcache="1" sizset="17">
+<DIV id=rich0047 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>PermanentOrders are created through CashFlow methods <STRONG>.permanantOrders .yearly .monthly&nbsp;</STRONG>and<STRONG> .weekly.</STRONG></DIV><PRE id=code0050 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect(jc.finance.PermanentOrders.prototype)</PRE>
 <DIV id=out0050 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
@@ -902,31 +994,41 @@
 <TBODY>
 <TR>
 <TH vAlign=top>initCurrency</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(currency)</B><BR>&nbsp;for&nbsp;internal&nbsp;use&nbsp;only:&nbsp;prepare&nbsp;the&nbsp;order&nbsp;for&nbsp;currency</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(currency)</B><BR>&nbsp;for&nbsp;internal&nbsp;use&nbsp;only:&nbsp;prepare&nbsp;the&nbsp;order&nbsp;for&nbsp;currency</DIV></TD></TR>
 <TR>
 <TH vAlign=top>name</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(name)</B><BR>&nbsp;adds&nbsp;this&nbsp;object&nbsp;to&nbsp;v&nbsp;either&nbsp;under&nbsp;name&nbsp;or&nbsp;if&nbsp;omitted&nbsp;under&nbsp;this._name<BR>&nbsp;this&nbsp;makes&nbsp;an&nbsp;embeeded&nbsp;object&nbsp;directly&nbsp;accessible.<BR>&nbsp;throw&nbsp;an&nbsp;error&nbsp;if&nbsp;name&nbsp;already&nbsp;exists<BR>&nbsp;return&nbsp;this&nbsp;for&nbsp;method&nbsp;chaining.</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(name)</B><BR>&nbsp;adds&nbsp;this&nbsp;object&nbsp;to&nbsp;v&nbsp;either&nbsp;under&nbsp;name&nbsp;or&nbsp;if&nbsp;omitted&nbsp;under&nbsp;this._name<BR>&nbsp;this&nbsp;makes&nbsp;an&nbsp;embeeded&nbsp;object&nbsp;directly&nbsp;accessible.<BR>&nbsp;throw&nbsp;an&nbsp;error&nbsp;if&nbsp;name&nbsp;already&nbsp;exists<BR>&nbsp;return&nbsp;this&nbsp;for&nbsp;method&nbsp;chaining.</DIV></TD></TR>
 <TR>
 <TH vAlign=top>convertTo</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(currency)</B><BR>&nbsp;for&nbsp;internal&nbsp;use&nbsp;only:&nbsp;add&nbsp;a&nbsp;new&nbsp;amount$curency&nbsp;field&nbsp;to&nbsp;all&nbsp;._payments&nbsp;if&nbsp;needed</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(currency)</B><BR>&nbsp;for&nbsp;internal&nbsp;use&nbsp;only:&nbsp;add&nbsp;a&nbsp;new&nbsp;amount$curency&nbsp;field&nbsp;to&nbsp;all&nbsp;._payments&nbsp;if&nbsp;needed</DIV></TD></TR>
 <TR>
 <TH vAlign=top>setDate</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(date)</B><BR>&nbsp;set&nbsp;the&nbsp;date.<BR>&nbsp;the&nbsp;main&nbsp;purpose&nbsp;of&nbsp;this&nbsp;method&nbsp;is&nbsp;to&nbsp;be&nbsp;overridden&nbsp;so&nbsp;it&nbsp;can&nbsp;adjust&nbsp;the&nbsp;date&nbsp;in&nbsp;permanent&nbsp;orders</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(date)</B><BR>&nbsp;set&nbsp;the&nbsp;date.<BR>&nbsp;the&nbsp;main&nbsp;purpose&nbsp;of&nbsp;this&nbsp;method&nbsp;is&nbsp;to&nbsp;be&nbsp;overridden&nbsp;so&nbsp;it&nbsp;can&nbsp;adjust&nbsp;the&nbsp;date&nbsp;in&nbsp;permanent&nbsp;orders</DIV></TD></TR>
 <TR>
 <TH vAlign=top>execute</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(currency)</B><BR>&nbsp;execute&nbsp;all&nbsp;Orders&nbsp;of&nbsp;this&nbsp;PermanentOrders&nbsp;for&nbsp;every&nbsp;date&nbsp;of&nbsp;the&nbsp;PermanentOrders<BR>&nbsp;returns&nbsp;all&nbsp;resulting&nbsp;payments,&nbsp;adding&nbsp;an&nbsp;amount$currency&nbsp;field&nbsp;if&nbsp;necessary</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(currency)</B><BR>&nbsp;execute&nbsp;all&nbsp;Orders&nbsp;of&nbsp;this&nbsp;PermanentOrders&nbsp;for&nbsp;every&nbsp;date&nbsp;of&nbsp;the&nbsp;PermanentOrders<BR>&nbsp;returns&nbsp;all&nbsp;resulting&nbsp;payments,&nbsp;adding&nbsp;an&nbsp;amount$currency&nbsp;field&nbsp;if&nbsp;necessary</DIV></TD></TR>
 <TR>
 <TH vAlign=top>collectInfo</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(funcName,array)</B><BR>&nbsp;if&nbsp;funcName&nbsp;is&nbsp;found,&nbsp;executes&nbsp;it&nbsp;and&nbsp;push&nbsp;the&nbsp;result&nbsp;in&nbsp;array<BR>&nbsp;if&nbsp;not&nbsp;it&nbsp;tries&nbsp;in&nbsp;the&nbsp;possible&nbsp;sub&nbsp;orders&nbsp;<BR>&nbsp;note&nbsp;that&nbsp;is&nbsp;will&nbsp;collect&nbsp;the&nbsp;info&nbsp;at&nbsp;the&nbsp;level&nbsp;where&nbsp;it&nbsp;first&nbsp;find&nbsp;funcName</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(funcName,array)</B><BR>&nbsp;if&nbsp;funcName&nbsp;is&nbsp;found,&nbsp;executes&nbsp;it&nbsp;and&nbsp;push&nbsp;the&nbsp;result&nbsp;in&nbsp;array<BR>&nbsp;if&nbsp;not&nbsp;it&nbsp;tries&nbsp;in&nbsp;the&nbsp;possible&nbsp;sub&nbsp;orders&nbsp;<BR>&nbsp;note&nbsp;that&nbsp;is&nbsp;will&nbsp;collect&nbsp;the&nbsp;info&nbsp;at&nbsp;the&nbsp;level&nbsp;where&nbsp;it&nbsp;first&nbsp;find&nbsp;funcName</DIV></TD></TR>
 <TR>
 <TH vAlign=top>span</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function()</B><BR></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function()</B><BR></DIV></TD></TR>
 <TR>
 <TH vAlign=top>toString</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function()</B><BR></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function()</B><BR></DIV></TD></TR>
 <TR>
 <TH vAlign=top>pay</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function(subject,amount,currency,day)</B><BR>&nbsp;pays&nbsp;within&nbsp;the&nbsp;permanent&nbsp;odrer&nbsp;the&nbsp;amount&nbsp;for&nbsp;that&nbsp;subject<BR>&nbsp;currency&nbsp;is&nbsp;by&nbsp;default&nbsp;the&nbsp;currency&nbsp;of&nbsp;the&nbsp;permanent&nbsp;order</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function(subject,amount,currency,day)</B><BR>&nbsp;pays&nbsp;within&nbsp;the&nbsp;permanent&nbsp;odrer&nbsp;the&nbsp;amount&nbsp;for&nbsp;that&nbsp;subject<BR>&nbsp;currency&nbsp;is&nbsp;by&nbsp;default&nbsp;the&nbsp;currency&nbsp;of&nbsp;the&nbsp;permanent&nbsp;order</DIV></TD></TR>
 <TR>
 <TH vAlign=top>end</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><B>function()</B><BR></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV></DIV></DIV></DIV></DIV></BODY></HTML>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=HELP><B>function()</B><BR></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV></DIV></DIV></DIV></DIV></DIV></BODY></HTML>

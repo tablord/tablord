@@ -20,14 +20,14 @@
 
 <SCRIPT src="finance.js"></SCRIPT>
 </HEAD>
-<BODY sizset="0" sizcache="1" designMode="on" showCode="true" showCut="true" showTest="true" showTrace="true">
+<BODY sizset="0" sizcache="1"  designMode="on" showCode="false" showCut="true" showTest="true" showTrace="true">
 <DIV id=menu class=TOOLBAR>
-<DIV><INPUT onclick=jc.showCode(event) CHECKED type=checkbox>codes</INPUT><INPUT onclick=jc.showCut(event) CHECKED type=checkbox>cuts</INPUT><INPUT onclick=jc.showTest(event) CHECKED type=checkbox>tests</INPUT><INPUT onclick=jc.showTrace(event) CHECKED type=checkbox>traces</INPUT><INPUT onclick=jc.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
-<DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
-<DIV style="DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">&#8595; cut &#8595;</BUTTON>
+<DIV><INPUT onclick=jc.showCode(event) type=checkbox value="" >codes</INPUT><INPUT onclick=jc.showCut(event) CHECKED type=checkbox>cuts</INPUT><INPUT onclick=jc.showTest(event) CHECKED type=checkbox>tests</INPUT><INPUT onclick=jc.showTrace(event) CHECKED type=checkbox>traces</INPUT><INPUT onclick=jc.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
+<DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px">save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
+<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick=jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement) style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick=jc.template.convertTo(jc.selectedElement,jc.templateChoice$.val()) style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION></SELECT><BUTTON onclick=jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement) style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
 <DIV id=objectToolBar></DIV></DIV></DIV>
-<DIV id=jcContent sizset="0" sizcache="1">
-<DIV id=rich0006 class=RICHTEXT contentEditable=false style="FONT-SIZE: 12pt">
+<DIV id=jcContent class=CONTAINER sizset="0" sizcache="1">
+<DIV id=rich0006 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false style="FONT-SIZE: 12pt">
 <P>Marc NICOLE</P>
 <P>colonie ouverte </P>
 <P>div 7 / 113</P>
@@ -70,8 +70,8 @@
 <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Marc Nicole</P>
 <P>&nbsp;</P>
 <P>&nbsp;</P>
-<P>&nbsp;</P></DIV><PRE id=code0030 class="CODE HIDDEN" contentEditable=false><P>output.finalize(function(){output.p(</P><P>table('actions propres a favoriser mon projet de réinsertion')</P><P>.cols({action:{style:"text-align: left;"},</P><P>       but:{style:"text-align: left;"}})</P><P>.add({action:"développer en cellule comme actuellement",</P><P>      but: "avoir une première version très limitée mais fonctionnelle",</P><P>      <FONT style="BACKGROUND-COLOR: #f2f9a8">'% du projet':30,status:'ok','v0.0':'x',crowdfunding:'x','v1.0 utilisable':'x',</FONT></P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">      'fin prévisible':JCalcBusinessPlan['JCalc V0.0']._estimatedEndDate()})</FONT></P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">.add({action:"pouvoir envoyer des fichiers à l'exterieur", </FONT></P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">      but:"permettre d'avoir un premier feed back utilisateur rapidement",</FONT></P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">      '% du projet':20,'v0.0':' ',status:' ',crowdfunding:'x','v1.0 utilisable':'x',</FONT></P><FONT style="BACKGROUND-COLOR: #f2f9a8"><P><FONT style="BACKGROUND-COLOR: #f2f9a8">      'fin prévisible':JCalcBusinessPlan['crowdfunding phase']['dev based on users feedback']._estimatedEndDate()})</FONT></P><P>.add({action:"pouvoir recevoir des fichiers (téléchargeable car libre de droits)", </P><P>      but:"permettre de développer les fonctionnalités graphiques",</P><P>      '% du projet':30,'v0.0':' ',status:' ',crowdfunding:' ','v1.0 utilisable':'x',</FONT></P><FONT style="BACKGROUND-COLOR: #f2f9a8"><P><FONT style="BACKGROUND-COLOR: #f2f9a8">      'fin prévisible':JCalcBusinessPlan['v1.0 first graphical version']._estimatedEndDate()})</FONT></P><P>.add({action:"pouvoir travailler à l'exterieur", </P><P>      but:"développer les fonctionnalités nécessitant un serveur internet",</P><P>      '% du projet':20,'v0.0':' ',status:' ',crowdfunding:' ','v1.0 utilisable':' ',</FONT></P><FONT style="BACKGROUND-COLOR: #f2f9a8"><P><FONT style="BACKGROUND-COLOR: #f2f9a8">      'fin prévisible':JCalcBusinessPlan['v2.0 first version with shared data']._estimatedEndDate()})</FONT></P><P>)})</FONT></P></PRE>
-<DIV id=out0030 class="OUTPUT SUCCESS">
+<P>&nbsp;</P></DIV><PRE id=code0030 class="CODE ELEMENT EDITABLE HIDDEN" contentEditable=false><P>output.finalize(function(){output.p(</P><P>table('actions propres a favoriser mon projet de réinsertion')</P><P>.cols({action:{style:"text-align: left;"},</P><P>       but:{style:"text-align: left;"}})</P><P>.add({action:"développer en cellule comme actuellement",</P><P>      but: "avoir une première version très limitée mais fonctionnelle",</P><P>      <FONT style="BACKGROUND-COLOR: #f2f9a8">'% du projet':30,status:'ok','v0.0':'x',crowdfunding:'x','v1.0 utilisable':'x',</FONT></P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">      'fin prévisible':JCalcBusinessPlan['JCalc V0.0']._estimatedEndDate()})</FONT></P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">.add({action:"pouvoir envoyer des fichiers à l'exterieur", </FONT></P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">      but:"permettre d'avoir un premier feed back utilisateur rapidement",</FONT></P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">      '% du projet':20,'v0.0':' ',status:' ',crowdfunding:'x','v1.0 utilisable':'x',</FONT></P><FONT style="BACKGROUND-COLOR: #f2f9a8"><P><FONT style="BACKGROUND-COLOR: #f2f9a8">      'fin prévisible':JCalcBusinessPlan['crowdfunding phase']['dev based on users feedback']._estimatedEndDate()})</FONT></P><P>.add({action:"pouvoir recevoir des fichiers (téléchargeable car libre de droits)", </P><P>      but:"permettre de développer les fonctionnalités graphiques",</P><P>      '% du projet':30,'v0.0':' ',status:' ',crowdfunding:' ','v1.0 utilisable':'x',</FONT></P><FONT style="BACKGROUND-COLOR: #f2f9a8"><P><FONT style="BACKGROUND-COLOR: #f2f9a8">      'fin prévisible':JCalcBusinessPlan['v1.0 first graphical version']._estimatedEndDate()})</FONT></P><P>.add({action:"pouvoir travailler à l'exterieur", </P><P>      but:"développer les fonctionnalités nécessitant un serveur internet",</P><P>      '% du projet':20,'v0.0':' ',status:' ',crowdfunding:' ','v1.0 utilisable':' ',</FONT></P><FONT style="BACKGROUND-COLOR: #f2f9a8"><P><FONT style="BACKGROUND-COLOR: #f2f9a8">      'fin prévisible':JCalcBusinessPlan['v2.0 first version with shared data']._estimatedEndDate()})</FONT></P><P>)})</FONT></P></PRE>
+<DIV id=out0030 class=OUTPUT>
 <P>
 <TABLE>
 <THEAD>
@@ -93,7 +93,7 @@
 <TD>x</TD>
 <TD>x</TD>
 <TD>x</TD>
-<TD>2018-12-17</TD></TR>
+<TD>2018-11-04</TD></TR>
 <TR>
 <TD style="TEXT-ALIGN: left">pouvoir&nbsp;envoyer&nbsp;des&nbsp;fichiers&nbsp;à&nbsp;l'exterieur</TD>
 <TD style="TEXT-ALIGN: left">permettre&nbsp;d'avoir&nbsp;un&nbsp;premier&nbsp;feed&nbsp;back&nbsp;utilisateur&nbsp;rapidement</TD>
@@ -102,7 +102,7 @@
 <TD>&nbsp;</TD>
 <TD>x</TD>
 <TD>x</TD>
-<TD>2019-03-14</TD></TR>
+<TD>2019-01-30</TD></TR>
 <TR>
 <TD style="TEXT-ALIGN: left">pouvoir&nbsp;recevoir&nbsp;des&nbsp;fichiers&nbsp;(téléchargeable&nbsp;car&nbsp;libre&nbsp;de&nbsp;droits)</TD>
 <TD style="TEXT-ALIGN: left">permettre&nbsp;de&nbsp;développer&nbsp;les&nbsp;fonctionnalités&nbsp;graphiques</TD>
@@ -111,7 +111,7 @@
 <TD>&nbsp;</TD>
 <TD>&nbsp;</TD>
 <TD>x</TD>
-<TD>2019-06-06</TD></TR>
+<TD>2019-04-24</TD></TR>
 <TR>
 <TD style="TEXT-ALIGN: left">pouvoir&nbsp;travailler&nbsp;à&nbsp;l'exterieur</TD>
 <TD style="TEXT-ALIGN: left">développer&nbsp;les&nbsp;fonctionnalités&nbsp;nécessitant&nbsp;un&nbsp;serveur&nbsp;internet</TD>
@@ -120,8 +120,13 @@
 <TD>&nbsp;</TD>
 <TD>&nbsp;</TD>
 <TD>&nbsp;</TD>
-<TD>2019-08-01</TD></TR></TBODY></TABLE></P></DIV>
-<DIV id=rich0053 class=RICHTEXT contentEditable=false>
+<TD>2019-06-19</TD></TR></TBODY></TABLE></P></DIV>
+<DIV id=rich0053 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
 <P>&nbsp;</P>
 <P>&nbsp;</P>
 <P>&nbsp;</P>
@@ -131,9 +136,9 @@
 <P>&nbsp;</P>
 <P>&nbsp;</P>
 <P>&nbsp;</P></DIV>
-<DIV id=rich0032 class=RICHTEXT contentEditable=false>
-<H1>Table des Matières</H1></DIV><PRE id=code0028 class="CODE HIDDEN" contentEditable=false>jc.tableOfContent</PRE>
-<DIV id=out0028 class="OUTPUT SUCCESS">
+<DIV id=rich0032 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
+<H1>Table des Matières</H1></DIV><PRE id=code0028 class="CODE ELEMENT EDITABLE HIDDEN" contentEditable=false>jc.tableOfContent</PRE>
+<DIV id=out0028 class=OUTPUT>
 <DIV class=INTERACTIVE>
 <DIV class=TOC0>1 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_businessPlan.hta#sect0004">Projet de réinsertion "JCalc"</A></DIV>
 <DIV class=TOC0>2 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_businessPlan.hta#sect0052">Stratégie</A></DIV>
@@ -156,10 +161,10 @@
 <DIV class=TOC2>3.2.2 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_businessPlan.hta#sect0060">version payante pour enlever la publicité et bannière</A></DIV>
 <DIV class=TOC1>3.3 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_businessPlan.hta#sect0067">Breakeven</A></DIV>
 <DIV class=TOC0>4 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_businessPlan.hta#sect0070">Conclusion</A></DIV></DIV></DIV>
-<DIV id=sect0004 class=SECTION sizset="2" sizcache="1">
-<H1 class=SECTIONTITLE contentEditable=false>1 Projet de réinsertion "JCalc"</H1>
+<DIV id=sect0004 class="SECTION ELEMENT" sizset="2" sizcache="1">
+<H1 class="SECTIONTITLE EDITABLE" contentEditable=false>1 Projet de réinsertion "JCalc"</H1>
 <DIV class=SECTIONCONTAINER>
-<DIV id=rich0005 class=RICHTEXT contentEditable=false>
+<DIV id=rich0005 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>"JCalc" est un projet que j'ai dans la tête depuis longtemps, qui provient de la frustration de n'avoir aucun outil qui permette d'avoir à la fois des capacités avancées de calcul et la possibilité de rédiger du texte qui lui même intègre certains résultats de calcul. Il s'agit d'avoir un programme permettant à la fois de faire plus qu'EXCEL et la partie la plus utilisée de WORD, le tout en utilisant un simple navigateur Internet. </P>
 <P>&nbsp;</P>
 <P>Les clients cibles sont</P>
@@ -174,13 +179,13 @@
 <P>&nbsp;</P>
 <P>Le 2eme but personnel est de maîtriser parfaitement JavaScript / HTML5 / CSS3&nbsp;et donc d'augmenter mon employabilité à l'ensemble du développement Web, soit comme freelance, soit en tant qu'employé d'une entreprise.</P>
 <P>en prison ce but ne peut être atteint qu'à 80% sachant que la version de Windows est ancienne.</P></DIV></DIV></DIV>
-<DIV id=sect0052 class=SECTION>
-<H1 class=SECTIONTITLE contentEditable=false>2 Stratégie</H1>
+<DIV id=sect0052 class="SECTION ELEMENT">
+<H1 class="SECTIONTITLE EDITABLE" contentEditable=false>2 Stratégie</H1>
 <DIV class=SECTIONCONTAINER>
-<DIV id=sect0055 class=SECTION>
-<H2 class=SECTIONTITLE contentEditable=false>2.1 Business Model Canvas</H2>
+<DIV id=sect0055 class="SECTION ELEMENT">
+<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>2.1 Business Model Canvas</H2>
 <DIV class=SECTIONCONTAINER>
-<DIV id=rich0056 class=RICHTEXT contentEditable=false>
+<DIV id=rich0056 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <TABLE border=1>
 <TBODY>
 <TR>
@@ -227,23 +232,23 @@
 <P>- licences</P></TD></TR></TBODY></TABLE>
 <P>&nbsp;</P>
 <P>&nbsp;</P></DIV></DIV></DIV>
-<DIV id=sect0053 class=SECTION>
-<H2 class=SECTIONTITLE contentEditable=false>2.2 Clientèle cible</H2>
+<DIV id=sect0053 class="SECTION ELEMENT">
+<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>2.2 Clientèle cible</H2>
 <DIV class=SECTIONCONTAINER>
-<DIV id=rich0054 class=RICHTEXT contentEditable=false>
+<DIV id=rich0054 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>personnes ayant besoin de faire des rapports complexes</P>
 <UL>
 <LI>étudiants (+ très prompt à la nouveauté, +connaissance de base élevées&nbsp;+ futurs clients payants une fois en entreprise, - aucun pouvoir d'achat) 
 <LI>Ingénieurs/scientifiques (+connaissance de base élevées, + près à payer si cela rempli le besoin) 
 <LI>chefs de projets/managers (+prêt à payer si rempli le besoin,&nbsp;- connaissances informatiques variables)</LI></UL></DIV></DIV></DIV>
-<DIV id=sect0020 class=SECTION>
-<H2 class=SECTIONTITLE contentEditable=false>2.3 Business Model envisagé: Freemium + Co-development</H2>
+<DIV id=sect0020 class="SECTION ELEMENT">
+<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>2.3 Business Model envisagé: Freemium + Co-development</H2>
 <DIV class=SECTIONCONTAINER>
-<DIV id=rich0021 class=RICHTEXT contentEditable=false>Dans le cadre du projet de réinsertion, seule une partie de la version gratuite peut être envisagée vu l'absence d'internet comme l'absence de certain fichiers (en particulier pour développer des graphiques)</DIV>
-<DIV id=sect0022 class=SECTION>
-<H3 class=SECTIONTITLE contentEditable=false>2.3.1 Version Gratuite</H3>
+<DIV id=rich0021 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>Dans le cadre du projet de réinsertion, seule une partie de la version gratuite peut être envisagée vu l'absence d'internet comme l'absence de certain fichiers (en particulier pour développer des graphiques)</DIV>
+<DIV id=sect0022 class="SECTION ELEMENT">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>2.3.1 Version Gratuite</H3>
 <DIV class=SECTIONCONTAINER>
-<DIV id=rich0023 class=RICHTEXT contentEditable=false>
+<DIV id=rich0023 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>Version <STRONG><U>mono feuille de calcul</U></STRONG> (mais pas de limitation dans la longueur) avec</P>
 <UL>
 <LI>Toutes les librairies de bases (= toutes dans un premier temps, mais de nouvelles fonctionnalités pourraient être payante dans le futur) 
@@ -254,34 +259,40 @@
 <P>&nbsp;</P>
 <P>&nbsp;</P>
 <P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
 <P>&nbsp;</P></DIV></DIV></DIV>
-<DIV id=sect0024 class=SECTION>
-<H3 class=SECTIONTITLE contentEditable=false>2.3.2 Version Premium</H3>
+<DIV id=sect0024 class="SECTION ELEMENT">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>2.3.2 Version Premium</H3>
 <DIV class=SECTIONCONTAINER>
-<DIV id=rich0025 class=RICHTEXT contentEditable=false>
+<DIV id=rich0025 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>Version payante, à priori sur un volume de données (= si possible pas un modèle au nombre d'utilisateur, car difficile à gèrer dans une entreprise)</P>
 <UL>
 <LI><STRONG>Controle de version</STRONG> automatique sur un serveur distant 
 <LI>Possibilité de <STRONG>partager des données entre feuilles</STRONG> de calcul 
 <LI><STRONG>multi feuilles</STRONG> de calculs liées entre elles.</LI></UL>
 <P>à priori cette version serait <STRONG>gratuite pour les étudiants</STRONG> dans le but de répendre l'outil dans les futurs collaborateurs d'entreprises.</P></DIV></DIV></DIV>
-<DIV id=sect0026 class=SECTION>
-<H3 class=SECTIONTITLE contentEditable=false>2.3.3 Co-development</H3>
+<DIV id=sect0026 class="SECTION ELEMENT">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>2.3.3 Co-development</H3>
 <DIV class=SECTIONCONTAINER>
-<DIV id=rich0027 class=RICHTEXT contentEditable=false>Dans le but de minimiser les coûts de dévelopmment de JCalc, la communauté est incitée a développer et a être rétribuée en fonction de l'utilisation de nouveau modules, ou d'améliorer les modules existants. La plateform JCalc mettant d'abord l'accent sur la <STRONG>testabilité</STRONG> du produit (tests automatiques)</DIV></DIV></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0032 class=SECTION sizset="2" sizcache="1">
-<H1 class=SECTIONTITLE contentEditable=false>3 Business Plan</H1>
+<DIV id=rich0027 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>Dans le but de minimiser les coûts de dévelopmment de JCalc, la communauté est incitée a développer et a être rétribuée en fonction de l'utilisation de nouveau modules, ou d'améliorer les modules existants. La plateform JCalc mettant d'abord l'accent sur la <STRONG>testabilité</STRONG> du produit (tests automatiques)</DIV></DIV></DIV></DIV></DIV></DIV></DIV>
+<DIV id=sect0032 class="SECTION ELEMENT" sizset="2" sizcache="1">
+<H1 class="SECTIONTITLE EDITABLE" contentEditable=false>3 Business Plan</H1>
 <DIV class=SECTIONCONTAINER sizset="2" sizcache="1">
-<DIV id=sect0008 class=SECTION sizset="2" sizcache="1">
-<H2 class=SECTIONTITLE contentEditable=false>3.1 Plan d'investissement</H2>
+<DIV id=sect0008 class="SECTION ELEMENT" sizset="2" sizcache="1">
+<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>3.1 Plan d'investissement</H2>
 <DIV class=SECTIONCONTAINER sizset="2" sizcache="1">
-<DIV id=sect0009 class=SECTION sizset="2" sizcache="1">
-<H3 class=SECTIONTITLE contentEditable=false>3.1.1 Effort&nbsp;&nbsp;initial pour arriver à une première levée de fonds</H3>
+<DIV id=sect0009 class="SECTION ELEMENT" sizset="2" sizcache="1">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.1.1 Effort&nbsp;&nbsp;initial pour arriver à une première levée de fonds</H3>
 <DIV class=SECTIONCONTAINER sizset="2" sizcache="1">
-<DIV id=rich0010 class=RICHTEXT contentEditable=false>
+<DIV id=rich0010 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>L'effort de développement initial est réalisé durant ma détention et vu, du business model, ne coûte&nbsp;rien. Il est néanmoins chiffré pour mémoire, essentiellement dans le but de pouvoir être valorisé par la suite.</P>
-<P>&nbsp;</P></DIV><PRE id=code0011 class="CODE HIDDEN" contentEditable=false><P>jc.Units.addUnit('devH','currency',85,'CHF')</P><P>        .addUnit('prisonH','currency',0,'CHF');</P><P>&nbsp;</P><P>jc.cashFlow('JCalcBusinessPlan','CHF','2018/7/1','2020/12/31')</P><P>.budget('JCalc V0.0',0,'prisonH').name('phase1')</P><P>  .budget('feasability loop (V0.0087)')</P><P>    .task('first feasibility prototype',30*2)</P><P>      .pay('2018/7/1','start of job',0)</P><P>      .pay('2018/7/28','july hours',60)</P><P>    .end()</P><P>  .end()</P><P>  .budget('EDI')</P><P>    .task('better save/warning before close..',20)</P><P>      .pay('2018/7/29','added setModified and onbeforeunload event',3)</P><P>      .pay('2018/8/19','change for a fixed toolbar on the top of the window',5)</P><P>      .done('2018/8/19')</P><P>    .end()</P><P>    .task('reorganize block (mask as cut + ^paste^ button (??)',20)</P><P>      .pay('2018/8/5','refactor toolbars &amp; click events &amp; cut &amp; paste',3)</P><P>      .done('2018/8/6')</P><P>    .end()</P><P>    .task('hide code individually',2).end()</P><P>    .task('run until the code and not only this code',2)</P><P>      .pay('2018/8/4','refactor run until + jc.vars',2)</P><P>      .done('2018/8/4')</P><P>    .end()</P><P>    .task('interactive editors of objects',50)</P><P>      .pay('2018/8/13','basic cell edition',2)</P><P>      .pay('2018/8/17','basic cell edition',8)</P><P>      .pay('2018/8/26','basic cell edition',10)</P><P>    .end()</P><P>    .task('animation.. how to loop through code',50).end()</P><P>  .end()</P><P>  .budget('finance')</P><P>    .task('add a task object (inhertits from budget) in order to start some planning',10)</P><P>       .pay('2018/8/10','added tasks',6)</P><P>       .done('2018/8/10')</P><P>    .end()</P><P>    .task('budget dashboard..(text only)',20)</P><P>      .pay('2018/8/1','burning rate...',2)</P><P>    .end()</P><P>    .task('agile support (task, sprint..)',30).end()</P><P>  .end()</P><P>  .budget('simulation')</P><P>    .task('simulation object',30)</P><P>      .pay('2018/9/6','interactive element',4)</P><P>      .pay('2018/9/7','jc.animation',6)</P><P>      .pay('2018/9/8','test &amp; documentation',6)</P><P>    .end()</P><P>  .end()</P><P>  .task('unplanned evolution needed by use case',50)</P><P>    .pay('2018/7/29','v(name,Date) stores the native Date instead of embeeding it in a V object',1)</P><P>    .pay('2018/7/29','corrected the save bug, fso did not accept all char &gt; 255',1)</P><P>    .pay('2018/7/30','start of diff.js',2)</P><P>    .pay('2018/7/31','finalized diff.js',2)</P><P>    .pay('2018/9/5','trace improvements',2)</P><P>    .task('put bottom buttons V new section... at the end of the current selection only',2)</P><P>      .pay('2018/8/4','refactor tool bars and click events',3)</P><P>      .done('2018/8/4')</P><P>    .end()</P><P>  .end()</P><P>  .span({tasks:1,payments:0,summary:1})    </P></PRE>
-<DIV id=out0011 class="OUTPUT SUCCESS"><VAR>JCalc V0.0</VAR>
+<P>&nbsp;</P></DIV><PRE id=code0011 class="CODE ELEMENT EDITABLE HIDDEN" contentEditable=false><P>jc.Units.addUnit('devH','currency',85,'CHF')</P><P>        .addUnit('prisonH','currency',0,'CHF');</P><P>&nbsp;</P><P>jc.cashFlow('JCalcBusinessPlan','CHF','2018/7/1','2020/12/31')</P><P>.budget('JCalc V0.0',0,'prisonH').name('phase1')</P><P>  .budget('feasability loop (V0.0087)')</P><P>    .task('first feasibility prototype',30*2)</P><P>      .pay('2018/7/1','start of job',0)</P><P>      .pay('2018/7/28','july hours',60)</P><P>    .end()</P><P>  .end()</P><P>  .budget('EDI')</P><P>    .task('better save/warning before close..',20)</P><P>      .pay('2018/7/29','added setModified and onbeforeunload event',3)</P><P>      .pay('2018/8/19','change for a fixed toolbar on the top of the window',5)</P><P>      .done('2018/8/19')</P><P>    .end()</P><P>    .task('reorganize block (mask as cut + ^paste^ button (??)',20)</P><P>      .pay('2018/8/5','refactor toolbars &amp; click events &amp; cut &amp; paste',3)</P><P>      .done('2018/8/6')</P><P>    .end()</P><P>    .task('hide code individually',2).end()</P><P>    .task('run until the code and not only this code',2)</P><P>      .pay('2018/8/4','refactor run until + jc.vars',2)</P><P>      .done('2018/8/4')</P><P>    .end()</P><P>    .task('interactive editors of objects',50)</P><P>      .pay('2018/8/13','basic cell edition',2)</P><P>      .pay('2018/8/17','basic cell edition',8)</P><P>      .pay('2018/8/26','basic cell edition',10)</P><P>    .end()</P><P>    .task('animation.. how to loop through code',50)</P><P>      .pay('2018/9/15','animation',50)</P><P>      .done('2018/8/4')</P><P>    .end()</P><P>  .end()</P><P>  .budget('finance')</P><P>    .task('add a task object (inhertits from budget) in order to start some planning',10)</P><P>       .pay('2018/8/10','added tasks',6)</P><P>       .done('2018/8/10')</P><P>    .end()</P><P>    .task('budget dashboard..(text only)',20)</P><P>      .pay('2018/8/1','burning rate...',2)</P><P>      .done('2018/9/8')</P><P>    .end()</P><P>    .task('agile support (task, sprint..)',30).end()</P><P>  .end()</P><P>  .budget('simulation')</P><P>    .task('simulation object',30)</P><P>      .pay('2018/9/6','interactive element',4)</P><P>      .pay('2018/9/7','jc.animation',6)</P><P>      .pay('2018/9/8','test &amp; documentation',6)</P><P>    .end()</P><P>  .end()</P><P>  .task('unplanned evolution needed by use case',50)</P><P>    .pay('2018/7/29','v(name,Date) stores the native Date instead of embeeding it in a V object',1)</P><P>    .pay('2018/7/29','corrected the save bug, fso did not accept all char &gt; 255',1)</P><P>    .pay('2018/7/30','start of diff.js',2)</P><P>    .pay('2018/7/31','finalized diff.js',2)</P><P>    .pay('2018/9/5','trace improvements',2)</P><P>    .task('put bottom buttons V new section... at the end of the current selection only',2)</P><P>      .pay('2018/8/4','refactor tool bars and click events',3)</P><P>      .done('2018/8/4')</P><P>    .end()</P><P>  .end()</P><P>  .span({tasks:1,payments:0,summary:1})    </P></PRE>
+<DIV id=out0011 class=OUTPUT><VAR>JCalc V0.0</VAR>
 <FIELDSET><LEGEND>tasks</LEGEND>
 <TABLE>
 <THEAD>
@@ -345,11 +356,11 @@
 <TR>
 <TD class=LEFT>animation..&nbsp;how&nbsp;to&nbsp;loop&nbsp;through&nbsp;code</TD>
 <TD>2018-07-01</TD>
-<TD>NaN-aN-aN</TD>
+<TD>2018-08-04</TD>
+<TD>50.00</TD>
 <TD>50.00</TD>
 <TD>0.00</TD>
-<TD>50.00</TD>
-<TD>0.00</TD></TR>
+<TD>100.00</TD></TR>
 <TR>
 <TD class=LEFT>add&nbsp;a&nbsp;task&nbsp;object&nbsp;(inhertits&nbsp;from&nbsp;budget)&nbsp;in&nbsp;order&nbsp;to&nbsp;start&nbsp;some&nbsp;planning</TD>
 <TD>2018-07-01</TD>
@@ -361,11 +372,11 @@
 <TR>
 <TD class=LEFT>budget&nbsp;dashboard..(text&nbsp;only)</TD>
 <TD>2018-07-01</TD>
-<TD>NaN-aN-aN</TD>
-<TD>20.00</TD>
+<TD>2018-09-08</TD>
 <TD>2.00</TD>
-<TD>18.00</TD>
-<TD>10.00</TD></TR>
+<TD>2.00</TD>
+<TD>0.00</TD>
+<TD>100.00</TD></TR>
 <TR>
 <TD class=LEFT>agile&nbsp;support&nbsp;(task,&nbsp;sprint..)</TD>
 <TD>2018-07-01</TD>
@@ -395,13 +406,13 @@
 <TBODY>
 <TR>
 <TH>total Budget:</TH>
-<TD>314</TD></TR>
+<TD>296</TD></TR>
 <TR>
 <TH>total Paid:</TH>
-<TD>128</TD></TR>
+<TD>178</TD></TR>
 <TR>
 <TH>% Paid:</TH>
-<TD>40.8</TD></TR></TBODY></TABLE></FIELDSET>
+<TD>60.1</TD></TR></TBODY></TABLE></FIELDSET>
 <FIELDSET><LEGEND>calendar</LEGEND>
 <TABLE>
 <TBODY>
@@ -410,11 +421,11 @@
 <TD>2018-07-01</TD></TR>
 <TR>
 <TH>estimated end Date:</TH>
-<TD>2018-12-17</TD></TR>
+<TD>2018-11-04</TD></TR>
 <TR>
 <TH>declared end date:</TH>
 <TD>2020-12-31</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV>
-<DIV id=rich0054 class=RICHTEXT contentEditable=false>
+<DIV id=rich0054 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>&nbsp;</P>
 <P>&nbsp;</P>
 <P>&nbsp;</P>
@@ -424,15 +435,15 @@
 <P>&nbsp;</P>
 <P>&nbsp;</P>
 <P>&nbsp;</P></DIV>
-<DIV id=sect0014 class=SECTION sizset="3" sizcache="1">
-<H3 class=SECTIONTITLE contentEditable=false>3.1.2 Phase CrowdFunding</H3>
+<DIV id=sect0014 class="SECTION ELEMENT" sizset="3" sizcache="1">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.1.2 Phase CrowdFunding</H3>
 <DIV class=SECTIONCONTAINER sizset="3" sizcache="1">
-<DIV id=rich0041 class=RICHTEXT contentEditable=false sizset="3" sizcache="1">La phase de crowdFunding peut débuter à la fin de la phase précédente, soit approximativement le <SPAN id=code0053 class="CODE EMBEDDED HIDDEN" style="DISPLAY: none">phase1._estimatedEndDate().yyyymmdd()</SPAN><SPAN id=out0053 class="OUTPUT SUCCESS" contentEditable=false>2018-12-17</SPAN></DIV>
-<DIV id=sect0032 class=SECTION sizset="5" sizcache="1">
-<H4 class=SECTIONTITLE contentEditable=false>3.1.2.1 Mise en place d'un site <SPAN id=code0034 class="CODE HIDDEN EMBEDDED" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0034 class="OUTPUT SUCCESS">JCalc</SPAN></H4>
+<DIV id=rich0041 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="3" sizcache="1">La phase de crowdFunding peut débuter à la fin de la phase précédente, soit approximativement le <SPAN id=code0053 class="CODE EMBEDDED ELEMENT HIDDEN" style="DISPLAY: none">phase1._estimatedEndDate().yyyymmdd()</SPAN><SPAN id=out0053 class=OUTPUT contentEditable=false>2018-11-04</SPAN></DIV>
+<DIV id=sect0032 class="SECTION ELEMENT" sizset="5" sizcache="1">
+<H4 class="SECTIONTITLE EDITABLE" contentEditable=false>3.1.2.1 Mise en place d'un site <SPAN id=code0034 class="CODE EMBEDDED ELEMENT HIDDEN" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0034 class=OUTPUT>JCalc</SPAN></H4>
 <DIV class=SECTIONCONTAINER sizset="5" sizcache="1">
-<DIV id=rich0033 class=RICHTEXT contentEditable=false>L'idée est de pouvoir mettre en place un site web présentant le futur produit tout comme le prototype actuel. Ce site devrait pouvoir être suffisement simple pour être mis en place durant des congés.</DIV><PRE id=code0035 class="CODE HIDDEN" contentEditable=false><P>JCalcBusinessPlan</P><P>.budget('crowdfunding phase')</P><P>  .budget('web site',0,'CHF')</P><P>    .budget('creation site web')</P><P>      .adjustBudget('2018/7/28','dev site web durant congés',16,'prisonH')</P><P>    .end()</P><P>    .adjustBudget('2018/7/28','frais hebergement',320,'CHF')</P><P>    .monthly(phase1._estimatedEndDate(),'2019/12/31')</P><P>      .pay('hosting fee',20)</P><P>    .end()</P><P>    .span({summary:0})</P><P>&nbsp;</P></PRE>
-<DIV id=out0035 class="OUTPUT SUCCESS"><VAR>web site</VAR>
+<DIV id=rich0033 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>L'idée est de pouvoir mettre en place un site web présentant le futur produit tout comme le prototype actuel. Ce site devrait pouvoir être suffisement simple pour être mis en place durant des congés.</DIV><PRE id=code0035 class="CODE ELEMENT EDITABLE HIDDEN" contentEditable=false><P>JCalcBusinessPlan</P><P>.budget('crowdfunding phase')</P><P>  .budget('web site',0,'CHF')</P><P>    .budget('creation site web')</P><P>      .adjustBudget('2018/7/28','dev site web durant congés',16,'prisonH')</P><P>    .end()</P><P>    .adjustBudget('2018/7/28','frais hebergement',320,'CHF')</P><P>    .monthly(phase1._estimatedEndDate(),'2019/12/31')</P><P>      .pay('hosting fee',20)</P><P>    .end()</P><P>    .span({summary:0})</P><P>&nbsp;</P></PRE>
+<DIV id=out0035 class=OUTPUT><VAR>web site</VAR>
 <FIELDSET><LEGEND>payments</LEGEND>
 <TABLE>
 <THEAD>
@@ -459,100 +470,107 @@
 <TD>320.00</TD>
 <TD>320.00</TD></TR>
 <TR>
-<TD>2018-12-17</TD>
+<TD>2018-11-04</TD>
 <TD>hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>300.00</TD></TR>
 <TR>
-<TD>2019-01-17</TD>
+<TD>2018-12-04</TD>
 <TD>hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>280.00</TD></TR>
 <TR>
-<TD>2019-02-17</TD>
+<TD>2019-01-04</TD>
 <TD>hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>260.00</TD></TR>
 <TR>
-<TD>2019-03-17</TD>
+<TD>2019-02-04</TD>
 <TD>hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>240.00</TD></TR>
 <TR>
-<TD>2019-04-17</TD>
+<TD>2019-03-04</TD>
 <TD>hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>220.00</TD></TR>
 <TR>
-<TD>2019-05-17</TD>
+<TD>2019-04-04</TD>
 <TD>hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>200.00</TD></TR>
 <TR>
-<TD>2019-06-17</TD>
+<TD>2019-05-04</TD>
 <TD>hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>180.00</TD></TR>
 <TR>
-<TD>2019-07-17</TD>
+<TD>2019-06-04</TD>
 <TD>hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>160.00</TD></TR>
 <TR>
-<TD>2019-08-17</TD>
+<TD>2019-07-04</TD>
 <TD>hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>140.00</TD></TR>
 <TR>
-<TD>2019-09-17</TD>
+<TD>2019-08-04</TD>
 <TD>hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>120.00</TD></TR>
 <TR>
-<TD>2019-10-17</TD>
+<TD>2019-09-04</TD>
 <TD>hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>100.00</TD></TR>
 <TR>
-<TD>2019-11-17</TD>
+<TD>2019-10-04</TD>
 <TD>hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>80.00</TD></TR>
 <TR>
-<TD>2019-12-17</TD>
+<TD>2019-11-04</TD>
 <TD>hosting&nbsp;fee</TD>
 <TD></TD>
 <TD></TD>
 <TD>-20.00</TD>
-<TD>60.00</TD></TR></TBODY></TABLE></FIELDSET></DIV>
-<DIV id=rich0038 class=RICHTEXT contentEditable=false sizset="6" sizcache="1">
+<TD>60.00</TD></TR>
+<TR>
+<TD>2019-12-04</TD>
+<TD>hosting&nbsp;fee</TD>
+<TD></TD>
+<TD></TD>
+<TD>-20.00</TD>
+<TD>40.00</TD></TR></TBODY></TABLE></FIELDSET></DIV>
+<DIV id=rich0038 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="6" sizcache="1">
 <P>Une fois l'environnement en place, l'idée est de pouvoir faire une toute première levée de fond sous forme de Crowd Funding pour commencer de mesurer l'intérêt du publique.</P>
-<P sizset="6" sizcache="1">Cette première levée de fond vise à trouver <SPAN id=code0018 class="CODE HIDDEN EMBEDDED" style="DISPLAY: none">v('nbOfFirstFunders',100)</SPAN><SPAN id=out0018 class="OUTPUT SUCCESS" contentEditable=false>100</SPAN> personnes décidées à mettre <SPAN id=code0019 class="CODE HIDDEN EMBEDDED" style="DISPLAY: none">v('initialShareValue$CHF',100)</SPAN><SPAN id=out0019 class="OUTPUT SUCCESS" contentEditable=false>100</SPAN>CHF contre <STRONG>le droit d'utiliser graduitement et de manière illimitée toute futures versions à vie et le droit d'avoir leur feedback automatique sur l'utilisation du logiciel</STRONG> (nb d'utilisations, mail pour demander un feedback etc..)</P></DIV><PRE id=code0040 class="CODE HIDDEN" contentEditable=false><P>JCalcBusinessPlan['crowdfunding phase']</P><P>.account('funding')</P><P>  .pay('2018/12/1',"frais potentiels d'enregistrement",200)</P><P>  .recieve('2018/12/1','1rst crowd funding target',nbOfFirstFunders*initialShareValue$CHF)</P><P>&nbsp;</P><P>&nbsp;</P></PRE>
-<DIV id=out0040 class="OUTPUT SUCCESS"><VAR>funding</VAR>
+<P sizset="6" sizcache="1">Cette première levée de fond vise à trouver <SPAN id=code0018 class="CODE EMBEDDED ELEMENT HIDDEN" style="DISPLAY: none">v('nbOfFirstFunders',100)</SPAN><SPAN id=out0018 class=OUTPUT contentEditable=false>100</SPAN> personnes décidées à mettre <SPAN id=code0019 class="CODE EMBEDDED ELEMENT HIDDEN" style="DISPLAY: none">v('initialShareValue$CHF',100)</SPAN><SPAN id=out0019 class=OUTPUT contentEditable=false>100</SPAN>CHF contre <STRONG>le droit d'utiliser graduitement et de manière illimitée toute futures versions à vie et le droit d'avoir leur feedback automatique sur l'utilisation du logiciel</STRONG> (nb d'utilisations, mail pour demander un feedback etc..)</P></DIV><PRE id=code0040 class="CODE ELEMENT EDITABLE HIDDEN" contentEditable=false><P>JCalcBusinessPlan['crowdfunding phase']</P><P>.account('funding')</P><P>  .pay('2018/12/1',"frais potentiels d'enregistrement",200)</P><P>  .recieve('2018/12/1','1rst crowd funding target',nbOfFirstFunders*initialShareValue$CHF)</P><P>&nbsp;</P><P>&nbsp;</P></PRE>
+<DIV id=out0040 class=OUTPUT><VAR>funding</VAR>
 <TABLE>
 <THEAD>
 <TR>
@@ -571,8 +589,8 @@
 <TD style="TEXT-ALIGN: left">1rst&nbsp;crowd&nbsp;funding&nbsp;target</TD>
 <TD>10000.00</TD>
 <TD>9800.00</TD></TR></TBODY></TABLE></DIV>
-<DIV id=rich0048 class=RICHTEXT contentEditable=false></DIV><PRE id=code0044 class="CODE HIDDEN" contentEditable=false><P>JCalcBusinessPlan['crowdfunding phase']</P><P>.task('dev based on users feedback',200,'prisonH',phase1._estimatedEndDate()).setBurningRate(16,'prisonH').name('phase2').span()</P></PRE>
-<DIV id=out0044 class="OUTPUT SUCCESS"><VAR>dev based on users feedback</VAR>
+<DIV id=rich0048 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false></DIV><PRE id=code0044 class="CODE ELEMENT EDITABLE HIDDEN" contentEditable=false><P>JCalcBusinessPlan['crowdfunding phase']</P><P>.task('dev based on users feedback',200,'prisonH',phase1._estimatedEndDate()).setBurningRate(16,'prisonH').name('phase2').span()</P></PRE>
+<DIV id=out0044 class=OUTPUT><VAR>dev based on users feedback</VAR>
 <FIELDSET><LEGEND>payments</LEGEND>
 <TABLE>
 <THEAD>
@@ -584,7 +602,7 @@
 <TH>dev based on users feedback$prisonH</TH></TR></THEAD>
 <TBODY>
 <TR>
-<TD>2018-12-17</TD>
+<TD>2018-11-04</TD>
 <TD>dev&nbsp;based&nbsp;on&nbsp;users&nbsp;feedback</TD>
 <TD>200.00</TD>
 <TD>true</TD>
@@ -606,30 +624,30 @@
 <TBODY>
 <TR>
 <TH>start:</TH>
-<TD>2018-12-17</TD></TR>
+<TD>2018-11-04</TD></TR>
 <TR>
 <TH>estimated end Date:</TH>
-<TD>2019-03-14</TD></TR>
+<TD>2019-01-30</TD></TR>
 <TR>
 <TH>declared end date:</TH>
 <TD>2020-12-31</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV>
-<DIV id=rich0038 class=RICHTEXT contentEditable=false></DIV>
-<DIV id=rich0015 class=RICHTEXT contentEditable=false>
+<DIV id=rich0038 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false></DIV>
+<DIV id=rich0015 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>&nbsp;</P>
 <P>&nbsp;</P>
 <P>&nbsp;</P>
 <P>&nbsp;</P>
 <P>&nbsp;</P></DIV></DIV></DIV>
-<DIV id=sect0045 class=SECTION sizset="10" sizcache="1">
-<H3 class=SECTIONTITLE contentEditable=false>3.1.3 version v1.0: avec graphiques</H3>
+<DIV id=sect0045 class="SECTION ELEMENT" sizset="10" sizcache="1">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.1.3 version v1.0: avec graphiques</H3>
 <DIV class=SECTIONCONTAINER sizset="10" sizcache="1">
-<DIV id=rich0046 class=RICHTEXT contentEditable=false>
+<DIV id=rich0046 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>Une étape majeure est de pouvoir insérer des graphique qui sont indispensable à n'importe quel document chiffré.</P>
 <P>Une plétore de solutions pour JavaScript ont déjà été développées, mais elle nécessitent de télécharger des fichiers JavaScript depuis internet. Notoirement, la librairie D3.js semble très appropriée pour ce travail.</P>
 <P>Développer le tout de 0 (ce qui serait techniquement possible en prison) n'a pas de sens, car il s'agit de milliers d'heures de dévelopement et conduirait à une solution unique inintéressante pour le marché.</P>
 <P>&nbsp;</P>
-<P>A ce stade, il m'est difficile d'apprécier finement l'effort à fournir n'ayant que des livres. Les chiffres ci-dessous ne sont donc qu'une estimation très imprécise, basée sur aucune expérience réelle.</P></DIV><PRE id=code0047 class="CODE HIDDEN" contentEditable=false><P>JCalcBusinessPlan</P><P>.budget('v1.0 first graphical version',300,'prisonH',phase2._estimatedEndDate())</P><P>  .setBurningRate(25,'prisonH')</P><P>  .name('phase3')</P></PRE>
-<DIV id=out0047 class="OUTPUT SUCCESS"><VAR>v1.0 first graphical version</VAR>
+<P>A ce stade, il m'est difficile d'apprécier finement l'effort à fournir n'ayant que des livres. Les chiffres ci-dessous ne sont donc qu'une estimation très imprécise, basée sur aucune expérience réelle.</P></DIV><PRE id=code0047 class="CODE ELEMENT EDITABLE HIDDEN" contentEditable=false><P>JCalcBusinessPlan</P><P>.budget('v1.0 first graphical version',300,'prisonH',phase2._estimatedEndDate())</P><P>  .setBurningRate(25,'prisonH')</P><P>  .name('phase3')</P></PRE>
+<DIV id=out0047 class=OUTPUT><VAR>v1.0 first graphical version</VAR>
 <FIELDSET><LEGEND>payments</LEGEND>
 <TABLE>
 <THEAD>
@@ -641,7 +659,7 @@
 <TH>v1.0 first graphical version$prisonH</TH></TR></THEAD>
 <TBODY>
 <TR>
-<TD>2019-03-14</TD>
+<TD>2019-01-30</TD>
 <TD>v1.0&nbsp;first&nbsp;graphical&nbsp;version</TD>
 <TD>300.00</TD>
 <TD>true</TD>
@@ -663,22 +681,22 @@
 <TBODY>
 <TR>
 <TH>start:</TH>
-<TD>2019-03-14</TD></TR>
+<TD>2019-01-30</TD></TR>
 <TR>
 <TH>estimated end Date:</TH>
-<TD>2019-06-06</TD></TR>
+<TD>2019-04-24</TD></TR>
 <TR>
 <TH>declared end date:</TH>
 <TD>2020-12-31</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV>
-<DIV id=sect0049 class=SECTION sizset="11" sizcache="1">
-<H3 class=SECTIONTITLE contentEditable=false>3.1.4 version 2.0: stockage sur serveur</H3>
+<DIV id=sect0049 class="SECTION ELEMENT" sizset="11" sizcache="1">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.1.4 version 2.0: stockage sur serveur</H3>
 <DIV class=SECTIONCONTAINER sizset="11" sizcache="1">
-<DIV id=rich0050 class=RICHTEXT contentEditable=false>
+<DIV id=rich0050 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>Toutes les versions précédentes fonctionnement en mode fichier, ce qui limite le travail collaboratif (bien qu'il puisse être envisagé en utilisant des outils externes comme GIT dans une certaine mesure)</P>
 <P>Le but de cette étape est de pouvoir partager des données de manière collaborative, voire à terme générer un nouveau projet "wikiData" qui permetterait de partager des données structurées classiquement utiles à tous le monde, comme par exemple des calendriers de jours ouvrables, les cours des monnaies etc..</P>
 <P>&nbsp;</P>
-<P>Là encore, l'effort est budgeté de manière très approximative, n'ayant pas la possibilité de tester quoi que ce soit à ce stade. L'estimation ci-dessous ne réalise que le moteur de base, et non pas l'effort nécessaire pour aller chercher les données publiques (comme par exemple les cours des devises)</P></DIV><PRE id=code0051 class="CODE HIDDEN" contentEditable=false><P>JCalcBusinessPlan</P><P>.budget('v2.0 first version with shared data',200,'prisonH',phase3._estimatedEndDate()) </P><P>  .setBurningRate(25,'prisonH')</P><P>  .name('phase4')</P></PRE>
-<DIV id=out0051 class="OUTPUT SUCCESS"><VAR>v2.0 first version with shared data</VAR>
+<P>Là encore, l'effort est budgeté de manière très approximative, n'ayant pas la possibilité de tester quoi que ce soit à ce stade. L'estimation ci-dessous ne réalise que le moteur de base, et non pas l'effort nécessaire pour aller chercher les données publiques (comme par exemple les cours des devises)</P></DIV><PRE id=code0051 class="CODE ELEMENT EDITABLE HIDDEN" contentEditable=false><P>JCalcBusinessPlan</P><P>.budget('v2.0 first version with shared data',200,'prisonH',phase3._estimatedEndDate()) </P><P>  .setBurningRate(25,'prisonH')</P><P>  .name('phase4')</P></PRE>
+<DIV id=out0051 class=OUTPUT><VAR>v2.0 first version with shared data</VAR>
 <FIELDSET><LEGEND>payments</LEGEND>
 <TABLE>
 <THEAD>
@@ -690,7 +708,7 @@
 <TH>v2.0 first version with shared data$prisonH</TH></TR></THEAD>
 <TBODY>
 <TR>
-<TD>2019-06-06</TD>
+<TD>2019-04-24</TD>
 <TD>v2.0&nbsp;first&nbsp;version&nbsp;with&nbsp;shared&nbsp;data</TD>
 <TD>200.00</TD>
 <TD>true</TD>
@@ -712,18 +730,18 @@
 <TBODY>
 <TR>
 <TH>start:</TH>
-<TD>2019-06-06</TD></TR>
+<TD>2019-04-24</TD></TR>
 <TR>
 <TH>estimated end Date:</TH>
-<TD>2019-08-01</TD></TR>
+<TD>2019-06-19</TD></TR>
 <TR>
 <TH>declared end date:</TH>
 <TD>2020-12-31</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV>
-<DIV id=sect0064 class=SECTION sizset="12" sizcache="1">
-<H3 class=SECTIONTITLE contentEditable=false>3.1.5 developpement continu</H3>
+<DIV id=sect0064 class="SECTION ELEMENT" sizset="12" sizcache="1">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.1.5 developpement continu</H3>
 <DIV class=SECTIONCONTAINER sizset="12" sizcache="1">
-<DIV id=rich0065 class=RICHTEXT contentEditable=false>Le but est dans un premier temps de pouvoir assurer un salaire (même si de fait celui-ci sera alimenté par mes propres économies)</DIV><PRE id=code0066 class="CODE HIDDEN" contentEditable=false><P>JCalcBusinessPlan</P><P>.account('salaires')</P><P>  .pay('2020/8/1','salaire Marc', 60000)</P><P>  .pay('2021/8/1','salaire Marc', 60000)</P><P>  .pay('2022/8/1','salaire Marc', 60000)</P><P>  .pay('2023/8/1','salaire Marc', 60000)</P><P>  .pay('2024/8/1','salaire Marc', 80000)</P><P>  .pay('2025/8/1','salaire Marc',100000)</P></PRE>
-<DIV id=out0066 class="OUTPUT SUCCESS"><VAR>salaires</VAR>
+<DIV id=rich0065 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>Le but est dans un premier temps de pouvoir assurer un salaire (même si de fait celui-ci sera alimenté par mes propres économies)</DIV><PRE id=code0066 class="CODE ELEMENT EDITABLE HIDDEN" contentEditable=false><P>JCalcBusinessPlan</P><P>.account('salaires')</P><P>  .pay('2020/8/1','salaire Marc', 60000)</P><P>  .pay('2021/8/1','salaire Marc', 60000)</P><P>  .pay('2022/8/1','salaire Marc', 60000)</P><P>  .pay('2023/8/1','salaire Marc', 60000)</P><P>  .pay('2024/8/1','salaire Marc', 80000)</P><P>  .pay('2025/8/1','salaire Marc',100000)</P></PRE>
+<DIV id=out0066 class=OUTPUT><VAR>salaires</VAR>
 <TABLE>
 <THEAD>
 <TR>
@@ -762,25 +780,25 @@
 <TD style="TEXT-ALIGN: left">salaire&nbsp;Marc</TD>
 <TD>-100000.00</TD>
 <TD>-420000.00</TD></TR></TBODY></TABLE></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0055 class=SECTION sizset="13" sizcache="1">
-<H2 class=SECTIONTITLE contentEditable=false>3.2 Introduction commerciale</H2>
+<DIV id=sect0055 class="SECTION ELEMENT" sizset="13" sizcache="1">
+<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>3.2 Introduction commerciale</H2>
 <DIV class=SECTIONCONTAINER sizset="13" sizcache="1">
-<DIV id=rich0056 class=RICHTEXT contentEditable=false>
+<DIV id=rich0056 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>Durant la phase de développements, les seules entrées d'argent sont le crowd fnding et la pub.</P>
 <P>A ce stade, la publicité n'est pas chiffrée car difficilement quantifiable.&nbsp;</P></DIV>
-<DIV id=sect0057 class=SECTION>
-<H3 class=SECTIONTITLE contentEditable=false>3.2.1 Gratuité pour étudiants</H3>
+<DIV id=sect0057 class="SECTION ELEMENT">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.2.1 Gratuité pour étudiants</H3>
 <DIV class=SECTIONCONTAINER>
-<DIV id=rich0059 class=RICHTEXT contentEditable=false>
+<DIV id=rich0059 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>Les étudiants auront la gratuité complète de toutes les versions. Le but est de répendre le virus le plus vite possibe.</P>
 <P>Sur simple inscription dans le site web, ils auront une version gratuite, <STRONG>sans banière ni publicité</STRONG>.</P>
 <P>&nbsp;</P>
 <P>Le marketing se fera essentiellement via les réseaux sociaux en ciblant des communautés types</P></DIV></DIV></DIV>
-<DIV id=sect0060 class=SECTION sizset="13" sizcache="1">
-<H3 class=SECTIONTITLE contentEditable=false>3.2.2 version payante pour enlever la publicité et bannière</H3>
+<DIV id=sect0060 class="SECTION ELEMENT" sizset="13" sizcache="1">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.2.2 version payante pour enlever la publicité et bannière</H3>
 <DIV class=SECTIONCONTAINER sizset="13" sizcache="1">
-<DIV id=rich0061 class=RICHTEXT contentEditable=false>Le marketing initial se ferara également via les réseaux sociaux.&nbsp;L'objectif est d'arriver au nombre de licences ci-dessous</DIV><PRE id=code0062 class="CODE HIDDEN" contentEditable=false><P>var d = phase3._estimatedEndDate();</P><P>jc.Units.addUnit('licences','currency',20,'CHF');</P><P>JCalcBusinessPlan.</P><P>account('licence revenues')</P><P>  .account('licence in service','licences')</P><P>    .recieve(d.nextYear(1),'nb licences',500)</P><P>    .recieve(d.nextYear(2),'nb licences',1000)</P><P>    .recieve(d.nextYear(3),'nb licences',2000)</P><P>    .recieve(d.nextYear(4),'nb licences',4000)</P><P>    .recieve(d.nextYear(5),'nb licences',8000)</P><P>    .recieve(d.nextYear(6),'nb licences',16000)</P><P>  .end()</P></PRE>
-<DIV id=out0062 class="OUTPUT SUCCESS"><VAR>licence revenues</VAR>
+<DIV id=rich0061 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>Le marketing initial se ferara également via les réseaux sociaux.&nbsp;L'objectif est d'arriver au nombre de licences ci-dessous</DIV><PRE id=code0062 class="CODE ELEMENT EDITABLE HIDDEN" contentEditable=false><P>var d = phase3._estimatedEndDate();</P><P>jc.Units.addUnit('licences','currency',20,'CHF');</P><P>JCalcBusinessPlan.</P><P>account('licence revenues')</P><P>  .account('licence in service','licences')</P><P>    .recieve(d.nextYear(1),'nb licences',500)</P><P>    .recieve(d.nextYear(2),'nb licences',1000)</P><P>    .recieve(d.nextYear(3),'nb licences',2000)</P><P>    .recieve(d.nextYear(4),'nb licences',4000)</P><P>    .recieve(d.nextYear(5),'nb licences',8000)</P><P>    .recieve(d.nextYear(6),'nb licences',16000)</P><P>  .end()</P></PRE>
+<DIV id=out0062 class=OUTPUT><VAR>licence revenues</VAR>
 <TABLE>
 <THEAD>
 <TR>
@@ -791,49 +809,49 @@
 <TH>licence revenues$CHF</TH></TR></THEAD>
 <TBODY>
 <TR>
-<TD>2020-06-06</TD>
+<TD>2020-04-24</TD>
 <TD style="TEXT-ALIGN: left">nb&nbsp;licences</TD>
 <TD>500.00</TD>
 <TD>10000.00</TD>
 <TD>10000.00</TD></TR>
 <TR>
-<TD>2021-06-06</TD>
+<TD>2021-04-24</TD>
 <TD style="TEXT-ALIGN: left">nb&nbsp;licences</TD>
 <TD>1000.00</TD>
 <TD>20000.00</TD>
 <TD>30000.00</TD></TR>
 <TR>
-<TD>2022-06-06</TD>
+<TD>2022-04-24</TD>
 <TD style="TEXT-ALIGN: left">nb&nbsp;licences</TD>
 <TD>2000.00</TD>
 <TD>40000.00</TD>
 <TD>70000.00</TD></TR>
 <TR>
-<TD>2023-06-06</TD>
+<TD>2023-04-24</TD>
 <TD style="TEXT-ALIGN: left">nb&nbsp;licences</TD>
 <TD>4000.00</TD>
 <TD>80000.00</TD>
 <TD>150000.00</TD></TR>
 <TR>
-<TD>2024-06-06</TD>
+<TD>2024-04-24</TD>
 <TD style="TEXT-ALIGN: left">nb&nbsp;licences</TD>
 <TD>8000.00</TD>
 <TD>160000.00</TD>
 <TD>310000.00</TD></TR>
 <TR>
-<TD>2025-06-06</TD>
+<TD>2025-04-24</TD>
 <TD style="TEXT-ALIGN: left">nb&nbsp;licences</TD>
 <TD>16000.00</TD>
 <TD>320000.00</TD>
 <TD>630000.00</TD></TR></TBODY></TABLE></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0067 class=SECTION sizset="14" sizcache="1">
-<H2 class=SECTIONTITLE contentEditable=false>3.3 Breakeven</H2>
+<DIV id=sect0067 class="SECTION ELEMENT" sizset="14" sizcache="1">
+<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>3.3 Breakeven</H2>
 <DIV class=SECTIONCONTAINER sizset="14" sizcache="1">
-<DIV id=rich0068 class=RICHTEXT contentEditable=false>
+<DIV id=rich0068 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>pour l'ensemble du Business Plan le cashFlow est le suivant:</P>
 <P>&nbsp;</P>
-<P>A l'évidence, celui-ci est extrêmement dépendant de la progression du&nbsp;nombre de licences vendues et donc très incertain</P></DIV><PRE id=code0069 class="CODE HIDDEN" contentEditable=false>JCalcBusinessPlan</PRE>
-<DIV id=out0069 class="OUTPUT SUCCESS"><VAR>JCalcBusinessPlan</VAR>
+<P>A l'évidence, celui-ci est extrêmement dépendant de la progression du&nbsp;nombre de licences vendues et donc très incertain</P></DIV><PRE id=code0069 class="CODE ELEMENT EDITABLE HIDDEN" contentEditable=false>JCalcBusinessPlan</PRE>
+<DIV id=out0069 class=OUTPUT><VAR>JCalcBusinessPlan</VAR>
 <TABLE>
 <THEAD>
 <TR>
@@ -985,198 +1003,212 @@
 <TD>0.00</TD>
 <TD></TD></TR>
 <TR>
+<TD>2018-09-15</TD>
+<TD style="TEXT-ALIGN: left">animation</TD>
+<TD>-50.00</TD>
+<TD>0.00</TD>
+<TD>0.00</TD>
+<TD></TD></TR>
+<TR>
+<TD>2018-11-04</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
+<TD></TD>
+<TD>-20.00</TD>
+<TD>-20.00</TD>
+<TD></TD></TR>
+<TR>
 <TD>2018-12-01</TD>
 <TD style="TEXT-ALIGN: left">frais&nbsp;potentiels&nbsp;d'enregistrement</TD>
 <TD></TD>
 <TD>-200.00</TD>
-<TD>-200.00</TD>
+<TD>-220.00</TD>
 <TD></TD></TR>
 <TR>
 <TD>2018-12-01</TD>
 <TD style="TEXT-ALIGN: left">1rst&nbsp;crowd&nbsp;funding&nbsp;target</TD>
 <TD></TD>
 <TD>10000.00</TD>
-<TD>9800.00</TD>
-<TD></TD></TR>
-<TR>
-<TD>2018-12-17</TD>
-<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
-<TD></TD>
-<TD>-20.00</TD>
 <TD>9780.00</TD>
 <TD></TD></TR>
 <TR>
-<TD>2019-01-17</TD>
+<TD>2018-12-04</TD>
 <TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>9760.00</TD>
 <TD></TD></TR>
 <TR>
-<TD>2019-02-17</TD>
+<TD>2019-01-04</TD>
 <TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>9740.00</TD>
 <TD></TD></TR>
 <TR>
-<TD>2019-03-17</TD>
+<TD>2019-02-04</TD>
 <TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>9720.00</TD>
 <TD></TD></TR>
 <TR>
-<TD>2019-04-17</TD>
+<TD>2019-03-04</TD>
 <TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>9700.00</TD>
 <TD></TD></TR>
 <TR>
-<TD>2019-05-17</TD>
+<TD>2019-04-04</TD>
 <TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>9680.00</TD>
 <TD></TD></TR>
 <TR>
-<TD>2019-06-17</TD>
+<TD>2019-05-04</TD>
 <TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>9660.00</TD>
 <TD></TD></TR>
 <TR>
-<TD>2019-07-17</TD>
+<TD>2019-06-04</TD>
 <TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>9640.00</TD>
 <TD></TD></TR>
 <TR>
-<TD>2019-08-17</TD>
+<TD>2019-07-04</TD>
 <TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>9620.00</TD>
 <TD></TD></TR>
 <TR>
-<TD>2019-09-17</TD>
+<TD>2019-08-04</TD>
 <TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>9600.00</TD>
 <TD></TD></TR>
 <TR>
-<TD>2019-10-17</TD>
+<TD>2019-09-04</TD>
 <TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>9580.00</TD>
 <TD></TD></TR>
 <TR>
-<TD>2019-11-17</TD>
+<TD>2019-10-04</TD>
 <TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>9560.00</TD>
 <TD></TD></TR>
 <TR>
-<TD>2019-12-17</TD>
+<TD>2019-11-04</TD>
 <TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
 <TD></TD>
 <TD>-20.00</TD>
 <TD>9540.00</TD>
 <TD></TD></TR>
 <TR>
-<TD>2020-06-06</TD>
+<TD>2019-12-04</TD>
+<TD style="TEXT-ALIGN: left">hosting&nbsp;fee</TD>
+<TD></TD>
+<TD>-20.00</TD>
+<TD>9520.00</TD>
+<TD></TD></TR>
+<TR>
+<TD>2020-04-24</TD>
 <TD style="TEXT-ALIGN: left">nb&nbsp;licences</TD>
 <TD></TD>
 <TD>10000.00</TD>
-<TD>19540.00</TD>
+<TD>19520.00</TD>
 <TD>500.00</TD></TR>
 <TR>
 <TD>2020-08-01</TD>
 <TD style="TEXT-ALIGN: left">salaire&nbsp;Marc</TD>
 <TD></TD>
 <TD>-60000.00</TD>
-<TD>-40460.00</TD>
+<TD>-40480.00</TD>
 <TD></TD></TR>
 <TR>
-<TD>2021-06-06</TD>
+<TD>2021-04-24</TD>
 <TD style="TEXT-ALIGN: left">nb&nbsp;licences</TD>
 <TD></TD>
 <TD>20000.00</TD>
-<TD>-20460.00</TD>
+<TD>-20480.00</TD>
 <TD>1000.00</TD></TR>
 <TR>
 <TD>2021-08-01</TD>
 <TD style="TEXT-ALIGN: left">salaire&nbsp;Marc</TD>
 <TD></TD>
 <TD>-60000.00</TD>
-<TD>-80460.00</TD>
+<TD>-80480.00</TD>
 <TD></TD></TR>
 <TR>
-<TD>2022-06-06</TD>
+<TD>2022-04-24</TD>
 <TD style="TEXT-ALIGN: left">nb&nbsp;licences</TD>
 <TD></TD>
 <TD>40000.00</TD>
-<TD>-40460.00</TD>
+<TD>-40480.00</TD>
 <TD>2000.00</TD></TR>
 <TR>
 <TD>2022-08-01</TD>
 <TD style="TEXT-ALIGN: left">salaire&nbsp;Marc</TD>
 <TD></TD>
 <TD>-60000.00</TD>
-<TD>-100460.00</TD>
+<TD>-100480.00</TD>
 <TD></TD></TR>
 <TR>
-<TD>2023-06-06</TD>
+<TD>2023-04-24</TD>
 <TD style="TEXT-ALIGN: left">nb&nbsp;licences</TD>
 <TD></TD>
 <TD>80000.00</TD>
-<TD>-20460.00</TD>
+<TD>-20480.00</TD>
 <TD>4000.00</TD></TR>
 <TR>
 <TD>2023-08-01</TD>
 <TD style="TEXT-ALIGN: left">salaire&nbsp;Marc</TD>
 <TD></TD>
 <TD>-60000.00</TD>
-<TD>-80460.00</TD>
+<TD>-80480.00</TD>
 <TD></TD></TR>
 <TR>
-<TD>2024-06-06</TD>
+<TD>2024-04-24</TD>
 <TD style="TEXT-ALIGN: left">nb&nbsp;licences</TD>
 <TD></TD>
 <TD>160000.00</TD>
-<TD>79540.00</TD>
+<TD>79520.00</TD>
 <TD>8000.00</TD></TR>
 <TR>
 <TD>2024-08-01</TD>
 <TD style="TEXT-ALIGN: left">salaire&nbsp;Marc</TD>
 <TD></TD>
 <TD>-80000.00</TD>
-<TD>-460.00</TD>
+<TD>-480.00</TD>
 <TD></TD></TR>
 <TR>
-<TD>2025-06-06</TD>
+<TD>2025-04-24</TD>
 <TD style="TEXT-ALIGN: left">nb&nbsp;licences</TD>
 <TD></TD>
 <TD>320000.00</TD>
-<TD>319540.00</TD>
+<TD>319520.00</TD>
 <TD>16000.00</TD></TR>
 <TR>
 <TD>2025-08-01</TD>
 <TD style="TEXT-ALIGN: left">salaire&nbsp;Marc</TD>
 <TD></TD>
 <TD>-100000.00</TD>
-<TD>219540.00</TD>
+<TD>219520.00</TD>
 <TD></TD></TR></TBODY></TABLE></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0070 class=SECTION>
-<H1 class=SECTIONTITLE contentEditable=false>4 Conclusion</H1>
+<DIV id=sect0070 class="SECTION ELEMENT">
+<H1 class="SECTIONTITLE EDITABLE" contentEditable=false>4 Conclusion</H1>
 <DIV class=SECTIONCONTAINER>
-<DIV id=rich0071 class=RICHTEXT contentEditable=false>
+<DIV id=rich0071 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>Comme tout nouveau produit, toutes les hypothèses sont très incertaines. et l'on voit bien que je devrais m'auto financer durant plusieurs années.</P>
 <P>Ce projet est malgrès tout intéressant car il offre beaucoup d'intérêts secondaires.</P>
 <P>1) c'est un outil puissant pour pouvoir faire d'autres formes de consulting technique ou business. En étant mon propre utilisateur, je peux aussi plus facilement mesurer l'adéquation de celui-ci dans le quotidien.</P>

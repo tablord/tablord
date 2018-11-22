@@ -43,6 +43,8 @@
             vars:{},              // where all user variables are stored
 
             autoRun:true,
+            url:{},               // the url of the sheet decomposed in protocol {host user password domain path fileName ext tag search arguments}
+            results:{},           // if != {}, when the sheet is closed a file with the same name .jres will be written and its content is JSON.stringify(jc.results)
 
             defaults:{
               format:{            // default formating methods  this can be redefined in some JCalc objects like v table... in options.
@@ -184,9 +186,19 @@
       else if (obj === undefined) {
         return 'undefined';
       }
-      
-      return obj.toJson();
+      else if (obj.toJSON) {
+        return obj.toJSON();  // if ECMA 5, will also work for dates
+      }
+      else if (obj.toUTCString) {  // fallback for IE7 that neither has toJSON nor toISOString
+        return '"'+obj.toUTCString()+'"';
+      }
+      throw new Error("INTERNAL ERROR: can't stringify "+jc.inspect(obj));
+    };
+    JSON.parse = function(json){
+      var r;
+      return eval('r='+json);   // unsecure quick and dirty before having a true JSON
     }
+    
   }    
 
   // debug //////////////////////////////////////////////////////////
@@ -321,7 +333,7 @@
       return '<SPAN class="INSPECT META">'+this.obj.toString()+' (ms:'+this.obj.valueOf()+')</SPAN>';
     }
     var r = '<DIV class=INSPECT><fieldset><legend>'+this.legend()+' '+this.name+'</legend>';
-    r += '<table class=INSPECT>';
+    r += '<table>';
     for (var k in this.obj) {
       if (k==='constructor') continue;
       r += '<tr><th valign="top">'+k+'</th><td valign="top" style="text-align:left;">'+
@@ -428,6 +440,56 @@
     return ('00000000000000000'+integer).slice(-numberOfDigits);
   }
 
+
+  jc.urlComponents = function(url) {
+    // return an object with all components of an url
+    // - protocol
+    // - user
+    // - password
+    // - domain
+    // - port
+    // - path
+    // - fileName
+    // - ext
+    // - tag
+    // - search  
+    //   - arguments (object param=values of search)
+    // if url is an ordinary file name it is first transformed to an url with file:///
+    url = url.replace(/\\/g,'/');
+    if (/file:|http[s]?:|mailto:|ftp:/i.test(url)==false) url='file:///'+url;
+    var urlSplitRegExp = /(\w+):((\/\/((\w+):(\w+)@)?([\w\.]+)(:(\w+))?)|(\/\/\/(\w:)?))?(\/.+\/)?(\w+).(\w+)(\#(\w+))?(\?(.+))?/;
+    var comp = url.match(urlSplitRegExp);
+    if (comp == null) throw new Error(url+" doesn't look like an URL");
+    var res = {};
+    res.protocol = comp[1];
+    res.user     = comp[5];
+    res.password = comp[6];
+    res.domain   = comp[7];
+    res.port     = comp[9];
+    res.drive    = comp[11];
+    res.path     = comp[12];
+    res.fileName = comp[13];
+    res.ext      = comp[14];
+    res.tag      = comp[16];
+    res.search   = comp[18];
+    var args = {};
+    var pairs = res.search.split("&");
+    for (var i=0;i< pairs.length;i++) {
+      var pos = pairs[i].indexOf("=");
+      if (pos == -1) {
+        var name = pairs[i];
+        if (name == '') continue;
+        var value = true;
+      }
+      else {
+        var name = pairs[i].substring(0,pos);
+        var value= decodeURIComponent(pairs[i].substring(pos+1));
+      }
+      args[name] = value;
+    }
+    res.arguments = args;
+    return res;
+  }
 
   // Math helpers /////////////////
 
@@ -536,7 +598,7 @@
     else if (typeof obj === 'function') {
       return obj.toString();
     }
-    return obj.toJson();
+    return obj.toJSON();
   }
 
   jc.htmlAttribute = function(attr,value) {
@@ -634,6 +696,29 @@
       )}
     );
     return 'test Status: ';
+  }
+
+  jc.updateResultsTestStatus = function() {
+    // updates jc.results.testStatus with the number of test passed vs failed
+    jc.results.testStatus = {
+      nbPassed : $('.TEST.SUCCESS').length,
+      nbFailed : $('.TEST.ERROR').length,
+      dateTime : new Date()
+    };
+    return jc.results;
+  }
+
+  jc.writeTestResults = function () {
+    // if jc.arguments.testResultFileName, appends a line with {fileName:  ,nbPassed:  ,nbFailed: }
+
+    if (jc.arguments.testResultFileName == undefined) return;
+
+    var result = {
+      fileName:window.document.location.href.match(/(.*)\?/)[1],
+      nbPassed: $('.TEST.SUCCESS').length,
+      nbFailed: $('.TEST.ERROR').length
+    }
+    jc.fso.writeFile(jc.arguments.testResultFileName, JSON.stringify(result), 8);
   }
 
   jc.helps.jc = {inspect:jc.inspect,
@@ -908,7 +993,7 @@
   jc.Template.urlBase = 'http://tablord.com/templates/';
 
   jc.Template.prototype.insertBefore = function(element) {
-    var newElement$ = this.node$();
+    var newElement$ = this.element$();
     newElement$.insertBefore(element);
     jc.selectElement(newElement$[0]);
     jc.setModified(true);
@@ -921,18 +1006,25 @@
       if (element$.next().hasClass('OUTPUT')) element$=element$.next();
       if (element$.next().hasClass('TEST')) element$=element$.next();
     }
-    var newElement$ = this.node$();
+    var newElement$ = this.element$();
     newElement$.insertAfter(element$);
     jc.selectElement(newElement$[0]);
     jc.setModified(true);
     jc.run();
   }
 
-  jc.Template.prototype.node$ = function() {
-    if (this.html == undefined) throw new Error('in order to define a template at least define .html or node$()');
+  jc.Template.prototype.element$ = function() {
+    if (this.html === undefined) throw new Error('in order to define a template at least define .field, .html or .element$()');
     return $(this.html);
   }
-  
+
+  jc.Template.prototype.toString = function() {
+    return 'template '+this.name+' created ['+this.url+']';
+  }
+
+  jc.Template.prototype.span = function() {
+    return 'template '+this.name+' created [<a href="'+this.url+'">'+this.url+'</a>]';
+  }
 
   jc.updateTemplateChoice = function () {}; // dummy so far, will be trully defined later on when creating menu;
 
@@ -944,18 +1036,35 @@
     // or
     // .url: where is located the description of the template
     // and must define one of the 3
-    // .fields: {field1:type,field2:type....}
+    // .fields: {field1:{options},field2:{options}....}
     //          field1 is the name of the field
-    //          type is one of the string 'number','string','function'
+    //          options is an object
+    //          types
+    //          - number:{}                     the field is a number
+    //          - string:{}                     the field is a string:  default if nothing is specified
+    //          - function:function(data){...}  the field is calculated (=> readonly) and the html is the result of this function
+    //          - select:{choice1:val1,choice2:val2...) the field is a <SELECT>
+    //          - container:{url1:{},url2:{}}   a container that accepts the specified urls. if {}, accepts anything
+    //
+    //          formating
+    //          - label: specifies the label in front of the field. by default fieldName
+    //
     //    if fields is defined, standard html code will automatically be generated
     //    so do not define .fields if you want to define .html
     // .html: a string representing the html code of the template
     // .node$: a function() returning a DOM Element; normally not defined and inherited form jc.Template
-    if (newTemplate.url == undefined) newTemplate.url = jc.Template.urlBase+newTemplate.name+'.html';
+
+    if (newTemplate.url == undefined) newTemplate.url = jc.Template.urlBase+newTemplate.name+'.html'+(newTemplate.version?'#'+newTemplate.version:'');
     if (newTemplate.fields) {
       var h = '<DIV class="ELEMENT" itemscope itemtype="'+newTemplate.url+'"><TABLE width="100%">';
       for (var f in newTemplate.fields) {
-        h += '<TR><TH>'+f+'</TH><TD class=LEFT width="90%"><DIV class="FIELD EDITABLE" itemprop="'+f+'"></DIV></TD></TR>';
+        var label = f.label || f;
+        if (newTemplate.fields[f].container) {
+          h += '<TR><TH>'+label+'</TH><TD class=LEFT><DIV class=CONTAINER '+jc.htmlAttribute('templates',jc.keys(newTemplate.fields[f].container).join(' '))+'></DIV></TD></TR>';
+        }
+        else {
+          h += '<TR><TH>'+label+'</TH><TD class=LEFT width="90%"><DIV class="FIELD EDITABLE" itemprop="'+f+'"></DIV></TD></TR>';
+        }
       }
       newTemplate.html = h + '</TABLE></DIV>';
     }
@@ -963,7 +1072,7 @@
     jc.templates[newTemplate.url] = newTemplate;
     if (newTemplate.name == undefined) newTemplate.name = newTemplate.url.match(/^.*\/([\w\._$]+).htm[l]?$/i)[1];
     jc.updateTemplateChoice();
-    return 'template '+newTemplate.name+' created ['+newTemplate.url+']';
+    return newTemplate;
   }
 
   jc.template.setElements$WithData = function(elements$,data){
@@ -1012,8 +1121,19 @@
 
   jc.template.data = function(url) {
     // get all data from all templates in the document having the itemtype=url
+    // if url ends with # select any url that match any version
+    //   ex: http://www.tablord.com/templates/product.html#       matches
+    //       http://www.tablord.com/templates/product.html#1line
+    //       http://www.tablord.com/templates/product.html
+    //       http://www.tablord.com/templates/product.html#2
+    //     
     var data = [];
-    var templates$ = $('[itemtype="'+url+'"]');
+    if (url.slice(-1) === '#') {
+      var templates$ = $('[itemtype^="'+url.slice(0,-1)+'"]');
+    }
+    else {
+      var templates$ = $('[itemtype="'+url+'"]');
+    }
     templates$.each(function(i,e){
       data.push(jc.template.getElements$Data($(e)));
     });
@@ -1024,16 +1144,16 @@
     // convert element to template(url)
     var e$ = $(element);
     var data = $.extend(true,element.itemData || {},jc.template.getElements$Data(e$));
-    var new$ = jc.templates[url].node$();
+    var new$ = jc.templates[url].element$();
     jc.template.setElements$WithData(new$,data);
     new$[0].itemData = data; // keep data in a element property so it can retrieve lost in case of a convertion mistake (not handling all fields)
     e$.replaceWith(new$);
   }
 
   jc.template({
-    name    : 'code',
-    url     : 'code',
-    node$ : function() {
+    name : 'code',
+    url  : 'code',
+    element$: function() {
       jc.blockNumber++;
       return $('<PRE class="ELEMENT CODE EDITABLE" id='+jc.blockId('code')+'>');
     }
@@ -1042,7 +1162,7 @@
   jc.template({
     name : 'richText',
     url  : 'richText',
-    node$ : function() {
+    element$: function() {
       jc.blockNumber++;
       return $('<DIV  class="ELEMENT RICHTEXT EDITABLE" id='+jc.blockId('rich')+'>');
     }
@@ -1051,7 +1171,7 @@
   jc.template({
     name : 'section',
     url  : 'section',
-    node$ : function() {
+    element$ : function() {
       jc.blockNumber++;
       var n$ = $('<DIV  class="ELEMENT SECTION" id='+jc.blockId('sect')+'></DIV>')
                .append('<H1 class="SECTIONTITLE EDITABLE"></H1>')
@@ -1063,7 +1183,7 @@
   jc.template({
     name : 'paste',
     url  : 'paste',
-    node$ : function() {
+    element$: function() {
       return $('.CUT').detach().removeClass('CUT');
     }
   });
@@ -1164,11 +1284,22 @@
   jc.updateTemplateChoice = function() {
     var currentValue = jc.templateChoice$.val();
     jc.templateChoice$.empty();
-    for (var t in jc.templates) {
-      jc.templateChoice$.append('<OPTION value="'+jc.templates[t].url+'">'+
-                                 jc.templates[t].name+'</OPTION>');
+    var acceptedUrls = $(jc.selectedElement).closest('.CONTAINER').attr('templates');
+    if (acceptedUrls) {
+      acceptedUrls = acceptedUrls.split(' ');
     }
-    jc.templateChoice$.val(currentValue)
+    else {
+      acceptedUrls = jc.keys(jc.templates);
+    }
+    for (var i=0;i<acceptedUrls.length;i++) {
+      var url = acceptedUrls[i];
+      var template = jc.templates[url];
+      if (template) jc.templateChoice$.append(
+        '<OPTION value="'+url+'">'+
+        jc.templates[url].name+(jc.templates[url].version?' #'+jc.templates[url].version:'')+'</OPTION>'
+      );
+    }
+    if (currentValue in acceptedUrls) jc.templateChoice$.val(currentValue);
   } 
 
   jc.initToolBars = function() {
@@ -1279,6 +1410,13 @@
     window.alert('file saved');
   }
 
+  jc.writeResults = function() {
+    // write the jc.results as JSON in a file of the same name .jres
+    var resFileName = ''+jc.url.drive+jc.url.path+jc.url.fileName+'.jres';
+    jc.fso.writeFile(resFileName,JSON.stringify(jc.results));
+  }
+
+
 
   jc.beforeUnload = function() {  //TODO avec hta, ne fonctionne pas bien
     if (jc.modified) {
@@ -1355,6 +1493,7 @@
     jc.selectionToolBar$.show(500);
     $('#codeId').html(element.id+'<SPAN style="color:red;cursor:pointer;" onclick="jc.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
     $(element).addClass('SELECTED');
+    jc.updateTemplateChoice();
     jc.editables$(element).attr('contentEditable',true);
     element.focus();
   }
@@ -1392,27 +1531,13 @@
     return false;  // prevent bubbling
   }
 
-  jc.editorKeyPress = function(event) {
+  jc.editableKeyDown = function(event) {
+    if ($.inArray(event.keyCode,[16,17,18,20,27,33,34,35,36,37,38,39,40,45,91,92,93]) != -1) return; // non modifying keys like shift..
     jc.setModified(true);
     jc.setUpToDate(false);
-    var element = event.srcElement;
-    $(element.id.replace(/code/,"#out")).removeClass('SUCCESS').removeClass('ERROR');
-    $(element.id.replace(/code/,"#test")).removeClass('SUCCESS').removeClass('ERROR');
-    if (event.keyCode==10) {  //only IE
+    if ((event.keyCode==13) && event.ctrlKey) { 
       jc.run(); 
     }
-  }
-
-  jc.richTextKeyPress = function(event) {
-    jc.setModified(true);
-    var element = event.srcElement;
-    if (event.keyCode==10) {  //only IE
-      jc.run(); 
-    }
-  }
-
-  jc.editableKeyPress = function(event) {
-    jc.setModified(true);
   }
 
   jc.elementEditor = function(event) {
@@ -1524,6 +1649,51 @@
     });
   }
 
+  jc.runHtaFile = function(fileName,noWait,parameters) {
+    // run an other file
+    // if runOnce is false or undefined, just open the file and returns without waiting
+    //            is true run the file with ?runonce. it is the file responsibility to behave in this manner
+    // parameters is encoded for uri and added to the searchstring 
+    var params = [];
+    if (noWait) {
+      runOnce=false;
+    }
+    else {
+      runOnce=true;
+      params.push('runonce')
+    }
+    if (parameters) {
+      for (var p in parameters) {
+        params.push(encodeURIComponent(p)+'='+encodeURIComponent(parameters[p]));
+      }
+    }
+    var resultFileName = fileName.replace(/\.hta/i,'.jres');
+    if (params.length > 0) {
+      var cmd = 'mshta.exe '+fileName+'?'+params.join('&');
+    }
+    else {
+      var cmd = fileName;
+    }
+    var errCode = jc.shell.Run(cmd,1,runOnce);
+    if (runOnce) {
+      var json = jc.fso.readFile(resultFileName);
+      var res = JSON.parse(json);
+      res.cmd = cmd;
+      res.errCode = errCode;
+      return res;
+    }
+  }
+
+  jc.runTests = function(/*files...*/) {
+    // run every specified files as test files and return a table with all results
+    var results = [];
+    for (var i=0; i<arguments.length; i++) {
+      var res = jc.runHtaFile(arguments[i]);
+      results.push({file:arguments[i],errCode:res.errCode,nbPassed:res.testStatus.nbPassed,nbFailed:res.testStatus.nbFailed,dateTime:res.testStatus.dateTime});
+    }
+    return table().addRows(results);
+  }
+
   jc.animate = function (interval,fromCodeId,toCodeId,endCondition) {
     // run every "interval" all codes between fromCodeId to toCodeId
     // if fromCodeId is undefined, the CODE element where this function is called will be used
@@ -1579,6 +1749,7 @@
     jc.clearTimers();
     jc.finalizations = [];
     jc.vars = {}; // run from fresh
+    jc.results = {};
     jc.IElement.idNumber = 0;
     jc.simulation = new Simulation('_simulation');
     jc.tableOfContent.updateSections();
@@ -1586,6 +1757,7 @@
     jc.editables$(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
     $('.CODE').each(function(i,e) {jc.execCode(e);});
     jc.finalize();
+    jc.writeResults();
     jc.setUpToDate(true);
   }
 
@@ -1594,6 +1766,7 @@
     jc.clearTimers();
     jc.finalizations = [];
     jc.vars = {}; // run from fresh
+    jc.results = {};
     jc.IElement.idNumber = 0;
     jc.tableOfContent.updateSections();
     jc.updateContainers();
@@ -1719,17 +1892,18 @@
       window.alert('your document must have <!DOCTYPE html> as first line in order to run properly: please save and re-run it');
     }
     // prepare the sheet ///////////////////////////////////////////
+    jc.url = jc.urlComponents(window.document.location.href);
     $('.SELECTED').removeClass('SELECTED');
     $('.ELEMENT').live("click",jc.elementClick);
-    $('.CODE').live("keypress",jc.editorKeyPress);
-    $('.RICHTEXT').live("keypress",jc.richTextKeyPress);
-    $('.EDITABLE').live("keypress",jc.editableKeyPress);
+    $('.EDITABLE').live("keydown",jc.editableKeyDown);
     $('.EDITOR').live("change",jc.Editor.eventHandler).live("click",jc.Editor.eventHandler);
     $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR');
     $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
+
     $('.SCENE').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
     $('.INTERACTIVE').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
     $('.LINK').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
+
     jc.findblockNumber();
     jc.initToolBars();
     $(window).bind('beforeunload',jc.beforeUnload);

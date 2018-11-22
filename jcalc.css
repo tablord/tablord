@@ -363,3 +363,12 @@ pre {
 button {
   background-color: #909090;
 }  
+@media print {
+  #menu {
+    display:none;
+  }
+  tbody: {
+    font-size:0.8em !important;
+  }
+}
+    
