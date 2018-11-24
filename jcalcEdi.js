@@ -1691,7 +1691,7 @@
       var res = jc.runHtaFile(arguments[i]);
       results.push({file:arguments[i],errCode:res.errCode,nbPassed:res.testStatus.nbPassed,nbFailed:res.testStatus.nbFailed,dateTime:res.testStatus.dateTime});
     }
-    return table().addRows(results);
+    return table().addRows(results).style(function(t,r,c){return ((c=='nbFailed')&&(t.cell(r,c) != 0))?{backgroundColor:'red'}:{}});
   }
 
   jc.animate = function (interval,fromCodeId,toCodeId,endCondition) {
@@ -1746,6 +1746,7 @@
  
   jc.execAll = function() {
     $('.TRACE').remove();
+    trace.off();
     jc.clearTimers();
     jc.finalizations = [];
     jc.vars = {}; // run from fresh
@@ -1763,6 +1764,7 @@
 
   jc.execUntilSelected = function() {
     $('.TRACE').remove();
+    trace.off();
     jc.clearTimers();
     jc.finalizations = [];
     jc.vars = {}; // run from fresh
