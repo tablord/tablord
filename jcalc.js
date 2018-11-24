@@ -169,6 +169,8 @@
         this.setCell(k,obj[k]);
       }
     }
+    this._style = {};  // this._style[undefined] is the default style for this Row
+                       // this._style[colname]   is the overwritten parameters for cell of colname of this row
   }
 
   Row.prototype.cell = function(col) {
@@ -185,6 +187,22 @@
     }
     this._[col] = value;
     return this;
+  }
+
+  Row.prototype.setStyle = function(style,col) {
+    // if col is undefined, set the default style for the row
+    // style is an object that defines the css attributes and their values like {color:"red",background-color:"yellow"}
+    //       alternatively, a style can be defined as a function(table,rowNumber,colName) that return a style object.
+    //       note that in the case of style defined on a row, this function will be called with f([this],0,colname)
+    //            so table[rowNumber] == this row
+    this._style[col] = style;
+    return this;
+  }
+
+
+  Row.prototype.style = function(col) {
+    // returns the calculated style object for a given cell of this row (or for the row if col == undefined)
+    return $.isFunction(this._style[col])?this._style[col]([this],0,col)/*fake table so that table[0]=thisrow*/:this._style[col];
   }
 
   Row.prototype.toString = function() {
@@ -245,6 +263,7 @@
     this.length = 0;
     this._cols = {};
     this._id = {};
+    this._style = {};  
   }
   
   Table.prototype.cols = function(cols) {
@@ -252,7 +271,8 @@
     // return the table for command chaining
     // cols is an object like
     // { colname: true,   // any value make the column visible
-    //   colname:{style:"css style"  // like 
+    //   colname:{style:{cssAttr:val,...}  // make the column visible and set its default style 
+    //                                     // note that cols style are stronger thant rows style  
     this._cols = cols;
     return this;
   }
@@ -316,6 +336,28 @@
     return this;
   }
 
+  Table.prototype.setStyle = function(style,rowNumber,colName){
+    // .setStyle(style)  will set the default style for the complete table
+    // .setStyle(style,rowNumber) will set the default style for a given row
+    // .setStyle(style,undefined,colName) will set the default style for a column
+    // .setStyle(style,rowNumber,colName) will set the style for a given cell
+    // style can either be an object {cssAttr=val,...} or a function(table,rowNumber,colName)
+
+    if ((rowNumber == undefined) && (colName == undefined)){
+      this._style = style;
+      return this;
+    }
+    this[rowNumber].setStyle(style,colName);
+    return this;
+  }
+
+  Table.prototype.style = function(rowNumber,colName) {
+    // return the calculated style for a given cell
+    if ((rowNumber == undefined) && (colName == undefined)) return this._style;
+    var defColStyle = this.cols[colName] && this.cols[colName].style;
+    return $.extend({},defColStyle,this[rowNumber].style(colName));
+  }
+
   Table.prototype.sort = function(cols) {
     // sort the table according to the "cols" criteria
     // cols is an object of the form:
@@ -352,6 +394,8 @@
     return '['+e.join(',\n')+']';
   }
 
+
+/*
   Table.prototype.span = function(options) {
     // display the table without its name
     // the span(options) method of table can take many option to customize the presentation of the table
@@ -393,10 +437,73 @@
     h += '</tbody></table>';
     return jc.html(h);
   }
-      
+*/      
+
+  Table.prototype.node$ = function(options) {
+    // display the table without its name
+    // the span(options) method of table can take many option to customize the presentation of the table
+    // options:{
+    //    cols:{
+    //      col1:{className:'HEAD'},  // set the class(es) of this col
+    //      col2:1          // any value make this col visible
+    //      '*':1           // adds any not already defined col as visible
+    //    rows:[..row numbers]  // specifies which row to display in what order
+
+    options = $.extend(true,{},jc.defaults,options);
+    options.cols = options.cols || this._cols;
+    if (options.cols['*']) {
+      delete options.cols['*'];
+      for (var col in this._cols) {
+        if (!options.cols[col]) {
+          options.cols[col] = this._cols[col];
+        }
+      }
+    }
+    options.rows = options.rows || range(0,this.length-1);
+    var t$ = $('<table/>');
+    var h$ = $('<thead/>');
+    var b$ = $('<tbody/>');
+    var r$ = $('<tr/>');
+    for (var col in options.cols) {
+      r$.append('<th>'+col+'</th>');
+    }
+    h$.append(r$);
+    for (var i=0;i<options.rows.length;i++) {
+      var row = options.rows[i];
+      r$ = $('<tr/>');
+      for (var col in options.cols) {
+        var c = options.cols[col];
+        if (options.cols[col] != 0) {
+          if (col == "_id") {
+            var cell$ = $('<th>'+jc.format(this.cell(row,col),options)+'</th>');
+          }
+          else {
+            var cell$ = $('<td>'+jc.format(this.cell(row,col),options)+'</td>');
+          }
+          cell$
+          .css($.isFunction(this._style)?this._style(row,col):this._style)
+          .css(this.style(row,undefined))
+          .css(this.style(row,col))
+          .addClass(c.className)
+        }
+        r$.append(cell$);
+      }
+      b$.append(r$);
+    }
+    
+    t$.append(h$).append(b$);
+    return t$;
+  }
+
+  Table.prototype.span = function(options) {
+    // backward compatibility
+    return this.node$(options)[0].outerHTML;
+  }
+
   Table.prototype.view = function(options) {
     //display the table, including its name in a <div>
-    return jc.html('<div><var>'+this.name+'</var>'+this.span(options)+'</div>');
+    var table = this;
+    return {node$:function(){return $('<div>').append('<var>'+table.name+'</var>').append(table.node$(options))}};
   }
 
 

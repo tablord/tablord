@@ -613,7 +613,7 @@
 
   jc.trimHtml = function(html) {
   // suppress all unsignificant blanks and non visible char
-    return html.replace(/[ \t\r\n]+/g,' ').replace(/> /,'>').replace(/ </,'<');
+    return html.replace(/[ \t\r\n]+/g,' ').replace(/> /g,'>').replace(/ </g,'<');
   }
 
   jc.textContent = function(html) {
@@ -1599,7 +1599,7 @@
   jc.displayResult = function(result,output) {
     $(output.outputElement)
     .empty().removeClass('ERROR').addClass('SUCCESS')
-    .append(((result !== undefined) && (result !== null) && (typeof result.node$ === 'function') && result.node$() )
+    .append(  ((result !== undefined) && (result !== null) && (typeof result.node$ === 'function') && result.node$() )
             || jc.format(result).toString()
            )
     .prepend(output.toString())
