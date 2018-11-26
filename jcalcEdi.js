@@ -123,9 +123,14 @@
     return {width:d.body.clientWidth, height:d.body.clientHeight};
   }
 
+  String.prototype.calc = function(decimal) {
+    var s=this.replace(/[^0-9\.\+\*\\\-]+/g,'');
+    var n = eval(s);
+    return Number(n).toFixed(decimal);
+  }
 
   //JQuery extentions /////////////////////////////////////////////////
-  $.prototype.span = function() {
+  $.fn.span = function() {
     var s = ['<ol start=0>'];
     for (var i=0; i < this.length; i++) {
       s.push('<li class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(jc.purgeJQueryAttr(this[i].outerHTML)))+'</li>');
@@ -134,13 +139,36 @@
     return new jc.HTML('JQuery of '+this.length+' elements<br>'+s.join('<br>'));
   }  
 
-  $.prototype.toString = function(){
+  $.fn.toString = function(){
     return '[object JQuery] length:'+ this.length;
   }
 
-  $.prototype.asNode = function() {
+  $.fn.asNode = function() {
     var query = this;
     return {node$:function() {return query}}
+  }
+
+  $.fn.getItems = function(url) {
+    // get the matching itemtypes that are children of the jquery
+    return this.find('[itemtype~="'+url+'"]');
+  }
+  
+  $.getItems = function(url) {
+    // get all itemtype = url of the document.
+    return $('[itemtype~="'+url+'"]');
+  }
+  
+  $.fn.setItemProp = function(itemprop,html) {
+    // set the itemprop of the elements of the jquery
+    // all elements should be itemscope
+    this.find('[itemprop='+itemprop+']').html(html);
+    return this;
+  }
+
+  $.fn.getItemProp = function(itemprop) {
+    // get the first matching itemprop of the first elements of the jquery
+    // all elements should be itemscope
+    return this.find('[itemprop='+itemprop+']').first().html();
   }
 
   // edi related functions ////////////////////////////////////////////
@@ -1607,7 +1635,20 @@
   }
 
   jc.execCode = function(element) {
-    if ($(element).hasClass('DELETED')) return;
+    var element$ = $(element);
+
+    if (element$.hasClass('DELETED')) return;
+
+    // if template, lauch exec method if any
+    if (element.itemtype) {
+trace(element,'has itemtype')
+      var t = jc.templates[element.itemtype];
+trace(t)
+      if (t && t.exec) t.exec(element$);
+      return
+    }
+
+    // Execute CODE ELEMENT
     // clear if any previous WRONG marker
     var wrong$ = $('.WRONG',element);
     if (wrong$.length > 0) wrong$.replaceWith(function(i,c){return c});
@@ -1741,7 +1782,15 @@
     // make sure that containers are never empty (= have a fake element)
     // and that no fake element remains if there is another element inside the container
     $('.ELEMENT.EMPTY:not(:only-child)').remove();
-    $('.CONTAINER:empty').append('<DIV class="ELEMENT EMPTY" contentEditable=false>empty container: click here to add an element</DIV>');
+    var c$ = $('.CONTAINER:empty');
+    c$.append(function(idx,html){
+      if (this.tagName == 'TBODY') {
+        return '<TR class="ELEMENT EMPTY" contentEditable=false><TD>empty line: click here to add an element</TD></TR>';
+      }
+      else {
+        return '<DIV class="ELEMENT EMPTY" contentEditable=false>empty container: click here to add an element</DIV>';
+      }
+    });
   }
  
   jc.execAll = function() {
@@ -1756,7 +1805,7 @@
     jc.tableOfContent.updateSections();
     jc.updateContainers();
     jc.editables$(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
-    $('.CODE').each(function(i,e) {jc.execCode(e);});
+    $('.CODE').add('[itemtype]').each(function(i,e) {jc.execCode(e);});
     jc.finalize();
     jc.writeResults();
     jc.setUpToDate(true);
