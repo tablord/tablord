@@ -149,7 +149,8 @@
   }
 
   $.fn.getItems = function(url) {
-    // get the matching itemtypes that are children of the jquery
+    // get the matching itemtypes that are descendent of the jquery
+    // please note that if an itemtype is embeeded in another instance of itemtype, both will be part of the result
     return this.find('[itemtype~="'+url+'"]');
   }
   
@@ -161,14 +162,17 @@
   $.fn.setItemProp = function(itemprop,html) {
     // set the itemprop of the elements of the jquery
     // all elements should be itemscope
-    this.find('[itemprop='+itemprop+']').html(html);
+    this.each(function(i,e) {
+      $(e).find('[itemprop='+itemprop+']').filter(function(){return $(this).closest('[itemscope=""]')[0] == e}).html(html);
+    });
     return this;
   }
 
   $.fn.getItemProp = function(itemprop) {
     // get the first matching itemprop of the first elements of the jquery
     // all elements should be itemscope
-    return this.find('[itemprop='+itemprop+']').first().html();
+    var e = this[0];
+    return this.find('[itemprop='+itemprop+']').filter(function(){return $(this).closest('[itemscope=""]')[0] == e}).first().html();
   }
 
   // edi related functions ////////////////////////////////////////////
@@ -1100,6 +1104,7 @@
     jc.templates[newTemplate.url] = newTemplate;
     if (newTemplate.name == undefined) newTemplate.name = newTemplate.url.match(/^.*\/([\w\._$]+).htm[l]?$/i)[1];
     jc.updateTemplateChoice();
+    $('[itemtype="'+newTemplate.url+'"]').each(function(idx,e){jc.template.convertTo(e,newTemplate.url)});
     return newTemplate;
   }
 
