@@ -143,6 +143,14 @@
     return '[object JQuery] length:'+ this.length;
   }
 
+  $.fn.inspectString = function(){
+    var r = this.toString()+'\n';
+    for (var i = 0;i<this.length;i++) {
+      r += i+') '+this[i].outerHTML+'\n';
+    }
+    return r;
+  }
+
   $.fn.asNode = function() {
     var query = this;
     return {node$:function() {return query}}
@@ -158,7 +166,14 @@
     // get all itemtype = url of the document.
     return $('[itemtype~="'+url+'"]');
   }
-  
+
+  $.fn.getItemProp = function(itemprop) {
+    // get the first matching itemprop of the first elements of the jquery
+    // all elements should be itemscope
+    var e = this[0];
+    return this.find('[itemprop='+itemprop+']').filter(function(){return $(this).closest('[itemscope=""]')[0] == e}).first().html();
+  }
+
   $.fn.setItemProp = function(itemprop,html) {
     // set the itemprop of the elements of the jquery
     // all elements should be itemscope
@@ -168,12 +183,113 @@
     return this;
   }
 
-  $.fn.getItemProp = function(itemprop) {
-    // get the first matching itemprop of the first elements of the jquery
-    // all elements should be itemscope
-    var e = this[0];
-    return this.find('[itemprop='+itemprop+']').filter(function(){return $(this).closest('[itemscope=""]')[0] == e}).first().html();
+  $.fn.getItemscopeMicrodata = function() {
+    // this must be a single itemscope element jQuery
+    // return the microdata under the scope as an object
+    // {type:url,    //  properties: {...}}
+   
+    if (! this.is('[itemscope=""]')) throw new Error('getItemscopeMicrodata must be called on a jquery having a itemscope');
+    var result={type:this.attr('itemtype') || '',
+                properties:this.children().getMicrodata()}
+    return result;
   }
+
+  $.fn.getItemValue = function(){
+    // return the value of an element handling all specifications of microdata of the getter of itemValue
+    var e = this[0];
+    if (e.itemprop === undefined) return null;
+    if (e.itemscope) return e;
+    if (e.tagName === 'META') return e.content;
+    if ($.inArray(e.tagName,['AUDIO','EMBED','IFRAME','IMG','SOURCE','TRACK','VIDEO'])!=-1) return e.src;
+    if ($.inArray(e.tagName,['A','AREA','LINK'])!=-1) return e.href;
+    if (e.tagName === 'OBJECT') return e.data;
+    if ($.inArray(e.tagName,['DATA','METER','SELECT'])!=-1) return this.val();
+    if (e.tagName === 'TIME') return e.datetime?e.datetime:this.text();
+    return this.text();
+  }
+
+  $.fn.setItemValue = function(value){
+    // set the value of an element handling all specifications of microdata of the getter of itemValue
+    var e = this[0];
+    if (e.itemprop === undefined) throw new Error("can't set the itemprop value of an element that is not an itemprop\n"+e.outerHTML);
+    else if (e.tagName === 'META') e.content = value;
+    else if ($.inArray(e.tagName,['AUDIO','EMBED','IFRAME','IMG','SOURCE','TRACK','VIDEO'])!=-1) e.src=value;
+    else if ($.inArray(e.tagName,['A','AREA','LINK'])!=-1) e.href=value;
+    else if (e.tagName === 'OBJECT') e.data=value;
+    else if ($.inArray(e.tagName,['DATA','METER','SELECT'])!=-1) this.val(value);
+    else if (e.tagName === 'TIME') {
+      if (e.datetime) {
+        e.datetime=value;
+      }
+      else {
+        this.text(value);
+      }
+    }
+    else this.text(value);
+    return this;
+  }
+
+  $.fn.getMicrodata = function(result) {
+    // return microdata object for the jQuery.
+    // the object is JSON compatible with the HTML Microdata specification
+    // the only difference with the specifications is that the JQuery's element are
+    // not checked for beeing top level microdata item. So it is possible to get microdata from nested nodes
+    // and is the responsibility of the caller to know what to do
+    // the parameter result is only intended for recusivity purpose and should be undefined
+    var result = result || {};
+    this.each(function(i,e){
+      var e$ = $(e);
+      if (e.itemprop) {
+        if (result[e.itemprop] == undefined) result[e.itemprop] = [];
+        if (e.itemscope !== undefined) {
+          result[e.itemprop].push(e$.getItemscopeMicrodata());
+        }
+        else {
+          result[e.itemprop].push(e$.getItemValue());
+        }
+      }
+      else if (e.itemscope !== undefined) {
+        if (result.items === undefined) result.items = [];
+        result.items.push(e$.getItemscopeMicrodata());
+      }
+      else { // just an intermediate node
+        e$.children().getMicrodata(result);
+      }
+    });
+    return result;
+  }   
+
+  $.fn.setMicrodata = function(data) {
+    // set the itemprop elements under all elements of the jQuery
+    // all nodes of the jquery should be itemscope
+    // if a node doesn't have an itemprop, "items" is assumed
+    // PLEASE NOTE that data will be modified.
+    // data is structured as JSON microdata specifies.
+    // as all itemprop are arrays (since it is legal to have multiple itemprops having the same name)
+    // every itemprop will "consume" the first element of the array
+    this.each(function(i,e){
+      if (e.itemscope !== undefined)  {
+        var itemprop = e.itemprop?e.itemprop:'items';
+        var subData = data && data[itemprop] && data[itemprop].shift();
+        if (subData !== undefined) {
+          $(e).children().setMicrodata(subData.properties);
+        }
+      }
+      else {
+        if (e.itemprop) {
+          var subData = data && data[e.itemprop] && data[e.itemprop].shift();
+          if (subData) {
+            $(e).setItemValue(subData);
+          }
+        }
+        else { //an intermedate node look if anything to set in its children
+          $(e).children().setMicrodata(data);
+        }
+      }
+    });
+    return this;
+  }          
+
 
   // edi related functions ////////////////////////////////////////////
   var geval = eval;
@@ -240,7 +356,7 @@
   function a(/*objects*/) {
     var message = '';
     for (var i=0; i<arguments.length; i++){
-      message += jc.inspect(arguments[i]).toString();
+      message += jc.inspect(arguments[i]).toString()+'\n';
     }
     window.alert(message);
   }
@@ -337,6 +453,27 @@
     // BE CARFULL IN DEBUGGING THAT FUNCTION: DO NOT CALL a(....), 
     // since it will create an inspector recursivelly
     // use window.alert instead !!
+    if (this.obj === undefined) {
+      return 'undefined';
+    }
+    if (this.obj === null) {
+      return 'null';
+    }
+    if (this.obj.inspectString) {  // obj knows how to inspect itself
+      return this.obj.inspectString()
+    }
+    if (typeof this.obj === 'number') {
+      return this.obj.toString();
+    }
+    if (this.obj === '') {
+      return 'empty string';
+    }
+    if (typeof this.obj === 'string') {
+      return JSON.stringify(this.obj);
+    }
+    if (this.obj.toGMTString !== undefined) {
+      return this.obj.toGMTString()+' (ms:'+this.obj.valueOf()+')';
+    }
     var r = this.legend()+' '+this.name+'\n';
     for (var k in this.obj) {
       r += k+':  '+jc.summary(this.obj[k])+'\n' 
@@ -391,9 +528,12 @@
     else if (obj === undefined) {
       l = 'undefined';
     }
-    else {
+    else if (obj.toString) {
       l = obj.toString();
     } 
+    else {
+      l = '['+typeof obj+']';
+    }
     return l;
   }
 
@@ -596,7 +736,7 @@
     return id.match(/^[\w$]+\w*$/) !== null;
   }
 
-  jc.toJScode = function(obj,stringQuote) {
+  jc.toJSCode = function(obj,stringQuote) {
     // return a string representing obj that can be interpreted by eval
     // stringQuote is by default ' but can be set to "
     stringQuote = stringQuote || "'";
@@ -614,14 +754,14 @@
     else if ($.isPlainObject(obj)) {
       var sa=[];
       $.each(obj, function(name,value) {
-        if (!jc.isJSid(name)) name = jc.toJScode(name,stringQuote);
-        sa.push(name+':'+jc.toJScode(value,stringQuote))
+        if (!jc.isJSid(name)) name = jc.toJSCode(name,stringQuote);
+        sa.push(name+':'+jc.toJSCode(value,stringQuote))
       });
       return '{'+sa.join(',')+'}';
     }
     else if ($.isArray(obj)) {
       var sa=[];
-      $.each(obj, function(i,value) {sa.push(jc.toJScode(value,stringQuote))});
+      $.each(obj, function(i,value) {sa.push(jc.toJSCode(value,stringQuote))});
       return '['+sa.join(',')+']';
     }
     else if (obj === undefined) {
@@ -1021,94 +1161,128 @@
 
   // Template //////////////////////////////////////////////////////////////////////////
  
-  jc.Template = function(){};
+  jc.Template = function(name){
+    this.name = name;
+  };
+
   jc.Template.urlBase = 'http://tablord.com/templates/';
 
-  jc.Template.prototype.insertBefore = function(element) {
-    var newElement$ = this.element$();
+  jc.Template.prototype.url = function(){
+    return jc.Template.urlBase + this.name;
+  }
+
+  jc.Template.prototype.insertBefore = function(element,itemprop) {
+    var newElement$ = this.element$(itemprop);
     newElement$.insertBefore(element);
     jc.selectElement(newElement$[0]);
     jc.setModified(true);
     jc.run();
   }
 
-  jc.Template.prototype.insertAfter  = function(element) {
+  jc.Template.prototype.insertAfter  = function(element,itemprop) {
     var element$ = $(element);
     if (element$.hasClass('CODE')) {
       if (element$.next().hasClass('OUTPUT')) element$=element$.next();
       if (element$.next().hasClass('TEST')) element$=element$.next();
     }
-    var newElement$ = this.element$();
+    var newElement$ = this.element$(itemprop);
     newElement$.insertAfter(element$);
     jc.selectElement(newElement$[0]);
     jc.setModified(true);
     jc.run();
   }
 
-  jc.Template.prototype.element$ = function() {
-    if (this.html === undefined) throw new Error('in order to define a template at least define .field, .html or .element$()');
-    return $(this.html);
+  jc.Template.prototype.convert = function(element,itemprop) {
+    // convert element to template(name)
+
+    var e$ = $(element);
+    var data = $.extend(true,e$.data('itemData') || {},e$.getMicrodata());
+    var containers = $.extend(true,e$.data('containers') || {},jc.Template.getElement$Containers(e$));
+    var k = jc.keys(data);
+    if (k.length > 1) throw new Error('element.convert error: data has more than 1 head key\n'+jc.toJSCode(data));
+    var newData = {};
+    newData[itemprop || 'items'] = data[k[0]] || {};
+    var new$ = this.element$(itemprop);
+    if (this.convertData) {
+      this.convertData(data,new$);
+    }
+    else {
+      new$.setMicrodata(newData);    
+      jc.Template.setElement$Containers(new$,containers);
+    }
+    new$
+    .data('itemData',newData) // keep data in a element property so it can retrieve lost data in case of a convertion mistake (not handling all fields)
+    .data('containers',containers);
+
+    if (jc.selectedElement===element) {
+      e$.replaceWith(new$);
+      jc.selectElement(new$[0]);
+    }
+    else {
+      e$.replaceWith(new$);
+    }   
+    return this;
+  }
+
+  jc.Template.prototype.element$ = function(itemprop) {
+    if (this.html === undefined) throw new Error('in order to define a template at least define .fields, .html or .element$()');
+    var new$ = $(this.html);
+    if (itemprop) new$.attr('itemprop',itemprop);
+    return new$;
   }
 
   jc.Template.prototype.toString = function() {
-    return 'template '+this.name+' created ['+this.url+']';
+    return 'template '+this.name+' created ['+this.url()+']';
   }
 
   jc.Template.prototype.span = function() {
-    return 'template '+this.name+' created [<a href="'+this.url+'">'+this.url+'</a>]';
+    return 'template '+this.name+' created [<a href="'+this.url()+'">'+this.url()+'</a>]';
   }
 
-  jc.updateTemplateChoice = function () {}; // dummy so far, will be trully defined later on when creating menu;
+  jc.Template.moveContainerContent = function(oldElement$,newElement$) {
+    // move into newElement$ all Container's content found in oldElements
+    // both oldElement$ and newElement$ should be jquery with one single element to give predictable results
+    
 
-  jc.template = function(newTemplate) {
-    // create a new template and register it
-    // it will inherit from jc.Template 
-    // newTemplate is a simple object that must at least define
-    // .name: a name like an id
-    // or
-    // .url: where is located the description of the template
-    // and must define one of the 3
-    // .fields: {field1:{options},field2:{options}....}
-    //          field1 is the name of the field
-    //          options is an object
-    //          types
-    //          - number:{}                     the field is a number
-    //          - string:{}                     the field is a string:  default if nothing is specified
-    //          - function:function(data){...}  the field is calculated (=> readonly) and the html is the result of this function
-    //          - select:{choice1:val1,choice2:val2...) the field is a <SELECT>
-    //          - container:{url1:{},url2:{}}   a container that accepts the specified urls. if {}, accepts anything
-    //
-    //          formating
-    //          - label: specifies the label in front of the field. by default fieldName
-    //
-    //    if fields is defined, standard html code will automatically be generated
-    //    so do not define .fields if you want to define .html
-    // .html: a string representing the html code of the template
-    // .node$: a function() returning a DOM Element; normally not defined and inherited form jc.Template
+  }
 
-    if (newTemplate.url == undefined) newTemplate.url = jc.Template.urlBase+newTemplate.name+'.html'+(newTemplate.version?'#'+newTemplate.version:'');
-    if (newTemplate.fields) {
-      var h = '<DIV class="ELEMENT" itemscope itemtype="'+newTemplate.url+'"><TABLE width="100%">';
-      for (var f in newTemplate.fields) {
-        var label = f.label || f;
-        if (newTemplate.fields[f].container) {
-          h += '<TR><TH>'+label+'</TH><TD class=LEFT><DIV class=CONTAINER '+jc.htmlAttribute('templates',jc.keys(newTemplate.fields[f].container).join(' '))+'></DIV></TD></TR>';
-        }
-        else {
-          h += '<TR><TH>'+label+'</TH><TD class=LEFT width="90%"><DIV class="FIELD EDITABLE" itemprop="'+f+'"></DIV></TD></TR>';
+  jc.Template.setElement$Containers = function(element$,containers){
+    // move the content of the different containers stored in containers into the containers of element$
+    // element$  a jQuery of 1 element that potentially has embedded containers
+    // containers an object {containerName:jQueryOfContentOfContainer,....}
+    element$.children().each(function(i,e) {
+      var containerName = e.container;
+      var e$ = $(e);
+      if (containerName) {
+        e$.empty();
+        if (containers[containerName]) {
+          containers[containerName].appendTo(e$);
         }
       }
-      newTemplate.html = h + '</TABLE></DIV>';
-    }
-    newTemplate = $.extend(true,{},jc.Template.prototype,newTemplate);
-    jc.templates[newTemplate.url] = newTemplate;
-    if (newTemplate.name == undefined) newTemplate.name = newTemplate.url.match(/^.*\/([\w\._$]+).htm[l]?$/i)[1];
-    jc.updateTemplateChoice();
-    $('[itemtype="'+newTemplate.url+'"]').each(function(idx,e){jc.template.convertTo(e,newTemplate.url)});
-    return newTemplate;
+      else {
+        jc.Template.setElement$Containers(e$,containers);
+      }
+    });
   }
 
-  jc.template.setElements$WithData = function(elements$,data){
+  jc.Template.getElement$Containers = function(element$,containers){
+    // returns a object {containerName:jqueryOfcontentOfThisContainer,....}
+    // the containers parameter is normally undefined, but needed for the recursive search
+    //    all containers found will be added to containers
+    containers = containers || {};
+    element$.children().each(function(i,e) {
+      var containerName = e.container;
+      if (containerName) {
+        containers[containerName] = $(e).children();
+      }
+      else {
+        jc.Template.getElement$Containers($(e),containers);
+      }
+    });
+    return containers;
+  }
+
+  jc.Template.setElements$WithData = function(elements$,data){
     // set all itemprop elements with data (recurse through children and data)
     elements$.each(function(i,element){
       var e$ = $(element);
@@ -1119,17 +1293,21 @@
           return;
         }
         else if (element.itemscope !== undefined) {
-          jc.template.setElements$WithData(e$.children(),data[itemprop]); 
+          jc.Template.setElements$WithData(e$.children(),data[itemprop]); 
         } 
+        else if (element.tagName == 'SELECT') {
+          e$.val(data[itemprop]);
+        }
         else throw new Error('an element with itemprop must either be an itemscope or be class=EDITABLE\n'+jc.format(element));
       }
       else {  // this node is not an itemprop, look in its children with the same data
-        jc.template.setElements$WithData(e$.children(),data); 
+        jc.Template.setElements$WithData(e$.children(),data); 
       }
     });
   }
 
-  jc.template.getElements$Data = function(elements$){
+
+  jc.Template.getElements$Data = function(elements$){
     // get all itemprop elements with data (recurse through children and data)
     var data = {};
     elements$.each(function(i,element){
@@ -1137,28 +1315,32 @@
       var itemprop = element.itemprop;
       if (itemprop !== undefined) {
         if (e$.hasClass('EDITABLE')) {
-          data[itemprop] = e$.html();
+          data[itemprop] = e$.html() || '';
         }
         else if (element.itemscope !== undefined) {
-          data[itemprop] = jc.template.getElements$Data(e$.children()); 
+          data[itemprop] = jc.Template.getElements$Data(e$.children()); 
         } 
-        else throw new Error('an element with itemprop must either be an itemscope or be class=EDITABLE\n'+jc.format(element));
+        else if (element.tagName == 'SELECT') {
+          data[itemprop] = e$.val()
+        }
+        else throw new Error('an element with itemprop must either be an itemscope or be class=EDITABLE or a SELECT tag\n'+jc.format(element));
       }
       else {  // this node is not an itemprop, look if its children have data
-        $.extend(true,data,jc.template.getElements$Data(e$.children())); 
+        $.extend(true,data,jc.Template.getElements$Data(e$.children())); 
       }
     });
     return data;
   }
 
 
-  jc.template.data = function(url) {
+  jc.Template.data = function(url) {
     // get all data from all templates in the document having the itemtype=url
     // if url ends with # select any url that match any version
-    //   ex: http://www.tablord.com/templates/product.html#       matches
-    //       http://www.tablord.com/templates/product.html#1line
-    //       http://www.tablord.com/templates/product.html
-    //       http://www.tablord.com/templates/product.html#2
+    //   ex: http://www.tablord.com/templates/product#      
+    //     matches
+    //       http://www.tablord.com/templates/product#1line
+    //       http://www.tablord.com/templates/product
+    //       http://www.tablord.com/templates/product#2
     //     
     var data = [];
     if (url.slice(-1) === '#') {
@@ -1168,33 +1350,76 @@
       var templates$ = $('[itemtype="'+url+'"]');
     }
     templates$.each(function(i,e){
-      data.push(jc.template.getElements$Data($(e)));
+      data.push(jc.Template.getElements$Data($(e)));
     });
     return data;
   }
 
-  jc.template.convertTo = function(element,url) {
-    // convert element to template(url)
-    var e$ = $(element);
-    var data = $.extend(true,element.itemData || {},jc.template.getElements$Data(e$));
-    var new$ = jc.templates[url].element$();
-    jc.template.setElements$WithData(new$,data);
-    new$[0].itemData = data; // keep data in a element property so it can retrieve lost in case of a convertion mistake (not handling all fields)
-    e$.replaceWith(new$);
+
+  jc.updateTemplateChoice = function () {}; // dummy so far, will be trully defined later on when creating menu;
+
+  jc.template = function(newTemplate,itemprop) {
+    // create a new template and register it
+    // it will inherit from jc.Template 
+    // newTemplate is a simple object that must at least define
+    // .name: a name like an id optionaly followed by #version
+    // and must define one of the 3
+    // .fields: {field1:{options},field2:{options}....}
+    //          field1 is the name of the field
+    //          options is an object
+    //          types
+    //          - number:{}                     the field is a number
+    //          - string:{}                     the field is a string:  default if nothing is specified
+    //          - function:function(data){...}  the field is calculated (=> readonly) and the html is the result of this function
+    //          - select:{choice1:val1,choice2:val2...) the field is a <SELECT>
+    //          - container:"template1:itemprop template2:itemprop" 
+    //                 a container that accepts the specified template names and how the itemprop . if "", accepts anything
+    //
+    //          formating
+    //          - label: specifies the label in front of the field. by default fieldName
+    //
+    //    if fields is defined, standard html code will automatically be generated
+    //    so do not define .fields if you want to define .html
+    // .html: a string representing the html code of the template
+    // .element$: a function() returning a DOM Element; normally not defined and inherited form jc.Template
+
+    itemprop = itemprop || newTemplate.name;
+    var newT = new jc.Template(newTemplate.name);
+    newT.html = newTemplate.html;
+    if (newTemplate.fields) {
+      var h = '<DIV class="ELEMENT" itemprop="'+itemprop+'" itemscope itemtype="'+newT.url()+'"><TABLE width="100%">';
+      for (var f in newTemplate.fields) {
+        var label = f.label || f;
+        if (newTemplate.fields[f].container) {
+          h += '<TR><TH>'+label+'</TH><TD class=LEFT><DIV container="'+f+'" templates="'+newTemplate.fields[f].container+'"></DIV></TD></TR>';
+        }
+        else {
+          h += '<TR><TH>'+label+'</TH><TD class=LEFT width="90%"><DIV class="FIELD EDITABLE" itemprop="'+f+'"></DIV></TD></TR>';
+        }
+      }
+      newT.html = h + '</TABLE></DIV>';
+    }
+    if (newTemplate.element$) newT.element$ = newTemplate.element$;
+    if (newTemplate.convertData)  newT.convertData  = newTemplate.convertData;
+    jc.templates[newT.name] = newT;
+    jc.updateTemplateChoice();
+    var elementsToConvert$ = $('[itemtype="'+newT.url()+'"]');
+    elementsToConvert$.each(function(idx,e){newT.convert(e,e.itemprop || 'items')});
+    return newT;
   }
+
 
   jc.template({
     name : 'code',
-    url  : 'code',
     element$: function() {
       jc.blockNumber++;
       return $('<PRE class="ELEMENT CODE EDITABLE" id='+jc.blockId('code')+'>');
-    }
+    },
+    convertData: function(data,element$) {element$.html('Object('+jc.toJSCode(data)+')')}
   });
 
   jc.template({
     name : 'richText',
-    url  : 'richText',
     element$: function() {
       jc.blockNumber++;
       return $('<DIV  class="ELEMENT RICHTEXT EDITABLE" id='+jc.blockId('rich')+'>');
@@ -1203,19 +1428,17 @@
 
   jc.template({
     name : 'section',
-    url  : 'section',
     element$ : function() {
       jc.blockNumber++;
       var n$ = $('<DIV  class="ELEMENT SECTION" id='+jc.blockId('sect')+'></DIV>')
                .append('<H1 class="SECTIONTITLE EDITABLE"></H1>')
-               .append('<DIV class=CONTAINER></DIV>');
+               .append('<DIV container="sectionContent"></DIV>');
       return n$;
     }
   });
 
   jc.template({
     name : 'paste',
-    url  : 'paste',
     element$: function() {
       return $('.CUT').detach().removeClass('CUT');
     }
@@ -1317,22 +1540,26 @@
   jc.updateTemplateChoice = function() {
     var currentValue = jc.templateChoice$.val();
     jc.templateChoice$.empty();
-    var acceptedUrls = $(jc.selectedElement).closest('.CONTAINER').attr('templates');
-    if (acceptedUrls) {
-      acceptedUrls = acceptedUrls.split(' ');
+    jc.currentContainer$ = $(jc.selectedElement).closest('[container]')  //!!!!! AARGH: l'element change ==> reference selectedElement invalide!
+    var acceptedTemplates = jc.currentContainer$.attr('templates');
+    if (acceptedTemplates) {
+      acceptedTemplates = acceptedTemplates.split(' ');
     }
     else {
-      acceptedUrls = jc.keys(jc.templates);
+      acceptedTemplates = jc.keys(jc.templates);
     }
-    for (var i=0;i<acceptedUrls.length;i++) {
-      var url = acceptedUrls[i];
-      var template = jc.templates[url];
+    for (var i=0;i<acceptedTemplates.length;i++) {
+      var template = jc.templates[acceptedTemplates[i]];
       if (template) jc.templateChoice$.append(
-        '<OPTION value="'+url+'">'+
-        jc.templates[url].name+(jc.templates[url].version?' #'+jc.templates[url].version:'')+'</OPTION>'
+        '<OPTION value="'+acceptedTemplates[i]+'">'+acceptedTemplates[i]+'</OPTION>'
       );
     }
-    if (currentValue in acceptedUrls) jc.templateChoice$.val(currentValue);
+    if (currentValue in acceptedTemplates) {
+      jc.templateChoice$.val(currentValue);
+    }
+    else {
+      jc.templateChoice$.val(acceptedTemplates[0]);
+    }
   } 
 
   jc.initToolBars = function() {
@@ -1351,10 +1578,10 @@
     jc.selectionToolBar$ = $('<DIV>')
       .append('<SPAN id=codeId>no selection</SPAN>')
       .append('<BUTTON id="cutBtn" onclick=jc.cutBlock(jc.selectedElement);>cut</BUTTON>')
-      .append('<BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement)">&#8593;</BUTTON>')
-      .append('<BUTTON onclick="jc.template.convertTo(jc.selectedElement,jc.templateChoice$.val())">&#8596;</BUTTON>')
+      .append('<BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement,jc.currentContainer$.attr(\'container\'))">&#8593;</BUTTON>')
+      .append('<BUTTON onclick="jc.templates[jc.templateChoice$.val()].convert(jc.selectedElement,jc.currentContainer$.attr(\'container\'))">&#8596;</BUTTON>')
       .append(jc.templateChoice$)
-      .append('<BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement)">&#8595;</BUTTON>')
+      .append('<BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement,jc.currentContainer$.attr(\'container\'));a(jc.currentContainer$)">&#8595;</BUTTON>')
       .append('<BUTTON id="showHtmlBtn" onclick=jc.showOutputHtml(this);>&#8594;html</BUTTON>')
       .append('<BUTTON id="toTestBtn" onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON>')
       .append(jc.objectToolBar$)
@@ -1641,15 +1868,15 @@
 
   jc.execCode = function(element) {
     var element$ = $(element);
-
     if (element$.hasClass('DELETED')) return;
 
     // if template, lauch exec method if any
     if (element.itemtype) {
-trace(element,'has itemtype')
       var t = jc.templates[element.itemtype];
-trace(t)
-      if (t && t.exec) t.exec(element$);
+      if (t && t.exec) {
+        t.exec(element$);
+      }
+      jc.output = undefined;  // so that any errors from the EDI will be reported in a dialog, not in the last outputElement.
       return
     }
 
@@ -1787,15 +2014,8 @@ trace(t)
     // make sure that containers are never empty (= have a fake element)
     // and that no fake element remains if there is another element inside the container
     $('.ELEMENT.EMPTY:not(:only-child)').remove();
-    var c$ = $('.CONTAINER:empty');
-    c$.append(function(idx,html){
-      if (this.tagName == 'TBODY') {
-        return '<TR class="ELEMENT EMPTY" contentEditable=false><TD>empty line: click here to add an element</TD></TR>';
-      }
-      else {
-        return '<DIV class="ELEMENT EMPTY" contentEditable=false>empty container: click here to add an element</DIV>';
-      }
-    });
+    var c$ = $('[container]:empty');
+    c$.append('<DIV class="ELEMENT EMPTY" contentEditable=false>empty container: click here to add an element</DIV>');
   }
  
   jc.execAll = function() {
@@ -1808,9 +2028,9 @@ trace(t)
     jc.IElement.idNumber = 0;
     jc.simulation = new Simulation('_simulation');
     jc.tableOfContent.updateSections();
-    jc.updateContainers();
     jc.editables$(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
     $('.CODE').add('[itemtype]').each(function(i,e) {jc.execCode(e);});
+    jc.updateContainers();
     jc.finalize();
     jc.writeResults();
     jc.setUpToDate(true);
@@ -1921,10 +2141,10 @@ trace(t)
     $('.CODE').add('.RICHTEXT').add('.SECTION').addClass('ELEMENT'); // since v160 all ELEMENT are selectable
     $('.CODE:not(.EMBEDDED)').add('.RICHTEXT').add('.SECTIONTITLE').addClass('EDITABLE'); // since v160 EDITABLE tags will be set to contentEditable=true /false when the itself or its parent is selected
     // since v0.0110 the menu is fixed in a #menu DIV and all sheet is contained in a #jcContent DIV
-    jc.content$ = $('#jcContent').removeAttr('style').addClass('CONTAINER');
+    jc.content$ = $('#jcContent').removeAttr('style').attr('container','jcContent');
     var b$ = $('BODY');
     if (jc.content$.length == 0) {                                   
-      b$.wrapInner('<DIV id=jcContent class="CONTAINER"/>');
+      b$.wrapInner('<DIV id=jcContent container="jcContent"/>');
     }
 
     // since v0.0145 the <body> attributes hideCodes,hideCut,hideTest,hideTrace are deprecated

@@ -23,15 +23,285 @@
 <BODY sizcache="1" sizset="0"  designMode="on" showCode="true" showCut="true" showTest="true" showTrace="true">
 <DIV id=menu class=TOOLBAR>
 <DIV><INPUT onclick=jc.showCode(event) CHECKED type=checkbox>codes</INPUT><INPUT onclick=jc.showCut(event) CHECKED type=checkbox>cuts</INPUT><INPUT onclick=jc.showTest(event) CHECKED type=checkbox>tests</INPUT><INPUT onclick=jc.showTrace(event) CHECKED type=checkbox>traces</INPUT><INPUT onclick=jc.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
-<DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60" >&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px">save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
-<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick=jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement) style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick=jc.template.convertTo(jc.selectedElement,jc.templateChoice$.val()) style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION><OPTION value=http://tablord.com/templates/email.html>email</OPTION><OPTION value=http://tablord.com/templates/person.html>person</OPTION><OPTION value=http://tablord.com/templates/product.html#1>product #1</OPTION><OPTION value=http://tablord.com/templates/product.html#2>product #2</OPTION></SELECT><BUTTON onclick=jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement) style="HEIGHT: 23px; WIDTH: 43px" >&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
+<DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60" >&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
+<DIV style="POSITION: ; ZOOM: 1; FILTER:   ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px" >cut</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].convert(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT ><OPTION selected value=email>email</OPTION><OPTION value=person>person</OPTION></SELECT><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement,jc.currentContainer$.attr('container'));a(jc.currentContainer$)" style="HEIGHT: 23px; WIDTH: 43px" >&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
 <DIV id=objectToolBar></DIV></DIV></DIV>
-<DIV id=jcContent class=CONTAINER sizcache="1" sizset="0">
+<DIV id=jcContent class=CONTAINER sizcache="1" sizset="0" container="jcContent">
 <DIV id=sect0003 class="ELEMENT SECTION" sizcache="1" sizset="0">
 <H1 class="SECTIONTITLE EDITABLE" contentEditable=false>1 Test Templates</H1>
-<DIV class=CONTAINER sizcache="1" sizset="0"><PRE id=code0004 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.template({name:'email',html:'&lt;DIV class="ELEMENT"&gt;&lt;SELECT itemprop="purpose" style="width:10%"&gt;&lt;OPTION&gt;office&lt;/OPTION&gt;&lt;OPTION&gt;home&lt;OPTION&gt;&lt;/SELECT&gt;&lt;SPAN class=EDITABLE itemprop="email" style="width:80%;"&gt;&lt;/SPAN&gt;&lt;/DIV&gt;'});</P><P>&nbsp;</P><P>/*</P><P>jc.template({name:'person',html:'&lt;DIV class="ELEMENT" itemscope itemtype="http://tablord.com/templates/person.html"&gt;'+</P><P>                                '&lt;SPAN style="border-bottom:cyan solid 1px; width:80%;"&gt;firstName    &lt;/SPAN&gt;&lt;SPAN class=EDITABLE itemprop="firstName" class=EDITABLE style="width:80%;"&gt;&lt;/SPAN&gt;&lt;BR&gt;'+</P><P>                                '&lt;SPAN style="width:19%;"&gt;lastName&lt;/SPAN&gt;&lt;SPAN class=EDITABLE itemprop="lastName" class=EDITABLE style="width:80%;"&gt;&lt;/SPAN&gt;&lt;BR&gt;'+</P><P>                                'emails&lt;DIV class=CONTAINER&gt;&lt;/DIV&gt;'+</P><P>                                '&lt;/DIV&gt;'});</P><P>*/</P><P>jc.template({name:'person',fields:{firstName:{},middleName:{},lastName:{},emails:{container:{'http://tablord.com/templates/email.html':{}}}}});</P><P>jc.template({name:'product',version:1,fields:{productId:{},productName:{}}});</P><P>jc.template({name:'product',version:2,fields:{productId:{},productName:{}}});</P></PRE>
-<DIV id=out0004 class="OUTPUT SUCCESS">template product created [<A href="http://tablord.com/templates/product.html#2">http://tablord.com/templates/product.html#2</A>]</DIV>
-<DIV class=ELEMENT itemtype="http://tablord.com/templates/person.html" itemscope>
+<DIV class=CONTAINER sizcache="1" sizset="0"><PRE id=code0041 class="ELEMENT CODE EDITABLE" contentEditable=false>$('[itemtype]')</PRE>
+<DIV id=out0041 class="OUTPUT SUCCESS">JQuery of 3 elements<BR>
+<OL start=0><BR>
+<LI class=INSPECTHTML><WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/person"&nbsp;itemprop="items"&gt;<WBR>&lt;TABLE&nbsp;width="100%"&gt;<WBR>&lt;TBODY&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;firstName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;itemprop="firstName"&gt;ma<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;middleName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;itemprop="middleName"&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;lastName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;itemprop="lastName"&gt;ni<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;emails<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&gt;<WBR>&lt;DIV&nbsp;container="emails"&nbsp;templates="email&nbsp;person"&gt;<WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/email"&nbsp;itemprop="emails"&gt;<WBR>&lt;SELECT&nbsp;style="WIDTH:&nbsp;10%"&nbsp;itemprop="purpose"&gt;<WBR>&lt;OPTION&nbsp;selected&gt;office<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&gt;home<WBR>&lt;OPTION&gt;<WBR>&lt;/OPTION&gt;<WBR>&lt;/SELECT&gt;<WBR>&lt;SPAN&nbsp;class=EDITABLE&nbsp;style="WIDTH:&nbsp;80%"&nbsp;itemprop="email"&gt;<WBR>&lt;/SPAN&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;DIV&nbsp;class="ELEMENT&nbsp;SELECTED"&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/person"&nbsp;itemprop="emails"&gt;<WBR>&lt;TABLE&nbsp;width="100%"&gt;<WBR>&lt;TBODY&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;firstName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;contentEditable=true&nbsp;itemprop="firstName"&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;middleName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;contentEditable=true&nbsp;itemprop="middleName"&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;lastName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;contentEditable=true&nbsp;itemprop="lastName"&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;emails<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&gt;<WBR>&lt;DIV&nbsp;container="emails"&nbsp;templates="email&nbsp;person"&gt;<WBR>&lt;DIV&nbsp;class="ELEMENT&nbsp;EMPTY"&nbsp;contentEditable=false&gt;empty&nbsp;container:&nbsp;click&nbsp;here&nbsp;to&nbsp;add&nbsp;an&nbsp;element<WBR>&lt;/DIV&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;/TBODY&gt;<WBR>&lt;/TABLE&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;/TBODY&gt;<WBR>&lt;/TABLE&gt;<WBR>&lt;/DIV&gt;</LI><BR>
+<LI class=INSPECTHTML><WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/email"&nbsp;itemprop="emails"&gt;<WBR>&lt;SELECT&nbsp;style="WIDTH:&nbsp;10%"&nbsp;itemprop="purpose"&gt;<WBR>&lt;OPTION&nbsp;selected&gt;office<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&gt;home<WBR>&lt;OPTION&gt;<WBR>&lt;/OPTION&gt;<WBR>&lt;/SELECT&gt;<WBR>&lt;SPAN&nbsp;class=EDITABLE&nbsp;style="WIDTH:&nbsp;80%"&nbsp;itemprop="email"&gt;<WBR>&lt;/SPAN&gt;<WBR>&lt;/DIV&gt;</LI><BR>
+<LI class=INSPECTHTML><WBR>&lt;DIV&nbsp;class="ELEMENT&nbsp;SELECTED"&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/person"&nbsp;itemprop="emails"&gt;<WBR>&lt;TABLE&nbsp;width="100%"&gt;<WBR>&lt;TBODY&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;firstName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;contentEditable=true&nbsp;itemprop="firstName"&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;middleName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;contentEditable=true&nbsp;itemprop="middleName"&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;lastName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;contentEditable=true&nbsp;itemprop="lastName"&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;emails<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&gt;<WBR>&lt;DIV&nbsp;container="emails"&nbsp;templates="email&nbsp;person"&gt;<WBR>&lt;DIV&nbsp;class="ELEMENT&nbsp;EMPTY"&nbsp;contentEditable=false&gt;empty&nbsp;container:&nbsp;click&nbsp;here&nbsp;to&nbsp;add&nbsp;an&nbsp;element<WBR>&lt;/DIV&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;/TBODY&gt;<WBR>&lt;/TABLE&gt;<WBR>&lt;/DIV&gt;</LI><BR></OL></DIV><PRE id=code0042 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.inspect($('[itemtype]').getMicrodata(),'',10);</PRE>
+<DIV id=out0042 class="OUTPUT SUCCESS">
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>items</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>type</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/person"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>properties</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>firstName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"ma"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>middleName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">empty string</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>lastName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"ni"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>emails</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>type</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/email"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>properties</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>purpose</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"office"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>email</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">empty string</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>type</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/person"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>properties</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>firstName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">empty string</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>middleName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">empty string</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>lastName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">empty string</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>emails</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>type</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/email"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>properties</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>purpose</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"office"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>email</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">empty string</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>type</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/person"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>properties</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>firstName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">empty string</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>middleName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">empty string</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>lastName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">empty string</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0044 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.template({name:'email',</P><P>             html:'&lt;DIV class="ELEMENT" itemscope itemtype="http://tablord.com/templates/email"&gt;'+</P><P>                  '  &lt;SELECT itemprop="purpose" style="width:10%"&gt;&lt;OPTION&gt;office&lt;/OPTION&gt;&lt;OPTION&gt;home&lt;OPTION&gt;&lt;/SELECT&gt;'+</P><P>                  '  &lt;SPAN class=EDITABLE itemprop="email" style="width:80%;"&gt;&lt;/SPAN&gt;'+</P><P>                  '&lt;/DIV&gt;'});</P></PRE>
+<DIV id=out0044 class="OUTPUT SUCCESS">template email created [<A href="http://tablord.com/templates/email">http://tablord.com/templates/email</A>]</DIV><PRE id=code0004 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.template({name:'person',fields:{firstName:{},middleName:{},lastName:{},emails:{container:'email person'}}});</P></PRE>
+<DIV id=out0004 class="OUTPUT SUCCESS">template person created [<A href="http://tablord.com/templates/person">http://tablord.com/templates/person</A>]</DIV><PRE id=code0045 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.template({name:'product#1',fields:{productId:{},productName:{}}});</P></PRE>
+<DIV id=out0045 class="OUTPUT SUCCESS">template product#1 created [<A href="http://tablord.com/templates/product#1">http://tablord.com/templates/product#1</A>]</DIV><PRE id=code0046 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.template({name:'product#2',fields:{productId:{},productName:{}}});</P></PRE>
+<DIV id=out0046 class="OUTPUT SUCCESS">template product#2 created [<A href="http://tablord.com/templates/product#2">http://tablord.com/templates/product#2</A>]</DIV><PRE id=code0039 class="ELEMENT CODE EDITABLE" contentEditable=false></PRE>
+<DIV id=out0039 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV>
+<DIV class=ELEMENT  itemscope itemtype="http://tablord.com/templates/person" itemprop="items">
+<TABLE width="100%">
+<TBODY>
+<TR>
+<TH>firstName</TH>
+<TD class=LEFT width="90%">
+<DIV class="FIELD EDITABLE" itemprop="firstName">ma</DIV></TD></TR>
+<TR>
+<TH>middleName</TH>
+<TD class=LEFT width="90%">
+<DIV class="FIELD EDITABLE" itemprop="middleName"></DIV></TD></TR>
+<TR>
+<TH>lastName</TH>
+<TD class=LEFT width="90%">
+<DIV class="FIELD EDITABLE" itemprop="lastName">ni</DIV></TD></TR>
+<TR>
+<TH>emails</TH>
+<TD class=LEFT>
+<DIV container="emails" templates="email person">
+<DIV class=ELEMENT  itemscope itemtype="http://tablord.com/templates/email" itemprop="emails"><SELECT style="WIDTH: 10%" itemprop="purpose"><OPTION selected>office</OPTION><OPTION>home<OPTION></OPTION></SELECT> <SPAN class=EDITABLE style="WIDTH: 80%" itemprop="email"></SPAN></DIV>
+<DIV class=ELEMENT  itemscope itemtype="http://tablord.com/templates/person" itemprop="emails">
 <TABLE width="100%">
 <TBODY>
 <TR>
@@ -49,113 +319,13 @@
 <TR>
 <TH>emails</TH>
 <TD class=LEFT>
-<DIV class=CONTAINER templates="http://tablord.com/templates/email.html">
-<DIV class="ELEMENT EMPTY" contentEditable=false>empty container: click here to add an element</DIV></DIV></TD></TR></TBODY></TABLE></DIV></DIV></DIV><PRE id=code0026 class="ELEMENT CODE EDITABLE" contentEditable=false><P>$('#sect0003')</P><P>&nbsp;</P></PRE>
-<DIV id=out0026 class="OUTPUT SUCCESS">JQuery of 1 elements<BR>
-<OL start=0><BR>
-<LI class=INSPECTHTML><WBR>&lt;DIV&nbsp;id=sect0003&nbsp;class="ELEMENT&nbsp;SECTION"&nbsp;sizcache="1"&nbsp;sizset="0"&gt;<WBR>&lt;H1&nbsp;class="SECTIONTITLE&nbsp;EDITABLE"&nbsp;contentEditable=false&gt;1&nbsp;Test&nbsp;Templates<WBR>&lt;/H1&gt;<WBR>&lt;DIV&nbsp;class=CONTAINER&nbsp;sizcache="1"&nbsp;sizset="0"&gt;<WBR>&lt;PRE&nbsp;id=code0004&nbsp;class="ELEMENT&nbsp;CODE&nbsp;EDITABLE"&nbsp;contentEditable=false&gt;<WBR>&lt;P&gt;jc.template({name:'email',html:'&amp;lt;DIV&nbsp;class="ELEMENT"&amp;gt;&amp;lt;SELECT&nbsp;itemprop="purpose"&nbsp;style="width:10%"&amp;gt;&amp;lt;OPTION&amp;gt;office&amp;lt;/OPTION&amp;gt;&amp;lt;OPTION&amp;gt;home&amp;lt;OPTION&amp;gt;&amp;lt;/SELECT&amp;gt;&amp;lt;SPAN&nbsp;class=EDITABLE&nbsp;itemprop="email"&nbsp;style="width:80%;"&amp;gt;&amp;lt;/SPAN&amp;gt;&amp;lt;/DIV&amp;gt;'});<WBR>&lt;/P&gt;<WBR>&lt;P&gt;&amp;nbsp;<WBR>&lt;/P&gt;<WBR>&lt;P&gt;/*<WBR>&lt;/P&gt;<WBR>&lt;P&gt;jc.template({name:'person',html:'&amp;lt;DIV&nbsp;class="ELEMENT"&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/person.html"&amp;gt;'+<WBR>&lt;/P&gt;<WBR>&lt;P&gt;'&amp;lt;SPAN&nbsp;style="border-bottom:cyan&nbsp;solid&nbsp;1px;&nbsp;width:80%;"&amp;gt;firstName&nbsp;&amp;lt;/SPAN&amp;gt;&amp;lt;SPAN&nbsp;class=EDITABLE&nbsp;itemprop="firstName"&nbsp;class=EDITABLE&nbsp;style="width:80%;"&amp;gt;&amp;lt;/SPAN&amp;gt;&amp;lt;BR&amp;gt;'+<WBR>&lt;/P&gt;<WBR>&lt;P&gt;&nbsp;'&amp;lt;SPAN&nbsp;style="width:19%;"&amp;gt;lastName&amp;lt;/SPAN&amp;gt;&amp;lt;SPAN&nbsp;class=EDITABLE&nbsp;itemprop="lastName"&nbsp;class=EDITABLE&nbsp;style="width:80%;"&amp;gt;&amp;lt;/SPAN&amp;gt;&amp;lt;BR&amp;gt;'+<WBR>&lt;/P&gt;<WBR>&lt;P&gt;&nbsp;'emails&amp;lt;DIV&nbsp;class=CONTAINER&amp;gt;&amp;lt;/DIV&amp;gt;'+<WBR>&lt;/P&gt;<WBR>&lt;P&gt;&nbsp;'&amp;lt;/DIV&amp;gt;'});<WBR>&lt;/P&gt;<WBR>&lt;P&gt;*/<WBR>&lt;/P&gt;<WBR>&lt;P&gt;jc.template({name:'person',fields:{firstName:{},middleName:{},lastName:{},emails:{container:{'http://tablord.com/templates/email.html':{}}}}});<WBR>&lt;/P&gt;<WBR>&lt;P&gt;jc.template({name:'product',version:1,fields:{productId:{},productName:{}}});<WBR>&lt;/P&gt;<WBR>&lt;P&gt;jc.template({name:'product',version:2,fields:{productId:{},productName:{}}});<WBR>&lt;/P&gt;<WBR>&lt;/PRE&gt;<WBR>&lt;DIV&nbsp;id=out0004&nbsp;class="OUTPUT&nbsp;SUCCESS"&gt;template&nbsp;product&nbsp;created&nbsp;[<WBR>&lt;A&nbsp;href="http://tablord.com/templates/product.html#2"&gt;http://tablord.com/templates/product.html#2<WBR>&lt;/A&gt;]<WBR>&lt;/DIV&gt;<WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;itemtype="http://tablord.com/templates/person.html"&nbsp;itemscope&gt;<WBR>&lt;TABLE&nbsp;width="100%"&gt;<WBR>&lt;TBODY&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;firstName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;contentEditable=false&nbsp;itemprop="firstName"&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;middleName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;contentEditable=false&nbsp;itemprop="middleName"&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;lastName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;contentEditable=false&nbsp;itemprop="lastName"&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;emails<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&gt;<WBR>&lt;DIV&nbsp;class=CONTAINER&nbsp;templates="http://tablord.com/templates/email.html"&gt;<WBR>&lt;DIV&nbsp;class="ELEMENT&nbsp;EMPTY"&nbsp;contentEditable=false&gt;empty&nbsp;container:&nbsp;click&nbsp;here&nbsp;to&nbsp;add&nbsp;an&nbsp;element<WBR>&lt;/DIV&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;/TBODY&gt;<WBR>&lt;/TABLE&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/DIV&gt;</LI><BR></OL></DIV><PRE id=code0028 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.htmlAttribute('toto',jc.toHtml('tutu://'))</P><P>&nbsp;</P></PRE>
-<DIV id=out0028 class="OUTPUT SUCCESS">&nbsp;toto="tutu://"</DIV>
-<DIV class=ELEMENT><SELECT style="WIDTH: 10%" itemprop="purpose"><OPTION>office</OPTION><OPTION selected>home<OPTION></OPTION></SELECT><SPAN class=EDITABLE contentEditable=false style="WIDTH: 80%; BORDER-BOTTOM: grey 1px solid" itemprop="email"><A href="mailto:marc9nicole@gmail.com">marc9nicole@gmail.com</A></SPAN></DIV>
-<DIV class=ELEMENT><SELECT style="WIDTH: 10%" itemprop="purpose"><OPTION selected>office</OPTION><OPTION>home<OPTION></OPTION></SELECT><SPAN class=EDITABLE contentEditable=false style="WIDTH: 80%" itemprop="email"> 
-<P><A href="mailto:marc.nicole@tablord.com">marc.nicole@tablord.com</A></P></SPAN></DIV>
-<DIV class=ELEMENT itemtype="http://tablord.com/templates/product.html#1" itemscope>
-<TABLE width="100%">
-<TBODY>
-<TR>
-<TH>productId</TH>
-<TD class=LEFT width="90%">
-<DIV class="FIELD EDITABLE" contentEditable=false itemprop="productId">asdfasfh</DIV></TD></TR>
-<TR>
-<TH>productName</TH>
-<TD class=LEFT width="90%">
-<DIV class="FIELD EDITABLE" contentEditable=false itemprop="productName">asdfasdf</DIV></TD></TR></TBODY></TABLE></DIV>
-<DIV class=ELEMENT><SELECT style="WIDTH: 10%" itemprop="purpose"><OPTION selected>office</OPTION><OPTION>home<OPTION></OPTION></SELECT><SPAN class=EDITABLE contentEditable=false style="WIDTH: 80%" itemprop="email"><A href="mailto:toto@gmail.comcccc">toto@gmail.comcccc</A></SPAN></DIV>
-<DIV class=ELEMENT><SELECT style="WIDTH: 10%" itemprop="purpose"><OPTION selected>office</OPTION><OPTION>home<OPTION></OPTION></SELECT><SPAN class=EDITABLE contentEditable=false style="WIDTH: 80%" itemprop="email">ccddsdasdasdf</SPAN></DIV>
-<DIV class=ELEMENT itemtype="http://tablord.com/templates/product.html#2" itemscope>
-<TABLE width="100%">
-<TBODY>
-<TR>
-<TH>productId</TH>
-<TD class=LEFT width="90%">
-<DIV class="FIELD EDITABLE" contentEditable=false itemprop="productId">12345799</DIV></TD></TR>
-<TR>
-<TH>productName</TH>
-<TD class=LEFT width="90%">
-<DIV class="FIELD EDITABLE" contentEditable=false itemprop="productName">greatest product</DIV></TD></TR></TBODY></TABLE></DIV>
-<DIV class=ELEMENT itemtype="http://tablord.com/templates/product.html" itemscope>
-<TABLE width="100%">
-<TBODY>
-<TR>
-<TH>productId</TH>
-<TD class=LEFT width="90%">
-<DIV class="FIELD EDITABLE" contentEditable=false itemprop="productId">123458</DIV></TD></TR>
-<TR>
-<TH>productName</TH>
-<TD class=LEFT width="90%">
-<DIV class="FIELD EDITABLE" contentEditable=false itemprop="productName">awsome product</DIV></TD></TR></TBODY></TABLE></DIV><PRE id=code0006 class="ELEMENT CODE EDITABLE" contentEditable=false><P>table().addRows(jc.template.data('http://tablord.com/templates/product.html#'))</P></PRE>
-<DIV id=out0006 class="OUTPUT SUCCESS">
-<TABLE>
-<THEAD>
-<TR>
-<TH>productId</TH>
-<TH>productName</TH></TR></THEAD>
-<TBODY>
-<TR>
-<TD>asdfasfh</TD>
-<TD>asdfasdf</TD></TR>
-<TR>
-<TD>12345799</TD>
-<TD>greatest&nbsp;product</TD></TR>
-<TR>
-<TD>123458</TD>
-<TD>awsome&nbsp;product</TD></TR></TBODY></TABLE></DIV><PRE id=code0020 class="ELEMENT CODE EDITABLE" contentEditable=false>$('[itemtype="<A href="http://tablord.com/templates/person.html&quot;]'">http://tablord.com/templates/person.html"]'</A>)</PRE>
-<DIV id=out0020 class="OUTPUT SUCCESS">JQuery of 1 elements<BR>
-<OL start=0><BR>
-<LI class=INSPECTHTML><WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;itemtype="http://tablord.com/templates/person.html"&nbsp;itemscope&gt;<WBR>&lt;TABLE&nbsp;width="100%"&gt;<WBR>&lt;TBODY&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;firstName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;contentEditable=false&nbsp;itemprop="firstName"&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;middleName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;contentEditable=false&nbsp;itemprop="middleName"&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;lastName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;contentEditable=false&nbsp;itemprop="lastName"&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;emails<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&gt;<WBR>&lt;DIV&nbsp;class=CONTAINER&nbsp;templates="http://tablord.com/templates/email.html"&gt;<WBR>&lt;DIV&nbsp;class="ELEMENT&nbsp;EMPTY"&nbsp;contentEditable=false&gt;empty&nbsp;container:&nbsp;click&nbsp;here&nbsp;to&nbsp;add&nbsp;an&nbsp;element<WBR>&lt;/DIV&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;/TBODY&gt;<WBR>&lt;/TABLE&gt;<WBR>&lt;/DIV&gt;</LI><BR></OL></DIV><PRE id=code0008 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.html('&lt;div id=t2 itemscope&gt;&lt;div id=t2_1 itemprop="t2_1" itemscope&gt;t2_1&lt;div id=t2_1_1 class=EDITABLE itemprop="p1"&gt;t2_1_1&lt;/div&gt;&lt;div id=t2_1_2 class=EDITABLE itemprop="p2"&gt;t2_1_2&lt;/div&gt;&lt;/div&gt;'+</P><P>                   '&lt;div id=t2_2&gt;t2_2&lt;div id=t2_2_1 class=EDITABLE itemprop="p1"&gt;t2_2_1&lt;/div&gt;&lt;div id=t2_2_2 class=EDITABLE itemprop="p2"&gt;t2_2_2&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;')</P></PRE>
-<DIV id=out0008 class="OUTPUT SUCCESS">
-<DIV id=t2 itemscope>
-<DIV id=t2_1 itemscope itemprop="t2_1">t2_1
-<DIV id=t2_1_1 class=EDITABLE itemprop="p1">p1</DIV>
-<DIV id=t2_1_2 class=EDITABLE itemprop="p2">p2</DIV></DIV>
-<DIV id=t2_2>t2_2
-<DIV id=t2_2_1 class=EDITABLE itemprop="p1">P1</DIV>
-<DIV id=t2_2_2 class=EDITABLE itemprop="p2">&nbsp;</DIV></DIV></DIV></DIV><PRE id=code0010 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.toJScode(jc.template.getElements$Data($('#t2')))</P></PRE>
-<DIV id=out0010 class="OUTPUT SUCCESS">{t2_1:{p1:'t2_1_1',p2:'t2_1_2'},p1:'t2_2_1',p2:'t2_2_2'}</DIV><PRE id=code0012 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.template.setElements$WithData($('#t2'),{t2_1:{p1:'p1',p2:'p2'},p1:'P1'})</PRE>
-<DIV id=out0012 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV><PRE id=code0016 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.htmlAttribute('jcObj',jc.toJScode({toto:3,tutu:'trois'}));</PRE>
-<DIV id=out0016 class="OUTPUT SUCCESS">&nbsp;jcObj="{toto:3,tutu:'trois'}"</DIV><PRE id=code0018 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.templateChoice$</PRE>
-<DIV id=out0018 class="OUTPUT SUCCESS">JQuery of 1 elements<BR>
-<OL start=0><BR>
-<LI class=INSPECTHTML><WBR>&lt;SELECT&gt;<WBR>&lt;OPTION&nbsp;selected&nbsp;value=code&gt;code<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&nbsp;value=richText&gt;richText<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&nbsp;value=section&gt;section<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&nbsp;value=paste&gt;paste<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&nbsp;value=http://tablord.com/templates/email.html&gt;email<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&nbsp;value=http://tablord.com/templates/person.html&gt;person<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&nbsp;value=http://tablord.com/templates/product.html#1&gt;product&nbsp;#1<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&nbsp;value=http://tablord.com/templates/product.html#2&gt;product&nbsp;#2<WBR>&lt;/OPTION&gt;</LI><BR></OL></DIV><PRE id=code0022 class="ELEMENT CODE EDITABLE" contentEditable=false ><P>$('#code0022').keydown(function(event){$('#out0022').html(event.keyCode+':'+event.ctrlKey)});</P></PRE>
-<DIV id=out0022 class="OUTPUT SUCCESS">JQuery of 1 elements<BR>
-<OL start=0><BR>
-<LI class=INSPECTHTML><WBR>&lt;PRE&nbsp;id=code0022&nbsp;class="ELEMENT&nbsp;CODE&nbsp;EDITABLE"&nbsp;contentEditable=false&gt;<WBR>&lt;P&gt;$('#code0022').keydown(function(event){$('#out0022').html(event.keyCode+':'+event.ctrlKey)});<WBR>&lt;/P&gt;<WBR>&lt;/PRE&gt;</LI><BR></OL></DIV><PRE id=code0024 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.templates</PRE>
-<DIV id=out0024 class="OUTPUT SUCCESS">
+<DIV container="emails" templates="email person">
+<DIV class="ELEMENT EMPTY" contentEditable=false>empty container: click here to add an element</DIV></DIV></TD></TR></TBODY></TABLE></DIV></DIV></TD></TR></TBODY></TABLE></DIV>
+<DIV id=out0034 class=OUTPUT>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
 <TBODY>
 <TR>
-<TH vAlign=top>code</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>template&nbsp;code&nbsp;created&nbsp;[code]</TD></TR>
-<TR>
-<TH vAlign=top>richText</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>template&nbsp;richText&nbsp;created&nbsp;[richText]</TD></TR>
-<TR>
-<TH vAlign=top>section</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>template&nbsp;section&nbsp;created&nbsp;[section]</TD></TR>
-<TR>
-<TH vAlign=top>paste</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>template&nbsp;paste&nbsp;created&nbsp;[paste]</TD></TR>
-<TR>
-<TH vAlign=top>http://tablord.com/templates/email.html</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>template&nbsp;email&nbsp;created&nbsp;[http://tablord.com/templates/email.html]</TD></TR>
-<TR>
-<TH vAlign=top>http://tablord.com/templates/person.html</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>template&nbsp;person&nbsp;created&nbsp;[http://tablord.com/templates/person.html]</TD></TR>
-<TR>
-<TH vAlign=top>http://tablord.com/templates/product.html#1</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>template&nbsp;product&nbsp;created&nbsp;[http://tablord.com/templates/product.html#1]</TD></TR>
-<TR>
-<TH vAlign=top>http://tablord.com/templates/product.html#2</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>template&nbsp;product&nbsp;created&nbsp;[http://tablord.com/templates/product.html#2]</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0030 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.updateResultsTestStatus();</P><P>if ('runonce' in jc.url.arguments) window.close();</P></PRE>
-<DIV id=out0030 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV></DIV></BODY></HTML>
+<TH vAlign=top>product#2</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;Object]</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV></DIV></BODY></HTML>
