@@ -291,6 +291,30 @@
   }          
 
 
+  jc.getItems$ = function(url) {
+    // returns a jQuery of all itemscope in the document having the itemtype=url
+    // if url is undefined, gets all itemscope
+    // if url ends with # select any url that match any version
+    //   ex: http://www.tablord.com/templates/product#      
+    //     matches
+    //       http://www.tablord.com/templates/product#1line
+    //       http://www.tablord.com/templates/product
+    //       http://www.tablord.com/templates/product#2
+    //     
+    if (url === undefined) {
+      var items$ = $('[itemscope=""]');
+    }
+    else if (url.slice(-1) === '#') {
+      var items$ = $('[itemtype^="'+url.slice(0,-1)+'"]');
+    }
+    else {
+      var items$ = $('[itemtype="'+url+'"]');
+    }
+    return items$.filter(function(i){return $(this).parent().closest('[itemscope=""]').length === 0});
+  }
+
+
+
   // edi related functions ////////////////////////////////////////////
   var geval = eval;
 
@@ -1282,6 +1306,8 @@
     return containers;
   }
 
+/*
+
   jc.Template.setElements$WithData = function(elements$,data){
     // set all itemprop elements with data (recurse through children and data)
     elements$.each(function(i,element){
@@ -1331,29 +1357,7 @@
     });
     return data;
   }
-
-
-  jc.Template.data = function(url) {
-    // get all data from all templates in the document having the itemtype=url
-    // if url ends with # select any url that match any version
-    //   ex: http://www.tablord.com/templates/product#      
-    //     matches
-    //       http://www.tablord.com/templates/product#1line
-    //       http://www.tablord.com/templates/product
-    //       http://www.tablord.com/templates/product#2
-    //     
-    var data = [];
-    if (url.slice(-1) === '#') {
-      var templates$ = $('[itemtype^="'+url.slice(0,-1)+'"]');
-    }
-    else {
-      var templates$ = $('[itemtype="'+url+'"]');
-    }
-    templates$.each(function(i,e){
-      data.push(jc.Template.getElements$Data($(e)));
-    });
-    return data;
-  }
+*/
 
 
   jc.updateTemplateChoice = function () {}; // dummy so far, will be trully defined later on when creating menu;
@@ -1540,7 +1544,7 @@
   jc.updateTemplateChoice = function() {
     var currentValue = jc.templateChoice$.val();
     jc.templateChoice$.empty();
-    jc.currentContainer$ = $(jc.selectedElement).closest('[container]')  //!!!!! AARGH: l'element change ==> reference selectedElement invalide!
+    jc.currentContainer$ = $(jc.selectedElement).closest('[container]')  
     var acceptedTemplates = jc.currentContainer$.attr('templates');
     if (acceptedTemplates) {
       acceptedTemplates = acceptedTemplates.split(' ');
@@ -1581,7 +1585,7 @@
       .append('<BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement,jc.currentContainer$.attr(\'container\'))">&#8593;</BUTTON>')
       .append('<BUTTON onclick="jc.templates[jc.templateChoice$.val()].convert(jc.selectedElement,jc.currentContainer$.attr(\'container\'))">&#8596;</BUTTON>')
       .append(jc.templateChoice$)
-      .append('<BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement,jc.currentContainer$.attr(\'container\'));a(jc.currentContainer$)">&#8595;</BUTTON>')
+      .append('<BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement,jc.currentContainer$.attr(\'container\'))">&#8595;</BUTTON>')
       .append('<BUTTON id="showHtmlBtn" onclick=jc.showOutputHtml(this);>&#8594;html</BUTTON>')
       .append('<BUTTON id="toTestBtn" onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON>')
       .append(jc.objectToolBar$)
