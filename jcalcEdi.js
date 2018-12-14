@@ -186,10 +186,13 @@
   $.fn.getItemscopeMicrodata = function() {
     // this must be a single itemscope element jQuery
     // return the microdata under the scope as an object
-    // {type:url,    //  properties: {...}}
+    // {type:url,
+    //  properties: {...},
+    //  id:...}   //In addition to microdata specification
    
     if (! this.is('[itemscope=""]')) throw new Error('getItemscopeMicrodata must be called on a jquery having a itemscope');
-    var result={type:this.attr('itemtype') || '',
+    var result={id:this.attr('id') || undefined,
+                type:this.attr('itemtype') || '',
                 properties:this.children().getMicrodata()}
     return result;
   }
@@ -236,6 +239,7 @@
     // not checked for beeing top level microdata item. So it is possible to get microdata from nested nodes
     // and is the responsibility of the caller to know what to do
     // the parameter result is only intended for recusivity purpose and should be undefined
+    // in addition to the microdata specifications, the structure also set "id" if id is defined at the itemscope element
     var result = result || {};
     this.each(function(i,e){
       var e$ = $(e);
@@ -312,8 +316,6 @@
     }
     return items$.filter(function(i){return $(this).parent().closest('[itemscope=""]').length === 0});
   }
-
-
 
   // edi related functions ////////////////////////////////////////////
   var geval = eval;
@@ -1221,12 +1223,13 @@
 
     var e$ = $(element);
     var data = $.extend(true,e$.data('itemData') || {},e$.getMicrodata());
+    var id = element.id;
     var containers = $.extend(true,e$.data('containers') || {},jc.Template.getElement$Containers(e$));
     var k = jc.keys(data);
     if (k.length > 1) throw new Error('element.convert error: data has more than 1 head key\n'+jc.toJSCode(data));
     var newData = {};
     newData[itemprop || 'items'] = data[k[0]] || {};
-    var new$ = this.element$(itemprop);
+    var new$ = this.element$(itemprop,id);
     if (this.convertData) {
       this.convertData(data,new$);
     }
@@ -1248,9 +1251,13 @@
     return this;
   }
 
-  jc.Template.prototype.element$ = function(itemprop) {
+  jc.Template.prototype.element$ = function(itemprop,id) {
     if (this.html === undefined) throw new Error('in order to define a template at least define .fields, .html or .element$()');
-    var new$ = $(this.html);
+    if (id === undefined) {
+      jc.blockNumber++;
+      id = 'item'+jc.pad(jc.blockNumber,4);
+    }
+    var new$ = $(this.html).attr('id',id);
     if (itemprop) new$.attr('itemprop',itemprop);
     return new$;
   }
@@ -1261,6 +1268,11 @@
 
   jc.Template.prototype.span = function() {
     return 'template '+this.name+' created [<a href="'+this.url()+'">'+this.url()+'</a>]';
+  }
+
+  jc.Template.urlToName = function(url) {
+    if (url === undefined) return undefined;
+    return url.match(/.*\/(.*)$/)[1];
   }
 
   jc.Template.moveContainerContent = function(oldElement$,newElement$) {
@@ -1558,12 +1570,19 @@
         '<OPTION value="'+acceptedTemplates[i]+'">'+acceptedTemplates[i]+'</OPTION>'
       );
     }
-    if (currentValue in acceptedTemplates) {
+    if (jc.selectedElement &&
+        jc.selectedElement.itemtype) {
+      var name = jc.Template.urlToName(jc.selectedElement.itemtype);
+      if (name && ($.inArray(name,acceptedTemplates)!=-1)) {
+        jc.templateChoice$.val(name);
+        return;
+      }
+    }
+    if ($.inArray(currentValue,acceptedTemplates)!=-1) {
       jc.templateChoice$.val(currentValue);
+      return;
     }
-    else {
-      jc.templateChoice$.val(acceptedTemplates[0]);
-    }
+    jc.templateChoice$.val(acceptedTemplates[0]);
   } 
 
   jc.initToolBars = function() {
@@ -2145,10 +2164,10 @@
     $('.CODE').add('.RICHTEXT').add('.SECTION').addClass('ELEMENT'); // since v160 all ELEMENT are selectable
     $('.CODE:not(.EMBEDDED)').add('.RICHTEXT').add('.SECTIONTITLE').addClass('EDITABLE'); // since v160 EDITABLE tags will be set to contentEditable=true /false when the itself or its parent is selected
     // since v0.0110 the menu is fixed in a #menu DIV and all sheet is contained in a #jcContent DIV
-    jc.content$ = $('#jcContent').removeAttr('style').attr('container','jcContent');
+    jc.content$ = $('#jcContent').removeAttr('style').attr('container','items');
     var b$ = $('BODY');
     if (jc.content$.length == 0) {                                   
-      b$.wrapInner('<DIV id=jcContent container="jcContent"/>');
+      b$.wrapInner('<DIV id=jcContent container="items"/>');
     }
 
     // since v0.0145 the <body> attributes hideCodes,hideCut,hideTest,hideTrace are deprecated

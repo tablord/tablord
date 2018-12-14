@@ -24,15 +24,15 @@
 <DIV id=menu class=TOOLBAR>
 <DIV><INPUT onclick=jc.showCode(event) CHECKED type=checkbox>codes</INPUT><INPUT onclick=jc.showCut(event) CHECKED type=checkbox>cuts</INPUT><INPUT onclick=jc.showTest(event) CHECKED type=checkbox>tests</INPUT><INPUT onclick=jc.showTrace(event) CHECKED type=checkbox>traces</INPUT><INPUT onclick=jc.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
 <DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60" >&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
-<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick=jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement) style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick=jc.template.convertTo(jc.selectedElement,jc.templateChoice$.val()) style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION></SELECT><BUTTON onclick=jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement) style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
+<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].convert(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT ><OPTION value=code>code</OPTION><OPTION selected value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION></SELECT><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px" >&#8594;test</BUTTON>
 <DIV id=objectToolBar></DIV></DIV></DIV>
-<DIV id=jcContent class=CONTAINER sizcache="1" sizset="1">
+<DIV id=jcContent class=CONTAINER sizcache="1" sizset="1" container="items">
 <DIV id=sect0002 class="SECTION ELEMENT" sizcache="1" sizset="1">
 <H1 class="SECTIONTITLE EDITABLE" contentEditable=false>1 tests of JcalcEdi <SPAN id=code0015 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.testStatus()</SPAN><SPAN id=out0015 class="OUTPUT SUCCESS" contentEditable=false><SPAN class=ERROR>tests passed:59 failed:1</SPAN></SPAN>&nbsp;</H1>
 <DIV class=SECTIONCONTAINER sizcache="1" sizset="1"><PRE id=code0096 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.tableOfContent</PRE>
 <DIV id=out0096 class="OUTPUT SUCCESS">
 <DIV class=INTERACTIVE>
-<DIV class=TOC0>1 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalcEdi_test.hta#sect0002">tests of JcalcEdi tests passed:58 failed:2&nbsp;</A></DIV>
+<DIV class=TOC0>1 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalcEdi_test.hta#sect0002">tests of JcalcEdi tests passed:55 failed:5&nbsp;</A></DIV>
 <DIV class=TOC1>1.1 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalcEdi_test.hta#sect0017">Consistence of rendering results</A></DIV>
 <DIV class=TOC2>1.1.1 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalcEdi_test.hta#sect0018">numbers</A></DIV>
 <DIV class=TOC2>1.1.2 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalcEdi_test.hta#sect0022">Dates</A></DIV>
@@ -229,14 +229,14 @@
 <TR>
 <TH vAlign=top>two</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0132 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect(123).toString()</PRE>
-<DIV id=out0132 class="OUTPUT SUCCESS">123&nbsp;<BR></DIV>
-<DIV id=test0132 class="TEST SUCCESS">123&nbsp;<BR></DIV><PRE id=code0134 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect("toto").toString()</PRE>
-<DIV id=out0134 class="OUTPUT SUCCESS">toto&nbsp;<BR></DIV>
-<DIV id=test0134 class="TEST SUCCESS">toto&nbsp;<BR></DIV><PRE id=code0141 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect('').toString()</PRE>
-<DIV id=out0141 class="OUTPUT SUCCESS">&nbsp;<BR></DIV>
-<DIV id=test0141 class="TEST SUCCESS">&nbsp;<BR></DIV><PRE id=code0142 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect(null).toString()</PRE>
-<DIV id=out0142 class="OUTPUT SUCCESS">null&nbsp;<BR></DIV>
-<DIV id=test0142 class="TEST SUCCESS">null&nbsp;<BR></DIV><PRE id=code0135 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect({one:1,two:2}).toString()</PRE>
+<DIV id=out0132 class="OUTPUT SUCCESS">123</DIV>
+<DIV id=test0132 class="TEST SUCCESS">123</DIV><PRE id=code0134 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect("toto").toString()</PRE>
+<DIV id=out0134 class="OUTPUT SUCCESS">"toto"</DIV>
+<DIV id=test0134 class="TEST SUCCESS">"toto"</DIV><PRE id=code0141 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect('').toString()</PRE>
+<DIV id=out0141 class="OUTPUT SUCCESS">empty&nbsp;string</DIV>
+<DIV id=test0141 class="TEST SUCCESS">empty&nbsp;string</DIV><PRE id=code0142 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect(null).toString()</PRE>
+<DIV id=out0142 class="OUTPUT SUCCESS">null</DIV>
+<DIV id=test0142 class="TEST SUCCESS">null</DIV><PRE id=code0135 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect({one:1,two:2}).toString()</PRE>
 <DIV id=out0135 class="OUTPUT SUCCESS">{}&nbsp;<BR>one:&nbsp;&nbsp;1<BR>two:&nbsp;&nbsp;2<BR></DIV>
 <DIV id=test0135 class="TEST SUCCESS">{}&nbsp;<BR>one:&nbsp;&nbsp;1<BR>two:&nbsp;&nbsp;2<BR></DIV></DIV></DIV>
 <DIV id=sect0099 class="SECTION ELEMENT" sizcache="1" sizset="53">
@@ -446,7 +446,7 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR>
 <TR>
 <TH vAlign=top>tutu</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>bidule</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0153 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.inspect(jc.urlComponents(window.location.href),'',2)</P></PRE>
+<TD style="TEXT-ALIGN: left" vAlign=top>bidule</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0153 class="ELEMENT CODE EDITABLE" contentEditable=false><P>// ************ this test will fail if run individually (out of a testSuite) since "runonce" will not be set ***************</P><P>// *************************************************************************************************************************</P><P>jc.inspect(jc.urlComponents(window.location.href),'',2)</P></PRE>
 <DIV id=out0153 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
@@ -638,8 +638,8 @@
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.4.9 helpers to write code</H3>
 <DIV class=CONTAINER sizcache="1" sizset="83"><PRE id=code0145 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.isJSid('Toto_123$')</PRE>
 <DIV id=out0145 class="OUTPUT SUCCESS">true</DIV><PRE id=code0146 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.isJSid('toto%')</PRE>
-<DIV id=out0146 class="OUTPUT SUCCESS">false</DIV><PRE id=code0148 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.toJScode('{toto:3,tutu:"three",titi:[1,2,3,{tyty:4}]}')</PRE>
-<DIV id=out0148 class="OUTPUT SUCCESS">'{toto:3,tutu:"three",titi:[1,2,3,{tyty:4}]}'</DIV><PRE id=code0149 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.toJScode('{toto:3,tutu:"three",titi:[1,2,3,{tyty:4}]}','"')</PRE>
+<DIV id=out0146 class="OUTPUT SUCCESS">false</DIV><PRE id=code0148 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.toJSCode('{toto:3,tutu:"three",titi:[1,2,3,{tyty:4}]}')</PRE>
+<DIV id=out0148 class="OUTPUT SUCCESS">'{toto:3,tutu:"three",titi:[1,2,3,{tyty:4}]}'</DIV><PRE id=code0149 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.toJSCode('{toto:3,tutu:"three",titi:[1,2,3,{tyty:4}]}','"')</PRE>
 <DIV id=out0149 class="OUTPUT SUCCESS">"{toto:3,tutu:\"three\",titi:[1,2,3,{tyty:4}]}"</DIV></DIV></DIV>
 <DIV id=sect0099 class="SECTION ELEMENT" sizcache="1" sizset="87">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.4.10 helpers for html</H3>
@@ -675,9 +675,9 @@
 <DIV id=out0075 class="OUTPUT SUCCESS">
 <DIV class=SCENE style="BORDER-TOP: black 2px solid; HEIGHT: 400px; BORDER-RIGHT: black 2px solid; WIDTH: 600px; BORDER-BOTTOM: black 2px solid; BORDER-LEFT: black 2px solid">
 <DIV class=SCENECONTAINER>
-<DIV class=IELEMENT style="BORDER-TOP: red 5px solid; HEIGHT: 50px; BORDER-RIGHT: red 5px solid; WIDTH: 50px; BORDER-BOTTOM: red 5px solid; LEFT: 169px; BORDER-LEFT: red 5px solid; TOP: 98px"></DIV>
-<DIV class=IELEMENT style="BORDER-TOP: purple 5px solid; HEIGHT: 50px; BORDER-RIGHT: purple 5px solid; WIDTH: 50px; BORDER-BOTTOM: purple 5px solid; LEFT: 152px; BORDER-LEFT: purple 5px solid; TOP: 88px"></DIV>
-<DIV class=IELEMENT style="BORDER-TOP: blue 5px solid; HEIGHT: 50px; BORDER-RIGHT: blue 5px solid; WIDTH: 50px; BORDER-BOTTOM: blue 5px solid; LEFT: 152px; BORDER-LEFT: blue 5px solid; TOP: 87px"></DIV>
+<DIV class=IELEMENT style="BORDER-TOP: red 5px solid; HEIGHT: 50px; BORDER-RIGHT: red 5px solid; WIDTH: 50px; BORDER-BOTTOM: red 5px solid; LEFT: 152px; BORDER-LEFT: red 5px solid; TOP: 102px"></DIV>
+<DIV class=IELEMENT style="BORDER-TOP: purple 5px solid; HEIGHT: 50px; BORDER-RIGHT: purple 5px solid; WIDTH: 50px; BORDER-BOTTOM: purple 5px solid; LEFT: 170px; BORDER-LEFT: purple 5px solid; TOP: 109px"></DIV>
+<DIV class=IELEMENT style="BORDER-TOP: blue 5px solid; HEIGHT: 50px; BORDER-RIGHT: blue 5px solid; WIDTH: 50px; BORDER-BOTTOM: blue 5px solid; LEFT: 160px; BORDER-LEFT: blue 5px solid; TOP: 114px"></DIV>
 <DIV class=IELEMENT style="BORDER-TOP: yellow 5px solid; HEIGHT: 50px; BORDER-RIGHT: yellow 5px solid; WIDTH: 50px; BORDER-BOTTOM: yellow 5px solid; LEFT: 100px; BORDER-LEFT: yellow 5px solid; TOP: 100px"></DIV></DIV></DIV></DIV><PRE id=code0124 class="CODE ELEMENT EDITABLE" contentEditable=false>scene1.square.$</PRE>
 <DIV id=out0124 class="OUTPUT SUCCESS">JQuery of 1 elements<BR>
 <OL start=0><BR>
@@ -700,10 +700,10 @@
 <TBODY>
 <TR>
 <TH vAlign=top>top</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>98</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>102</TD></TR>
 <TR>
 <TH vAlign=top>left</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>169</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0155 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.updateResultsTestStatus();</P><P>jc.inspect(jc.results,'',2);</P><P>if ('runonce' in jc.url.arguments) window.close();</P></PRE>
+<TD style="TEXT-ALIGN: left" vAlign=top>152</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0155 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.updateResultsTestStatus();</P><P>jc.inspect(jc.results,'',2);</P><P>if ('runonce' in jc.url.arguments) window.close();</P></PRE>
 <DIV id=out0155 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
@@ -724,4 +724,4 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR>
 <TR>
 <TH vAlign=top>dateTime</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>Mon&nbsp;Nov&nbsp;26&nbsp;18:50:19&nbsp;UTC+0100&nbsp;2018</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV></DIV></DIV></DIV></BODY></HTML>
+<TD style="TEXT-ALIGN: left" vAlign=top>Thu&nbsp;Dec&nbsp;13&nbsp;19:54:06&nbsp;UTC+0100&nbsp;2018</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV></DIV></DIV></DIV></BODY></HTML>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<HTML APPLICATIONNAME="D:\Documents\programmation\jcalc\jcalcV0\template_test.hta" xmlns="http://www.w3.org/1999/xhtml" sizcache="1" sizset="0" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD sizcache="3" sizset="3"><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SCROLL="yes" SINGLEINSTANCE="no"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
+<HTML APPLICATIONNAME="D:\Documents\programmation\jcalc\jcalcV0\template_test.hta" xmlns="http://www.w3.org/1999/xhtml" sizcache="1" sizset="1" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD sizcache="3" sizset="3"><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SCROLL="yes" SINGLEINSTANCE="no"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
 <SCRIPT src="jquery-1.5.1.min.js"></SCRIPT>
 
 <SCRIPT class=UPDATE src="jcalcEdi.js"></SCRIPT>
@@ -20,25 +20,21 @@
 
 <SCRIPT src="finance.js"></SCRIPT>
 </HEAD>
-<BODY sizcache="1" sizset="0"  designMode="on" showCode="true" showCut="true" showTest="true" showTrace="true">
+<BODY sizcache="1" sizset="1"  designMode="on" showCode="true" showCut="true" showTest="true" showTrace="true">
 <DIV id=menu class=TOOLBAR>
 <DIV><INPUT onclick=jc.showCode(event) CHECKED type=checkbox>codes</INPUT><INPUT onclick=jc.showCut(event) CHECKED type=checkbox>cuts</INPUT><INPUT onclick=jc.showTest(event) CHECKED type=checkbox>tests</INPUT><INPUT onclick=jc.showTrace(event) CHECKED type=checkbox>traces</INPUT><INPUT onclick=jc.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
-<DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
-<DIV style="POSITION: ; ZOOM: 1; FILTER:   ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px" >cut</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].convert(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION><OPTION value=email>email</OPTION><OPTION value=person>person</OPTION><OPTION value=product#1>product#1</OPTION><OPTION value=product#2>product#2</OPTION></SELECT><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px" >&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
+<DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
+<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].convert(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION><OPTION value=email>email</OPTION><OPTION value=person>person</OPTION><OPTION value=product#1>product#1</OPTION><OPTION value=product#2>product#2</OPTION></SELECT><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px" >&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
 <DIV id=objectToolBar></DIV></DIV></DIV>
-<DIV id=jcContent class=CONTAINER sizcache="1" sizset="0" container="jcContent">
-<DIV id=sect0003 class="ELEMENT SECTION" sizcache="1" sizset="0">
-<H1 class="SECTIONTITLE EDITABLE" contentEditable=false>1 Test Templates</H1>
-<DIV class=CONTAINER sizcache="1" sizset="0"><PRE id=code0041 class="ELEMENT CODE EDITABLE" contentEditable=false>$('[itemtype]')</PRE>
-<DIV id=out0041 class="OUTPUT SUCCESS">JQuery of 6 elements<BR>
-<OL start=0><BR>
-<LI class=INSPECTHTML><WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/person"&nbsp;itemprop="items"&gt;<WBR>&lt;TABLE&nbsp;width="100%"&gt;<WBR>&lt;TBODY&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;firstName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;itemprop="firstName"&gt;ma<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;middleName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;itemprop="middleName"&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;lastName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;itemprop="lastName"&gt;ni<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;emails<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&gt;<WBR>&lt;DIV&nbsp;container="emails"&nbsp;templates="email&nbsp;person"&gt;<WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/email"&nbsp;itemprop="emails"&gt;<WBR>&lt;SELECT&nbsp;style="WIDTH:&nbsp;10%"&nbsp;itemprop="purpose"&gt;<WBR>&lt;OPTION&nbsp;selected&gt;office<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&gt;home<WBR>&lt;OPTION&gt;<WBR>&lt;/OPTION&gt;<WBR>&lt;/SELECT&gt;<WBR>&lt;SPAN&nbsp;class=EDITABLE&nbsp;style="WIDTH:&nbsp;80%"&nbsp;itemprop="email"&gt;<WBR>&lt;/SPAN&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/person"&nbsp;itemprop="emails"&gt;<WBR>&lt;TABLE&nbsp;width="100%"&gt;<WBR>&lt;TBODY&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;firstName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;itemprop="firstName"&gt;neo<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;middleName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;itemprop="middleName"&gt;jr<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;lastName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;itemprop="lastName"&gt;inconito<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;emails<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&gt;<WBR>&lt;DIV&nbsp;container="emails"&nbsp;templates="email&nbsp;person"&gt;<WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/email"&nbsp;itemprop="emails"&gt;<WBR>&lt;SELECT&nbsp;style="WIDTH:&nbsp;10%"&nbsp;itemprop="purpose"&gt;<WBR>&lt;OPTION&nbsp;selected&gt;office<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&gt;home<WBR>&lt;OPTION&gt;<WBR>&lt;/OPTION&gt;<WBR>&lt;/SELECT&gt;<WBR>&lt;SPAN&nbsp;class=EDITABLE&nbsp;style="WIDTH:&nbsp;80%"&nbsp;itemprop="email"&gt;neo.inconito@anonymous.org<WBR>&lt;/SPAN&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/email"&nbsp;itemprop="emails"&gt;<WBR>&lt;SELECT&nbsp;style="WIDTH:&nbsp;10%"&nbsp;itemprop="purpose"&gt;<WBR>&lt;OPTION&nbsp;selected&gt;office<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&gt;home<WBR>&lt;OPTION&gt;<WBR>&lt;/OPTION&gt;<WBR>&lt;/SELECT&gt;<WBR>&lt;SPAN&nbsp;class=EDITABLE&nbsp;style="WIDTH:&nbsp;80%"&nbsp;itemprop="email"&gt;<WBR>&lt;/SPAN&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/email"&nbsp;itemprop="emails"&gt;<WBR>&lt;SELECT&nbsp;style="WIDTH:&nbsp;10%"&nbsp;itemprop="purpose"&gt;<WBR>&lt;OPTION&nbsp;selected&gt;office<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&gt;home<WBR>&lt;OPTION&gt;<WBR>&lt;/OPTION&gt;<WBR>&lt;/SELECT&gt;<WBR>&lt;SPAN&nbsp;class=EDITABLE&nbsp;style="WIDTH:&nbsp;80%"&nbsp;itemprop="email"&gt;<WBR>&lt;/SPAN&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;/TBODY&gt;<WBR>&lt;/TABLE&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;/TBODY&gt;<WBR>&lt;/TABLE&gt;<WBR>&lt;/DIV&gt;</LI><BR>
-<LI class=INSPECTHTML><WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/email"&nbsp;itemprop="emails"&gt;<WBR>&lt;SELECT&nbsp;style="WIDTH:&nbsp;10%"&nbsp;itemprop="purpose"&gt;<WBR>&lt;OPTION&nbsp;selected&gt;office<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&gt;home<WBR>&lt;OPTION&gt;<WBR>&lt;/OPTION&gt;<WBR>&lt;/SELECT&gt;<WBR>&lt;SPAN&nbsp;class=EDITABLE&nbsp;style="WIDTH:&nbsp;80%"&nbsp;itemprop="email"&gt;<WBR>&lt;/SPAN&gt;<WBR>&lt;/DIV&gt;</LI><BR>
-<LI class=INSPECTHTML><WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/person"&nbsp;itemprop="emails"&gt;<WBR>&lt;TABLE&nbsp;width="100%"&gt;<WBR>&lt;TBODY&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;firstName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;itemprop="firstName"&gt;neo<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;middleName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;itemprop="middleName"&gt;jr<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;lastName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;itemprop="lastName"&gt;inconito<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;emails<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&gt;<WBR>&lt;DIV&nbsp;container="emails"&nbsp;templates="email&nbsp;person"&gt;<WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/email"&nbsp;itemprop="emails"&gt;<WBR>&lt;SELECT&nbsp;style="WIDTH:&nbsp;10%"&nbsp;itemprop="purpose"&gt;<WBR>&lt;OPTION&nbsp;selected&gt;office<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&gt;home<WBR>&lt;OPTION&gt;<WBR>&lt;/OPTION&gt;<WBR>&lt;/SELECT&gt;<WBR>&lt;SPAN&nbsp;class=EDITABLE&nbsp;style="WIDTH:&nbsp;80%"&nbsp;itemprop="email"&gt;neo.inconito@anonymous.org<WBR>&lt;/SPAN&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/email"&nbsp;itemprop="emails"&gt;<WBR>&lt;SELECT&nbsp;style="WIDTH:&nbsp;10%"&nbsp;itemprop="purpose"&gt;<WBR>&lt;OPTION&nbsp;selected&gt;office<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&gt;home<WBR>&lt;OPTION&gt;<WBR>&lt;/OPTION&gt;<WBR>&lt;/SELECT&gt;<WBR>&lt;SPAN&nbsp;class=EDITABLE&nbsp;style="WIDTH:&nbsp;80%"&nbsp;itemprop="email"&gt;<WBR>&lt;/SPAN&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/email"&nbsp;itemprop="emails"&gt;<WBR>&lt;SELECT&nbsp;style="WIDTH:&nbsp;10%"&nbsp;itemprop="purpose"&gt;<WBR>&lt;OPTION&nbsp;selected&gt;office<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&gt;home<WBR>&lt;OPTION&gt;<WBR>&lt;/OPTION&gt;<WBR>&lt;/SELECT&gt;<WBR>&lt;SPAN&nbsp;class=EDITABLE&nbsp;style="WIDTH:&nbsp;80%"&nbsp;itemprop="email"&gt;<WBR>&lt;/SPAN&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;/TBODY&gt;<WBR>&lt;/TABLE&gt;<WBR>&lt;/DIV&gt;</LI><BR>
-<LI class=INSPECTHTML><WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/email"&nbsp;itemprop="emails"&gt;<WBR>&lt;SELECT&nbsp;style="WIDTH:&nbsp;10%"&nbsp;itemprop="purpose"&gt;<WBR>&lt;OPTION&nbsp;selected&gt;office<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&gt;home<WBR>&lt;OPTION&gt;<WBR>&lt;/OPTION&gt;<WBR>&lt;/SELECT&gt;<WBR>&lt;SPAN&nbsp;class=EDITABLE&nbsp;style="WIDTH:&nbsp;80%"&nbsp;itemprop="email"&gt;neo.inconito@anonymous.org<WBR>&lt;/SPAN&gt;<WBR>&lt;/DIV&gt;</LI><BR>
-<LI class=INSPECTHTML><WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/email"&nbsp;itemprop="emails"&gt;<WBR>&lt;SELECT&nbsp;style="WIDTH:&nbsp;10%"&nbsp;itemprop="purpose"&gt;<WBR>&lt;OPTION&nbsp;selected&gt;office<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&gt;home<WBR>&lt;OPTION&gt;<WBR>&lt;/OPTION&gt;<WBR>&lt;/SELECT&gt;<WBR>&lt;SPAN&nbsp;class=EDITABLE&nbsp;style="WIDTH:&nbsp;80%"&nbsp;itemprop="email"&gt;<WBR>&lt;/SPAN&gt;<WBR>&lt;/DIV&gt;</LI><BR>
-<LI class=INSPECTHTML><WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/email"&nbsp;itemprop="emails"&gt;<WBR>&lt;SELECT&nbsp;style="WIDTH:&nbsp;10%"&nbsp;itemprop="purpose"&gt;<WBR>&lt;OPTION&nbsp;selected&gt;office<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&gt;home<WBR>&lt;OPTION&gt;<WBR>&lt;/OPTION&gt;<WBR>&lt;/SELECT&gt;<WBR>&lt;SPAN&nbsp;class=EDITABLE&nbsp;style="WIDTH:&nbsp;80%"&nbsp;itemprop="email"&gt;<WBR>&lt;/SPAN&gt;<WBR>&lt;/DIV&gt;</LI><BR></OL></DIV><PRE id=code0042 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.inspect($('[itemtype]').getMicrodata(),'',10);</PRE>
-<DIV id=out0042 class="OUTPUT SUCCESS">
+<DIV id=jcContent class=CONTAINER sizcache="1" sizset="1" container="items">
+<DIV id=sect0003 class="ELEMENT SECTION" sizcache="1" sizset="1">
+<H1 class="SECTIONTITLE EDITABLE" contentEditable=false>1 Test Templates<SPAN id=code0063 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.testStatus()</SPAN><SPAN id=out0063 class=OUTPUT contentEditable=false><SPAN>tests passed:3 failed:0</SPAN></SPAN></H1>
+<DIV class=CONTAINER sizcache="1" sizset="1"><PRE id=code0044 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.template({name:'email',</P><P>             html:'&lt;DIV class="ELEMENT" itemscope itemtype="http://tablord.com/templates/email"&gt;'+</P><P>                  '  &lt;SELECT itemprop="purpose" style="width:10%"&gt;&lt;OPTION&gt;office&lt;/OPTION&gt;&lt;OPTION&gt;home&lt;OPTION&gt;&lt;/SELECT&gt;'+</P><P>                  '  &lt;SPAN class=EDITABLE itemprop="email" style="width:80%;"&gt;&lt;/SPAN&gt;'+</P><P>                  '&lt;/DIV&gt;'});</P></PRE>
+<DIV id=out0044 class=OUTPUT>template email created [<A href="http://tablord.com/templates/email">http://tablord.com/templates/email</A>]</DIV><PRE id=code0004 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.template({name:'person',fields:{firstName:{},middleName:{},lastName:{},emails:{container:'email person'}}});</P></PRE>
+<DIV id=out0004 class=OUTPUT>template person created [<A href="http://tablord.com/templates/person">http://tablord.com/templates/person</A>]</DIV><PRE id=code0045 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.template({name:'product#1',fields:{productId:{},productName:{}}});</P></PRE>
+<DIV id=out0045 class=OUTPUT>template product#1 created [<A href="http://tablord.com/templates/product#1">http://tablord.com/templates/product#1</A>]</DIV><PRE id=code0046 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.template({name:'product#2',fields:{productId:{},productName:{}}});</P></PRE>
+<DIV id=out0046 class=OUTPUT>template product#2 created [<A href="http://tablord.com/templates/product#2">http://tablord.com/templates/product#2</A>]</DIV><PRE id=code0052 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.inspect(jc.getItems$('http://tablord.com/templates/person').getMicrodata(),'',10)</PRE>
+<DIV id=out0052 class=OUTPUT>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -58,6 +54,9 @@
 <TABLE>
 <TBODY>
 <TR>
+<TH vAlign=top>id</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"item0059"</SPAN></TD></TR>
+<TR>
 <TH vAlign=top>type</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/person"</SPAN></TD></TR>
 <TR>
@@ -76,7 +75,7 @@
 <TBODY>
 <TR>
 <TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"ma"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"Marc"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TH vAlign=top>middleName</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>
@@ -96,7 +95,7 @@
 <TBODY>
 <TR>
 <TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"ni"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"Nicole"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TH vAlign=top>emails</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>
@@ -111,6 +110,9 @@
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
 <TBODY>
+<TR>
+<TH vAlign=top>id</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"item0060"</SPAN></TD></TR>
 <TR>
 <TH vAlign=top>type</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/email"</SPAN></TD></TR>
@@ -140,14 +142,29 @@
 <TBODY>
 <TR>
 <TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">empty string</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"marc.nicole@tablord.com"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
+<DIV id=test0052 class=TEST>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
 <TR>
-<TH vAlign=top>1</TH>
+<TH vAlign=top>items</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
 <TBODY>
+<TR>
+<TH vAlign=top>id</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"item0059"</SPAN></TD></TR>
 <TR>
 <TH vAlign=top>type</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/person"</SPAN></TD></TR>
@@ -167,7 +184,7 @@
 <TBODY>
 <TR>
 <TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"neo"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"Marc"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TH vAlign=top>middleName</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>
@@ -177,7 +194,7 @@
 <TBODY>
 <TR>
 <TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"jr"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">empty string</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TH vAlign=top>lastName</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>
@@ -187,7 +204,7 @@
 <TBODY>
 <TR>
 <TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"inconito"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"Nicole"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TH vAlign=top>emails</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>
@@ -203,81 +220,8 @@
 <TABLE>
 <TBODY>
 <TR>
-<TH vAlign=top>type</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/email"</SPAN></TD></TR>
-<TR>
-<TH vAlign=top>properties</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>purpose</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>office</TD></TR>
-<TR>
-<TH vAlign=top>email</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>neo.inconito@anonymous.org</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>1</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>type</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/email"</SPAN></TD></TR>
-<TR>
-<TH vAlign=top>properties</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>purpose</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>office</TD></TR>
-<TR>
-<TH vAlign=top>email</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>2</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>type</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/email"</SPAN></TD></TR>
-<TR>
-<TH vAlign=top>properties</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>purpose</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>office</TD></TR>
-<TR>
-<TH vAlign=top>email</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>emails</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
+<TH vAlign=top>id</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"item0060"</SPAN></TD></TR>
 <TR>
 <TH vAlign=top>type</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/email"</SPAN></TD></TR>
@@ -307,295 +251,14 @@
 <TBODY>
 <TR>
 <TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">empty string</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>1</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>type</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/person"</SPAN></TD></TR>
-<TR>
-<TH vAlign=top>properties</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>firstName</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"neo"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>middleName</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"jr"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>lastName</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"inconito"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>emails</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>type</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/email"</SPAN></TD></TR>
-<TR>
-<TH vAlign=top>properties</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>purpose</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"office"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>email</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"neo.inconito@anonymous.org"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>1</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>type</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/email"</SPAN></TD></TR>
-<TR>
-<TH vAlign=top>properties</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>purpose</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"office"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>email</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">empty string</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>2</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>type</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/email"</SPAN></TD></TR>
-<TR>
-<TH vAlign=top>properties</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>purpose</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"office"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>email</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">empty string</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>2</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>type</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/email"</SPAN></TD></TR>
-<TR>
-<TH vAlign=top>properties</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>purpose</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"office"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>email</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"neo.inconito@anonymous.org"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>3</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>type</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/email"</SPAN></TD></TR>
-<TR>
-<TH vAlign=top>properties</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>purpose</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"office"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>email</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">empty string</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>4</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>type</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/email"</SPAN></TD></TR>
-<TR>
-<TH vAlign=top>properties</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>purpose</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"office"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>email</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">empty string</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0044 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.template({name:'email',</P><P>             html:'&lt;DIV class="ELEMENT" itemscope itemtype="http://tablord.com/templates/email"&gt;'+</P><P>                  '  &lt;SELECT itemprop="purpose" style="width:10%"&gt;&lt;OPTION&gt;office&lt;/OPTION&gt;&lt;OPTION&gt;home&lt;OPTION&gt;&lt;/SELECT&gt;'+</P><P>                  '  &lt;SPAN class=EDITABLE itemprop="email" style="width:80%;"&gt;&lt;/SPAN&gt;'+</P><P>                  '&lt;/DIV&gt;'});</P></PRE>
-<DIV id=out0044 class="OUTPUT SUCCESS">template email created [<A href="http://tablord.com/templates/email">http://tablord.com/templates/email</A>]</DIV><PRE id=code0004 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.template({name:'person',fields:{firstName:{},middleName:{},lastName:{},emails:{container:'email person'}}});</P></PRE>
-<DIV id=out0004 class="OUTPUT SUCCESS">template person created [<A href="http://tablord.com/templates/person">http://tablord.com/templates/person</A>]</DIV><PRE id=code0045 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.template({name:'product#1',fields:{productId:{},productName:{}}});</P></PRE>
-<DIV id=out0045 class="OUTPUT SUCCESS">template product#1 created [<A href="http://tablord.com/templates/product#1">http://tablord.com/templates/product#1</A>]</DIV><PRE id=code0046 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.template({name:'product#2',fields:{productId:{},productName:{}}});</P></PRE>
-<DIV id=out0046 class="OUTPUT SUCCESS">template product#2 created [<A href="http://tablord.com/templates/product#2">http://tablord.com/templates/product#2</A>]</DIV><PRE id=code0039 class="ELEMENT CODE EDITABLE" contentEditable=false></PRE>
-<DIV id=out0039 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV>
-<DIV class=ELEMENT  itemscope itemtype="http://tablord.com/templates/person" itemprop="items">
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"marc.nicole@tablord.com"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
+<DIV id=item0059 class=ELEMENT  itemscope itemtype="http://tablord.com/templates/person" itemprop="items">
 <TABLE width="100%">
 <TBODY>
 <TR>
 <TH>firstName</TH>
 <TD class=LEFT width="90%">
-<DIV class="FIELD EDITABLE" itemprop="firstName">ma</DIV></TD></TR>
+<DIV class="FIELD EDITABLE" itemprop="firstName">Marc</DIV></TD></TR>
 <TR>
 <TH>middleName</TH>
 <TD class=LEFT width="90%">
@@ -603,38 +266,46 @@
 <TR>
 <TH>lastName</TH>
 <TD class=LEFT width="90%">
-<DIV class="FIELD EDITABLE" itemprop="lastName">ni</DIV></TD></TR>
+<DIV class="FIELD EDITABLE" itemprop="lastName">Nicole</DIV></TD></TR>
 <TR>
 <TH>emails</TH>
 <TD class=LEFT>
 <DIV container="emails" templates="email person">
-<DIV class=ELEMENT  itemscope itemtype="http://tablord.com/templates/email" itemprop="emails"><SELECT style="WIDTH: 10%" itemprop="purpose"><OPTION selected>office</OPTION><OPTION>home<OPTION></OPTION></SELECT> <SPAN class=EDITABLE style="WIDTH: 80%" itemprop="email"></SPAN></DIV>
-<DIV class=ELEMENT  itemscope itemtype="http://tablord.com/templates/person" itemprop="emails">
+<DIV id=item0060 class=ELEMENT  itemscope itemtype="http://tablord.com/templates/email" itemprop="emails"><SELECT style="WIDTH: 10%" itemprop="purpose"><OPTION selected>office</OPTION><OPTION>home<OPTION></OPTION></SELECT> <SPAN class=EDITABLE style="WIDTH: 80%" itemprop="email">marc.nicole@tablord.com</SPAN></DIV></DIV></TD></TR></TBODY></TABLE></DIV>
+<DIV id=item0058 class=ELEMENT  itemscope itemtype="http://tablord.com/templates/product#1" itemprop="items">
 <TABLE width="100%">
 <TBODY>
 <TR>
-<TH>firstName</TH>
+<TH>productId</TH>
 <TD class=LEFT width="90%">
-<DIV class="FIELD EDITABLE" itemprop="firstName">neo</DIV></TD></TR>
+<DIV class="FIELD EDITABLE" itemprop="productId">11111</DIV></TD></TR>
 <TR>
-<TH>middleName</TH>
+<TH>productName</TH>
 <TD class=LEFT width="90%">
-<DIV class="FIELD EDITABLE" itemprop="middleName">jr</DIV></TD></TR>
+<DIV class="FIELD EDITABLE" itemprop="productName">product 1</DIV></TD></TR></TBODY></TABLE></DIV>
+<DIV id=item0061 class=ELEMENT  itemscope itemtype="http://tablord.com/templates/product#1" itemprop="items">
+<TABLE width="100%">
+<TBODY>
 <TR>
-<TH>lastName</TH>
+<TH>productId</TH>
 <TD class=LEFT width="90%">
-<DIV class="FIELD EDITABLE" itemprop="lastName">inconito</DIV></TD></TR>
+<DIV class="FIELD EDITABLE" itemprop="productId">1-1111</DIV></TD></TR>
 <TR>
-<TH>emails</TH>
-<TD class=LEFT>
-<DIV container="emails" templates="email person">
-<DIV class=ELEMENT  itemscope itemtype="http://tablord.com/templates/email" itemprop="emails"><SELECT style="WIDTH: 10%" itemprop="purpose"><OPTION selected>office</OPTION><OPTION>home<OPTION></OPTION></SELECT> <SPAN class=EDITABLE style="WIDTH: 80%" itemprop="email">neo.inconito@anonymous.org</SPAN></DIV>
-<DIV class=ELEMENT  itemscope itemtype="http://tablord.com/templates/email" itemprop="emails"><SELECT style="WIDTH: 10%" itemprop="purpose"><OPTION selected>office</OPTION><OPTION>home<OPTION></OPTION></SELECT> <SPAN class=EDITABLE style="WIDTH: 80%" itemprop="email"></SPAN></DIV>
-<DIV class=ELEMENT  itemscope itemtype="http://tablord.com/templates/email" itemprop="emails"><SELECT style="WIDTH: 10%" itemprop="purpose"><OPTION selected>office</OPTION><OPTION>home<OPTION></OPTION></SELECT> <SPAN class=EDITABLE style="WIDTH: 80%" itemprop="email"></SPAN></DIV></DIV></TD></TR></TBODY></TABLE></DIV></DIV></TD></TR></TBODY></TABLE></DIV><PRE id=code0048 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.getItems$('http://tablord.com/templates/person')</PRE>
-<DIV id=out0048 class="OUTPUT SUCCESS">JQuery of 1 elements<BR>
-<OL start=0><BR>
-<LI class=INSPECTHTML><WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/person"&nbsp;itemprop="items"&gt;<WBR>&lt;TABLE&nbsp;width="100%"&gt;<WBR>&lt;TBODY&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;firstName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;itemprop="firstName"&gt;ma<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;middleName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;itemprop="middleName"&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;lastName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;itemprop="lastName"&gt;ni<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;emails<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&gt;<WBR>&lt;DIV&nbsp;container="emails"&nbsp;templates="email&nbsp;person"&gt;<WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/email"&nbsp;itemprop="emails"&gt;<WBR>&lt;SELECT&nbsp;style="WIDTH:&nbsp;10%"&nbsp;itemprop="purpose"&gt;<WBR>&lt;OPTION&nbsp;selected&gt;office<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&gt;home<WBR>&lt;OPTION&gt;<WBR>&lt;/OPTION&gt;<WBR>&lt;/SELECT&gt;<WBR>&lt;SPAN&nbsp;class=EDITABLE&nbsp;style="WIDTH:&nbsp;80%"&nbsp;itemprop="email"&gt;<WBR>&lt;/SPAN&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/person"&nbsp;itemprop="emails"&gt;<WBR>&lt;TABLE&nbsp;width="100%"&gt;<WBR>&lt;TBODY&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;firstName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;itemprop="firstName"&gt;neo<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;middleName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;itemprop="middleName"&gt;jr<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;lastName<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&nbsp;width="90%"&gt;<WBR>&lt;DIV&nbsp;class="FIELD&nbsp;EDITABLE"&nbsp;itemprop="lastName"&gt;inconito<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;TR&gt;<WBR>&lt;TH&gt;emails<WBR>&lt;/TH&gt;<WBR>&lt;TD&nbsp;class=LEFT&gt;<WBR>&lt;DIV&nbsp;container="emails"&nbsp;templates="email&nbsp;person"&gt;<WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/email"&nbsp;itemprop="emails"&gt;<WBR>&lt;SELECT&nbsp;style="WIDTH:&nbsp;10%"&nbsp;itemprop="purpose"&gt;<WBR>&lt;OPTION&nbsp;selected&gt;office<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&gt;home<WBR>&lt;OPTION&gt;<WBR>&lt;/OPTION&gt;<WBR>&lt;/SELECT&gt;<WBR>&lt;SPAN&nbsp;class=EDITABLE&nbsp;style="WIDTH:&nbsp;80%"&nbsp;itemprop="email"&gt;neo.inconito@anonymous.org<WBR>&lt;/SPAN&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/email"&nbsp;itemprop="emails"&gt;<WBR>&lt;SELECT&nbsp;style="WIDTH:&nbsp;10%"&nbsp;itemprop="purpose"&gt;<WBR>&lt;OPTION&nbsp;selected&gt;office<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&gt;home<WBR>&lt;OPTION&gt;<WBR>&lt;/OPTION&gt;<WBR>&lt;/SELECT&gt;<WBR>&lt;SPAN&nbsp;class=EDITABLE&nbsp;style="WIDTH:&nbsp;80%"&nbsp;itemprop="email"&gt;<WBR>&lt;/SPAN&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;DIV&nbsp;class=ELEMENT&nbsp;&nbsp;itemscope&nbsp;itemtype="http://tablord.com/templates/email"&nbsp;itemprop="emails"&gt;<WBR>&lt;SELECT&nbsp;style="WIDTH:&nbsp;10%"&nbsp;itemprop="purpose"&gt;<WBR>&lt;OPTION&nbsp;selected&gt;office<WBR>&lt;/OPTION&gt;<WBR>&lt;OPTION&gt;home<WBR>&lt;OPTION&gt;<WBR>&lt;/OPTION&gt;<WBR>&lt;/SELECT&gt;<WBR>&lt;SPAN&nbsp;class=EDITABLE&nbsp;style="WIDTH:&nbsp;80%"&nbsp;itemprop="email"&gt;<WBR>&lt;/SPAN&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;/TBODY&gt;<WBR>&lt;/TABLE&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/DIV&gt;<WBR>&lt;/TD&gt;<WBR>&lt;/TR&gt;<WBR>&lt;/TBODY&gt;<WBR>&lt;/TABLE&gt;<WBR>&lt;/DIV&gt;</LI><BR></OL></DIV><PRE id=code0052 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.inspect(jc.getItems$('http://tablord.com/templates/person').getMicrodata(),'',10)</PRE>
-<DIV id=out0052 class="OUTPUT SUCCESS">
+<TH>productName</TH>
+<TD class=LEFT width="90%">
+<DIV class="FIELD EDITABLE" itemprop="productName">product 1A</DIV></TD></TR></TBODY></TABLE></DIV>
+<DIV id=item0062 class=ELEMENT  itemscope itemtype="http://tablord.com/templates/product#2" itemprop="items">
+<TABLE width="100%">
+<TBODY>
+<TR>
+<TH>productId</TH>
+<TD class=LEFT width="90%">
+<DIV class="FIELD EDITABLE" itemprop="productId">22222</DIV></TD></TR>
+<TR>
+<TH>productName</TH>
+<TD class=LEFT width="90%">
+<DIV class="FIELD EDITABLE" itemprop="productName">product 2</DIV></TD></TR></TBODY></TABLE></DIV><PRE id=code0055 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.inspect(jc.getItems$('http://tablord.com/templates/product#').getMicrodata(),'',10)</PRE>
+<DIV id=out0055 class=OUTPUT>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -654,8 +325,11 @@
 <TABLE>
 <TBODY>
 <TR>
+<TH vAlign=top>id</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"item0058"</SPAN></TD></TR>
+<TR>
 <TH vAlign=top>type</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/person"</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/product#1"</SPAN></TD></TR>
 <TR>
 <TH vAlign=top>properties</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>
@@ -664,7 +338,7 @@
 <TABLE>
 <TBODY>
 <TR>
-<TH vAlign=top>firstName</TH>
+<TH vAlign=top>productId</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>[] </LEGEND>
@@ -672,9 +346,9 @@
 <TBODY>
 <TR>
 <TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"ma"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"11111"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
-<TH vAlign=top>middleName</TH>
+<TH vAlign=top>productName</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>[] </LEGEND>
@@ -682,61 +356,7 @@
 <TBODY>
 <TR>
 <TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">empty string</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>lastName</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"ni"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>emails</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>type</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/email"</SPAN></TD></TR>
-<TR>
-<TH vAlign=top>properties</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>purpose</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"office"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>email</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">empty string</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"product&nbsp;1"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TH vAlign=top>1</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>
@@ -745,8 +365,11 @@
 <TABLE>
 <TBODY>
 <TR>
+<TH vAlign=top>id</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"item0061"</SPAN></TD></TR>
+<TR>
 <TH vAlign=top>type</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/person"</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/product#1"</SPAN></TD></TR>
 <TR>
 <TH vAlign=top>properties</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>
@@ -755,7 +378,7 @@
 <TABLE>
 <TBODY>
 <TR>
-<TH vAlign=top>firstName</TH>
+<TH vAlign=top>productId</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>[] </LEGEND>
@@ -763,9 +386,9 @@
 <TBODY>
 <TR>
 <TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"neo"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"1-1111"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
-<TH vAlign=top>middleName</TH>
+<TH vAlign=top>productName</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>[] </LEGEND>
@@ -773,70 +396,7 @@
 <TBODY>
 <TR>
 <TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"jr"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>lastName</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"inconito"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>emails</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>[] </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>type</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/email"</SPAN></TD></TR>
-<TR>
-<TH vAlign=top>properties</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>purpose</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>office</TD></TR>
-<TR>
-<TH vAlign=top>email</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>neo.inconito@anonymous.org</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>1</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>type</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/email"</SPAN></TD></TR>
-<TR>
-<TH vAlign=top>properties</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>purpose</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>office</TD></TR>
-<TR>
-<TH vAlign=top>email</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"product&nbsp;1A"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TH vAlign=top>2</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>
@@ -845,8 +405,11 @@
 <TABLE>
 <TBODY>
 <TR>
+<TH vAlign=top>id</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"item0062"</SPAN></TD></TR>
+<TR>
 <TH vAlign=top>type</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/email"</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/product#2"</SPAN></TD></TR>
 <TR>
 <TH vAlign=top>properties</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>
@@ -855,16 +418,339 @@
 <TABLE>
 <TBODY>
 <TR>
-<TH vAlign=top>purpose</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>office</TD></TR>
+<TH vAlign=top>productId</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
 <TR>
-<TH vAlign=top>email</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
-<DIV id=out0034 class=OUTPUT>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"22222"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>productName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"product&nbsp;2"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
+<DIV id=test0055 class=TEST>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
 <TBODY>
 <TR>
-<TH vAlign=top>product#2</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;Object]</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV></DIV></BODY></HTML>
+<TH vAlign=top>items</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>id</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"item0058"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>type</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/product#1"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>properties</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>productId</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"11111"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>productName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"product&nbsp;1"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>id</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"item0061"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>type</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/product#1"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>properties</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>productId</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"1-1111"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>productName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"product&nbsp;1A"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>2</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>id</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"item0062"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>type</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/product#2"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>properties</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>productId</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"22222"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>productName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"product&nbsp;2"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0056 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.inspect(jc.getItems$('http://tablord.com/templates/product#1').getMicrodata(),'',10)</PRE>
+<DIV id=out0056 class=OUTPUT>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>items</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>id</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"item0058"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>type</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/product#1"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>properties</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>productId</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"11111"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>productName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"product&nbsp;1"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>id</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"item0061"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>type</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/product#1"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>properties</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>productId</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"1-1111"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>productName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"product&nbsp;1A"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
+<DIV id=test0056 class=TEST>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>items</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>id</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"item0058"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>type</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/product#1"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>properties</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>productId</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"11111"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>productName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"product&nbsp;1"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>id</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"item0061"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>type</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/product#1"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>properties</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>productId</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"1-1111"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>productName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"product&nbsp;1A"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0065 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.updateResultsTestStatus();</P><P>jc.inspect(jc.results,'',2);</P><P>if ('runonce' in jc.url.arguments) window.close();</P></PRE>
+<DIV id=out0065 class=OUTPUT>no output</DIV></DIV></DIV></DIV></BODY></HTML>
