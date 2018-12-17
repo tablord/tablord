@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<HTML APPLICATIONNAME="D:\Documents\programmation\jcalc\jcalcV0\template_test.hta" xmlns="http://www.w3.org/1999/xhtml" sizcache="1" sizset="1" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD sizcache="3" sizset="3"><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SCROLL="yes" SINGLEINSTANCE="no"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
+<HTML sizset="1" sizcache="1" xmlns="http://www.w3.org/1999/xhtml" APPLICATIONNAME="D:\Documents\programmation\jcalc\jcalcV0\template_test.hta" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD sizset="3" sizcache="3"><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SINGLEINSTANCE="no" SCROLL="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
 <SCRIPT src="jquery-1.5.1.min.js"></SCRIPT>
 
 <SCRIPT class=UPDATE src="jcalcEdi.js"></SCRIPT>
@@ -20,17 +20,17 @@
 
 <SCRIPT src="finance.js"></SCRIPT>
 </HEAD>
-<BODY sizcache="1" sizset="1"  designMode="on" showCode="true" showCut="true" showTest="true" showTrace="true">
+<BODY sizset="1" sizcache="1"  showTrace="true" showTest="true" showCut="true" showCode="true" designMode="on">
 <DIV id=menu class=TOOLBAR>
 <DIV><INPUT onclick=jc.showCode(event) CHECKED type=checkbox>codes</INPUT><INPUT onclick=jc.showCut(event) CHECKED type=checkbox>cuts</INPUT><INPUT onclick=jc.showTest(event) CHECKED type=checkbox>tests</INPUT><INPUT onclick=jc.showTrace(event) CHECKED type=checkbox>traces</INPUT><INPUT onclick=jc.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
-<DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
-<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].convert(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION><OPTION value=email>email</OPTION><OPTION value=person>person</OPTION><OPTION value=product#1>product#1</OPTION><OPTION value=product#2>product#2</OPTION></SELECT><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px" >&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
+<DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60" >&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
+<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px" >cut</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].convert(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION><OPTION value=email>email</OPTION><OPTION value=person>person</OPTION><OPTION value=product#1>product#1</OPTION><OPTION value=product#2>product#2</OPTION></SELECT><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px" >&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px" >&#8594;test</BUTTON>
 <DIV id=objectToolBar></DIV></DIV></DIV>
-<DIV id=jcContent class=CONTAINER sizcache="1" sizset="1" container="items">
-<DIV id=sect0003 class="ELEMENT SECTION" sizcache="1" sizset="1">
-<H1 class="SECTIONTITLE EDITABLE" contentEditable=false>1 Test Templates<SPAN id=code0063 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.testStatus()</SPAN><SPAN id=out0063 class=OUTPUT contentEditable=false><SPAN>tests passed:3 failed:0</SPAN></SPAN></H1>
-<DIV class=CONTAINER sizcache="1" sizset="1"><PRE id=code0044 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.template({name:'email',</P><P>             html:'&lt;DIV class="ELEMENT" itemscope itemtype="http://tablord.com/templates/email"&gt;'+</P><P>                  '  &lt;SELECT itemprop="purpose" style="width:10%"&gt;&lt;OPTION&gt;office&lt;/OPTION&gt;&lt;OPTION&gt;home&lt;OPTION&gt;&lt;/SELECT&gt;'+</P><P>                  '  &lt;SPAN class=EDITABLE itemprop="email" style="width:80%;"&gt;&lt;/SPAN&gt;'+</P><P>                  '&lt;/DIV&gt;'});</P></PRE>
-<DIV id=out0044 class=OUTPUT>template email created [<A href="http://tablord.com/templates/email">http://tablord.com/templates/email</A>]</DIV><PRE id=code0004 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.template({name:'person',fields:{firstName:{},middleName:{},lastName:{},emails:{container:'email person'}}});</P></PRE>
+<DIV id=jcContent class=CONTAINER sizset="1" sizcache="1" container="items">
+<DIV id=sect0003 class="ELEMENT SECTION" sizset="1" sizcache="1">
+<H1 class="SECTIONTITLE EDITABLE" contentEditable=false>1 Test Templates<SPAN id=code0063 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.testStatus()</SPAN><SPAN id=out0063 class=OUTPUT contentEditable=false><SPAN>tests passed:6 failed:0</SPAN></SPAN></H1>
+<DIV class=CONTAINER sizset="1" sizcache="1"><PRE id=code0044 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.template({name:'email',</P><P>             html:'&lt;DIV class="ELEMENT" itemscope itemtype="http://tablord.com/templates/email"&gt;'+</P><P>                  '  &lt;SELECT itemprop="purpose" style="width:10%"&gt;&lt;OPTION&gt;office&lt;/OPTION&gt;&lt;OPTION&gt;home&lt;OPTION&gt;&lt;/SELECT&gt;'+</P><P>                  '  &lt;SPAN class=EDITABLE itemprop="email" style="width:80%;"&gt;&lt;/SPAN&gt;'+</P><P>                  '&lt;/DIV&gt;'});</P></PRE>
+<DIV id=out0044 class=OUTPUT>template email created [<A href="http://tablord.com/templates/email">http://tablord.com/templates/email</A>]</DIV><PRE id=code0004 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.template({name:'person',fields:{firstName:{},middleName:{},lastName:{},'emails[]':{container:'email person'}}});</P></PRE>
 <DIV id=out0004 class=OUTPUT>template person created [<A href="http://tablord.com/templates/person">http://tablord.com/templates/person</A>]</DIV><PRE id=code0045 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.template({name:'product#1',fields:{productId:{},productName:{}}});</P></PRE>
 <DIV id=out0045 class=OUTPUT>template product#1 created [<A href="http://tablord.com/templates/product#1">http://tablord.com/templates/product#1</A>]</DIV><PRE id=code0046 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.template({name:'product#2',fields:{productId:{},productName:{}}});</P></PRE>
 <DIV id=out0046 class=OUTPUT>template product#2 created [<A href="http://tablord.com/templates/product#2">http://tablord.com/templates/product#2</A>]</DIV><PRE id=code0052 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.inspect(jc.getItems$('http://tablord.com/templates/person').getMicrodata(),'',10)</PRE>
@@ -97,7 +97,7 @@
 <TH vAlign=top>0</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"Nicole"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
-<TH vAlign=top>emails</TH>
+<TH vAlign=top>emails[]</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>[] </LEGEND>
@@ -112,7 +112,7 @@
 <TBODY>
 <TR>
 <TH vAlign=top>id</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"item0060"</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"item0071"</SPAN></TD></TR>
 <TR>
 <TH vAlign=top>type</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/email"</SPAN></TD></TR>
@@ -206,7 +206,7 @@
 <TH vAlign=top>0</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"Nicole"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
-<TH vAlign=top>emails</TH>
+<TH vAlign=top>emails[]</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>[] </LEGEND>
@@ -221,7 +221,7 @@
 <TBODY>
 <TR>
 <TH vAlign=top>id</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"item0060"</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"item0071"</SPAN></TD></TR>
 <TR>
 <TH vAlign=top>type</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"http://tablord.com/templates/email"</SPAN></TD></TR>
@@ -252,7 +252,7 @@
 <TR>
 <TH vAlign=top>0</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"marc.nicole@tablord.com"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
-<DIV id=item0059 class=ELEMENT  itemscope itemtype="http://tablord.com/templates/person" itemprop="items">
+<DIV id=item0059 class=ELEMENT  itemprop="items" itemtype="http://tablord.com/templates/person" itemscope>
 <TABLE width="100%">
 <TBODY>
 <TR>
@@ -268,11 +268,11 @@
 <TD class=LEFT width="90%">
 <DIV class="FIELD EDITABLE" itemprop="lastName">Nicole</DIV></TD></TR>
 <TR>
-<TH>emails</TH>
+<TH>emails[]</TH>
 <TD class=LEFT>
-<DIV container="emails" templates="email person">
-<DIV id=item0060 class=ELEMENT  itemscope itemtype="http://tablord.com/templates/email" itemprop="emails"><SELECT style="WIDTH: 10%" itemprop="purpose"><OPTION selected>office</OPTION><OPTION>home<OPTION></OPTION></SELECT> <SPAN class=EDITABLE style="WIDTH: 80%" itemprop="email">marc.nicole@tablord.com</SPAN></DIV></DIV></TD></TR></TBODY></TABLE></DIV>
-<DIV id=item0058 class=ELEMENT  itemscope itemtype="http://tablord.com/templates/product#1" itemprop="items">
+<DIV container="emails[]" templates="email person">
+<DIV id=item0071 class=ELEMENT  itemprop="emails[]" itemtype="http://tablord.com/templates/email" itemscope><SELECT style="WIDTH: 10%" itemprop="purpose"><OPTION selected>office</OPTION><OPTION>home<OPTION></OPTION></SELECT> <SPAN class=EDITABLE style="WIDTH: 80%" itemprop="email">marc.nicole@tablord.com</SPAN></DIV></DIV></TD></TR></TBODY></TABLE></DIV>
+<DIV id=item0058 class=ELEMENT  itemprop="items" itemtype="http://tablord.com/templates/product#1" itemscope>
 <TABLE width="100%">
 <TBODY>
 <TR>
@@ -283,7 +283,7 @@
 <TH>productName</TH>
 <TD class=LEFT width="90%">
 <DIV class="FIELD EDITABLE" itemprop="productName">product 1</DIV></TD></TR></TBODY></TABLE></DIV>
-<DIV id=item0061 class=ELEMENT  itemscope itemtype="http://tablord.com/templates/product#1" itemprop="items">
+<DIV id=item0061 class=ELEMENT  itemprop="items" itemtype="http://tablord.com/templates/product#1" itemscope>
 <TABLE width="100%">
 <TBODY>
 <TR>
@@ -294,7 +294,7 @@
 <TH>productName</TH>
 <TD class=LEFT width="90%">
 <DIV class="FIELD EDITABLE" itemprop="productName">product 1A</DIV></TD></TR></TBODY></TABLE></DIV>
-<DIV id=item0062 class=ELEMENT  itemscope itemtype="http://tablord.com/templates/product#2" itemprop="items">
+<DIV id=item0062 class=ELEMENT  itemprop="items" itemtype="http://tablord.com/templates/product#2" itemscope>
 <TABLE width="100%">
 <TBODY>
 <TR>
@@ -752,5 +752,257 @@
 <TBODY>
 <TR>
 <TH vAlign=top>0</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"product&nbsp;1A"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0065 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.updateResultsTestStatus();</P><P>jc.inspect(jc.results,'',2);</P><P>if ('runonce' in jc.url.arguments) window.close();</P></PRE>
-<DIV id=out0065 class=OUTPUT>no output</DIV></DIV></DIV></DIV></BODY></HTML>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"product&nbsp;1A"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0069 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.inspect(jc.getItems$('http://tablord.com/templates/product#').getData(),'',10)</PRE>
+<DIV id=out0069 class=OUTPUT>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>productId</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"11111"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>productName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"product&nbsp;1"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>productId</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"1-1111"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>productName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"product&nbsp;1A"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>2</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>productId</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"22222"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>productName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"product&nbsp;2"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
+<DIV id=test0069 class=TEST>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>productId</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"11111"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>productName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"product&nbsp;1"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>productId</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"1-1111"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>productName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"product&nbsp;1A"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>2</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>productId</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"22222"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>productName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"product&nbsp;2"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0074 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.inspect(jc.getItems$('http://tablord.com/templates/person').getData(),'',10)</PRE>
+<DIV id=out0074 class=OUTPUT>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>firstName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"Marc"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>middleName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">empty string</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>lastName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"Nicole"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>emails[]</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>purpose</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"office"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>email</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"marc.nicole@tablord.com"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
+<DIV id=test0074 class=TEST>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>firstName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"Marc"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>middleName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">empty string</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>lastName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"Nicole"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>emails[]</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>purpose</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"office"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>email</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"marc.nicole@tablord.com"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0081 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.inspect(jc.templates['product#1'].find(),'',10)</PRE>
+<DIV id=out0081 class=OUTPUT>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>productId</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"11111"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>productName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"product&nbsp;1"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>productId</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"1-1111"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>productName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"product&nbsp;1A"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
+<DIV id=test0081 class=TEST>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>productId</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"11111"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>productName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"product&nbsp;1"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>productId</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"1-1111"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>productName</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"product&nbsp;1A"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0065 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.updateResultsTestStatus();</P><P>jc.inspect(jc.results,'',2);</P><P>if ('runonce' in jc.url.arguments) window.close();</P></PRE>
+<DIV id=out0065 class=OUTPUT>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>testStatus</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>nbPassed</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>6</TD></TR>
+<TR>
+<TH vAlign=top>nbFailed</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR>
+<TR>
+<TH vAlign=top>dateTime</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>Mon&nbsp;Dec&nbsp;17&nbsp;22:25:06&nbsp;UTC+0100&nbsp;2018</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV></DIV></BODY></HTML>

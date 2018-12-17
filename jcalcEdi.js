@@ -129,6 +129,7 @@
     return Number(n).toFixed(decimal);
   }
 
+
   //JQuery extentions /////////////////////////////////////////////////
   $.fn.span = function() {
     var s = ['<ol start=0>'];
@@ -232,6 +233,73 @@
     return this;
   }
 
+
+
+
+  $.fn.getItemscopeData = function() {
+    // jquery must be a single element
+    var data = {};
+    function set(itemprop,value) {
+      if (itemprop.slice(-2) == '[]') {
+        data[itemprop] = data[itemprop] || [];
+        data[itemprop].push(value);
+      }
+      else {
+        data[itemprop] = value;
+      } 
+    }
+    
+    this.children().each(function(i,element) {
+      var itemprop = element.itemprop;
+      if (itemprop !== undefined) {
+        if (element.itemscope !== undefined) {
+          set(itemprop,$(element).getItemscopeData()); 
+        }
+        else {
+          set(itemprop,$(element).getItemValue());
+        }
+      }
+      else {  // this node is not an itemprop, look if its children have data
+        $.extend(true,data,$(element).getItemscopeData()); 
+      }
+      
+    });
+    return data;
+  }
+
+  $.fn.getData = function(criteria,fields) {
+    // return data object for the jQuery, very similarly as a mongoDB .find
+    // the object is NOT compatible with microdata, but much easier to use
+    // even if not as flexible as microdata
+    // it assumes that propertie's name that are arrays end with []
+    // and all other properties have 0 or 1 value
+    // this function assume that all jQuery elements are itemscope
+    // So it is possible to get data from nested nodes
+    // and is the responsibility of the caller to know what to do
+    // the parameter result is only intended for recusivity purpose and should be undefined
+    // the structure also set "_id" if id is defined at the itemscope element
+    result = [];
+    this.each(function(i,element){
+      var data = $(element).getItemscopeData();
+      if (jc.objMatchCriteria(data,criteria)) {
+        if (fields == undefined){
+          result.push(data);
+        }
+        else {
+          var ro = {};
+          for (var f in fields) {
+            if (fields[f] == 1) ro[f] = data[f];
+          }
+          result.push(ro);
+        }
+      }
+    });
+    return result;
+  }
+
+
+
+
   $.fn.getMicrodata = function(result) {
     // return microdata object for the jQuery.
     // the object is JSON compatible with the HTML Microdata specification
@@ -314,8 +382,10 @@
     else {
       var items$ = $('[itemtype="'+url+'"]');
     }
-    return items$.filter(function(i){return $(this).parent().closest('[itemscope=""]').length === 0});
+    return items$.filter(function(){return $(this).parent().closest('[itemscope=""]').length === 0});
   }
+
+  
 
   // edi related functions ////////////////////////////////////////////
   var geval = eval;
@@ -622,16 +692,22 @@
     return o;
   }
 
+  jc.objMatchCriteria = function(obj,criteria) {
+    criteria = criteria || {};
+    for (var k in criteria) {
+      if (obj[k] !== criteria[k]) return false;
+    }
+    return true;
+  }
+
   jc.findInArrayOfObject = function(criteria,a) {
     // find the first object in the array of object a that has all criteria true
     // example jc.findInArrayOfObject({toto:5},[{toto:1,tutu:5},{toto:5}])
     // will return 1
-    next: for (var i=0; i<a.length; i++) {
-      for (var k in criteria) {
-        if (a[i][k] !== criteria[k]) continue next;
-      }
-      return i;
+    for (var i=0; i<a.length; i++) {
+      if (jc.objMatchCriteria(a[i],criteria)) return i;
     }
+    return -1;
   }
 
   jc.pad = function(integer,numberOfDigits){
@@ -1185,6 +1261,7 @@
     return $(element).parentsUntil('BODY').filter('.SECTION').length;
   }
 
+
   // Template //////////////////////////////////////////////////////////////////////////
  
   jc.Template = function(name){
@@ -1270,6 +1347,24 @@
     return 'template '+this.name+' created [<a href="'+this.url()+'">'+this.url()+'</a>]';
   }
 
+  jc.Template.prototype.find = function(criteria,fields) {
+    // return the data of a template collection as mongodb would do
+   
+    return jc.getItems$(this.url()).getData(criteria,fields);
+  }
+
+  jc.Template.MicrodataToData = function(microdata) {
+    // transforms the microdata structure where all properties are array into a structure
+    // closer to mongoBD.
+    // in order to do so:
+    // - properties which names end with [] will be kept as array
+    // - properties which names do not end with [] will be transformed as the value of the first element
+    //   of the array. if the array has more than one element, an Error will be raised.
+    
+
+  }
+
+
   jc.Template.urlToName = function(url) {
     if (url === undefined) return undefined;
     return url.match(/.*\/(.*)$/)[1];
@@ -1278,8 +1373,6 @@
   jc.Template.moveContainerContent = function(oldElement$,newElement$) {
     // move into newElement$ all Container's content found in oldElements
     // both oldElement$ and newElement$ should be jquery with one single element to give predictable results
-    
-
   }
 
   jc.Template.setElement$Containers = function(element$,containers){
@@ -1318,58 +1411,6 @@
     return containers;
   }
 
-/*
-
-  jc.Template.setElements$WithData = function(elements$,data){
-    // set all itemprop elements with data (recurse through children and data)
-    elements$.each(function(i,element){
-      var e$ = $(element);
-      var itemprop = element.itemprop;
-      if (itemprop !== undefined) {
-        if (e$.hasClass('EDITABLE')) {
-          e$.html(data[itemprop]===undefined?'':data[itemprop]);  //TODO JSON ???
-          return;
-        }
-        else if (element.itemscope !== undefined) {
-          jc.Template.setElements$WithData(e$.children(),data[itemprop]); 
-        } 
-        else if (element.tagName == 'SELECT') {
-          e$.val(data[itemprop]);
-        }
-        else throw new Error('an element with itemprop must either be an itemscope or be class=EDITABLE\n'+jc.format(element));
-      }
-      else {  // this node is not an itemprop, look in its children with the same data
-        jc.Template.setElements$WithData(e$.children(),data); 
-      }
-    });
-  }
-
-
-  jc.Template.getElements$Data = function(elements$){
-    // get all itemprop elements with data (recurse through children and data)
-    var data = {};
-    elements$.each(function(i,element){
-      var e$ = $(element);
-      var itemprop = element.itemprop;
-      if (itemprop !== undefined) {
-        if (e$.hasClass('EDITABLE')) {
-          data[itemprop] = e$.html() || '';
-        }
-        else if (element.itemscope !== undefined) {
-          data[itemprop] = jc.Template.getElements$Data(e$.children()); 
-        } 
-        else if (element.tagName == 'SELECT') {
-          data[itemprop] = e$.val()
-        }
-        else throw new Error('an element with itemprop must either be an itemscope or be class=EDITABLE or a SELECT tag\n'+jc.format(element));
-      }
-      else {  // this node is not an itemprop, look if its children have data
-        $.extend(true,data,jc.Template.getElements$Data(e$.children())); 
-      }
-    });
-    return data;
-  }
-*/
 
 
   jc.updateTemplateChoice = function () {}; // dummy so far, will be trully defined later on when creating menu;
@@ -1381,14 +1422,14 @@
     // .name: a name like an id optionaly followed by #version
     // and must define one of the 3
     // .fields: {field1:{options},field2:{options}....}
-    //          field1 is the name of the field
+    //          field1 is the name of the field if field name ends with [] the field is an array of values
     //          options is an object
     //          types
     //          - number:{}                     the field is a number
     //          - string:{}                     the field is a string:  default if nothing is specified
     //          - function:function(data){...}  the field is calculated (=> readonly) and the html is the result of this function
     //          - select:{choice1:val1,choice2:val2...) the field is a <SELECT>
-    //          - container:"template1:itemprop template2:itemprop" 
+    //          - container:"template1 template2" 
     //                 a container that accepts the specified template names and how the itemprop . if "", accepts anything
     //
     //          formating
