@@ -237,8 +237,9 @@
 
 
   $.fn.getItemscopeData = function() {
-    // jquery must be a single element
+    // jquery must be a single itemscope element
     var data = {};
+
     function set(itemprop,value) {
       if (itemprop.slice(-2) == '[]') {
         data[itemprop] = data[itemprop] || [];
@@ -249,6 +250,7 @@
       } 
     }
     
+    if (this[0].id) data._id = this[0].id;
     this.children().each(function(i,element) {
       var itemprop = element.itemprop;
       if (itemprop !== undefined) {
@@ -296,9 +298,6 @@
     });
     return result;
   }
-
-
-
 
   $.fn.getMicrodata = function(result) {
     // return microdata object for the jQuery.
