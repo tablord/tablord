@@ -49,6 +49,7 @@
             defaults:{
               format:{            // default formating methods  this can be redefined in some JCalc objects like v table... in options.
                 undef:function(){return '<SPAN style=color:red;>undefined</SPAN>'},
+                nullObj:function(){return '<SPAN style=color:red;>null</SPAN>'},
                 emptStr:function(){return '<SPAN style=color:red;>empty string</SPAN>'},
                 func:function(f){return jc.help(f)},
                 array:function(a){return a.toString()},              
@@ -91,13 +92,20 @@
   jc.helps = {'jc.credits':jc.credits};
 
   // classical formating functions ////////////////////////////////////////////
-  jc.toFixed = function(decimals) {
+/*
+  jc.fixed = function(decimals) {
     // returns a fomating function(obj) that formats the number with fixed decimals
     var f = function (n) {return n.toFixed(decimals)};
     f.toString = function() {return 'display precision of '+decimals+' decimals'};
     return f;
   }
-
+  jc.percent = function(decimals) {
+    // returns a fomating function(obj) that formats the number with fixed decimals
+    var f = function (n) {return Number(100*n).toFixed(decimals)+'%'};
+    f.toString = function() {return 'display number as percent with a precision of '+decimals+' decimals'};
+    return f;
+  }
+*/
     
   jc.getScrollOffsets = function(w) {
     w = w||window;
@@ -511,7 +519,7 @@
   
 
   // Inspector ////////////////////////////////////////////////////////
-  jc.Inspector = function Inspector(obj,name,depth) {
+  jc.Inspector = function Inspector(obj,depth,name) {
     this.obj = obj;
     this.name = name || '';
     this.depth = depth || 1;
@@ -633,8 +641,8 @@
   }
 
 
-  jc.inspect = function(obj,name,depth){
-    return new jc.Inspector(obj,name,depth);
+  jc.inspect = function(obj,depth,name){
+    return new jc.Inspector(obj,depth,name);
   }
 
   jc.heir = function (p) {
@@ -700,7 +708,7 @@
   }
 
   jc.findInArrayOfObject = function(criteria,a) {
-    // find the first object in the array of object a that has all criteria true
+    // find the first object in the array (or array like) of object a that has all criteria true
     // example jc.findInArrayOfObject({toto:5},[{toto:1,tutu:5},{toto:5}])
     // will return 1
     for (var i=0; i<a.length; i++) {
@@ -900,7 +908,9 @@
     
   jc.signature = function(func) {
     // returns only the signature of the function
-    return func.toString().match(/(function.*?\))/)[0];
+    var m = func.toString().match(/(function.*?\))/);
+    if (m) return m[0];
+    return func.toString();
   }
 
   jc.functionName = function (func) {
@@ -945,7 +955,7 @@
       }
       else break;
     }
-    return new jc.HTML('<div class=HELP><b>'+signature+'</b><br>'+comments.join('<br>')+(constructor?jc.inspect(func.prototype,'methods').span():'')+'</DIV>');
+    return new jc.HTML('<SPAN class=HELP><b>'+signature+'</b><br/>'+comments.join('<br/>')+(constructor?jc.inspect(func.prototype,'methods').span():'')+'</SPAN>');
   }
 
 
@@ -1546,7 +1556,7 @@
     var out = window.document.getElementById(outId);
     if (out == undefined) {
       var tag = (element.tagName=='SPAN'?'SPAN':'DIV');
-      $('<'+tag+' class=OUTPUT id='+outId+'>no output</'+tag+'>').insertAfter(element);
+      out = $('<'+tag+' class=OUTPUT id='+outId+'>no output</'+tag+'>').insertAfter(element)[0];
     }
     return out;
   }
@@ -1876,9 +1886,16 @@
   // formating / display / execution ////////////////////////////////////////////////////
 
 
-  jc.format = function(obj,options) {
+  jc.format = function(obj,options,col) {
+    // format obj using by priority
+    // 1) options[col].format
+    // 2) options.format
+    // 3 the jc.defaults.format
+    // and according to the type
+
     if (options) {
-      var format = $.extend(true,{},jc.defaults.format,options.format);
+      var colFormatOptions = options.cols && options.cols[col] && options.cols[col].format;
+      var format = $.extend(true,{},jc.defaults.format,options.format,colFormatOptions);
     }
     else {
       var format = jc.defaults.format;
@@ -1886,8 +1903,11 @@
     if (typeof obj === 'number') {
       return format.number(obj)
     }
-    if (obj == undefined) {
+    if (obj === undefined) {
       return format.undef();
+    }
+    if (obj === null) {
+      return format.nullObj();
     }
     if (obj === '') {
       return format.emptStr();
@@ -1899,7 +1919,7 @@
       return format.array(obj);
     }
     if (obj.span) {
-      return obj.span();
+      return obj.span().toString(); //span() usually return a HTML object;
     }
     if (obj.outerHTML) { // an Element
       return format.domElement(obj);
@@ -1916,14 +1936,38 @@
         return jc.format(val,options);   // format the result of valueOf
       }
     }
-    return jc.toHtml(obj);       // fallback is to let display either valueOf or toString
+    return jc.toHtml(obj.toString());
   }
 
+  jc.setFormatOptions = function(options,format) {
+    if (options.format === undefined) options.format = {};
+    if (jc.formatters[format] === undefined) throw new Error('the format '+format+" dosen't exist")
+    jc.formatters[format](options)
+    return options;
+  }
+
+  jc.formatters = {
+    '0'          : function(options) {options.format.number = function(n){return n.toFixed(0)}},
+    '0.0'        : function(options) {options.format.number = function(n){return n.toFixed(1)}},
+    '0.00'       : function(options) {options.format.number = function n2(n){return n.toFixed(2)}},
+    '0.000'      : function(options) {options.format.number = function(n){return n.toFixed(3)}},
+    '0.0000'     : function(options) {options.format.number = function(n){return n.toFixed(4)}},
+    '0.00000'    : function(options) {options.format.number = function(n){return n.toFixed(5)}},
+    '0.000000'   : function(options) {options.format.number = function(n){return n.toFixed(6)}},
+    '0%'         : function(options) {options.format.number = function(n){return Number(n*100).toFixed(0)+'%'}},
+    '0.0%'       : function(options) {options.format.number = function(n){return Number(n*100).toFixed(1)+'%'}},
+    '0.00%'      : function(options) {options.format.number = function(n){return Number(n*100).toFixed(2)+'%'}},
+    '0.000%'     : function(options) {options.format.number = function(n){return Number(n*100).toFixed(3)+'%'}},
+    '0.0000%'    : function(options) {options.format.number = function(n){return Number(n*100).toFixed(4)+'%'}},
+    '0.00000%'   : function(options) {options.format.number = function(n){return Number(n*100).toFixed(5)+'%'}},
+    '0.000000%'  : function(options) {options.format.number = function(n){return Number(n*100).toFixed(6)+'%'}},
+    'undefinedBlank' : function(options) {options.format.undef = function(){return ''}}
+  }
   jc.displayResult = function(result,output) {
     $(output.outputElement)
     .empty().removeClass('ERROR').addClass('SUCCESS')
-    .append(  ((result !== undefined) && (result !== null) && (typeof result.node$ === 'function') && result.node$() )
-            || jc.format(result).toString()
+    .append((result !== undefined) && (result !== null) && (typeof result.node$ === 'function') && result.node$() 
+            || jc.format(result)
            )
     .prepend(output.toString())
     .before(trace.span().toString()) // traces are not part of the result
@@ -1955,7 +1999,7 @@
     jc.displayResult(res,jc.output);
     // test
     if (test != undefined) {
-      if (jc.trimHtml(out.innerHTML) == jc.trimHtml(test.innerHTML)) {   //TODO rethink how to compare
+      if (out && (jc.trimHtml(out.innerHTML) == jc.trimHtml(test.innerHTML))) {   //TODO rethink how to compare
         $(test).removeClass('ERROR').addClass('SUCCESS');
       }
       else {
@@ -2154,23 +2198,28 @@
   }
 
   jc.showOutputHtml = function(checkBox) {
-    var out = jc.outputElement(jc.selectedElement) || {id:'no output',innerHTML:''};
-    var test = jc.testElement(jc.selectedElement) || {id:'no test',innerHTML:''};
-    var diff = '';
-    if (out && test) {
-      var i = 0;
-      var hout  = jc.trimHtml(out.innerHTML)
-      var htest = jc.trimHtml(test.innerHTML)
-      while ((i<hout.length) && (i<htest.length) && (hout.charAt(i) === htest.charAt(i))) {
-        i++;
-      }
-      diff = 'first difference at position '+i+'\n'+
-             'out :'+hout.slice(i,i+20)+'\n'+
-             'test:'+htest.slice(i,i+20)+'\n\n';
-    }  
-    window.alert(diff+
-                 out.id+':\n'+out.innerHTML+'\n\n'+
-                 test.id+':\n'+test.innerHTML);
+    if ($(jc.selectedElement).hasClass('CODE')) {
+      var out = jc.outputElement(jc.selectedElement) || {id:'no output',innerHTML:''};
+      var test = jc.testElement(jc.selectedElement) || {id:'no test',innerHTML:''};
+      var diff = '';
+      if (out && test) {
+        var i = 0;
+        var hout  = jc.trimHtml(out.innerHTML)
+        var htest = jc.trimHtml(test.innerHTML)
+        while ((i<hout.length) && (i<htest.length) && (hout.charAt(i) === htest.charAt(i))) {
+          i++;
+        }
+        diff = 'first difference at position '+i+'\n'+
+               'out :'+hout.slice(i,i+20)+'\n'+
+               'test:'+htest.slice(i,i+20)+'\n\n';
+      }  
+      window.alert(diff+
+                   out.id+':\n'+out.innerHTML+'\n\n'+
+                   test.id+':\n'+test.innerHTML);
+    }
+    else {
+      window.alert(jc.selectedElement.outerHTML);
+    }
   }
 
 
@@ -2209,6 +2258,8 @@
     if (jc.content$.length == 0) {                                   
       b$.wrapInner('<DIV id=jcContent container="items"/>');
     }
+    $('.CONTAINER').removeClass('.CONTAINER').attr('container','sectionContent');
+    $('.SECTIONCONTAINER').removeClass('SECTIONCONTAINER').attr('container','sectionContent');
 
     // since v0.0145 the <body> attributes hideCodes,hideCut,hideTest,hideTrace are deprecated
     var b$ = $('BODY');

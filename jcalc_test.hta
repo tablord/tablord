@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<HTML xmlns="http://www.w3.org/1999/xhtml" APPLICATIONNAME="D:\Documents\programmation\jcalc\jcalcV0\jcalc_test.hta" sizcache="1" sizset="1" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SINGLEINSTANCE="no" SCROLL="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
+<HTML sizset="1" sizcache="1" APPLICATIONNAME="D:\Documents\programmation\jcalc\jcalcV0\jcalc_test.hta" xmlns="http://www.w3.org/1999/xhtml" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SCROLL="yes" SINGLEINSTANCE="no"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
 <SCRIPT src="jquery-1.5.1.min.js"></SCRIPT>
 
 <SCRIPT src="jcalcEdi.js"></SCRIPT>
@@ -20,65 +20,76 @@
 
 <SCRIPT src="finance.js"></SCRIPT>
 </HEAD>
-<BODY sizcache="1" sizset="1"  autoRun="true" designMode="on" showCode="true" showCut="true" showTest="true" showTrace="true">
+<BODY sizset="1" sizcache="1"  showTrace="true" showTest="true" showCut="true" showCode="true" designMode="on" autoRun="true">
 <DIV id=menu class=TOOLBAR>
 <DIV><INPUT onclick=jc.showCode(event) CHECKED type=checkbox>codes</INPUT><INPUT onclick=jc.showCut(event) CHECKED type=checkbox>cuts</INPUT><INPUT onclick=jc.showTest(event) CHECKED type=checkbox>tests</INPUT><INPUT onclick=jc.showTrace(event) CHECKED type=checkbox>traces</INPUT><INPUT onclick=jc.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
-<DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
-<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick=jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement) style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick=jc.template.convertTo(jc.selectedElement,jc.templateChoice$.val()) style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION></SELECT><BUTTON onclick=jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement) style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
+<DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
+<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].convert(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION></SELECT><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px" >&#8594;test</BUTTON>
 <DIV id=objectToolBar></DIV></DIV></DIV>
-<DIV id=jcContent class=CONTAINER sizcache="1" sizset="1">
-<DIV id=sect0002 class="SECTION ELEMENT" sizcache="1" sizset="1">
-<H1 class="SECTIONTITLE EDITABLE" contentEditable=false>1 tests of Jcalc <SPAN id=code0015 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.testStatus()</SPAN><SPAN id=out0015 class=OUTPUT contentEditable=false><SPAN>tests passed:54 failed:1</SPAN></SPAN>&nbsp;</H1>
-<DIV class=SECTIONCONTAINER sizcache="1" sizset="1">
-<DIV id=sect0048 class="SECTION ELEMENT" sizcache="1" sizset="1">
+<DIV id=jcContent class=CONTAINER sizset="1" sizcache="1" container="sectionContent">
+<DIV id=sect0002 class="SECTION ELEMENT" sizset="1" sizcache="1">
+<H1 class="SECTIONTITLE EDITABLE" contentEditable=false>1 tests of Jcalc <SPAN id=code0015 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.testStatus()</SPAN><SPAN id=out0015 class="OUTPUT SUCCESS" contentEditable=false><SPAN class=ERROR>tests passed:43 failed:14</SPAN></SPAN>&nbsp;</H1>
+<DIV sizset="1" sizcache="1" container="sectionContent">
+<DIV id=rich0133 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false sizset="1" sizcache="1"><SPAN id=code0134 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.tableOfContent</SPAN><SPAN id=out0134 class="OUTPUT SUCCESS" contentEditable=false>
+<DIV class=INTERACTIVE>
+<DIV class=TOC0>1 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_test.hta#sect0002">tests of Jcalc tests passed:57 failed:0&nbsp;</A></DIV>
+<DIV class=TOC1>1.1 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_test.hta#sect0048">V</A></DIV>
+<DIV class=TOC1>1.2 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_test.hta#sect0074">JcFunc f()</A></DIV>
+<DIV class=TOC1>1.3 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_test.hta#sect0003">Row</A></DIV>
+<DIV class=TOC1>1.4 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_test.hta#sect0087">Table</A></DIV>
+<DIV class=TOC2>1.4.1 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_test.hta#sect0120">Table style</A></DIV>
+<DIV class=TOC2>1.4.2 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_test.hta#sect0131">subset of Table</A></DIV>
+<DIV class=TOC1>1.5 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_test.hta#sect0007">jc.HTML</A></DIV>
+<DIV class=TOC1>1.6 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_test.hta#sect0113">Interactive Elements</A></DIV></DIV></SPAN></DIV>
+<DIV id=sect0048 class="SECTION ELEMENT" sizset="2" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1 V</H2>
-<DIV class=SECTIONCONTAINER sizcache="1" sizset="1"><PRE id=code0049 class="CODE ELEMENT EDITABLE" contentEditable=false>v('toto',3)</PRE>
-<DIV id=out0049 class=OUTPUT>4</DIV>
-<DIV id=test0049 class=TEST>3</DIV><PRE id=code0050 class="CODE ELEMENT EDITABLE" contentEditable=false>toto.label</PRE>
-<DIV id=out0050 class=OUTPUT>toto</DIV>
-<DIV id=test0050 class=TEST>toto</DIV><PRE id=code0051 class="CODE ELEMENT EDITABLE" contentEditable=false>toto.unit</PRE>
-<DIV id=out0051 class=OUTPUT><SPAN style="COLOR: red">undefined</SPAN></DIV>
-<DIV id=test0051 class=TEST><SPAN style="COLOR: red">undefined</SPAN></DIV><PRE id=code0052 class="CODE ELEMENT EDITABLE" contentEditable=false>toto.setValue(5)</PRE>
-<DIV id=out0052 class=OUTPUT>5</DIV>
-<DIV id=test0052 class=TEST>5</DIV><PRE id=code0056 class="CODE ELEMENT EDITABLE" contentEditable=false>toto.valueOf()</PRE>
-<DIV id=out0056 class=OUTPUT>5</DIV>
-<DIV id=test0056 class=TEST>5</DIV><PRE id=code0057 class="CODE ELEMENT EDITABLE" contentEditable=false>toto.toJson()</PRE>
-<DIV id=out0057 class=OUTPUT>5</DIV>
-<DIV id=test0057 class=TEST>5</DIV><PRE id=code0058 class="CODE ELEMENT EDITABLE" contentEditable=false>toto.code()</PRE>
-<DIV id=out0058 class=OUTPUT><SPAN style="COLOR: red">undefined</SPAN></DIV>
-<DIV id=test0058 class=TEST><SPAN style="COLOR: red">undefined</SPAN></DIV><PRE id=code0059 class="CODE ELEMENT EDITABLE" contentEditable=false>toto.toString()</PRE>
-<DIV id=out0059 class=OUTPUT>[object&nbsp;V(toto):5]</DIV>
-<DIV id=test0059 class=TEST>[object&nbsp;V(toto):5]</DIV><PRE id=code0060 class="CODE ELEMENT EDITABLE" contentEditable=false>toto.view()</PRE>
-<DIV id=out0060 class=OUTPUT><VAR>toto</VAR> = <SPAN class=VALUE>5</SPAN></DIV>
-<DIV id=test0060 class=TEST><VAR>toto</VAR> = <SPAN class=VALUE>5</SPAN></DIV><PRE id=code0061 class="CODE AUTOEDIT ELEMENT EDITABLE" contentEditable=false jcObject="toto">v("toto",12215).edit()</PRE>
-<DIV id=out0061 class=OUTPUT><VAR>toto</VAR><INPUT class="EDITOR number" value=12215 jcObject="toto"></DIV><PRE id=code0062 class="CODE ELEMENT EDITABLE" contentEditable=false>toto.isV</PRE>
-<DIV id=out0062 class=OUTPUT>true</DIV>
-<DIV id=test0062 class=TEST>true</DIV><PRE id=code0063 class="CODE ELEMENT EDITABLE" contentEditable=false>v('length$m',10)</PRE>
-<DIV id=out0063 class=OUTPUT>10</DIV>
-<DIV id=test0063 class=TEST>10</DIV><PRE id=code0064 class="CODE ELEMENT EDITABLE" contentEditable=false><P>length$m.to('mm')</P></PRE>
-<DIV id=out0064 class=OUTPUT>10000</DIV>
-<DIV id=test0064 class=TEST>10000</DIV><PRE id=code0065 class="CODE ELEMENT EDITABLE" contentEditable=false>length$m.unit</PRE>
-<DIV id=out0065 class=OUTPUT>m</DIV>
-<DIV id=test0065 class=TEST>m</DIV><PRE id=code0066 class="CODE ELEMENT EDITABLE" contentEditable=false>length$m.label</PRE>
-<DIV id=out0066 class=OUTPUT>length</DIV>
-<DIV id=test0066 class=TEST>length</DIV><PRE id=code0067 class="CODE ELEMENT EDITABLE" contentEditable=false>length$m.view()</PRE>
-<DIV id=out0067 class=OUTPUT><VAR>length</VAR> = <SPAN class=VALUE>10</SPAN>&nbsp;<SPAN class=UNIT>m</SPAN></DIV>
-<DIV id=test0067 class=TEST><VAR>length</VAR> = <SPAN class=VALUE>10</SPAN>&nbsp;<SPAN class=UNIT>m</SPAN></DIV></DIV></DIV>
-<DIV id=sect0074 class="SECTION ELEMENT" sizcache="1" sizset="17">
+<DIV sizset="2" sizcache="1" container="sectionContent"><PRE id=code0049 class="CODE ELEMENT EDITABLE" contentEditable=false>v('toto',3)</PRE>
+<DIV id=out0049 class="OUTPUT SUCCESS">3</DIV>
+<DIV id=test0049 class="TEST SUCCESS">3</DIV><PRE id=code0050 class="CODE ELEMENT EDITABLE" contentEditable=false>toto.label</PRE>
+<DIV id=out0050 class="OUTPUT SUCCESS">toto</DIV>
+<DIV id=test0050 class="TEST SUCCESS">toto</DIV><PRE id=code0051 class="CODE ELEMENT EDITABLE" contentEditable=false>toto.unit</PRE>
+<DIV id=out0051 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV>
+<DIV id=test0051 class="TEST SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV><PRE id=code0052 class="CODE ELEMENT EDITABLE" contentEditable=false>toto.setValue(5)</PRE>
+<DIV id=out0052 class="OUTPUT SUCCESS">5</DIV>
+<DIV id=test0052 class="TEST SUCCESS">5</DIV><PRE id=code0056 class="CODE ELEMENT EDITABLE" contentEditable=false>toto.valueOf()</PRE>
+<DIV id=out0056 class="OUTPUT SUCCESS">5</DIV>
+<DIV id=test0056 class="TEST SUCCESS">5</DIV><PRE id=code0057 class="CODE ELEMENT EDITABLE" contentEditable=false>toto.toJson()</PRE>
+<DIV id=out0057 class="OUTPUT SUCCESS">5</DIV>
+<DIV id=test0057 class="TEST SUCCESS">5</DIV><PRE id=code0058 class="CODE ELEMENT EDITABLE" contentEditable=false>toto.code()</PRE>
+<DIV id=out0058 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV>
+<DIV id=test0058 class="TEST SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV><PRE id=code0059 class="CODE ELEMENT EDITABLE" contentEditable=false>toto.toString()</PRE>
+<DIV id=out0059 class="OUTPUT SUCCESS">[object&nbsp;V(toto):5]</DIV>
+<DIV id=test0059 class="TEST SUCCESS">[object&nbsp;V(toto):5]</DIV><PRE id=code0060 class="CODE ELEMENT EDITABLE" contentEditable=false>toto.view()</PRE>
+<DIV id=out0060 class="OUTPUT SUCCESS"><VAR>toto</VAR> = <SPAN class=VALUE>5</SPAN></DIV>
+<DIV id=test0060 class="TEST SUCCESS"><VAR>toto</VAR> = <SPAN class=VALUE>5</SPAN></DIV><PRE id=code0061 class="CODE AUTOEDIT ELEMENT EDITABLE" contentEditable=false jcObject="toto">v("toto",12215).edit()</PRE>
+<DIV id=out0061 class="OUTPUT SUCCESS"><VAR>toto</VAR><INPUT class="EDITOR number" value=12215 jcObject="toto"></DIV><PRE id=code0062 class="CODE ELEMENT EDITABLE" contentEditable=false>toto.isV</PRE>
+<DIV id=out0062 class="OUTPUT SUCCESS">true</DIV>
+<DIV id=test0062 class="TEST SUCCESS">true</DIV><PRE id=code0063 class="CODE ELEMENT EDITABLE" contentEditable=false>v('length$m',10)</PRE>
+<DIV id=out0063 class="OUTPUT SUCCESS">10</DIV>
+<DIV id=test0063 class="TEST SUCCESS">10</DIV><PRE id=code0064 class="CODE ELEMENT EDITABLE" contentEditable=false><P>length$m.to('mm')</P></PRE>
+<DIV id=out0064 class="OUTPUT SUCCESS">10000</DIV>
+<DIV id=test0064 class="TEST SUCCESS">10000</DIV><PRE id=code0065 class="CODE ELEMENT EDITABLE" contentEditable=false>length$m.unit</PRE>
+<DIV id=out0065 class="OUTPUT SUCCESS">m</DIV>
+<DIV id=test0065 class="TEST SUCCESS">m</DIV><PRE id=code0066 class="CODE ELEMENT EDITABLE" contentEditable=false>length$m.label</PRE>
+<DIV id=out0066 class="OUTPUT SUCCESS">length</DIV>
+<DIV id=test0066 class="TEST SUCCESS">length</DIV><PRE id=code0067 class="CODE ELEMENT EDITABLE" contentEditable=false>length$m.view()</PRE>
+<DIV id=out0067 class="OUTPUT SUCCESS"><VAR>length</VAR> = <SPAN class=VALUE>10</SPAN>&nbsp;<SPAN class=UNIT>m</SPAN></DIV>
+<DIV id=test0067 class="TEST SUCCESS"><VAR>length</VAR> = <SPAN class=VALUE>10</SPAN>&nbsp;<SPAN class=UNIT>m</SPAN></DIV></DIV></DIV>
+<DIV id=sect0074 class="SECTION ELEMENT" sizset="18" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.2 JcFunc f()</H2>
-<DIV class=SECTIONCONTAINER sizcache="1" sizset="17"><PRE id=code0069 class="CODE ELEMENT EDITABLE" contentEditable=false>v('totalLength$mm',f("length$m*1000+128"))</PRE>
-<DIV id=out0069 class=OUTPUT>10128</DIV>
-<DIV id=test0069 class=TEST>10128</DIV><PRE id=code0070 class="CODE ELEMENT EDITABLE" contentEditable=false><P>v('length$m',1)</P></PRE>
-<DIV id=out0070 class=OUTPUT>1</DIV>
-<DIV id=test0070 class=TEST>1</DIV><PRE id=code0071 class="CODE ELEMENT EDITABLE" contentEditable=false>totalLength$mm.view()</PRE>
-<DIV id=out0071 class=OUTPUT><VAR>totalLength</VAR> = <SPAN class=VALUE>1128</SPAN>&nbsp;<SPAN class=UNIT>mm</SPAN></DIV>
-<DIV id=test0071 class=TEST><VAR>totalLength</VAR> = <SPAN class=VALUE>1128</SPAN>&nbsp;<SPAN class=UNIT>mm</SPAN></DIV><PRE id=code0072 class="CODE ELEMENT EDITABLE" contentEditable=false>totalLength$mm.code()</PRE>
-<DIV id=out0072 class=OUTPUT>length$m*1000+128</DIV>
-<DIV id=test0072 class=TEST>length$m*1000+128</DIV></DIV></DIV>
-<DIV id=sect0003 class="SECTION ELEMENT" sizcache="1" sizset="21">
+<DIV sizset="18" sizcache="1" container="sectionContent"><PRE id=code0069 class="CODE ELEMENT EDITABLE" contentEditable=false>v('totalLength$mm',f("length$m*1000+128"))</PRE>
+<DIV id=out0069 class="OUTPUT SUCCESS">10128</DIV>
+<DIV id=test0069 class="TEST SUCCESS">10128</DIV><PRE id=code0070 class="CODE ELEMENT EDITABLE" contentEditable=false><P>v('length$m',1)</P></PRE>
+<DIV id=out0070 class="OUTPUT SUCCESS">1</DIV>
+<DIV id=test0070 class="TEST SUCCESS">1</DIV><PRE id=code0071 class="CODE ELEMENT EDITABLE" contentEditable=false>totalLength$mm.view()</PRE>
+<DIV id=out0071 class="OUTPUT SUCCESS"><VAR>totalLength</VAR> = <SPAN class=VALUE>1128</SPAN>&nbsp;<SPAN class=UNIT>mm</SPAN></DIV>
+<DIV id=test0071 class="TEST SUCCESS"><VAR>totalLength</VAR> = <SPAN class=VALUE>1128</SPAN>&nbsp;<SPAN class=UNIT>mm</SPAN></DIV><PRE id=code0072 class="CODE ELEMENT EDITABLE" contentEditable=false>totalLength$mm.code()</PRE>
+<DIV id=out0072 class="OUTPUT SUCCESS">length$m*1000+128</DIV>
+<DIV id=test0072 class="TEST SUCCESS">length$m*1000+128</DIV></DIV></DIV>
+<DIV id=sect0003 class="SECTION ELEMENT" sizset="22" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.3 Row</H2>
-<DIV class=SECTIONCONTAINER sizcache="1" sizset="21"><PRE id=code0004 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.vars.r1 = new Row({toto:1,tutu:2})</PRE>
-<DIV id=out0004 class=OUTPUT>
+<DIV sizset="22" sizcache="1" container="sectionContent"><PRE id=code0004 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.vars.r1 = new Row({toto:1,tutu:2})</PRE>
+<DIV id=out0004 class="OUTPUT SUCCESS">
 <TABLE cellSpacing=0 cellPadding=4>
 <THEAD>
 <TR>
@@ -88,7 +99,7 @@
 <TR>
 <TD>1</TD>
 <TD>2</TD></TR></TBODY></TABLE></DIV>
-<DIV id=test0004 class=TEST>
+<DIV id=test0004 class="TEST SUCCESS">
 <TABLE cellSpacing=0 cellPadding=4>
 <THEAD>
 <TR>
@@ -98,9 +109,9 @@
 <TR>
 <TD>1</TD>
 <TD>2</TD></TR></TBODY></TABLE></DIV><PRE id=code0005 class="CODE ELEMENT EDITABLE" contentEditable=false>r1.cell('toto')</PRE>
-<DIV id=out0005 class=OUTPUT>1</DIV>
-<DIV id=test0005 class=TEST>1</DIV><PRE id=code0006 class="CODE ELEMENT EDITABLE" contentEditable=false>r1.setCell('toto',10)</PRE>
-<DIV id=out0006 class=OUTPUT>
+<DIV id=out0005 class="OUTPUT SUCCESS">1</DIV>
+<DIV id=test0005 class="TEST SUCCESS">1</DIV><PRE id=code0006 class="CODE ELEMENT EDITABLE" contentEditable=false>r1.setCell('toto',10)</PRE>
+<DIV id=out0006 class="OUTPUT SUCCESS">
 <TABLE cellSpacing=0 cellPadding=4>
 <THEAD>
 <TR>
@@ -110,7 +121,7 @@
 <TR>
 <TD>10</TD>
 <TD>2</TD></TR></TBODY></TABLE></DIV>
-<DIV id=test0006 class=TEST>
+<DIV id=test0006 class="TEST SUCCESS">
 <TABLE cellSpacing=0 cellPadding=4>
 <THEAD>
 <TR>
@@ -120,7 +131,7 @@
 <TR>
 <TD>10</TD>
 <TD>2</TD></TR></TBODY></TABLE></DIV><PRE id=code0076 class="CODE ELEMENT EDITABLE" contentEditable=false>r1.setCell('toto','TOTO')</PRE>
-<DIV id=out0076 class=OUTPUT>
+<DIV id=out0076 class="OUTPUT SUCCESS">
 <TABLE cellSpacing=0 cellPadding=4>
 <THEAD>
 <TR>
@@ -130,7 +141,7 @@
 <TR>
 <TD>TOTO</TD>
 <TD>2</TD></TR></TBODY></TABLE></DIV>
-<DIV id=test0076 class=TEST>
+<DIV id=test0076 class="TEST SUCCESS">
 <TABLE cellSpacing=0 cellPadding=4>
 <THEAD>
 <TR>
@@ -140,7 +151,7 @@
 <TR>
 <TD>TOTO</TD>
 <TD>2</TD></TR></TBODY></TABLE></DIV><PRE id=code0077 class="CODE ELEMENT EDITABLE" contentEditable=false>r1.setCell('toto',f("tutu+2"))</PRE>
-<DIV id=out0077 class=OUTPUT>
+<DIV id=out0077 class="OUTPUT SUCCESS">
 <TABLE cellSpacing=0 cellPadding=4>
 <THEAD>
 <TR>
@@ -150,7 +161,7 @@
 <TR>
 <TD>4</TD>
 <TD>2</TD></TR></TBODY></TABLE></DIV>
-<DIV id=test0077 class=TEST>
+<DIV id=test0077 class="TEST SUCCESS">
 <TABLE cellSpacing=0 cellPadding=4>
 <THEAD>
 <TR>
@@ -160,7 +171,7 @@
 <TR>
 <TD>4</TD>
 <TD>2</TD></TR></TBODY></TABLE></DIV><PRE id=code0078 class="CODE ELEMENT EDITABLE" contentEditable=false>r1.setCell('toto',undefined)</PRE>
-<DIV id=out0078 class=OUTPUT>
+<DIV id=out0078 class="OUTPUT SUCCESS">
 <TABLE cellSpacing=0 cellPadding=4>
 <THEAD>
 <TR>
@@ -168,9 +179,9 @@
 <TH>tutu</TH></TR></THEAD>
 <TBODY>
 <TR>
-<TD>undefined</TD>
+<TD><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD>2</TD></TR></TBODY></TABLE></DIV>
-<DIV id=test0078 class=TEST>
+<DIV id=test0078 class="TEST SUCCESS">
 <TABLE cellSpacing=0 cellPadding=4>
 <THEAD>
 <TR>
@@ -178,111 +189,15 @@
 <TH>tutu</TH></TR></THEAD>
 <TBODY>
 <TR>
-<TD>undefined</TD>
+<TD><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD>2</TD></TR></TBODY></TABLE></DIV><PRE id=code0079 class="CODE ELEMENT EDITABLE" contentEditable=false>r1.setCell('toto',{truc:10,chose:11})</PRE>
-<DIV id=out0079 class=OUTPUT>
+<DIV id=out0079 class="OUTPUT SUCCESS">
 <TABLE cellSpacing=0 cellPadding=4>
 <THEAD>
 <TR>
 <TH>toto</TH>
 <TH>tutu</TH></TR></THEAD>
 <TBODY>
-<TR>
-<TD>[object Object]</TD>
-<TD>2</TD></TR></TBODY></TABLE></DIV>
-<DIV id=test0079 class=TEST>
-<TABLE cellSpacing=0 cellPadding=4>
-<THEAD>
-<TR>
-<TH>toto</TH>
-<TH>tutu</TH></TR></THEAD>
-<TBODY>
-<TR>
-<TD>[object Object]</TD>
-<TD>2</TD></TR></TBODY></TABLE></DIV><PRE id=code0080 class="CODE ELEMENT EDITABLE" contentEditable=false>r1.toString()</PRE>
-<DIV id=out0080 class=OUTPUT>[object&nbsp;Row]</DIV>
-<DIV id=test0080 class=TEST>[object&nbsp;Row]</DIV><PRE id=code0114 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.html('&lt;ul&gt;&lt;li&gt;un&lt;li&gt;deux&lt;li&gt;trois&lt;/ul&gt;&lt;p&gt;sdfgsdf&lt;p&gt;sdfgsdf')</PRE>
-<DIV id=out0114 class=OUTPUT>
-<UL>
-<LI>un
-<LI>deux
-<LI>trois</LI></UL>
-<P>sdfgsdf
-<P>sdfgsdf</P></DIV><PRE id=code0081 class="CODE ELEMENT EDITABLE" contentEditable=false><P>r1.eachCol(function(k,v){output.html(k+' '+v+'&lt;br&gt;')})</P></PRE>
-<DIV id=out0081 class=OUTPUT>toto [object Object]<BR>tutu 2<BR>
-<TABLE cellSpacing=0 cellPadding=4>
-<THEAD>
-<TR>
-<TH>toto</TH>
-<TH>tutu</TH></TR></THEAD>
-<TBODY>
-<TR>
-<TD>[object Object]</TD>
-<TD>2</TD></TR></TBODY></TABLE></DIV>
-<DIV id=test0081 class=TEST>toto [object Object]<BR>tutu 2<BR>
-<TABLE cellSpacing=0 cellPadding=4>
-<THEAD>
-<TR>
-<TH>toto</TH>
-<TH>tutu</TH></TR></THEAD>
-<TBODY>
-<TR>
-<TD>[object Object]</TD>
-<TD>2</TD></TR></TBODY></TABLE></DIV><PRE id=code0082 class="CODE ELEMENT EDITABLE" contentEditable=false>r1.toJSON()</PRE>
-<DIV id=out0082 class=OUTPUT>{"toto":{"truc":10,<BR>"chose":11},"tutu":2}</DIV>
-<DIV id=test0082 class=TEST>{"toto":{"truc":10,<BR>"chose":11},"tutu":2}</DIV><PRE id=code0083 class="CODE ELEMENT EDITABLE" contentEditable=false>r1.list()</PRE>
-<DIV id=out0083 class=OUTPUT>
-<TABLE>
-<TBODY>
-<TR>
-<TH>toto</TH>
-<TD>[object Object]</TD></TR>
-<TR>
-<TH>tutu</TH>
-<TD>2</TD></TR></TBODY></TABLE></DIV>
-<DIV id=test0083 class=TEST>
-<TABLE>
-<TBODY>
-<TR>
-<TH>toto</TH>
-<TD>[object Object]</TD></TR>
-<TR>
-<TH>tutu</TH>
-<TD>2</TD></TR></TBODY></TABLE></DIV><PRE id=code0085 class="CODE ELEMENT EDITABLE" contentEditable=false>r1.isRow</PRE>
-<DIV id=out0085 class=OUTPUT>true</DIV></DIV></DIV>
-<DIV id=sect0087 class="SECTION ELEMENT" sizcache="1" sizset="34">
-<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.4 Table</H2>
-<DIV class=SECTIONCONTAINER sizcache="1" sizset="34"><PRE id=code0088 class="CODE ELEMENT EDITABLE" contentEditable=false><P>table('testTable').add({toto:100,tutu:200})</P></PRE>
-<DIV id=out0088 class=OUTPUT>
-<TABLE>
-<THEAD>
-<TR>
-<TH>toto</TH>
-<TH>tutu</TH></TR></THEAD>
-<TBODY>
-<TR>
-<TD>100</TD>
-<TD>200</TD></TR></TBODY></TABLE></DIV>
-<DIV id=test0088 class=TEST>
-<TABLE>
-<THEAD>
-<TR>
-<TH>toto</TH>
-<TH>tutu</TH></TR></THEAD>
-<TBODY>
-<TR>
-<TD>100</TD>
-<TD>200</TD></TR></TBODY></TABLE></DIV><PRE id=code0089 class="CODE ELEMENT EDITABLE" contentEditable=false>testTable.add(r1)</PRE>
-<DIV id=out0089 class=OUTPUT>
-<TABLE>
-<THEAD>
-<TR>
-<TH>toto</TH>
-<TH>tutu</TH></TR></THEAD>
-<TBODY>
-<TR>
-<TD>100</TD>
-<TD>200</TD></TR>
 <TR>
 <TD>
 <DIV class=INSPECT>
@@ -296,7 +211,120 @@
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
 <TD>2</TD></TR></TBODY></TABLE></DIV>
-<DIV id=test0089 class=TEST>
+<DIV id=test0079 class="TEST SUCCESS">
+<TABLE cellSpacing=0 cellPadding=4>
+<THEAD>
+<TR>
+<TH>toto</TH>
+<TH>tutu</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>truc</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>10</TD></TR>
+<TR>
+<TH vAlign=top>chose</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
+<TD>2</TD></TR></TBODY></TABLE></DIV><PRE id=code0080 class="CODE ELEMENT EDITABLE" contentEditable=false>r1.toString()</PRE>
+<DIV id=out0080 class="OUTPUT SUCCESS">[object&nbsp;Row]</DIV>
+<DIV id=test0080 class="TEST SUCCESS">[object&nbsp;Row]</DIV><PRE id=code0114 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.html('&lt;ul&gt;&lt;li&gt;un&lt;li&gt;deux&lt;li&gt;trois&lt;/ul&gt;&lt;p&gt;sdfgsdf&lt;p&gt;sdfgsdf')</PRE>
+<DIV id=out0114 class="OUTPUT SUCCESS">
+<UL>
+<LI>un
+<LI>deux
+<LI>trois</LI></UL>
+<P>sdfgsdf
+<P>sdfgsdf</P></DIV><PRE id=code0081 class="CODE ELEMENT EDITABLE" contentEditable=false><P>r1.eachCol(function(k,v){output.html(k+' '+v+'&lt;br&gt;')})</P></PRE>
+<DIV id=out0081 class="OUTPUT SUCCESS">toto [object Object]<BR>tutu 2<BR>
+<TABLE cellSpacing=0 cellPadding=4>
+<THEAD>
+<TR>
+<TH>toto</TH>
+<TH>tutu</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>truc</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>10</TD></TR>
+<TR>
+<TH vAlign=top>chose</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
+<TD>2</TD></TR></TBODY></TABLE></DIV>
+<DIV id=test0081 class="TEST SUCCESS">toto [object Object]<BR>tutu 2<BR>
+<TABLE cellSpacing=0 cellPadding=4>
+<THEAD>
+<TR>
+<TH>toto</TH>
+<TH>tutu</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>truc</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>10</TD></TR>
+<TR>
+<TH vAlign=top>chose</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
+<TD>2</TD></TR></TBODY></TABLE></DIV><PRE id=code0082 class="CODE ELEMENT EDITABLE" contentEditable=false>r1.toJSON()</PRE>
+<DIV id=out0082 class="OUTPUT SUCCESS">{"toto":{"truc":10,<BR>"chose":11},"tutu":2}</DIV>
+<DIV id=test0082 class="TEST SUCCESS">{"toto":{"truc":10,<BR>"chose":11},"tutu":2}</DIV><PRE id=code0083 class="CODE ELEMENT EDITABLE" contentEditable=false>r1.list()</PRE>
+<DIV id=out0083 class="OUTPUT SUCCESS">
+<TABLE>
+<TBODY>
+<TR>
+<TH>toto</TH>
+<TD>[object Object]</TD></TR>
+<TR>
+<TH>tutu</TH>
+<TD>2</TD></TR></TBODY></TABLE></DIV>
+<DIV id=test0083 class="TEST SUCCESS">
+<TABLE>
+<TBODY>
+<TR>
+<TH>toto</TH>
+<TD>[object Object]</TD></TR>
+<TR>
+<TH>tutu</TH>
+<TD>2</TD></TR></TBODY></TABLE></DIV><PRE id=code0085 class="CODE ELEMENT EDITABLE" contentEditable=false>r1.isRow</PRE>
+<DIV id=out0085 class="OUTPUT SUCCESS">true</DIV></DIV></DIV>
+<DIV id=sect0087 class="SECTION ELEMENT" sizset="35" sizcache="1">
+<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.4 Table</H2>
+<DIV sizset="35" sizcache="1" container="sectionContent"><PRE id=code0088 class="CODE ELEMENT EDITABLE" contentEditable=false><P>table('testTable').add({toto:100,tutu:200})</P></PRE>
+<DIV id=out0088 class="OUTPUT SUCCESS">
+<TABLE>
+<THEAD>
+<TR>
+<TH>toto</TH>
+<TH>tutu</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>100</TD>
+<TD>200</TD></TR></TBODY></TABLE></DIV>
+<DIV id=test0088 class="TEST SUCCESS">
+<TABLE>
+<THEAD>
+<TR>
+<TH>toto</TH>
+<TH>tutu</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>100</TD>
+<TD>200</TD></TR></TBODY></TABLE></DIV><PRE id=code0089 class="CODE ELEMENT EDITABLE" contentEditable=false>testTable.add(r1)</PRE>
+<DIV id=out0089 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
 <TR>
@@ -307,7 +335,30 @@
 <TD>100</TD>
 <TD>200</TD></TR>
 <TR>
-<TD>
+<TD style="TEXT-ALIGN: left">
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>truc</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>10</TD></TR>
+<TR>
+<TH vAlign=top>chose</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
+<TD>2</TD></TR></TBODY></TABLE></DIV>
+<DIV id=test0089 class="TEST SUCCESS">
+<TABLE>
+<THEAD>
+<TR>
+<TH>toto</TH>
+<TH>tutu</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>100</TD>
+<TD>200</TD></TR>
+<TR>
+<TD style="TEXT-ALIGN: left">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -319,7 +370,7 @@
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
 <TD>2</TD></TR></TBODY></TABLE></DIV><PRE id=code0091 class="CODE ELEMENT EDITABLE" contentEditable=false>testTable.cols({tutu:{},toto:{}})</PRE>
-<DIV id=out0091 class=OUTPUT>
+<DIV id=out0091 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
 <TR>
@@ -331,7 +382,7 @@
 <TD>100</TD></TR>
 <TR>
 <TD>2</TD>
-<TD>
+<TD style="TEXT-ALIGN: left">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -342,7 +393,7 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></DIV>
-<DIV id=test0091 class=TEST>
+<DIV id=test0091 class="TEST SUCCESS">
 <TABLE>
 <THEAD>
 <TR>
@@ -354,7 +405,7 @@
 <TD>100</TD></TR>
 <TR>
 <TD>2</TD>
-<TD>
+<TD style="TEXT-ALIGN: left">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -365,7 +416,7 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></DIV><PRE id=code0092 class="CODE ELEMENT EDITABLE" contentEditable=false>testTable.addRows([{toto:5,titi:5},{toto:7,tutu:7,titi:7}])</PRE>
-<DIV id=out0092 class=OUTPUT>
+<DIV id=out0092 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
 <TR>
@@ -376,10 +427,10 @@
 <TR>
 <TD>200</TD>
 <TD>100</TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD>2</TD>
-<TD>
+<TD style="TEXT-ALIGN: left">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -390,16 +441,16 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD>5</TD>
 <TD>5</TD></TR>
 <TR>
 <TD>7</TD>
 <TD>7</TD>
 <TD>7</TD></TR></TBODY></TABLE></DIV>
-<DIV id=test0092 class=TEST>
+<DIV id=test0092 class="TEST SUCCESS">
 <TABLE>
 <THEAD>
 <TR>
@@ -410,10 +461,10 @@
 <TR>
 <TD>200</TD>
 <TD>100</TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD>2</TD>
-<TD>
+<TD style="TEXT-ALIGN: left">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -424,18 +475,18 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD>5</TD>
 <TD>5</TD></TR>
 <TR>
 <TD>7</TD>
 <TD>7</TD>
 <TD>7</TD></TR></TBODY></TABLE></DIV><PRE id=code0093 class="CODE ELEMENT EDITABLE" contentEditable=false>testTable.cell(0,'tutu')</PRE>
-<DIV id=out0093 class=OUTPUT>200</DIV>
-<DIV id=test0093 class=TEST>200</DIV><PRE id=code0094 class="CODE ELEMENT EDITABLE" contentEditable=false>testTable.setCell(2,'tutu',1)</PRE>
-<DIV id=out0094 class=OUTPUT>
+<DIV id=out0093 class="OUTPUT SUCCESS">200</DIV>
+<DIV id=test0093 class="TEST SUCCESS">200</DIV><PRE id=code0094 class="CODE ELEMENT EDITABLE" contentEditable=false>testTable.setCell(2,'tutu',1)</PRE>
+<DIV id=out0094 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
 <TR>
@@ -446,10 +497,10 @@
 <TR>
 <TD>200</TD>
 <TD>100</TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD>2</TD>
-<TD>
+<TD style="TEXT-ALIGN: left">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -460,7 +511,7 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD>1</TD>
 <TD>5</TD>
@@ -469,7 +520,7 @@
 <TD>7</TD>
 <TD>7</TD>
 <TD>7</TD></TR></TBODY></TABLE></DIV>
-<DIV id=test0094 class=TEST>
+<DIV id=test0094 class="TEST SUCCESS">
 <TABLE>
 <THEAD>
 <TR>
@@ -480,10 +531,10 @@
 <TR>
 <TD>200</TD>
 <TD>100</TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD>2</TD>
-<TD>
+<TD style="TEXT-ALIGN: left">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -494,7 +545,7 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD>1</TD>
 <TD>5</TD>
@@ -503,9 +554,9 @@
 <TD>7</TD>
 <TD>7</TD>
 <TD>7</TD></TR></TBODY></TABLE></DIV><PRE id=code0096 class="CODE ELEMENT EDITABLE" contentEditable=false>testTable.length</PRE>
-<DIV id=out0096 class=OUTPUT>4</DIV>
-<DIV id=test0096 class=TEST>4</DIV><PRE id=code0097 class="CODE ELEMENT EDITABLE" contentEditable=false>testTable[0]</PRE>
-<DIV id=out0097 class=OUTPUT>
+<DIV id=out0096 class="OUTPUT SUCCESS">4</DIV>
+<DIV id=test0096 class="TEST SUCCESS">4</DIV><PRE id=code0097 class="CODE ELEMENT EDITABLE" contentEditable=false>testTable[0]</PRE>
+<DIV id=out0097 class="OUTPUT SUCCESS">
 <TABLE cellSpacing=0 cellPadding=4>
 <THEAD>
 <TR>
@@ -515,7 +566,7 @@
 <TR>
 <TD>100</TD>
 <TD>200</TD></TR></TBODY></TABLE></DIV>
-<DIV id=test0097 class=TEST>
+<DIV id=test0097 class="TEST SUCCESS">
 <TABLE cellSpacing=0 cellPadding=4>
 <THEAD>
 <TR>
@@ -525,7 +576,7 @@
 <TR>
 <TD>100</TD>
 <TD>200</TD></TR></TBODY></TABLE></DIV><PRE id=code0098 class="CODE ELEMENT EDITABLE" contentEditable=false>testTable.sort({tutu:1})</PRE>
-<DIV id=out0098 class=OUTPUT>
+<DIV id=out0098 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
 <TR>
@@ -539,7 +590,7 @@
 <TD>5</TD></TR>
 <TR>
 <TD>2</TD>
-<TD>
+<TD style="TEXT-ALIGN: left">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -550,7 +601,7 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD>7</TD>
 <TD>7</TD>
@@ -558,8 +609,8 @@
 <TR>
 <TD>200</TD>
 <TD>100</TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR></TBODY></TABLE></DIV>
-<DIV id=test0098 class=TEST>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR></TBODY></TABLE></DIV>
+<DIV id=test0098 class="TEST SUCCESS">
 <TABLE>
 <THEAD>
 <TR>
@@ -573,7 +624,7 @@
 <TD>5</TD></TR>
 <TR>
 <TD>2</TD>
-<TD>
+<TD style="TEXT-ALIGN: left">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -584,7 +635,7 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD>7</TD>
 <TD>7</TD>
@@ -592,8 +643,8 @@
 <TR>
 <TD>200</TD>
 <TD>100</TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR></TBODY></TABLE></DIV><PRE id=code0101 class="CODE ELEMENT EDITABLE" contentEditable=false>testTable.sort({tutu:-1})</PRE>
-<DIV id=out0101 class=OUTPUT>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR></TBODY></TABLE></DIV><PRE id=code0101 class="CODE ELEMENT EDITABLE" contentEditable=false>testTable.sort({tutu:-1})</PRE>
+<DIV id=out0101 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
 <TR>
@@ -604,14 +655,14 @@
 <TR>
 <TD>200</TD>
 <TD>100</TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD>7</TD>
 <TD>7</TD>
 <TD>7</TD></TR>
 <TR>
 <TD>2</TD>
-<TD>
+<TD style="TEXT-ALIGN: left">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -622,12 +673,12 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD>1</TD>
 <TD>5</TD>
 <TD>5</TD></TR></TBODY></TABLE></DIV>
-<DIV id=test0101 class=TEST>
+<DIV id=test0101 class="TEST SUCCESS">
 <TABLE>
 <THEAD>
 <TR>
@@ -638,14 +689,14 @@
 <TR>
 <TD>200</TD>
 <TD>100</TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD>7</TD>
 <TD>7</TD>
 <TD>7</TD></TR>
 <TR>
 <TD>2</TD>
-<TD>
+<TD style="TEXT-ALIGN: left">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -656,16 +707,16 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD>1</TD>
 <TD>5</TD>
 <TD>5</TD></TR></TBODY></TABLE></DIV><PRE id=code0102 class="CODE ELEMENT EDITABLE" contentEditable=false>testTable.toString()</PRE>
-<DIV id=out0102 class=OUTPUT>[object&nbsp;Table(testTable)&nbsp;of&nbsp;4&nbsp;rows]</DIV>
-<DIV id=test0102 class=TEST>[object&nbsp;Table(testTable)&nbsp;of&nbsp;4&nbsp;rows]</DIV><PRE id=code0103 class="CODE ELEMENT EDITABLE" contentEditable=false>testTable.toJSON()</PRE>
-<DIV id=out0103 class=OUTPUT>[{"toto":100,"tutu":200},<BR>{"toto":7,"tutu":7,"titi":7},<BR>{"toto":{"truc":10,<BR>"chose":11},"tutu":2},<BR>{"toto":5,"titi":5,"tutu":1}]</DIV>
-<DIV id=test0103 class=TEST>[{"toto":100,"tutu":200},<BR>{"toto":7,"tutu":7,"titi":7},<BR>{"toto":{"truc":10,<BR>"chose":11},"tutu":2},<BR>{"toto":5,"titi":5,"tutu":1}]</DIV><PRE id=code0104 class="CODE ELEMENT EDITABLE" contentEditable=false>testTable.view()</PRE>
-<DIV id=out0104 class=OUTPUT>
+<DIV id=out0102 class="OUTPUT SUCCESS">[object&nbsp;Table(testTable)&nbsp;of&nbsp;4&nbsp;rows]</DIV>
+<DIV id=test0102 class="TEST SUCCESS">[object&nbsp;Table(testTable)&nbsp;of&nbsp;4&nbsp;rows]</DIV><PRE id=code0103 class="CODE ELEMENT EDITABLE" contentEditable=false>testTable.toJSON()</PRE>
+<DIV id=out0103 class="OUTPUT SUCCESS">[{"toto":100,"tutu":200},<BR>{"toto":7,"tutu":7,"titi":7},<BR>{"toto":{"truc":10,<BR>"chose":11},"tutu":2},<BR>{"toto":5,"titi":5,"tutu":1}]</DIV>
+<DIV id=test0103 class="TEST SUCCESS">[{"toto":100,"tutu":200},<BR>{"toto":7,"tutu":7,"titi":7},<BR>{"toto":{"truc":10,<BR>"chose":11},"tutu":2},<BR>{"toto":5,"titi":5,"tutu":1}]</DIV><PRE id=code0104 class="CODE ELEMENT EDITABLE" contentEditable=false>testTable.view()</PRE>
+<DIV id=out0104 class="OUTPUT SUCCESS">
 <DIV><VAR>testTable</VAR>
 <TABLE>
 <THEAD>
@@ -677,14 +728,14 @@
 <TR>
 <TD>200</TD>
 <TD>100</TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD>7</TD>
 <TD>7</TD>
 <TD>7</TD></TR>
 <TR>
 <TD>2</TD>
-<TD>
+<TD style="TEXT-ALIGN: left">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -695,12 +746,12 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD>1</TD>
 <TD>5</TD>
 <TD>5</TD></TR></TBODY></TABLE></DIV></DIV>
-<DIV id=test0104 class=TEST>
+<DIV id=test0104 class="TEST SUCCESS">
 <DIV><VAR>testTable</VAR> 
 <TABLE>
 <THEAD>
@@ -712,14 +763,14 @@
 <TR>
 <TD>200</TD>
 <TD>100</TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD>7</TD>
 <TD>7</TD>
 <TD>7</TD></TR>
 <TR>
 <TD>2</TD>
-<TD>
+<TD style="TEXT-ALIGN: left">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -730,15 +781,15 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD>1</TD>
 <TD>5</TD>
 <TD>5</TD></TR></TBODY></TABLE></DIV></DIV>
-<DIV id=sect0120 class="ELEMENT SECTION" sizcache="1" sizset="47">
+<DIV id=sect0120 class="ELEMENT SECTION" sizset="48" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.4.1 Table style</H3>
-<DIV class=CONTAINER sizcache="1" sizset="47"><PRE id=code0129 class="ELEMENT CODE EDITABLE" contentEditable=false>testTable.tableStyle({backgroundColor:'cyan',border:'5px solid blue'})</PRE>
-<DIV id=out0129 class=OUTPUT>
+<DIV class=CONTAINER sizset="48" sizcache="1" container="sectionContent"><PRE id=code0129 class="ELEMENT CODE EDITABLE" contentEditable=false>testTable.tableStyle({backgroundColor:'cyan',border:'5px solid blue'})</PRE>
+<DIV id=out0129 class="OUTPUT SUCCESS">
 <TABLE style="BORDER-TOP: blue 5px solid; BORDER-RIGHT: blue 5px solid; BORDER-BOTTOM: blue 5px solid; BORDER-LEFT: blue 5px solid; BACKGROUND-COLOR: cyan">
 <THEAD>
 <TR>
@@ -749,14 +800,14 @@
 <TR>
 <TD>200</TD>
 <TD>100</TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD>7</TD>
 <TD>7</TD>
 <TD>7</TD></TR>
 <TR>
 <TD>2</TD>
-<TD>
+<TD style="TEXT-ALIGN: left">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -767,12 +818,12 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD>1</TD>
 <TD>5</TD>
 <TD>5</TD></TR></TBODY></TABLE></DIV>
-<DIV id=test0129 class=TEST>
+<DIV id=test0129 class="TEST SUCCESS">
 <TABLE style="BORDER-TOP: blue 5px solid; BORDER-RIGHT: blue 5px solid; BORDER-BOTTOM: blue 5px solid; BORDER-LEFT: blue 5px solid; BACKGROUND-COLOR: cyan">
 <THEAD>
 <TR>
@@ -783,14 +834,14 @@
 <TR>
 <TD>200</TD>
 <TD>100</TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD>7</TD>
 <TD>7</TD>
 <TD>7</TD></TR>
 <TR>
 <TD>2</TD>
-<TD>
+<TD style="TEXT-ALIGN: left">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -801,12 +852,12 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
-<TD><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD>1</TD>
 <TD>5</TD>
 <TD>5</TD></TR></TBODY></TABLE></DIV><PRE id=code0121 class="ELEMENT CODE EDITABLE" contentEditable=false>testTable.style({color:'blue',backgroundColor:'white',border:'1px solid black'})</PRE>
-<DIV id=out0121 class=OUTPUT>
+<DIV id=out0121 class="OUTPUT SUCCESS">
 <TABLE style="BORDER-TOP: blue 5px solid; BORDER-RIGHT: blue 5px solid; BORDER-BOTTOM: blue 5px solid; BORDER-LEFT: blue 5px solid; BACKGROUND-COLOR: cyan">
 <THEAD>
 <TR>
@@ -817,14 +868,14 @@
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">200</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">100</TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">2</TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -835,12 +886,12 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">1</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">5</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">5</TD></TR></TBODY></TABLE></DIV>
-<DIV id=test0121 class=TEST>
+<DIV id=test0121 class="TEST SUCCESS">
 <TABLE style="BORDER-TOP: blue 5px solid; BORDER-RIGHT: blue 5px solid; BORDER-BOTTOM: blue 5px solid; BORDER-LEFT: blue 5px solid; BACKGROUND-COLOR: cyan">
 <THEAD>
 <TR>
@@ -851,14 +902,14 @@
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">200</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">100</TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">2</TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -869,12 +920,12 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">1</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">5</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">5</TD></TR></TBODY></TABLE></DIV><PRE id=code0123 class="ELEMENT CODE EDITABLE" contentEditable=false>testTable.style({color:'purple'},0)</PRE>
-<DIV id=out0123 class=OUTPUT>
+<DIV id=out0123 class="OUTPUT SUCCESS">
 <TABLE style="BORDER-TOP: blue 5px solid; BORDER-RIGHT: blue 5px solid; BORDER-BOTTOM: blue 5px solid; BORDER-LEFT: blue 5px solid; BACKGROUND-COLOR: cyan">
 <THEAD>
 <TR>
@@ -885,14 +936,14 @@
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">200</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">100</TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">2</TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -903,12 +954,12 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">1</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">5</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">5</TD></TR></TBODY></TABLE></DIV>
-<DIV id=test0123 class=TEST>
+<DIV id=test0123 class="TEST SUCCESS">
 <TABLE style="BORDER-TOP: blue 5px solid; BORDER-RIGHT: blue 5px solid; BORDER-BOTTOM: blue 5px solid; BORDER-LEFT: blue 5px solid; BACKGROUND-COLOR: cyan">
 <THEAD>
 <TR>
@@ -919,14 +970,14 @@
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">200</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">100</TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">2</TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -937,12 +988,12 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">1</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">5</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">5</TD></TR></TBODY></TABLE></DIV><PRE id=code0124 class="ELEMENT CODE EDITABLE" contentEditable=false>testTable.style({'font-size':'2em'},1,'toto')</PRE>
-<DIV id=out0124 class=OUTPUT>
+<DIV id=out0124 class="OUTPUT SUCCESS">
 <TABLE style="BORDER-TOP: blue 5px solid; BORDER-RIGHT: blue 5px solid; BORDER-BOTTOM: blue 5px solid; BORDER-LEFT: blue 5px solid; BACKGROUND-COLOR: cyan">
 <THEAD>
 <TR>
@@ -953,14 +1004,14 @@
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">200</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">100</TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD>
 <TD style="FONT-SIZE: 2em; BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">2</TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -971,12 +1022,12 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">1</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">5</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">5</TD></TR></TBODY></TABLE></DIV>
-<DIV id=test0124 class=TEST>
+<DIV id=test0124 class="TEST SUCCESS">
 <TABLE style="BORDER-TOP: blue 5px solid; BORDER-RIGHT: blue 5px solid; BORDER-BOTTOM: blue 5px solid; BORDER-LEFT: blue 5px solid; BACKGROUND-COLOR: cyan">
 <THEAD>
 <TR>
@@ -987,14 +1038,14 @@
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">200</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">100</TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD>
 <TD style="FONT-SIZE: 2em; BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">2</TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -1005,12 +1056,12 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">1</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">5</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">5</TD></TR></TBODY></TABLE></DIV><PRE id=code0125 class="ELEMENT CODE EDITABLE" contentEditable=false><P>testTable.style({'background-color':'grey'},undefined,'toto')</P></PRE>
-<DIV id=out0125 class=OUTPUT>
+<DIV id=out0125 class="OUTPUT SUCCESS">
 <TABLE style="BORDER-TOP: blue 5px solid; BORDER-RIGHT: blue 5px solid; BORDER-BOTTOM: blue 5px solid; BORDER-LEFT: blue 5px solid; BACKGROUND-COLOR: cyan">
 <THEAD>
 <TR>
@@ -1021,14 +1072,14 @@
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">200</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: grey">100</TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD>
 <TD style="FONT-SIZE: 2em; BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: grey">7</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">2</TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: grey">
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: grey">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -1039,12 +1090,12 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">1</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: grey">5</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">5</TD></TR></TBODY></TABLE></DIV>
-<DIV id=test0125 class=TEST>
+<DIV id=test0125 class="TEST SUCCESS">
 <TABLE style="BORDER-TOP: blue 5px solid; BORDER-RIGHT: blue 5px solid; BORDER-BOTTOM: blue 5px solid; BORDER-LEFT: blue 5px solid; BACKGROUND-COLOR: cyan">
 <THEAD>
 <TR>
@@ -1055,14 +1106,14 @@
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">200</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: grey">100</TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD>
 <TD style="FONT-SIZE: 2em; BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: grey">7</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">2</TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: grey">
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: grey">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -1073,12 +1124,12 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">1</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: grey">5</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">5</TD></TR></TBODY></TABLE></DIV><PRE id=code0127 class="ELEMENT CODE EDITABLE" contentEditable=false><P>testTable.style(function(table,rowNumber,colName){</P><P>  if&nbsp;(table.cell(rowNumber,colName)&lt;=5)&nbsp;{</P><P>    return&nbsp;{backgroundColor:'black',color:'yellow'}</P><P>  }</P><P>  else{</P><P>    return&nbsp;{backgroundColor:'white',border:'1px solid black',color:'blue'}</P><P>  }</P><P>})</P><P>&nbsp;</P></PRE>
-<DIV id=out0127 class=OUTPUT>
+<DIV id=out0127 class="OUTPUT SUCCESS">
 <TABLE style="BORDER-TOP: blue 5px solid; BORDER-RIGHT: blue 5px solid; BORDER-BOTTOM: blue 5px solid; BORDER-LEFT: blue 5px solid; BACKGROUND-COLOR: cyan">
 <THEAD>
 <TR>
@@ -1089,14 +1140,14 @@
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">200</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: grey">100</TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD>
 <TD style="FONT-SIZE: 2em; BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: grey">7</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD></TR>
 <TR>
 <TD style="COLOR: yellow; BACKGROUND-COLOR: black">2</TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: grey">
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: grey">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -1107,12 +1158,12 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD style="COLOR: yellow; BACKGROUND-COLOR: black">1</TD>
 <TD style="COLOR: yellow; BACKGROUND-COLOR: grey">5</TD>
 <TD style="COLOR: yellow; BACKGROUND-COLOR: black">5</TD></TR></TBODY></TABLE></DIV>
-<DIV id=test0127 class=TEST>
+<DIV id=test0127 class="TEST SUCCESS">
 <TABLE style="BORDER-TOP: blue 5px solid; BORDER-RIGHT: blue 5px solid; BORDER-BOTTOM: blue 5px solid; BORDER-LEFT: blue 5px solid; BACKGROUND-COLOR: cyan">
 <THEAD>
 <TR>
@@ -1123,14 +1174,14 @@
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">200</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: grey">100</TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: purple; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD>
 <TD style="FONT-SIZE: 2em; BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: grey">7</TD>
 <TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white">7</TD></TR>
 <TR>
 <TD style="COLOR: yellow; BACKGROUND-COLOR: black">2</TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: grey">
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: grey">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -1141,17 +1192,96 @@
 <TR>
 <TH vAlign=top>chose</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
-<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TD style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; COLOR: blue; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
 <TR>
 <TD style="COLOR: yellow; BACKGROUND-COLOR: black">1</TD>
 <TD style="COLOR: yellow; BACKGROUND-COLOR: grey">5</TD>
-<TD style="COLOR: yellow; BACKGROUND-COLOR: black">5</TD></TR></TBODY></TABLE></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0007 class="SECTION ELEMENT" sizcache="1" sizset="53">
+<TD style="COLOR: yellow; BACKGROUND-COLOR: black">5</TD></TR></TBODY></TABLE></DIV></DIV></DIV>
+<DIV id=sect0131 class="ELEMENT SECTION" sizset="54" sizcache="1">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.4.2 subset of Table</H3>
+<DIV sizset="54" sizcache="1" container="sectionContent"><PRE id=code0131 class="ELEMENT CODE EDITABLE" contentEditable=false><P>testTable.find({titi:undefined}).sort({tutu:1})</P></PRE>
+<DIV id=out0131 class="OUTPUT SUCCESS">
+<TABLE>
+<THEAD>
+<TR>
+<TH>tutu</TH>
+<TH>toto</TH>
+<TH>titi</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>2</TD>
+<TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: grey">
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>truc</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>10</TD></TR>
+<TR>
+<TH vAlign=top>chose</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TR>
+<TD style="COLOR: purple">200</TD>
+<TD style="COLOR: purple; BACKGROUND-COLOR: grey">100</TD>
+<TD style="COLOR: purple; TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR></TBODY></TABLE></DIV>
+<DIV id=test0131 class="TEST SUCCESS">
+<TABLE>
+<THEAD>
+<TR>
+<TH>tutu</TH>
+<TH>toto</TH>
+<TH>titi</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>2</TD>
+<TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: grey">
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>truc</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>10</TD></TR>
+<TR>
+<TH vAlign=top>chose</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>11</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
+<TR>
+<TD style="COLOR: purple">200</TD>
+<TD style="COLOR: purple; BACKGROUND-COLOR: grey">100</TD>
+<TD style="COLOR: purple; TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR></TBODY></TABLE></DIV><PRE id=code0136 class="ELEMENT CODE EDITABLE" contentEditable=false>testTable.findFirst({titi:5})</PRE>
+<DIV id=out0136 class="OUTPUT SUCCESS">
+<TABLE cellSpacing=0 cellPadding=4>
+<THEAD>
+<TR>
+<TH>toto</TH>
+<TH>titi</TH>
+<TH>tutu</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>5</TD>
+<TD>5</TD>
+<TD>1</TD></TR></TBODY></TABLE></DIV>
+<DIV id=test0136 class="TEST SUCCESS">
+<TABLE cellSpacing=0 cellPadding=4>
+<THEAD>
+<TR>
+<TH>toto</TH>
+<TH>titi</TH>
+<TH>tutu</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>5</TD>
+<TD>5</TD>
+<TD>1</TD></TR></TBODY></TABLE></DIV></DIV></DIV></DIV></DIV>
+<DIV id=sect0007 class="SECTION ELEMENT" sizset="56" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.5 jc.HTML</H2>
-<DIV class=SECTIONCONTAINER sizcache="1" sizset="53"><PRE id=code0106 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.vars.testHtml = jc.html('an &lt;b&gt;html&lt;/b&gt; text')</PRE>
-<DIV id=out0106 class=OUTPUT>an <B>html</B> text</DIV>
-<DIV id=test0106 class=TEST>an <B>html</B> text</DIV><PRE id=code0008 class="CODE ELEMENT EDITABLE" contentEditable=false><P>testHtml</P><P>.ul()</P><P>  .li('one')</P><P>  .li('two')</P><P>  .li('three')</P><P>  .ul()</P><P>    .li('this')</P><P>    .li('that')</P><P>    .ul()</P><P>      .li('sub-sub item1')</P><P>      .li('sub-sub item2')</P><P>    .end()</P><P>  .end()</P><P>.end()</P><P>&nbsp;</P></PRE>
-<DIV id=out0008 class=OUTPUT>an <B>html</B> text
+<DIV sizset="56" sizcache="1" container="sectionContent"><PRE id=code0106 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.vars.testHtml = jc.html('an &lt;b&gt;html&lt;/b&gt; text')</PRE>
+<DIV id=out0106 class="OUTPUT SUCCESS">an <B>html</B> text</DIV>
+<DIV id=test0106 class="TEST SUCCESS">an <B>html</B> text</DIV><PRE id=code0008 class="CODE ELEMENT EDITABLE" contentEditable=false><P>testHtml</P><P>.ul()</P><P>  .li('one')</P><P>  .li('two')</P><P>  .li('three')</P><P>  .ul()</P><P>    .li('this')</P><P>    .li('that')</P><P>    .ul()</P><P>      .li('sub-sub item1')</P><P>      .li('sub-sub item2')</P><P>    .end()</P><P>  .end()</P><P>.end()</P><P>&nbsp;</P></PRE>
+<DIV id=out0008 class="OUTPUT SUCCESS">an <B>html</B> text
 <UL>
 <LI>one</LI>
 <LI>two</LI>
@@ -1162,7 +1292,7 @@
 <UL>
 <LI>sub-sub item1</LI>
 <LI>sub-sub item2</LI></UL></UL></UL></DIV><PRE id=code0107 class="CODE ELEMENT EDITABLE" contentEditable=false>testHtml.showHtml('&lt;DIV&gt;htmlcode example&lt;/DIV&gt;')</PRE>
-<DIV id=out0107 class=OUTPUT>an <B>html</B> text
+<DIV id=out0107 class="OUTPUT SUCCESS">an <B>html</B> text
 <UL>
 <LI>one</LI>
 <LI>two</LI>
@@ -1173,19 +1303,19 @@
 <UL>
 <LI>sub-sub item1</LI>
 <LI>sub-sub item2</LI></UL></UL></UL><SPAN class=INSPECTHTML><WBR>&lt;DIV&gt;htmlcode&nbsp;example<WBR>&lt;/DIV&gt;</SPAN></DIV><PRE id=code0108 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.html().showDiff('hello2hello','hello1hello')</PRE>
-<DIV id=out0108 class=OUTPUT><SPAN class=DIFFSAME>hello</SPAN><BR>e1:<SPAN class=DIFFERENT>2hello</SPAN><BR>e2:<SPAN class=DIFFERENT>1hello</SPAN></DIV>
-<DIV id=test0108 class=TEST><SPAN class=DIFFSAME>hello</SPAN><BR>e1:<SPAN class=DIFFERENT>2hello</SPAN><BR>e2:<SPAN class=DIFFERENT>1hello</SPAN></DIV><PRE id=code0109 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.html().showHtmlDiff('&lt;div&gt;hello2hello&lt;/div&gt;','&lt;div&gt;hello1hello&lt;/div&gt;')</PRE>
-<DIV id=out0109 class=OUTPUT><SPAN class=DIFFSAME><WBR>&lt;div&gt;hello</SPAN><BR>e1:<SPAN class=DIFFERENT>2hello<WBR>&lt;/div&gt;</SPAN><BR>e2:<SPAN class=DIFFERENT>1hello<WBR>&lt;/div&gt;</SPAN></DIV>
-<DIV id=test0109 class=TEST><SPAN class=DIFFSAME><WBR>&lt;div&gt;hello</SPAN><BR>e1:<SPAN class=DIFFERENT>2hello<WBR>&lt;/div&gt;</SPAN><BR>e2:<SPAN class=DIFFERENT>1hello<WBR>&lt;/div&gt;</SPAN></DIV><PRE id=code0110 class="CODE ELEMENT EDITABLE" contentEditable=false><P>jc.html()</P><P>.h('title').indent()</P><P>  .h('sub-title')</P><P>.indent(-1)</P><P>.h('another title')</P></PRE>
-<DIV id=out0110 class=OUTPUT>
+<DIV id=out0108 class="OUTPUT SUCCESS"><SPAN class=DIFFSAME>hello</SPAN><BR>e1:<SPAN class=DIFFERENT>2hello</SPAN><BR>e2:<SPAN class=DIFFERENT>1hello</SPAN></DIV>
+<DIV id=test0108 class="TEST SUCCESS"><SPAN class=DIFFSAME>hello</SPAN><BR>e1:<SPAN class=DIFFERENT>2hello</SPAN><BR>e2:<SPAN class=DIFFERENT>1hello</SPAN></DIV><PRE id=code0109 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.html().showHtmlDiff('&lt;div&gt;hello2hello&lt;/div&gt;','&lt;div&gt;hello1hello&lt;/div&gt;')</PRE>
+<DIV id=out0109 class="OUTPUT SUCCESS"><SPAN class=DIFFSAME><WBR>&lt;div&gt;hello</SPAN><BR>e1:<SPAN class=DIFFERENT>2hello<WBR>&lt;/div&gt;</SPAN><BR>e2:<SPAN class=DIFFERENT>1hello<WBR>&lt;/div&gt;</SPAN></DIV>
+<DIV id=test0109 class="TEST SUCCESS"><SPAN class=DIFFSAME><WBR>&lt;div&gt;hello</SPAN><BR>e1:<SPAN class=DIFFERENT>2hello<WBR>&lt;/div&gt;</SPAN><BR>e2:<SPAN class=DIFFERENT>1hello<WBR>&lt;/div&gt;</SPAN></DIV><PRE id=code0110 class="CODE ELEMENT EDITABLE" contentEditable=false><P>jc.html()</P><P>.h('title').indent()</P><P>  .h('sub-title')</P><P>.indent(-1)</P><P>.h('another title')</P></PRE>
+<DIV id=out0110 class="OUTPUT SUCCESS">
 <H1>title</H1>
 <H2>sub-title</H2>
 <H1>another title</H1></DIV>
-<DIV id=test0110 class=TEST>
+<DIV id=test0110 class="TEST SUCCESS">
 <H1>title</H1>
 <H2>sub-title</H2>
 <H1>another title</H1></DIV><PRE id=code0111 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.html().inspect({a:1,b:2})</PRE>
-<DIV id=out0111 class=OUTPUT>
+<DIV id=out0111 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -1196,7 +1326,7 @@
 <TR>
 <TH vAlign=top>b</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
-<DIV id=test0111 class=TEST>
+<DIV id=test0111 class="TEST SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -1207,22 +1337,15 @@
 <TR>
 <TH vAlign=top>b</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV>
-<DIV id=sect0113 class="SECTION ELEMENT" sizcache="1" sizset="60">
+<DIV id=sect0113 class="SECTION ELEMENT" sizset="63" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.6 Interactive Elements</H2>
-<DIV class=SECTIONCONTAINER sizcache="1" sizset="60"><PRE id=code0116 class="CODE ELEMENT EDITABLE" contentEditable=false><P>jc.scene('scene1',{height:200})</P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">.div('square',{height:50,width:50,border:"solid red 5px",top:100,left:150})</FONT></P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">.end()</FONT></P></PRE>
-<DIV id=out0116 class=OUTPUT>
+<DIV sizset="63" sizcache="1" container="sectionContent"><PRE id=code0116 class="CODE ELEMENT EDITABLE" contentEditable=false><P>jc.scene('scene1',{height:200})</P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">.div('square',{height:50,width:50,border:"solid red 5px",top:100,left:150})</FONT></P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">.end()</FONT></P></PRE>
+<DIV id=out0116 class="OUTPUT SUCCESS">
 <DIV class=SCENE style="HEIGHT: 200px">
 <DIV class=SCENECONTAINER>
 <DIV class=IELEMENT style="BORDER-TOP: red 5px solid; HEIGHT: 50px; BORDER-RIGHT: red 5px solid; WIDTH: 50px; BORDER-BOTTOM: red 5px solid; LEFT: 150px; BORDER-LEFT: red 5px solid; TOP: 100px"></DIV></DIV></DIV></DIV>
-<DIV id=test0116 class=TEST>
+<DIV id=test0116 class="TEST SUCCESS">
 <DIV class=SCENE style="HEIGHT: 200px">
 <DIV class=SCENECONTAINER>
 <DIV class=IELEMENT style="BORDER-TOP: red 5px solid; HEIGHT: 50px; BORDER-RIGHT: red 5px solid; WIDTH: 50px; BORDER-BOTTOM: red 5px solid; LEFT: 150px; BORDER-LEFT: red 5px solid; TOP: 100px"></DIV></DIV></DIV></DIV><PRE id=code0118 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.updateResultsTestStatus();</P><P>if ('runonce' in jc.url.arguments) window.close();</P></PRE>
-<DIV id=out0118 class=OUTPUT>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>testStatus</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;Object]</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV></DIV></DIV></DIV></BODY></HTML>
+<DIV id=out0118 class="OUTPUT SUCCESS"></DIV></DIV></DIV></DIV></DIV></DIV></BODY></HTML>

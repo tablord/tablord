@@ -44,7 +44,8 @@
     // if the variable is in fact a function, executes the function and return its value
     if (this.func) {
       var row = this.row && this.row._;
-      return this.func(row,this.col);
+      var res = this.func(row,this.col);
+      return res
     }
     return this.value;
   }
@@ -140,7 +141,7 @@
         if (jcFunc.search(/return/)== -1) {
           code = 'return '+jcFunc;
         }
-        var f = new Function('row','col','with (jc.vars){with(row||{}) {'+code+'}}');
+        var f = new Function('rowData','col','with (jc.vars){with(rowData||{}) {'+code+'}}');
         f.userCode = jcFunc;
         f.toString = function(){return this.userCode};
         f.joJson = function(){return 'f("'+JSON.stringify(this.userCode)+'")'};
@@ -161,9 +162,10 @@
   // Row //////////////////////////////////////////////
 
   function Row(obj) {
-    // create a Row from an object
+    // create a Row from an object or a Row. 
     // only ownProperties (not inherited) are used is the Row
     this._ = {};
+    if (obj.isRow) obj = obj._;
     for (var k in obj) {
       if (obj.hasOwnProperty(k)) {
         this.setCell(k,obj[k]);
@@ -202,7 +204,7 @@
   Row.prototype.getStyle = function(col) {
     // returns the calculated style object for a given cell of this row (or for the row if col == undefined)
     var rowStyle = $.isFunction(this._style[undefined])?this._style[undefined]([this],0,col/*fake table so that table[0]=thisrow*/):this._style[undefined];
-    return $.extend(rowStyle,$.isFunction(this._style[col])?this._style[col]([this],0,col)/*fake table so that table[0]=thisrow*/:this._style[col]);
+    return $.extend({},rowStyle,$.isFunction(this._style[col])?this._style[col]([this],0,col)/*fake table so that table[0]=thisrow*/:this._style[col]);
   }
 
   Row.prototype.toString = function() {
@@ -241,7 +243,7 @@
     h += '<tr>';
     for (var col in options.cols) {
       var cell = this._[col];
-      h += (col=="_id")?'<th>'+cell+'</th>':'<td>'+cell+'</td>';  //******************** format???
+      h += (col=="_id")?'<th>'+cell+'</th>':'<td>'+jc.format(cell)+'</td>';
     }
     h += '</tr></tbody></table>';
     return jc.html(h);
@@ -261,19 +263,36 @@
     // constructor of a new Table instance
     this.name = name;
     this.length = 0;
-    this._cols = {};
     this._id = {};
-    this._style = {};  
+    this.options = {style:{},
+                    format:{},
+                    cols:{}
+                   };  
   }
   
+  Table.prototype.name = function(name) {
+    // if name is undefined return the name
+    // otherwise set a new name and return this
+
+    if (name===undefined) {
+      return this.name;
+    }
+    if (this.name) delete jc.vars[name];
+    this.name = name
+    jc.vars[name] = this;
+    return this;
+  }
+
   Table.prototype.cols = function(cols) {
     // set the columns that are displayed by default
     // return the table for command chaining
     // cols is an object like
     // { colname:{},   // any object make the column visible
-    //   colname:{style:{cssAttr:val,...}  // make the column visible and set its default style 
-    //                                     // note that cols style are stronger thant rows style  
-    this._cols = cols;
+    //   colname:{style:{cssAttr:val,...   // make the column visible and set its default style 
+    //                                     // note that cols style are stronger thant rows style
+    //            format:{number:jc.percent(2)
+    //           }   
+    this.options.cols = cols;
     return this;
   }
 
@@ -283,8 +302,8 @@
     // return the table for command chaining
 
     for (var col in withRow._) {
-      if (this._cols[col]==undefined) {
-        this._cols[col] = {};
+      if (this.options.cols[col]==undefined) {
+        this.options.cols[col] = {};
       }
     }
     return this;
@@ -295,10 +314,9 @@
     // row can be either a simple object or a Row object
     // return the table for method chaining
 
-    if (!row.isRow) {
-      row = new Row(row); // transform it to a Row
-    }
+    row = new Row(row); // transform it to a Row
     row.table = this;
+    row.index = this.length;
     this[this.length++] = row;
     if (row._._id) {
       this._id[row._._id] = row;
@@ -317,9 +335,37 @@
     return this;
   }
 
+  Table.prototype.update = function(cols,keepOnlyValue) {
+    // cols is an object {colName:value,....}
+    // value can be a simple value like a number or a string, 
+    // but can also be a jcFunc produced by f(jcFunc)
+    // that will either be stored in the table 
+    // or be used during the update to calculate the static value of the cell
+    // if keepOnlyValue == true
+
+    this.forEachRow(function(i,row){
+      for (var colName in cols) {
+        if (keepOnlyValue) {
+          var val = cols[colName];
+          if (typeof val === 'function') val = val.call(row,row._,colName);
+          if (val !== null) row.setCell(colName,val);
+        }
+        else {
+          row.setCell(colName,cols[colName]);
+        }
+      }
+    });
+    for (var colName in cols) {
+      if (this.options.cols[colName]==undefined) {
+        this.options.cols[colName] = {};
+      }
+    }
+    return this;
+  }
+  
   Table.prototype.forEachRow = function(func) {
     // execute func for each row of the table
-    // func must be function(i,row)
+    // func must be function(i,row) in which this represents the Row object
     // return the table for command chaining
     for (var i=0; i<this.length; i++) {
       func(i,this[i])
@@ -327,13 +373,31 @@
     return this;
   }
 
+
   Table.prototype.cell = function(row,col) {
+    // return the content of the cell: if the cell is a function: return the function
     return this[row] && this[row]._[col];
   }
 
+  Table.prototype.val = function(row,col) {
+    // return the VALUE of the cell: if a function, this function is calculated first
+    var val = this[row] && this[row]._[col];
+    if (val && val.isV) val = val.valueOf()
+    return val;
+  }
+
+
   Table.prototype.setCell = function(row,col,value) {
     this[row].setCell(col,value);
+    if (this.options.cols[col] === undefined) this.options.cols[col] = {};
     return this;
+  }
+
+  Table.prototype.lookup = function(criteria) {
+    // return the data of the first row matching the criteria
+
+    var row = this.findFirst(criteria);
+    return row && row._;
   }
 
   Table.prototype.tableStyle = function(style) {
@@ -341,19 +405,25 @@
     return this;
   }
 
+  Table.prototype.colStyle = function(style,colName){
+    // set the style for a column
+    this.options.cols[colName].style = style;
+    return this;
+  }
+
   Table.prototype.style = function(style,rowNumber,colName){
-    // .setStyle(style)  will set the default style for the complete table
-    // .setStyle(style,rowNumber) will set the default style for a given row
-    // .setStyle(style,undefined,colName) will set the default style for a column
-    // .setStyle(style,rowNumber,colName) will set the style for a given cell
+    // .style(style)  will set the default style for the complete table
+    // .style(style,rowNumber) will set the default style for a given row
+    // .style(style,undefined,colName) will set the default style for a column
+    // .style(style,rowNumber,colName) will set the style for a given cell
     // style can either be an object {cssAttr=val,...} or a function(table,rowNumber,colName)
 
     if ((rowNumber == undefined) && (colName == undefined)){
-      this._style = style;
+      this.options.style = style;
       return this;
     }
     if (rowNumber == undefined) {
-      this._cols[colName].style = style;
+      this.colStyle(style,colName);
       return this;
     }
     this[rowNumber].style(style,colName);
@@ -361,15 +431,29 @@
   }
 
   Table.prototype.getTableStaticStyle = function() {
-    return ($.isFunction(this._style)?{}:this._style) || {};
+    return ($.isFunction(this.options.style)?{}:this.options.style) || {};
   }
 
   Table.prototype.getStyle = function(rowNumber,colName) {
     // return the calculated style for a given cell
-    var defColStyle = this._cols[colName] && this._cols[colName].style;
+    var style = this.options.style;
+    if ($.isFunction(style)) style = style(this,rowNumber,colName);
+    var defColStyle = this.options.cols[colName] && this.options.cols[colName].style;
     if ($.isFunction(defColStyle)) defColStyle = defColStyle(this,rowNumber,colName);
-    var style =  $.extend({},defColStyle,this[rowNumber].getStyle(colName));
+    style = $.extend(true,{},style,defColStyle,this[rowNumber].getStyle(colName));
     return style;
+  }
+  
+  Table.prototype.colFormat = function(colName,format) {
+    // set a format for the column
+    jc.setFormatOptions(this.options.cols[colName],format)
+    return this;
+  }
+
+  Table.prototype.format = function(format) {
+    // set general formatting for the table
+    jc.setFormatOptions(this.options,format);
+    return this;
   }
 
   Table.prototype.sort = function(cols) {
@@ -395,6 +479,41 @@
     return this;
   }
 
+  Table.prototype.find = function(criteria) {
+    // return a new table that has only the rows that match the criteria
+    // the rows of this new table ARE THE ORIGINAL ROWS
+    // any function in a cell still refer to the original table.
+    // the .cols() is set with a COPY of the original table, so the order or visibility
+    // of colums can be set independently
+    // if new rows are .add() those rows will only belong to the new table. this should be avoided
+    // or at least be very conscient of the potential confusion it can create
+    // the ORDER of the rows is independent of the original table (even if the result of find
+    // will give the same original order). a .sort() will affect only the new table.
+
+    var t = table();
+    $.extend(true,t.options.cols,this.options.cols);
+    for (var i=0; i<this.length; i++) {
+      if (jc.objMatchCriteria(this[i]._,criteria)){
+        t[t.length++] = this[i];
+      }
+    }
+    return t;
+  }
+
+  Table.prototype.findFirst = function(criteria) {
+    // mongoDB find() as if the table was a small mongoDB
+    // return the first Row of this table that match the criteria
+    for (var i=0; i<this.length; i++) {
+      if (jc.objMatchCriteria(this[i]._,criteria)){
+        return this[i];
+      }
+    }
+  }
+
+  Table.prototype.addSummary = function() {
+    //*********************
+  }    
+
   Table.prototype.toString = function() {
     // return a string summarizing the table
     return '[object Table('+this.name+') of '+this.length+' rows]';
@@ -419,13 +538,12 @@
     //      '*':1           // adds any not already defined col as visible
     //    rows:[..row numbers]  // specifies which row to display in what order
 
-    options = $.extend(true,{},jc.defaults,options);
-    options.cols = options.cols || this._cols;
+    options = $.extend(true,{},jc.defaults,this.options,options);
     if (options.cols['*']) {
       delete options.cols['*'];
-      for (var col in this._cols) {
+      for (var col in this.options.cols) {
         if (!options.cols[col]) {
-          options.cols[col] = this._cols[col];
+          options.cols[col] = this.options.cols[col];
         }
       }
     }
@@ -443,15 +561,17 @@
       r$ = $('<tr/>'); 
       for (var col in options.cols) {
         var c = options.cols[col];
+        var val = this.val(row,col)
         if (options.cols[col] != 0) {
           if (col == "_id") {
-            var cell$ = $('<th>'+jc.format(this.cell(row,col),options)+'</th>');
+            var cell$ = $('<th>'+jc.format(val,options,col)+'</th>');
           }
           else {
-            var cell$ = $('<td>'+jc.format(this.cell(row,col),options)+'</td>');
+            var cell$ = $('<td>'+jc.format(val,options,col)+'</td>');
           }
+          if (typeof val !== 'number') cell$.css('text-align','left');  // basic alignement
           cell$
-          .css($.isFunction(this._style)?this._style(this,row,col):this._style)
+          .css($.isFunction(this.options.style)?this.options.style(this,row,col):this.options.style)
           .css(this.getStyle(row,col))
           .addClass(c.className)
         }
@@ -465,8 +585,8 @@
   }
 
   Table.prototype.span = function(options) {
-    // backward compatibility
-    return this.node$(options)[0].outerHTML;
+    // deprecated: only for backward compatibility: use node$ instead
+    return jc.html(this.node$(options)[0].outerHTML);
   }
 
   Table.prototype.view = function(options) {
@@ -488,13 +608,13 @@
     $(this.codeElement).addClass('AUTOEDIT').attr('jcObject',this.name);
     
     var h = '<div><var>'+this.name+'</var><table><tr><th>#</th>';
-    for (var col in this._cols) {
+    for (var col in this.options.cols) {
       h += '<th>'+col+'</th>';
     }
     h += '</tr>';
     for (var row=0; row<this.length; row++) {
       h += '<tr><th draggable=true>'+row+'</th>';
-      for (var col in this._cols) {
+      for (var col in this.options.cols) {
         h += '<td>'+jc.editor.html(this.cell(row,col),{jcObject:this.name,'jcRow':row,jcCol:col})+'</td>';
       }
       h += '</tr>';
@@ -519,7 +639,7 @@
     // generate the code that represents the element as edited
     // can be used to replace the existing code 
     var code = 'table('+JSON.stringify(this.name)+')\n';
-    code += '.cols('+JSON.stringify(this._cols)+')\n';
+    code += '.cols('+JSON.stringify(this.options.cols)+')\n';
     for (var i=0; i<this.length; i++) {
       code += '.add('+this[i].toJSON()+')\n';
     }
@@ -680,9 +800,9 @@
     return this;
   }
 
-  jc.HTML.prototype._tag = function(tagNameAnAttributes ,elements) {
-    this.htmlCode += '<'+tagNameAnAttributes+'>';
-    var tagEnd = '</'+tagNameAnAttributes.split(' ')[0]+'>';
+  jc.HTML.prototype._tag = function(tagNameAndAttributes ,elements) {
+    this.htmlCode += '<'+tagNameAndAttributes+'>';
+    var tagEnd = '</'+tagNameAndAttributes.split(' ')[0]+'>';
     if ((elements == undefined) || (!elements.length)) {
       this.tagsEnd.push(tagEnd);
       return this;
