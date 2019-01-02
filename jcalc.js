@@ -139,6 +139,7 @@
       try {
         var code = jcFunc;
         if (jcFunc.search(/return/)== -1) {
+          jcFunc.replace(/^\s*\{(.*)\}\s*$/,'({$1})');
           code = 'return '+jcFunc;
         }
         var f = new Function('rowData','col','with (jc.vars){with(rowData||{}) {'+code+'}}');
@@ -171,8 +172,6 @@
         this.setCell(k,obj[k]);
       }
     }
-    this._style = {};  // this._style[undefined] is the default style for this Row
-                       // this._style[colname]   is the overwritten parameters for cell of colname of this row
   }
 
   Row.prototype.cell = function(col) {
@@ -189,22 +188,6 @@
     }
     this._[col] = value;
     return this;
-  }
-
-  Row.prototype.style = function(style,col) {
-    // if col is undefined, set the default style for the row
-    // style is an object that defines the css attributes and their values like {color:"red",background-color:"yellow"}
-    //       alternatively, a style can be defined as a function(table,rowNumber,colName) that return a style object.
-    //       note that in the case of style defined on a row, this function will be called with f([this],0,colname)
-    //            so table[rowNumber] == this row
-    this._style[col] = style;
-    return this;
-  }
-
-  Row.prototype.getStyle = function(col) {
-    // returns the calculated style object for a given cell of this row (or for the row if col == undefined)
-    var rowStyle = $.isFunction(this._style[undefined])?this._style[undefined]([this],0,col/*fake table so that table[0]=thisrow*/):this._style[undefined];
-    return $.extend({},rowStyle,$.isFunction(this._style[col])?this._style[col]([this],0,col)/*fake table so that table[0]=thisrow*/:this._style[col]);
   }
 
   Row.prototype.toString = function() {
@@ -235,7 +218,7 @@
         options.cols[col]=1;
       });
     }
-    var h = '<table cellpadding="4" cellspacing="0"><thead><tr>';  // TODO modify to style
+    var h = '<table><thead><tr>';  // TODO modify to style
     for (var col in options.cols) {
       h += '<th>'+col+'</th>';
     }
@@ -264,7 +247,9 @@
     this.name = name;
     this.length = 0;
     this._id = {};
-    this.options = {style:{},
+    var leftStyle = function(table,row,col,value,node$){if (typeof value!=='number') node$.css('text-align','left')};
+    leftStyle.toString = function(){return 'left for not numbers'};
+    this.options = {styles:[leftStyle],
                     format:{},
                     cols:{}
                    };  
@@ -283,6 +268,7 @@
     return this;
   }
 
+//TODO rework
   Table.prototype.cols = function(cols) {
     // set the columns that are displayed by default
     // return the table for command chaining
@@ -401,16 +387,39 @@
   }
 
   Table.prototype.tableStyle = function(style) {
-    this._tableStyle = style;
+    this.options.tableStyle = style;
     return this;
   }
 
   Table.prototype.colStyle = function(style,colName){
     // set the style for a column
-    this.options.cols[colName].style = style;
+    // style can be either an object of $.css() parameters
+    //       or a function(data,col,value) where this represents the row object which is compatible with f("jcFunc")
+    //       and which return an object of css parameters
+
+    var fStyle = function(table,row,col,value,node$) {
+      if (col === colName) {
+        node$.css(typeof style === 'function'?style.call(row,row._,col,value):style);
+      }
+    }
+    fStyle.toString = function() {return 'colStyle for '+colName+': '+jc.toJSCode(style)}
+    this.options.styles.push(fStyle);
     return this;
   }
 
+  Table.prototype.rowStyle = function(style,rowNumber){
+    // set the style for a row
+    var expRow = this[rowNumber];
+    var fStyle = function(table,row,col,value,node$) {
+      if (row === expRow) {
+        node$.css(typeof style === 'function'?style.call(row,row._,col,value):style);
+      }
+    }
+    fStyle.toString = function() {return 'rowStyle for '+expRow+': '+jc.toJSCode(style)}
+    this.options.styles.push(fStyle);
+    return this;
+  }
+  
   Table.prototype.style = function(style,rowNumber,colName){
     // .style(style)  will set the default style for the complete table
     // .style(style,rowNumber) will set the default style for a given row
@@ -418,30 +427,39 @@
     // .style(style,rowNumber,colName) will set the style for a given cell
     // style can either be an object {cssAttr=val,...} or a function(table,rowNumber,colName)
 
-    if ((rowNumber == undefined) && (colName == undefined)){
-      this.options.style = style;
+    if ((rowNumber === undefined) && (colName === undefined)){
+      var fStyle = function(table,row,col,value,node$) {
+        node$.css(typeof style === 'function'?style.call(row,row._,col,value):style);
+      }
+      this.options.styles.push(fStyle);
+      fStyle.toString = function() {return 'general style: '+jc.toJSCode(style)}
       return this;
     }
-    if (rowNumber == undefined) {
+    if (rowNumber === undefined) {
       this.colStyle(style,colName);
       return this;
     }
-    this[rowNumber].style(style,colName);
+    if (colName === undefined) {
+      this.rowStyle(style,rowNumber);
+      return this;
+    }
+
+    var expRow = this[rowNumber];
+    var fStyle = function(table,row,col,value,node$) {
+      if ((row === expRow) && (col === colName)) {
+        node$.css(typeof style === 'function'?style.call(row,row._,col,value):style);
+      }
+    }
+    fStyle.toString = function() {return 'cell style for '+expRow+','+colName+': '+jc.toJSCode(style)}
+    this.options.styles.push(fStyle);
     return this;
   }
 
-  Table.prototype.getTableStaticStyle = function() {
-    return ($.isFunction(this.options.style)?{}:this.options.style) || {};
-  }
-
-  Table.prototype.getStyle = function(rowNumber,colName) {
-    // return the calculated style for a given cell
-    var style = this.options.style;
-    if ($.isFunction(style)) style = style(this,rowNumber,colName);
-    var defColStyle = this.options.cols[colName] && this.options.cols[colName].style;
-    if ($.isFunction(defColStyle)) defColStyle = defColStyle(this,rowNumber,colName);
-    style = $.extend(true,{},style,defColStyle,this[rowNumber].getStyle(colName));
-    return style;
+  Table.prototype.applyStyle = function(rowNumber,colName,value,node$) {
+    // calculate the compond style and apply it to node$
+    for (var i=0;i<this.options.styles.length;i++) {
+      this.options.styles[i](this,this[rowNumber],colName,value,node$);
+    }
   }
   
   Table.prototype.colFormat = function(colName,format) {
@@ -548,7 +566,7 @@
       }
     }
     options.rows = options.rows || range(0,this.length-1);
-    var t$ = $('<table/>').css($.isFunction(this._tableStyle)?this._tableStyle(this):this._tableStyle || {});
+    var t$ = $('<table/>').css($.isFunction(this.options.tableStyle)?this.options.tableStyle(this):this.options.tableStyle || {});
     var h$ = $('<thead/>');
     var b$ = $('<tbody/>');
     var r$ = $('<tr/>');
@@ -557,11 +575,11 @@
     }
     h$.append(r$);
     for (var i=0;i<options.rows.length;i++) {
-      var row = options.rows[i];
+      var rowNumber = options.rows[i];
       r$ = $('<tr/>'); 
       for (var col in options.cols) {
         var c = options.cols[col];
-        var val = this.val(row,col)
+        var val = this.val(rowNumber,col)
         if (options.cols[col] != 0) {
           if (col == "_id") {
             var cell$ = $('<th>'+jc.format(val,options,col)+'</th>');
@@ -569,11 +587,9 @@
           else {
             var cell$ = $('<td>'+jc.format(val,options,col)+'</td>');
           }
-          if (typeof val !== 'number') cell$.css('text-align','left');  // basic alignement
-          cell$
-          .css($.isFunction(this.options.style)?this.options.style(this,row,col):this.options.style)
-          .css(this.getStyle(row,col))
-          .addClass(c.className)
+//          if (typeof val !== 'number') cell$.css('text-align','left');  // basic alignement TODO replace by a style
+          this.applyStyle(rowNumber,col,val,cell$);
+          cell$.addClass(c.className); // TODO replace by a style rule
         }
         r$.append(cell$);
       }

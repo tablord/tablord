@@ -402,6 +402,7 @@
   // a bit more secured: since IE<9 executes localy, it was possible do destroy local variable by defining functions or var
   // with this trick, one can still create global variables by just assigning (eg: jc.vars='toto' destroys the global variable jc.vars)
   // to be checked what could be done to improve
+    code.replace(/^\s*\{(.*)\}\s*$/,'({$1})');
 
     jc.errorHandler.code = code;
     code = 'var output = jc.output; with (jc.vars) {\n'+code+'\n};';   //output becomes a closure, so finalize function can use it during finalizations
