@@ -68,7 +68,7 @@
 
   V.prototype.toString = function() {
     // return the summary of the variable
-    return '[object V('+this.name+'):'+this.valueOf()+']';
+    return '[object V('+this.name+'):'+(this.func?this.toJson()+'==>':'')+this.valueOf()+']';
   }
 
   V.prototype.view = function(options) {
