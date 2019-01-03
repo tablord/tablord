@@ -175,7 +175,11 @@
   }
 
   Row.prototype.cell = function(col) {
-    return this._[col].valueOf();
+    return this._[col];
+  }  
+
+  Row.prototype.val = function(col) {
+    return this._[col] && this._[col].valueOf();
   }  
 
   Row.prototype.setCell = function (col,value) {
@@ -246,7 +250,7 @@
     // constructor of a new Table instance
     this.name = name;
     this.length = 0;
-    this._id = {};
+    this.pks = {}; //hash table for quick pk access
     var leftStyle = function(table,row,col,value,node$){if (typeof value!=='number') node$.css('text-align','left')};
     leftStyle.toString = function(){return 'left for not numbers'};
     this.options = {styles:[leftStyle],
@@ -255,7 +259,7 @@
                    };  
   }
   
-  Table.prototype.name = function(name) {
+  Table.prototype.rename = function(name) {
     // if name is undefined return the name
     // otherwise set a new name and return this
 
@@ -267,6 +271,29 @@
     jc.vars[name] = this;
     return this;
   }
+
+  Table.prototype.registerPk = function(row) {
+    if (this.pk !== undefined) {
+      var pkVal = row.cell(this.pk).valueOf();
+      if (this.pks[pkVal]===undefined){
+        this.pks[pkVal] = row;
+      }
+      else {
+        throw new Error('duplicated value in primaryKey: '+pkVal+' found twice at '+this.pks[pk].index+' and '+i);
+      }
+    }
+  }
+
+  Table.prototype.primaryKey = function(pkCol) {
+    // set the primary key colName
+    this.pk = pkCol;
+    this.pks = {};
+    for (var i=0;i<this.length;i++) {
+      this.registerPk(this[i]);
+    }
+    return this;
+  }
+
 
 //TODO rework
   Table.prototype.cols = function(cols) {
@@ -304,9 +331,7 @@
     row.table = this;
     row.index = this.length;
     this[this.length++] = row;
-    if (row._._id) {
-      this._id[row._._id] = row;
-    }
+    this.registerPk(row);
     this.updateCols(row);
     return this;
   }
@@ -362,20 +387,42 @@
 
   Table.prototype.cell = function(row,col) {
     // return the content of the cell: if the cell is a function: return the function
-    return this[row] && this[row]._[col];
+    if (typeof row == 'number'){
+      return this[row] && this[row].cell(col);
+    }
+    row = this.pks[row];
+    return row && row.cell(col);
   }
 
   Table.prototype.val = function(row,col) {
     // return the VALUE of the cell: if a function, this function is calculated first
-    var val = this[row] && this[row]._[col];
-    if (val && val.isV) val = val.valueOf()
-    return val;
+    var c=this.cell(row,col);
+    if (c===undefined) return undefined;
+    return c.valueOf();
   }
 
 
   Table.prototype.setCell = function(row,col,value) {
-    this[row].setCell(col,value);
     if (this.options.cols[col] === undefined) this.options.cols[col] = {};
+    if (typeof row === 'number') {
+      var r = this[row];
+    }
+    else {
+      var r = this.pks[row];
+    }
+    if (r === undefined) {
+      r = {};
+      r[col]=value;
+      if (typeof row === 'string') r[this.pk]=row;
+      this.add(r);
+      return this;
+    }
+    
+    if (col === this.pk) {
+      this.pks[r.val(col)]=undefined;
+      this.registerPk(r);
+    }
+    r.setCell(col,value);
     return this;
   }
 
@@ -509,7 +556,7 @@
     // will give the same original order). a .sort() will affect only the new table.
 
     var t = table();
-    $.extend(true,t.options.cols,this.options.cols);
+    t.options = this.options;     // direct access to all formating
     for (var i=0; i<this.length; i++) {
       if (jc.objMatchCriteria(this[i]._,criteria)){
         t[t.length++] = this[i];
@@ -581,7 +628,7 @@
         var c = options.cols[col];
         var val = this.val(rowNumber,col)
         if (options.cols[col] != 0) {
-          if (col == "_id") {
+          if (col === this.pk) {
             var cell$ = $('<th>'+jc.format(val,options,col)+'</th>');
           }
           else {
