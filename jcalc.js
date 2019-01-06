@@ -247,8 +247,9 @@
 
 
 // Col   //////////////////////////////////////////////////////////////
-  jc.Col = function(name) {
+  jc.Col = function(name,table) {
     this.name = name;
+    this.table = table;
   }
 
   jc.Col.prototype.toString = function() {
@@ -316,7 +317,7 @@
   }
 
 
-  jc.Table.prototype.col = function(name, defValue, style) {
+  jc.Table.prototype.defCol = function(name, defValue, style) {
     // set the column attribute
     // 
     // defValue is the value that is used when a new Row is added and that column is not defined
@@ -462,6 +463,39 @@
     return c.valueOf();
   }
 
+  jc.Table.prototype.reduce = function(colName,reduceF,criteria) {
+    // apply a reduce function on a column
+    // criteria is an optional f(jcFunc) that process only row that return true
+    var first = true;
+    var r;
+    for (var i=0;i<this.length;i++) {
+      if ((criteria===undefined)||(criteria.call(this[i],this[i]._,colName,value))) {
+        if (first) {
+          r = this.val(i,colName);
+          first = false;
+        }
+        else {
+          r = reduceF(r,this.val(i,colName));
+        }
+      }
+    }
+    return r;
+  }
+
+  jc.Table.prototype.sum = function(colName,criteria) {
+    // return the sum of the column
+    return this.reduce(colName,function(a,b){return a+b})
+  }
+
+  jc.Table.prototype.min = function(colName,criteria) {
+    // return the min of the colum
+    return this.reduce(colName,Math.min,criteria);
+  }
+
+  jc.Table.prototype.max = function(colName,criteria) {
+    // return the min of the colum
+    return this.reduce(colName,Math.max,criteria);
+  }
 
   jc.Table.prototype.setCell = function(row,col,value) {
     if (this.cols[col] === undefined) {
@@ -494,7 +528,8 @@
     // return the data of the first row matching the criteria
 
     var row = this.findFirst(criteria);
-    return row && row._;
+    if (row) return row._;
+    return {}; // if not found, return empty data, so it can still be dereferenced
   }
 
   jc.Table.prototype.tableStyle = function(style) {
@@ -759,7 +794,8 @@
                     colOrder:parent.options.colOrder,
                     visibleCols:jc.heir(parent.options.visibleCols)
                    };  
-    this.cols = parent.cols;
+    this.cols = {};
+    for (var col in parent.cols) this.cols[col] = new jc.Col(col,this);
   }
 
   jc.View.prototype.set = jc.set;
@@ -788,6 +824,10 @@
   jc.View.prototype.compoundStyle = jc.Table.prototype.compoundStyle; 
   jc.View.prototype.sort = jc.Table.prototype.sort;
   jc.View.prototype.find = jc.Table.prototype.find;
+  jc.View.prototype.reduce = jc.Table.prototype.reduce;
+  jc.View.prototype.sum = jc.Table.prototype.sum;
+  jc.View.prototype.max = jc.Table.prototype.max;
+  jc.View.prototype.min = jc.Table.prototype.min;
 
   jc.View.prototype.toString = function() {
     // return a string summarizing the table

@@ -22,31 +22,34 @@
 </HEAD>
 <BODY sizset="0" sizcache="1"  designMode="on" showTrace="true">
 <DIV id=menu class=TOOLBAR>
-<DIV><INPUT onclick=jc.showCode(event) type=checkbox>codes</INPUT><INPUT onclick=jc.showCut(event) type=checkbox>cuts</INPUT><INPUT onclick=jc.showTest(event) type=checkbox>tests</INPUT><INPUT onclick=jc.showTrace(event) CHECKED type=checkbox value="" >traces</INPUT><INPUT onclick=jc.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
-<DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60" >&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
-<DIV style="POSITION: ; ZOOM: 1; FILTER:   ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px" >cut</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].convert(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION></SELECT><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px" >&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px" >&#8594;test</BUTTON>
+<DIV><INPUT onclick=jc.showCode(event) type=checkbox>codes</INPUT><INPUT onclick=jc.showCut(event) type=checkbox>cuts</INPUT><INPUT onclick=jc.showTest(event) type=checkbox>tests</INPUT><INPUT onclick=jc.showTrace(event) CHECKED type=checkbox>traces</INPUT><INPUT onclick=jc.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
+<DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
+<DIV style="POSITION: ; ZOOM: 1; FILTER:   ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px" >cut</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].convert(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT ><OPTION value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION selected value=paste>paste</OPTION></SELECT><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px" >&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
 <DIV id=objectToolBar></DIV></DIV></DIV>
 <DIV id=jcContent class=CONTAINER sizset="0" sizcache="1" container="sectionContent"><PRE id=code0026 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.tableOfContent</PRE>
 <DIV id=out0026 class="OUTPUT SUCCESS">
 <DIV class=INTERACTIVE>
 <DIV class=TOC0>1 <A href="#sect0004">Table</A></DIV>
 <DIV class=TOC1>1.1 <A href="#sect0103">Building the Table</A></DIV>
-<DIV class=TOC2>1.1.1 <A href="#sect0019">.add</A></DIV>
-<DIV class=TOC2>1.1.2 <A href="#sect0026">Table is array like</A></DIV>
-<DIV class=TOC2>1.1.3 <A href="#sect0022">.update</A></DIV>
-<DIV class=TOC2>1.1.4 <A href="#sect0021">.setCell</A></DIV>
-<DIV class=TOC2>1.1.5 <A href="#sect0035">Calculated cells</A></DIV>
-<DIV class=TOC2>1.1.6 <A href="#sect0031">.cell</A></DIV>
-<DIV class=TOC2>1.1.7 <A href="#sect0043">.val(row,col)</A></DIV>
-<DIV class=TOC2>1.1.8 <A href="#sect0083">.primaryKey(col)</A></DIV>
-<DIV class=TOC2>1.1.9 <A href="#sect0092">.update()</A></DIV>
+<DIV class=TOC2>1.1.1 <A href="#sect0116">.defCol to define columns</A></DIV>
+<DIV class=TOC2>1.1.2 <A href="#sect0019">.add</A></DIV>
+<DIV class=TOC2>1.1.3 <A href="#sect0026">Table is array like</A></DIV>
+<DIV class=TOC2>1.1.4 <A href="#sect0022">.update</A></DIV>
+<DIV class=TOC2>1.1.5 <A href="#sect0021">.setCell</A></DIV>
+<DIV class=TOC2>1.1.6 <A href="#sect0035">Calculated cells</A></DIV>
+<DIV class=TOC2>1.1.7 <A href="#sect0031">.cell</A></DIV>
+<DIV class=TOC2>1.1.8 <A href="#sect0043">.val(row,col)</A></DIV>
+<DIV class=TOC2>1.1.9 <A href="#sect0083">.primaryKey(col)</A></DIV>
+<DIV class=TOC2>1.1.10 <A href="#sect0092">.update()</A></DIV>
 <DIV class=TOC1>1.2 <A href="#sect0104">Customizing the display</A></DIV>
 <DIV class=TOC2>1.2.1 <A href="#sect0098">.colOrder to specify the order of the columns at display</A></DIV>
 <DIV class=TOC2>1.2.2 <A href="#sect0107">.hide() .show() to hide / show specific columns</A></DIV>
 <DIV class=TOC2>1.2.3 <A href="#sect0027">.style() for formatting &amp; styling</A></DIV>
 <DIV class=TOC1>1.3 <A href="#sect0105">Querying the Table</A></DIV>
 <DIV class=TOC2>1.3.1 <A href="#sect0074">.find() to create subset</A></DIV>
-<DIV class=TOC2>1.3.2 <A href="#sect0092">.lookup() to get the data of a row</A></DIV></DIV></DIV>
+<DIV class=TOC2>1.3.2 <A href="#sect0092">.lookup() to get the data of a row</A></DIV>
+<DIV class=TOC2>1.3.3 <A href="#sect0119">.reduce, .sum</A></DIV>
+<DIV class=TOC1>1.4 <A href="#sect0127">combining tables</A></DIV></DIV></DIV>
 <DIV id=sect0004 class="ELEMENT SECTION" sizset="1" sizcache="1">
 <H1 class="SECTIONTITLE EDITABLE" contentEditable=false>1 Table</H1>
 <DIV sizset="1" sizcache="1" container="sectionContent">
@@ -61,8 +64,12 @@
 <DIV id=sect0103 class="ELEMENT SECTION" sizset="1" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1 Building the Table</H2>
 <DIV sizset="1" sizcache="1" container="sectionContent">
+<DIV id=sect0116 class="ELEMENT SECTION">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.1 .defCol to define columns</H3>
+<DIV container="sectionContent">
+<DIV id=rich0117 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>.defCol(name,defaultValue,style) can define a column. this is especially usefull to do so at the beggining if you want to have a default value.</DIV></DIV></DIV>
 <DIV id=sect0019 class="ELEMENT SECTION" sizset="1" sizcache="1">
-<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.1 .add</H3>
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.2 .add</H3>
 <DIV sizset="1" sizcache="1" container="sectionContent">
 <DIV id=rich0020 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>In order to add a Row, add will create a new Row and add the data passed in parameters into it</DIV><PRE id=code0006 class="ELEMENT CODE EDITABLE" contentEditable=false><P>table('priceList')</P><P>.add({category:'fruit',article:'apple',price$EUR:3.60})</P><P>.add({category:'confectionery',article:'black chocolate',price$EUR:0.90})</P><P>.add({category:'confectionery',article:'white chocolate',price$EUR:0.80})</P><P>.add({category:'fruit',article:'orange',price$EUR:4.95})</P><P>&nbsp;</P></PRE>
 <DIV id=out0006 class="OUTPUT SUCCESS">
@@ -113,9 +120,9 @@
 <TD style="TEXT-ALIGN: left">fruit</TD>
 <TD style="TEXT-ALIGN: left">orange</TD>
 <TD>4.95</TD></TR></TBODY></TABLE></DIV></DIV></DIV>
-<DIV id=sect0026 class="ELEMENT SECTION" sizset="3" sizcache="1">
-<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.2 Table is array like</H3>
-<DIV sizset="3" sizcache="1" container="sectionContent">
+<DIV id=sect0026 class="ELEMENT SECTION" sizset="2" sizcache="1">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.3 Table is array like</H3>
+<DIV sizset="2" sizcache="1" container="sectionContent">
 <DIV id=rich0012 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>
 <P>a Table is a collection of Row and is a Array-Like object with access [ ] and.length property</P></DIV><PRE id=code0013 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.length</PRE>
 <DIV id=out0013 class="OUTPUT SUCCESS">4</DIV>
@@ -144,9 +151,9 @@
 <TD>fruit</TD>
 <TD>orange</TD>
 <TD>4.95</TD></TR></TBODY></TABLE></DIV></DIV></DIV>
-<DIV id=sect0022 class="ELEMENT SECTION" sizset="5" sizcache="1">
-<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.3 .update</H3>
-<DIV sizset="5" sizcache="1" container="sectionContent">
+<DIV id=sect0022 class="ELEMENT SECTION" sizset="4" sizcache="1">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.4 .update</H3>
+<DIV sizset="4" sizcache="1" container="sectionContent">
 <DIV id=rich0023 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>update can update one or many columns. Here is only shown a very basic example where we set a full column to the same value, but we will see later on that with the use of function, it can become very powerfull to create calculated columns or import values from another table</DIV><PRE id=code0024 class="ELEMENT CODE EDITABLE" contentEditable=false><P>priceList.update({'discount':0})</P></PRE>
 <DIV id=out0024 class="OUTPUT SUCCESS">
 <TABLE>
@@ -206,10 +213,10 @@
 <TD style="TEXT-ALIGN: left">orange</TD>
 <TD>4.95</TD>
 <TD>0</TD></TR></TBODY></TABLE></DIV></DIV></DIV>
-<DIV id=sect0021 class="ELEMENT SECTION" sizset="6" sizcache="1">
-<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.4 .setCell</H3>
-<DIV sizset="6" sizcache="1" container="sectionContent">
-<DIV id=rich0015 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false sizset="6" sizcache="1">values can be added at any time with .setCell&nbsp;<SPAN id=code0016 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.help(jc.Table.prototype.setCell)</SPAN><SPAN id=out0016 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function(row,col,value)</B><BR></SPAN></SPAN></DIV><PRE id=code0017 class="ELEMENT CODE EDITABLE" contentEditable=false><P>priceList.setCell(0,'discount',0.3333)</P></PRE>
+<DIV id=sect0021 class="ELEMENT SECTION" sizset="5" sizcache="1">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.5 .setCell</H3>
+<DIV sizset="5" sizcache="1" container="sectionContent">
+<DIV id=rich0015 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false sizset="5" sizcache="1">values can be added at any time with .setCell&nbsp;<SPAN id=code0016 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.help(jc.Table.prototype.setCell)</SPAN><SPAN id=out0016 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function(row,col,value)</B><BR></SPAN></SPAN></DIV><PRE id=code0017 class="ELEMENT CODE EDITABLE" contentEditable=false><P>priceList.setCell(0,'discount',0.3333)</P></PRE>
 <DIV id=out0017 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
@@ -268,9 +275,9 @@
 <TD style="TEXT-ALIGN: left">orange</TD>
 <TD>4.95</TD>
 <TD>0</TD></TR></TBODY></TABLE></DIV></DIV></DIV>
-<DIV id=sect0035 class="ELEMENT SECTION" sizset="8" sizcache="1">
-<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.5 Calculated cells</H3>
-<DIV sizset="8" sizcache="1" container="sectionContent">
+<DIV id=sect0035 class="ELEMENT SECTION" sizset="7" sizcache="1">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.6 Calculated cells</H3>
+<DIV sizset="7" sizcache="1" container="sectionContent">
 <DIV id=rich0036 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>
 <P>most of the time, some cells are calculated from other cells</P>
 <P>for this purpose, one can use the f() function that generates a function out of the expression you give. It also create some suggar code so that all data from the row is availlable as well as the column name of the cell </P></DIV><PRE id=code0037 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.setCell(0,'todayPrice$EUR',f("<FONT&NBSP;STYLE="BACKGROUND-COLOR:&NBSP;#FF4D4D">rowData</FONT>.price$EUR*(1-discount)"))</FONT&NBSP;STYLE="BACKGROUND-COLOR:&NBSP;#FF4D4D"></PRE>
@@ -416,9 +423,9 @@
 <TD>4.95</TD>
 <TD>0</TD>
 <TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR></TBODY></TABLE></DIV></DIV></DIV>
-<DIV id=sect0031 class="ELEMENT SECTION" sizset="10" sizcache="1">
-<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.6 .cell</H3>
-<DIV sizset="10" sizcache="1" container="sectionContent">
+<DIV id=sect0031 class="ELEMENT SECTION" sizset="9" sizcache="1">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.7 .cell</H3>
+<DIV sizset="9" sizcache="1" container="sectionContent">
 <DIV id=rich0032 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>
 <P>the data of a cell can be retrieved with the .cell(rowNumber,colName) method. please note that the real&nbsp;<STRONG>content</STRONG> of the cell&nbsp;is returned, not its representation (cf formatting)</P>
 <P>if the cell is a function, aV object is returned, wrapping the function, not the value</P></DIV><PRE id=code0033 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.cell(0,'todayPrice$EUR').toString()</PRE>
@@ -429,15 +436,15 @@
 <DIV id=rich0047 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>we can verify that there is one single function (but 2 V wrapper objects)</DIV><PRE id=code0048 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.cell(0,'todayPrice$EUR').func === priceList.cell(1,'todayPrice$EUR').func</PRE>
 <DIV id=out0048 class="OUTPUT SUCCESS">true</DIV>
 <DIV id=test0048 class="TEST SUCCESS">true</DIV></DIV></DIV>
-<DIV id=sect0043 class="ELEMENT SECTION" sizset="13" sizcache="1">
-<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.7 .val(row,col)</H3>
-<DIV sizset="13" sizcache="1" container="sectionContent">
+<DIV id=sect0043 class="ELEMENT SECTION" sizset="12" sizcache="1">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.8 .val(row,col)</H3>
+<DIV sizset="12" sizcache="1" container="sectionContent">
 <DIV id=rich0044 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>this method returns the <STRONG>value</STRONG> of the cell. if the cell is a function, the value is calculated first.</DIV><PRE id=code0046 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.val(0,'todayPrice$EUR')</PRE>
 <DIV id=out0046 class="OUTPUT SUCCESS">2.4001200000000002</DIV>
 <DIV id=test0046 class="TEST SUCCESS">2.4001200000000002</DIV></DIV></DIV>
-<DIV id=sect0083 class="ELEMENT SECTION" sizset="14" sizcache="1">
-<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.8 .primaryKey(col)</H3>
-<DIV sizset="14" sizcache="1" container="sectionContent">
+<DIV id=sect0083 class="ELEMENT SECTION" sizset="13" sizcache="1">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.9 .primaryKey(col)</H3>
+<DIV sizset="13" sizcache="1" container="sectionContent">
 <DIV id=rich0084 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>optionally a column can be set as primary key. this internaly creates an index that allow to use <STRONG>.cell</STRONG> and <STRONG>.val</STRONG> with absolute row names</DIV><PRE id=code0085 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.primaryKey('article')</PRE>
 <DIV id=out0085 class="OUTPUT SUCCESS">
 <TABLE>
@@ -590,9 +597,9 @@
 <TD>5.5</TD>
 <TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR></TBODY></TABLE></DIV></DIV></DIV>
-<DIV id=sect0092 class="ELEMENT SECTION" sizset="17" sizcache="1">
-<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.9 .update()</H3>
-<DIV sizset="17" sizcache="1" container="sectionContent">
+<DIV id=sect0092 class="ELEMENT SECTION" sizset="16" sizcache="1">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.10 .update()</H3>
+<DIV sizset="16" sizcache="1" container="sectionContent">
 <DIV id=rich0094 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>you can update one or more columns at once with update with a new value or a function</DIV><PRE id=code0067 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.update({todayPrice$EUR:fTodayPrice})</PRE>
 <DIV id=out0067 class="OUTPUT SUCCESS">
 <TABLE>
@@ -674,12 +681,12 @@
 <TD>5.5</TD>
 <TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD>NaN</TD></TR></TBODY></TABLE></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0104 class="ELEMENT SECTION" sizset="18" sizcache="1">
+<DIV id=sect0104 class="ELEMENT SECTION" sizset="17" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.2 Customizing the display</H2>
-<DIV sizset="18" sizcache="1" container="sectionContent">
-<DIV id=sect0098 class="ELEMENT SECTION" sizset="18" sizcache="1">
+<DIV sizset="17" sizcache="1" container="sectionContent">
+<DIV id=sect0098 class="ELEMENT SECTION" sizset="17" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.2.1 .colOrder to specify the order of the columns at display</H3>
-<DIV sizset="18" sizcache="1" container="sectionContent">
+<DIV sizset="17" sizcache="1" container="sectionContent">
 <DIV id=rich0099 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>if nothing is specified, the order of the columns is simply set as the order of first setting of this column. You may want to change this manually with .colOrder</DIV><PRE id=code0100 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.colOrder(['article','category'])&nbsp; // note that if you specify only part of this order, the rest will remain in the previous order</PRE>
 <DIV id=out0100 class="OUTPUT SUCCESS">
 <TABLE>
@@ -761,9 +768,9 @@
 <TD>5.5</TD>
 <TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD>NaN</TD></TR></TBODY></TABLE></DIV></DIV></DIV>
-<DIV id=sect0107 class="ELEMENT SECTION" sizset="19" sizcache="1">
+<DIV id=sect0107 class="ELEMENT SECTION" sizset="18" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.2.2 .hide() .show() to hide / show specific columns</H3>
-<DIV sizset="19" sizcache="1" container="sectionContent"><PRE id=code0109 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.hide(['category'])</PRE>
+<DIV sizset="18" sizcache="1" container="sectionContent"><PRE id=code0109 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.hide(['category'])</PRE>
 <DIV id=out0109 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
@@ -833,9 +840,9 @@
 <TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD>NaN</TD></TR></TBODY></TABLE></DIV>
 <DIV id=rich0108 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>the show() method takes an optional second parameter to force the show state. by setting to null, it removes the forcing. this can be usefull when applied to a View to return to the table state.</DIV></DIV></DIV>
-<DIV id=sect0027 class="ELEMENT SECTION" sizset="20" sizcache="1">
+<DIV id=sect0027 class="ELEMENT SECTION" sizset="19" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.2.3 .style() for formatting &amp; styling</H3>
-<DIV sizset="20" sizcache="1" container="sectionContent">
+<DIV sizset="19" sizcache="1" container="sectionContent">
 <DIV id=rich0028 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>
 <P>A Table can both format and&nbsp;style cells</P>
 <P>&nbsp;</P>
@@ -1178,12 +1185,12 @@
 <TD style="BACKGROUND-COLOR: white">0.80</TD>
 <TD style="BACKGROUND-COLOR: orange">20%</TD>
 <TD style="BACKGROUND-COLOR: green">0.64</TD></TR></TBODY></TABLE></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0105 class="ELEMENT SECTION" sizset="25" sizcache="1">
+<DIV id=sect0105 class="ELEMENT SECTION" sizset="24" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.3 Querying the Table</H2>
-<DIV sizset="25" sizcache="1" container="sectionContent">
-<DIV id=sect0074 class="ELEMENT SECTION" sizset="25" sizcache="1">
+<DIV sizset="24" sizcache="1" container="sectionContent">
+<DIV id=sect0074 class="ELEMENT SECTION" sizset="24" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.3.1 .find() to create subset</H3>
-<DIV sizset="25" sizcache="1" container="sectionContent">
+<DIV sizset="24" sizcache="1" container="sectionContent">
 <DIV id=rich0075 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>
 <P>Sometime you want to display only a portion of a table corresponding to some criteria. In order to do so,<STRONG> find creates a new View of this table</STRONG> object but using the same options and Rows object than the original table. A View is <STRONG>readOnly</STRONG> so methods like .add, setCell etc don't exists.</P>
 <P>The styling of the view <STRONG>inherits</STRONG> from the Table, but you are free to change styling of a view without impact on the original table</P></DIV><PRE id=code0072 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.find({category:'fruit'}).rename('fruits')</PRE>
@@ -1358,7 +1365,48 @@
 <TH style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">white&nbsp;chocolate</TH>
 <TD style="BACKGROUND-COLOR: white">0.80</TD>
 <TD style="BACKGROUND-COLOR: orange">20%</TD>
-<TD style="BACKGROUND-COLOR: green">0.64</TD></TR></TBODY></TABLE></DIV></DIV></DIV>
+<TD style="BACKGROUND-COLOR: green">0.64</TD></TR></TBODY></TABLE></DIV><PRE id=code0118 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.inspect(priceList.findFirst({discount:0.2}))</PRE>
+<DIV id=out0118 class="OUTPUT SUCCESS">
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[object Row] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>_</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;Object]</TD></TR>
+<TR>
+<TH vAlign=top>table</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;Table(priceList)&nbsp;of&nbsp;5&nbsp;rows]</TD></TR>
+<TR>
+<TH vAlign=top>index</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR>
+<TR>
+<TH vAlign=top>cell</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(col)</B><BR></SPAN></TD></TR>
+<TR>
+<TH vAlign=top>val</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(col)</B><BR></SPAN></TD></TR>
+<TR>
+<TH vAlign=top>setCell</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function (col,value)</B><BR></SPAN></TD></TR>
+<TR>
+<TH vAlign=top>toString</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR></SPAN></TD></TR>
+<TR>
+<TH vAlign=top>eachCol</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(func)</B><BR>&nbsp;func&nbsp;must&nbsp;be&nbsp;function(colname,colObject)</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>toJSON</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR></SPAN></TD></TR>
+<TR>
+<TH vAlign=top>span</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function (options)</B><BR></SPAN></TD></TR>
+<TR>
+<TH vAlign=top>list</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR></SPAN></TD></TR>
+<TR>
+<TH vAlign=top>isRow</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>true</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV>
 <DIV id=sect0092 class="ELEMENT SECTION" sizset="28" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.3.2 .lookup() to get the data of a row</H3>
 <DIV sizset="28" sizcache="1" container="sectionContent">
@@ -1396,7 +1444,18 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>5.5</TD></TR>
 <TR>
 <TH vAlign=top>todayPrice$EUR</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;V(undefined):f("rowData.price$EUR*(1-rowData.discount)")==&gt;NaN]</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV></DIV></DIV><PRE id=code0008 class="ELEMENT CODE EDITABLE" contentEditable=false><P>var&nbsp;fCategory&nbsp;=&nbsp;f("priceList.lookup({article:article}).category");</P><P>table('myOrder')</P><P>.add({article:'apple',quantity:3,category:fCategory})</P><P>.update({price$EUR:f("priceList.lookup({article:article}).price$EUR"),total$EUR:f("quantity*price$EUR")})</P></PRE>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;V(undefined):f("rowData.price$EUR*(1-rowData.discount)")==&gt;NaN]</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV>
+<DIV id=sect0119 class="ELEMENT SECTION" sizset="29" sizcache="1">
+<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.3.3 .reduce, .sum</H3>
+<DIV sizset="29" sizcache="1" container="sectionContent">
+<DIV id=rich0120 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false></DIV><PRE id=code0129 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.sum('price$EUR')</PRE>
+<DIV id=out0129 class="OUTPUT SUCCESS">15.75</DIV><PRE id=code0121 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.min('price$EUR')</PRE>
+<DIV id=out0121 class="OUTPUT SUCCESS">0.8</DIV><PRE id=code0123 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.max('discount')</PRE>
+<DIV id=out0123 class="OUTPUT SUCCESS">NaN</DIV><PRE id=code0125 class="ELEMENT CODE EDITABLE" contentEditable=false>fruits.min('price$EUR')</PRE>
+<DIV id=out0125 class="OUTPUT SUCCESS">3.6</DIV></DIV></DIV></DIV></DIV>
+<DIV id=sect0127 class="ELEMENT SECTION">
+<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.4 combining tables</H2>
+<DIV container="sectionContent"><PRE id=code0008 class="ELEMENT CODE EDITABLE" contentEditable=false><P>table('myOrder')</P><P>.defCol('category',f("priceList.lookup({article:article}).category"))</P><P>.defCol('price$EUR',f("priceList.lookup({article:article}).price$EUR"),{format:jc.fixed(2)})</P><P>.defCol('total$EUR',f("quantity*price$EUR"),{format:jc.fixed(2)})</P><P>.add({article:'apple',quantity:3})</P><P>.add({article:'white&nbsp;chocolate',quantity:4})</P><P>.add({article:'white&nbsp;chocolate',quantity:4})</P><P>.add({article:'TOTAL',quantity:myOrder.sum('quantity'),category:' ',price$EUR:' ',total$EUR:myOrder.sum('total$EUR')})</P><P>&nbsp;</P></PRE>
 <DIV id=out0008 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
@@ -1411,8 +1470,26 @@
 <TD style="TEXT-ALIGN: left">apple</TD>
 <TD>3</TD>
 <TD style="TEXT-ALIGN: left">fruit</TD>
-<TD>3.6</TD>
-<TD>10.8</TD></TR></TBODY></TABLE></DIV><PRE id=code0113 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.updateResultsTestStatus();</P><P>jc.inspect(jc.results,2);</P><P>if ('runonce' in jc.url.arguments) window.close();</P></PRE>
+<TD style=>3.60</TD>
+<TD style=>10.80</TD></TR>
+<TR>
+<TD style="TEXT-ALIGN: left">white&nbsp;chocolate</TD>
+<TD>4</TD>
+<TD style="TEXT-ALIGN: left">confectionery</TD>
+<TD style=>0.80</TD>
+<TD style=>3.20</TD></TR>
+<TR>
+<TD style="TEXT-ALIGN: left">white&nbsp;chocolate</TD>
+<TD>4</TD>
+<TD style="TEXT-ALIGN: left">confectionery</TD>
+<TD style=>0.80</TD>
+<TD style=>3.20</TD></TR>
+<TR>
+<TD style="TEXT-ALIGN: left">TOTAL</TD>
+<TD>11</TD>
+<TD style="TEXT-ALIGN: left">&nbsp;</TD>
+<TD style="TEXT-ALIGN: left">&nbsp;</TD>
+<TD style=>17.20</TD></TR></TBODY></TABLE></DIV></DIV></DIV><PRE id=code0113 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.updateResultsTestStatus();</P><P>jc.inspect(jc.results,2);</P><P>if ('runonce' in jc.url.arguments) window.close();</P></PRE>
 <DIV id=out0113 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
@@ -1433,4 +1510,4 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR>
 <TR>
 <TH vAlign=top>dateTime</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>Sun&nbsp;Jan&nbsp;6&nbsp;15:53:58&nbsp;UTC+0100&nbsp;2019</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV></DIV></BODY></HTML>
+<TD style="TEXT-ALIGN: left" vAlign=top>Sun&nbsp;Jan&nbsp;6&nbsp;20:28:40&nbsp;UTC+0100&nbsp;2019</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV></DIV></BODY></HTML>
