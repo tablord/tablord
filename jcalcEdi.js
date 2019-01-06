@@ -56,7 +56,8 @@
                 domElement:function(element){return 'DOM Element<SPAN class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(jc.purgeJQueryAttr(element.outerHTML)))+'</SPAN>'},
                 obj:function(obj){return jc.inspect(obj).span()},
                 date:function(date){return date.yyyymmdd()},
-                number:function(n){return n.toString()}
+                number:function(n){return n.toString()},
+                string:function(s){return s}
               }
             },
 
@@ -92,20 +93,39 @@
   jc.helps = {'jc.credits':jc.credits};
 
   // classical formating functions ////////////////////////////////////////////
-/*
-  jc.fixed = function(decimals) {
-    // returns a fomating function(obj) that formats the number with fixed decimals
+  
+  jc.Format = function() {}
+    // this class is compatible with the format property of options object used in jc.format(value,options)
+    // but it has methods that helps to build this object
+
+  jc.Format.prototype.fixed = function(decimals) {
+    // returns a formating object {number:function(obj)} that formats the number with fixed decimals
+    var o = this.constructor === jc.Format?this:new jc.Format();
     var f = function (n) {return n.toFixed(decimals)};
     f.toString = function() {return 'display precision of '+decimals+' decimals'};
-    return f;
+    o.number = f;
+    return o;
   }
+
+  jc.Format.prototype.undefinedBlank = function() {
+    // returns a format object {undef:f()}
+    var o = this.constructor === jc.Format?this:new jc.Format();
+    var f = function () {return ''};
+    f.toString = function() {return 'undefined is blank'};
+    o.undef = f;
+    return o;
+  }
+
   jc.percent = function(decimals) {
     // returns a fomating function(obj) that formats the number with fixed decimals
+    var o = this.constructor === jc.Format?this:new jc.Format();
     var f = function (n) {return Number(100*n).toFixed(decimals)+'%'};
     f.toString = function() {return 'display number as percent with a precision of '+decimals+' decimals'};
-    return f;
+    o.number = f;
+    return o;
   }
-*/
+
+  $.extend(jc,jc.Format.prototype); // make those methods directly availlable to jc
     
   jc.getScrollOffsets = function(w) {
     w = w||window;
@@ -861,7 +881,24 @@
         return "'"+obj.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,"\\n")+"'";
       }
     }
-    else if ($.isPlainObject(obj)) {
+    else if (obj === undefined) {
+      return 'undefined';
+    }
+    else if (obj === null) {
+      return 'null';
+    }
+    else if (typeof obj === 'function') {
+      return obj.toString();
+    }
+    else if (obj.toJSON) {
+      return obj.toJSON();
+    }
+    else if ($.isArray(obj)) {
+      var sa=[];
+      $.each(obj, function(i,value) {sa.push(jc.toJSCode(value,stringQuote))});
+      return '['+sa.join(',')+']';
+    }
+    else {
       var sa=[];
       $.each(obj, function(name,value) {
         if (!jc.isJSid(name)) name = jc.toJSCode(name,stringQuote);
@@ -869,18 +906,6 @@
       });
       return '{'+sa.join(',')+'}';
     }
-    else if ($.isArray(obj)) {
-      var sa=[];
-      $.each(obj, function(i,value) {sa.push(jc.toJSCode(value,stringQuote))});
-      return '['+sa.join(',')+']';
-    }
-    else if (obj === undefined) {
-      return 'undefined';
-    }
-    else if (typeof obj === 'function') {
-      return obj.toString();
-    }
-    return obj.toJSON();
   }
 
   jc.htmlAttribute = function(attr,value) {
@@ -1002,6 +1027,7 @@
       nbPassed: $('.TEST.SUCCESS').length,
       nbFailed: $('.TEST.ERROR').length
     }
+a('before stringify',result)
     jc.fso.writeFile(jc.arguments.testResultFileName, JSON.stringify(result), 8);
   }
 
@@ -1747,6 +1773,7 @@
   jc.writeResults = function() {
     // write the jc.results as JSON in a file of the same name .jres
     var resFileName = ''+jc.url.drive+jc.url.path+jc.url.fileName+'.jres';
+a('inside writeResults',jc.results)
     jc.fso.writeFile(resFileName,JSON.stringify(jc.results));
   }
 
@@ -1887,16 +1914,14 @@
   // formating / display / execution ////////////////////////////////////////////////////
 
 
-  jc.format = function(obj,options,col) {
+  jc.format = function(obj,options) {
     // format obj using by priority
-    // 1) options[col].format
-    // 2) options.format
-    // 3 the jc.defaults.format
+    // 1) options.format
+    // 2) the jc.defaults.format
     // and according to the type
 
     if (options) {
-      var colFormatOptions = options.cols && options.cols[col] && options.cols[col].format;
-      var format = $.extend(true,{},jc.defaults.format,options.format,colFormatOptions);
+      var format = $.extend(true,{},jc.defaults.format,options.format);
     }
     else {
       var format = jc.defaults.format;

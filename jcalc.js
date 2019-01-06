@@ -251,10 +251,9 @@
     this.name = name;
     this.length = 0;
     this.pks = {}; //hash table for quick pk access
-    var leftStyle = function(table,row,col,value,node$){if (typeof value!=='number') node$.css('text-align','left')};
+    var leftStyle = function(table,row,col,value,style){if (typeof value!=='number') style.textAlign='left'};
     leftStyle.toString = function(){return 'left for not numbers'};
     this.options = {styles:[leftStyle],
-                    format:{},
                     cols:{}
                    };  
   }
@@ -444,9 +443,9 @@
     //       or a function(data,col,value) where this represents the row object which is compatible with f("jcFunc")
     //       and which return an object of css parameters
 
-    var fStyle = function(table,row,col,value,node$) {
+    var fStyle = function(table,row,col,value,compoundStyle) {
       if (col === colName) {
-        node$.css(typeof style === 'function'?style.call(row,row._,col,value):style);
+        $.extend(true,compoundStyle,typeof style === 'function'?style.call(row,row._,col,value):style);
       }
     }
     fStyle.toString = function() {return 'colStyle for '+colName+': '+jc.toJSCode(style)}
@@ -457,9 +456,9 @@
   Table.prototype.rowStyle = function(style,rowNumber){
     // set the style for a row
     var expRow = this[rowNumber];
-    var fStyle = function(table,row,col,value,node$) {
+    var fStyle = function(table,row,col,value,compoundStyle) {
       if (row === expRow) {
-        node$.css(typeof style === 'function'?style.call(row,row._,col,value):style);
+        $.extend(true,compoundStyle,typeof style === 'function'?style.call(row,row._,col,value):style);
       }
     }
     fStyle.toString = function() {return 'rowStyle for '+expRow+': '+jc.toJSCode(style)}
@@ -475,8 +474,8 @@
     // style can either be an object {cssAttr=val,...} or a function(table,rowNumber,colName)
 
     if ((rowNumber === undefined) && (colName === undefined)){
-      var fStyle = function(table,row,col,value,node$) {
-        node$.css(typeof style === 'function'?style.call(row,row._,col,value):style);
+      var fStyle = function(table,row,col,value,compoundStyle) {
+        $.extend(true,compoundStyle,typeof style === 'function'?style.call(row,row._,col,value):style);
       }
       this.options.styles.push(fStyle);
       fStyle.toString = function() {return 'general style: '+jc.toJSCode(style)}
@@ -492,9 +491,9 @@
     }
 
     var expRow = this[rowNumber];
-    var fStyle = function(table,row,col,value,node$) {
+    var fStyle = function(table,row,col,value,compoundStyle) {
       if ((row === expRow) && (col === colName)) {
-        node$.css(typeof style === 'function'?style.call(row,row._,col,value):style);
+        $.extend(true,compoundStyle,typeof style === 'function'?style.call(row,row._,col,value):style);
       }
     }
     fStyle.toString = function() {return 'cell style for '+expRow+','+colName+': '+jc.toJSCode(style)}
@@ -502,11 +501,13 @@
     return this;
   }
 
-  Table.prototype.applyStyle = function(rowNumber,colName,value,node$) {
-    // calculate the compond style and apply it to node$
+  Table.prototype.compoundStyle = function(rowNumber,colName,value) {
+    // calculate the compound style for a given cell
+    var style = {};
     for (var i=0;i<this.options.styles.length;i++) {
-      this.options.styles[i](this,this[rowNumber],colName,value,node$);
+      this.options.styles[i](this,this[rowNumber],colName,value,style);
     }
+    return style;
   }
   
   Table.prototype.colFormat = function(colName,format) {
@@ -575,10 +576,6 @@
     }
   }
 
-  Table.prototype.addSummary = function() {
-    //*********************
-  }    
-
   Table.prototype.toString = function() {
     // return a string summarizing the table
     return '[object Table('+this.name+') of '+this.length+' rows]';
@@ -601,9 +598,8 @@
     //      col1:{className:'HEAD'},  // set the class(es) of this col
     //      col2:1          // any value make this col visible
     //      '*':1           // adds any not already defined col as visible
-    //    rows:[..row numbers]  // specifies which row to display in what order
 
-    options = $.extend(true,{},jc.defaults,this.options,options);
+    options = $.extend(true,{},this.options,options);
     if (options.cols['*']) {
       delete options.cols['*'];
       for (var col in this.options.cols) {
@@ -612,8 +608,7 @@
         }
       }
     }
-    options.rows = options.rows || range(0,this.length-1);
-    var t$ = $('<table/>').css($.isFunction(this.options.tableStyle)?this.options.tableStyle(this):this.options.tableStyle || {});
+    var t$ = $('<table/>').css(this.options.tableStyle || {});
     var h$ = $('<thead/>');
     var b$ = $('<tbody/>');
     var r$ = $('<tr/>');
@@ -621,22 +616,15 @@
       r$.append('<th>'+col+'</th>');
     }
     h$.append(r$);
-    for (var i=0;i<options.rows.length;i++) {
-      var rowNumber = options.rows[i];
+    for (var rowNumber=0;rowNumber<this.length;rowNumber++) {
       r$ = $('<tr/>'); 
       for (var col in options.cols) {
         var c = options.cols[col];
         var val = this.val(rowNumber,col)
         if (options.cols[col] != 0) {
-          if (col === this.pk) {
-            var cell$ = $('<th>'+jc.format(val,options,col)+'</th>');
-          }
-          else {
-            var cell$ = $('<td>'+jc.format(val,options,col)+'</td>');
-          }
-//          if (typeof val !== 'number') cell$.css('text-align','left');  // basic alignement TODO replace by a style
-          this.applyStyle(rowNumber,col,val,cell$);
-          cell$.addClass(c.className); // TODO replace by a style rule
+          var cell$ = col===this.pk?$('<th></th>'):$('<td></td>');
+          var style = this.compoundStyle(rowNumber,col,val);
+          cell$.html(jc.format(val,style)).css(style);
         }
         r$.append(cell$);
       }

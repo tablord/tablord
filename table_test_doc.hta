@@ -23,24 +23,25 @@
 <BODY sizset="0" sizcache="1"  designMode="on">
 <DIV id=menu class=TOOLBAR>
 <DIV><INPUT onclick=jc.showCode(event) type=checkbox>codes</INPUT><INPUT onclick=jc.showCut(event) type=checkbox>cuts</INPUT><INPUT onclick=jc.showTest(event) type=checkbox>tests</INPUT><INPUT onclick=jc.showTrace(event) type=checkbox>traces</INPUT><INPUT onclick=jc.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
-<DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60" >&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
-<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].convert(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT ><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION></SELECT><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px" >&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
+<DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60" >&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
+<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].convert(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION></SELECT><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
 <DIV id=objectToolBar></DIV></DIV></DIV>
 <DIV id=jcContent class=CONTAINER sizset="0" sizcache="1" container="sectionContent"><PRE id=code0026 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.tableOfContent</PRE>
-<DIV id=out0026 class=OUTPUT>
+<DIV id=out0026 class="OUTPUT SUCCESS">
 <DIV class=INTERACTIVE>
 <DIV class=TOC0>1 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/table_test_doc.hta#sect0004">Table</A></DIV>
 <DIV class=TOC1>1.1 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/table_test_doc.hta#sect0019">.add</A></DIV>
 <DIV class=TOC1>1.2 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/table_test_doc.hta#sect0026">Table is array like</A></DIV>
 <DIV class=TOC1>1.3 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/table_test_doc.hta#sect0022">.update</A></DIV>
 <DIV class=TOC1>1.4 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/table_test_doc.hta#sect0021">.setCell</A></DIV>
-<DIV class=TOC1>1.5 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/table_test_doc.hta#sect0035">Calculated cells and updates</A></DIV>
+<DIV class=TOC1>1.5 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/table_test_doc.hta#sect0035">Calculated cells</A></DIV>
 <DIV class=TOC1>1.6 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/table_test_doc.hta#sect0031">.cell</A></DIV>
 <DIV class=TOC1>1.7 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/table_test_doc.hta#sect0043">.val(row,col)</A></DIV>
 <DIV class=TOC1>1.8 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/table_test_doc.hta#sect0083">.primaryKey(col)</A></DIV>
-<DIV class=TOC1>1.9 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/table_test_doc.hta#sect0027">formatting &amp; styling</A></DIV>
-<DIV class=TOC2>1.9.1 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/table_test_doc.hta#sect0061">.style</A></DIV>
-<DIV class=TOC1>1.10 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/table_test_doc.hta#sect0074">.find() to create subset</A></DIV></DIV></DIV>
+<DIV class=TOC1>1.9 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/table_test_doc.hta#sect0092">.update()</A></DIV>
+<DIV class=TOC1>1.10 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/table_test_doc.hta#sect0027">.style() for formatting &amp; styling</A></DIV>
+<DIV class=TOC1>1.11 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/table_test_doc.hta#sect0074">.find() to create subset</A></DIV>
+<DIV class=TOC1>1.12 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/table_test_doc.hta#sect0092">.lookup() to get the data of a row</A></DIV></DIV></DIV>
 <DIV id=sect0004 class="ELEMENT SECTION" sizset="1" sizcache="1">
 <H1 class="SECTIONTITLE EDITABLE" contentEditable=false>1 Table</H1>
 <DIV sizset="1" sizcache="1" container="sectionContent">
@@ -56,7 +57,7 @@
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1 .add</H2>
 <DIV sizset="1" sizcache="1" container="sectionContent">
 <DIV id=rich0020 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>In order to add a Row, add will create a new Row and add the data passed in parameters into it</DIV><PRE id=code0006 class="ELEMENT CODE EDITABLE" contentEditable=false><P>table('priceList')</P><P>.add({category:'fruit',article:'apple',price$EUR:3.60})</P><P>.add({category:'confectionery',article:'black chocolate',price$EUR:0.90})</P><P>.add({category:'confectionery',article:'white chocolate',price$EUR:0.80})</P><P>.add({category:'fruit',article:'orange',price$EUR:4.95})</P><P>&nbsp;</P></PRE>
-<DIV id=out0006 class=OUTPUT>
+<DIV id=out0006 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
 <TR>
@@ -85,8 +86,8 @@
 <DIV sizset="2" sizcache="1" container="sectionContent">
 <DIV id=rich0012 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>
 <P>a Table is a collection of Row and is a Array-Like object with access [ ] and.length property</P></DIV><PRE id=code0013 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.length</PRE>
-<DIV id=out0013 class=OUTPUT>4</DIV><PRE id=code0014 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList[3]</PRE>
-<DIV id=out0014 class=OUTPUT>
+<DIV id=out0013 class="OUTPUT SUCCESS">4</DIV><PRE id=code0014 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList[3]</PRE>
+<DIV id=out0014 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
 <TR>
@@ -102,7 +103,7 @@
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.3 .update</H2>
 <DIV sizset="4" sizcache="1" container="sectionContent">
 <DIV id=rich0023 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>update can update one or many columns. Here is only shown a very basic example where we set a full column to the same value, but we will see later on that with the use of function, it can become very powerfull to create calculated columns or import values from another table</DIV><PRE id=code0024 class="ELEMENT CODE EDITABLE" contentEditable=false><P>priceList.update({'discount':0})</P></PRE>
-<DIV id=out0024 class=OUTPUT>
+<DIV id=out0024 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
 <TR>
@@ -134,8 +135,8 @@
 <DIV id=sect0021 class="ELEMENT SECTION" sizset="5" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.4 .setCell</H2>
 <DIV sizset="5" sizcache="1" container="sectionContent">
-<DIV id=rich0015 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false sizset="5" sizcache="1">values can be added at any time with .setCell&nbsp;<SPAN id=code0016 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.help(Table.prototype.setCell)</SPAN><SPAN id=out0016 class=OUTPUT><SPAN class=HELP><B>function(row,col,value)</B><BR></SPAN></SPAN></DIV><PRE id=code0017 class="ELEMENT CODE EDITABLE" contentEditable=false><P>priceList.setCell(0,'discount',0.3333)</P></PRE>
-<DIV id=out0017 class=OUTPUT>
+<DIV id=rich0015 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false sizset="5" sizcache="1">values can be added at any time with .setCell&nbsp;<SPAN id=code0016 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.help(Table.prototype.setCell)</SPAN><SPAN id=out0016 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function(row,col,value)</B><BR></SPAN></SPAN></DIV><PRE id=code0017 class="ELEMENT CODE EDITABLE" contentEditable=false><P>priceList.setCell(0,'discount',0.3333)</P></PRE>
+<DIV id=out0017 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
 <TR>
@@ -165,12 +166,12 @@
 <TD>4.95</TD>
 <TD>0</TD></TR></TBODY></TABLE></DIV></DIV></DIV>
 <DIV id=sect0035 class="ELEMENT SECTION" sizset="7" sizcache="1">
-<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.5 Calculated cells and updates</H2>
+<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.5 Calculated cells</H2>
 <DIV sizset="7" sizcache="1" container="sectionContent">
 <DIV id=rich0036 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>
 <P>most of the time, some cells are calculated from other cells</P>
-<P>for this purpose, one can use the f() function that generates a function out of the expression you give. It also create some suggar code so that all data from the row is availlable as well as the column name of the cell </P></DIV><PRE id=code0037 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.setCell(0,'todayPrice$EUR',f("<FONT&nbsp;style="BACKGROUND-COLOR:&nbsp;#ff4d4d">rowData</FONT>.price$EUR*(1-discount)"))</FONT&nbsp;style="BACKGROUND-COLOR:&nbsp;#ff4d4d"></PRE>
-<DIV id=out0037 class=OUTPUT>
+<P>for this purpose, one can use the f() function that generates a function out of the expression you give. It also create some suggar code so that all data from the row is availlable as well as the column name of the cell </P></DIV><PRE id=code0037 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.setCell(0,'todayPrice$EUR',f("<FONT&NBSP;STYLE="BACKGROUND-COLOR:&NBSP;#FF4D4D">rowData</FONT>.price$EUR*(1-discount)"))</FONT&NBSP;STYLE="BACKGROUND-COLOR:&NBSP;#FF4D4D"></PRE>
+<DIV id=out0037 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
 <TR>
@@ -210,7 +211,7 @@
 <P>the second point could be removed by putting the function into a temporary variable like this.</P>
 <P><STRONG>****Please note:</STRONG>&nbsp; in the f() we used <STRONG>rowData.</STRONG>price$EUR. this is a trick since in our example below the pineapple row has no price, the function will crash because price$EUR is not existing so</P>
 <P>the execution will show an error. explicitly putting rowData instead of relying on the with&nbsp;rowData will return undefined instead of crashing&nbsp;</P></DIV><PRE id=code0039 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.vars.fTodayPrice = f("rowData.price$EUR*(1-rowData.discount)")</P><P>priceList</P><P>.setCell(0,'todayPrice$EUR',fTodayPrice)</P><P>.setCell(1,'todayPrice$EUR',fTodayPrice)</P></PRE>
-<DIV id=out0039 class=OUTPUT>
+<DIV id=out0039 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
 <TR>
@@ -250,20 +251,20 @@
 <DIV id=rich0032 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>
 <P>the data of a cell can be retrieved with the .cell(rowNumber,colName) method. please note that the real&nbsp;<STRONG>content</STRONG> of the cell&nbsp;is returned, not its representation (cf formatting)</P>
 <P>if the cell is a function, aV object is returned, wrapping the function, not the value</P></DIV><PRE id=code0033 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.cell(0,'todayPrice$EUR').toString()</PRE>
-<DIV id=out0033 class=OUTPUT>[object&nbsp;V(undefined):f("rowData.price$EUR*(1-rowData.discount)")==&gt;2.4001200000000002]</DIV><PRE id=code0060 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.cell(1,'todayPrice$EUR').toString()</PRE>
-<DIV id=out0060 class=OUTPUT>[object&nbsp;V(undefined):f("rowData.price$EUR*(1-rowData.discount)")==&gt;0.9]</DIV>
+<DIV id=out0033 class="OUTPUT SUCCESS">[object&nbsp;V(undefined):f("rowData.price$EUR*(1-rowData.discount)")==&gt;2.4001200000000002]</DIV><PRE id=code0060 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.cell(1,'todayPrice$EUR').toString()</PRE>
+<DIV id=out0060 class="OUTPUT SUCCESS">[object&nbsp;V(undefined):f("rowData.price$EUR*(1-rowData.discount)")==&gt;0.9]</DIV>
 <DIV id=rich0047 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>we can verify that there is one single function (but 2 V wrapper objects)</DIV><PRE id=code0048 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.cell(0,'todayPrice$EUR').func === priceList.cell(1,'todayPrice$EUR').func</PRE>
-<DIV id=out0048 class=OUTPUT>true</DIV></DIV></DIV>
+<DIV id=out0048 class="OUTPUT SUCCESS">true</DIV></DIV></DIV>
 <DIV id=sect0043 class="ELEMENT SECTION" sizset="12" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.7 .val(row,col)</H2>
 <DIV sizset="12" sizcache="1" container="sectionContent">
 <DIV id=rich0044 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>this method returns the <STRONG>value</STRONG> of the cell. if the cell is a function, the value is calculated first.</DIV><PRE id=code0046 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.val(0,'todayPrice$EUR')</PRE>
-<DIV id=out0046 class=OUTPUT>2.4001200000000002</DIV></DIV></DIV>
+<DIV id=out0046 class="OUTPUT SUCCESS">2.4001200000000002</DIV></DIV></DIV>
 <DIV id=sect0083 class="ELEMENT SECTION" sizset="13" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.8 .primaryKey(col)</H2>
 <DIV sizset="13" sizcache="1" container="sectionContent">
 <DIV id=rich0084 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>optionally a column can be set as primary key. this internaly creates an index that allow to use <STRONG>.cell</STRONG> and <STRONG>.val</STRONG> with absolute row names</DIV><PRE id=code0085 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.primaryKey('article')</PRE>
-<DIV id=out0085 class=OUTPUT>
+<DIV id=out0085 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
 <TR>
@@ -297,9 +298,9 @@
 <TD>4.95</TD>
 <TD>0</TD>
 <TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR></TBODY></TABLE></DIV><PRE id=code0087 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.val('apple','price$EUR')</PRE>
-<DIV id=out0087 class=OUTPUT>3.6</DIV>
+<DIV id=out0087 class="OUTPUT SUCCESS">3.6</DIV>
 <DIV id=rich0089 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>if a table has a primaryKey, one can even setCell of an non existing row</DIV><PRE id=code0090 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.setCell('pineapple','category','fruit').setCell('pineapple','price$EUR',5.50)</PRE>
-<DIV id=out0090 class=OUTPUT>
+<DIV id=out0090 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
 <TR>
@@ -339,156 +340,68 @@
 <TD>5.5</TD>
 <TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR></TBODY></TABLE></DIV></DIV></DIV>
-<DIV id=sect0027 class="ELEMENT SECTION" sizset="15" sizcache="1">
-<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.9 formatting &amp; styling</H2>
-<DIV sizset="15" sizcache="1" container="sectionContent">
+<DIV id=sect0092 class="ELEMENT SECTION" sizset="16" sizcache="1">
+<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.9 .update()</H2>
+<DIV sizset="16" sizcache="1" container="sectionContent">
+<DIV id=rich0094 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>you can update one or more columns at once with update with a new value or a function</DIV><PRE id=code0067 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.update({todayPrice$EUR:fTodayPrice})</PRE>
+<DIV id=out0067 class="OUTPUT SUCCESS">
+<TABLE>
+<THEAD>
+<TR>
+<TH>category</TH>
+<TH>article</TH>
+<TH>price$EUR</TH>
+<TH>discount</TH>
+<TH>todayPrice$EUR</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD style="TEXT-ALIGN: left">fruit</TD>
+<TH style="TEXT-ALIGN: left">apple</TH>
+<TD>3.6</TD>
+<TD>0.3333</TD>
+<TD>2.4001200000000002</TD></TR>
+<TR>
+<TD style="TEXT-ALIGN: left">confectionery</TD>
+<TH style="TEXT-ALIGN: left">black&nbsp;chocolate</TH>
+<TD>0.9</TD>
+<TD>0</TD>
+<TD>0.9</TD></TR>
+<TR>
+<TD style="TEXT-ALIGN: left">confectionery</TD>
+<TH style="TEXT-ALIGN: left">white&nbsp;chocolate</TH>
+<TD>0.8</TD>
+<TD>0</TD>
+<TD>0.8</TD></TR>
+<TR>
+<TD style="TEXT-ALIGN: left">fruit</TD>
+<TH style="TEXT-ALIGN: left">orange</TH>
+<TD>4.95</TD>
+<TD>0</TD>
+<TD>4.95</TD></TR>
+<TR>
+<TD style="TEXT-ALIGN: left">fruit</TD>
+<TH style="TEXT-ALIGN: left">pineapple</TH>
+<TD>5.5</TD>
+<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD>
+<TD>NaN</TD></TR></TBODY></TABLE></DIV></DIV></DIV>
+<DIV id=sect0027 class="ELEMENT SECTION" sizset="17" sizcache="1">
+<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.10 .style() for formatting &amp; styling</H2>
+<DIV sizset="17" sizcache="1" container="sectionContent">
 <DIV id=rich0028 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>
-<P>A Table can both format and apply style on it.</P>
+<P>A Table can both format and&nbsp;style cells</P>
 <P>&nbsp;</P>
 <P>Formatting is about&nbsp;how to transform the real value of a cell into an html representation. for exemple how do you want to see an undefined value (you you want to see "undefined" or nothing at all?)</P>
 <P>&nbsp;</P>
 <P>Styling is about what color, background... do you want to have according for the cell, maybe depending on its content.</P>
 <P>&nbsp;</P>
-<P>Ideally both concept could be mixed and handled by CSS, but unfortunatly CSS is currently not that powerfull and HTML is only a TEXT representation while Tables are handling JavaScript objects which are much richer than just plain text.</P>
+<P>The style is an extention of the jQuery.css(object), offering not only {color:'red'...} css attributes, but also adding a format: attribute which can be created with some formating methods</P>
 <P>&nbsp;</P>
-<P>So both concepts are separated even if there is a certain overlap. But both concept have a big similarity: they can be defined</P>
-<P>- at a cell level</P>
-<P>- at a row level</P>
-<P>- at a column level</P>
-<P>- at the table level</P>
-<P>a bit like CSS, in case of conflict, the cell level has the highest priority and the table the lowest</P>
+<P>We will construct or example step by step, but of course, due to method chaining, everything can be done in one single statment</P>
 <P>&nbsp;</P>
-<P>as a first example, we have different values with different precision. let set the general formatting to "0.00" in order to display numbers with 2 decimals and discount as a percentage instead of a decimal number. This only change the way information is <STRONG>displayed</STRONG> not the current value.</P>
-<P>please note that you can specifiy multiple format, one for each case. In the first following example, undefined is treated by the default formatter. In the second, undefined is displayed&nbsp;blank</P></DIV><PRE id=code0029 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.format('0.00').colFormat('discount','0%')</PRE>
-<DIV id=out0029 class=OUTPUT>
-<TABLE>
-<THEAD>
-<TR>
-<TH>category</TH>
-<TH>article</TH>
-<TH>price$EUR</TH>
-<TH>discount</TH>
-<TH>todayPrice$EUR</TH></TR></THEAD>
-<TBODY>
-<TR>
-<TD style="TEXT-ALIGN: left">fruit</TD>
-<TH style="TEXT-ALIGN: left">apple</TH>
-<TD>3.60</TD>
-<TD>33%</TD>
-<TD>2.40</TD></TR>
-<TR>
-<TD style="TEXT-ALIGN: left">confectionery</TD>
-<TH style="TEXT-ALIGN: left">black&nbsp;chocolate</TH>
-<TD>0.90</TD>
-<TD>0%</TD>
-<TD>0.90</TD></TR>
-<TR>
-<TD style="TEXT-ALIGN: left">confectionery</TD>
-<TH style="TEXT-ALIGN: left">white&nbsp;chocolate</TH>
-<TD>0.80</TD>
-<TD>0%</TD>
-<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
-<TR>
-<TD style="TEXT-ALIGN: left">fruit</TD>
-<TH style="TEXT-ALIGN: left">orange</TH>
-<TD>4.95</TD>
-<TD>0%</TD>
-<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR>
-<TR>
-<TD style="TEXT-ALIGN: left">fruit</TD>
-<TH style="TEXT-ALIGN: left">pineapple</TH>
-<TD>5.50</TD>
-<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD>
-<TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD></TR></TBODY></TABLE></DIV><PRE id=code0052 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.format('undefinedBlank')</PRE>
-<DIV id=out0052 class=OUTPUT>
-<TABLE>
-<THEAD>
-<TR>
-<TH>category</TH>
-<TH>article</TH>
-<TH>price$EUR</TH>
-<TH>discount</TH>
-<TH>todayPrice$EUR</TH></TR></THEAD>
-<TBODY>
-<TR>
-<TD style="TEXT-ALIGN: left">fruit</TD>
-<TH style="TEXT-ALIGN: left">apple</TH>
-<TD>3.60</TD>
-<TD>33%</TD>
-<TD>2.40</TD></TR>
-<TR>
-<TD style="TEXT-ALIGN: left">confectionery</TD>
-<TH style="TEXT-ALIGN: left">black&nbsp;chocolate</TH>
-<TD>0.90</TD>
-<TD>0%</TD>
-<TD>0.90</TD></TR>
-<TR>
-<TD style="TEXT-ALIGN: left">confectionery</TD>
-<TH style="TEXT-ALIGN: left">white&nbsp;chocolate</TH>
-<TD>0.80</TD>
-<TD>0%</TD>
-<TD style="TEXT-ALIGN: left"></TD></TR>
-<TR>
-<TD style="TEXT-ALIGN: left">fruit</TD>
-<TH style="TEXT-ALIGN: left">orange</TH>
-<TD>4.95</TD>
-<TD>0%</TD>
-<TD style="TEXT-ALIGN: left"></TD></TR>
-<TR>
-<TD style="TEXT-ALIGN: left">fruit</TD>
-<TH style="TEXT-ALIGN: left">pineapple</TH>
-<TD>5.50</TD>
-<TD style="TEXT-ALIGN: left"></TD>
-<TD style="TEXT-ALIGN: left"></TD></TR></TBODY></TABLE></DIV><PRE id=code0034 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.cell(0,'discount')&nbsp; // it doesn't inpact the value</PRE>
-<DIV id=out0034 class=OUTPUT>0.3333</DIV>
-<DIV id=rich0068 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>you can also set the same function for all cells of a column using <STRONG>.update</STRONG></DIV><PRE id=code0067 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.update({todayPrice$EUR:fTodayPrice})</PRE>
-<DIV id=out0067 class=OUTPUT>
-<TABLE>
-<THEAD>
-<TR>
-<TH>category</TH>
-<TH>article</TH>
-<TH>price$EUR</TH>
-<TH>discount</TH>
-<TH>todayPrice$EUR</TH></TR></THEAD>
-<TBODY>
-<TR>
-<TD style="TEXT-ALIGN: left">fruit</TD>
-<TH style="TEXT-ALIGN: left">apple</TH>
-<TD>3.60</TD>
-<TD>33%</TD>
-<TD>2.40</TD></TR>
-<TR>
-<TD style="TEXT-ALIGN: left">confectionery</TD>
-<TH style="TEXT-ALIGN: left">black&nbsp;chocolate</TH>
-<TD>0.90</TD>
-<TD>0%</TD>
-<TD>0.90</TD></TR>
-<TR>
-<TD style="TEXT-ALIGN: left">confectionery</TD>
-<TH style="TEXT-ALIGN: left">white&nbsp;chocolate</TH>
-<TD>0.80</TD>
-<TD>0%</TD>
-<TD>0.80</TD></TR>
-<TR>
-<TD style="TEXT-ALIGN: left">fruit</TD>
-<TH style="TEXT-ALIGN: left">orange</TH>
-<TD>4.95</TD>
-<TD>0%</TD>
-<TD>4.95</TD></TR>
-<TR>
-<TD style="TEXT-ALIGN: left">fruit</TD>
-<TH style="TEXT-ALIGN: left">pineapple</TH>
-<TD>5.50</TD>
-<TD style="TEXT-ALIGN: left"></TD>
-<TD>NaN</TD></TR></TBODY></TABLE></DIV>
-<DIV id=sect0061 class="ELEMENT SECTION" sizset="19" sizcache="1">
-<H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.9.1 .style</H3>
-<DIV sizset="19" sizcache="1" container="sectionContent">
-<DIV id=rich0054 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>
+<P>The style of the Table can be set with <STRONG>tableStyle</STRONG>.</P>
 <P>&nbsp;</P>
-<P>Styling is very similar. One can set the style at the table level with <STRONG>.style()</STRONG>. It will then impact all cells that have no specific style. There is also a specific <STRONG>tableStyle</STRONG> method that set the style of the table, not the cells of the table</P></DIV><PRE id=code0055 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.style({backgroundColor:'white'}).tableStyle({backgroundColor:'grey'})</PRE>
-<DIV id=out0055 class=OUTPUT>
+<P>The style of the cells of&nbsp;the table level with <STRONG>.style()</STRONG>. </P></DIV><PRE id=code0055 class="ELEMENT CODE EDITABLE" contentEditable=false><P>priceList</P><P>.tableStyle({backgroundColor:'grey'})</P><P>.style({backgroundColor:'white',format:jc.fixed(2).undefinedBlank()})</P></PRE>
+<DIV id=out0055 class="OUTPUT SUCCESS">
 <TABLE style="BACKGROUND-COLOR: grey">
 <THEAD>
 <TR>
@@ -502,25 +415,25 @@
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">fruit</TD>
 <TH style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">apple</TH>
 <TD style="BACKGROUND-COLOR: white">3.60</TD>
-<TD style="BACKGROUND-COLOR: white">33%</TD>
+<TD style="BACKGROUND-COLOR: white">0.33</TD>
 <TD style="BACKGROUND-COLOR: white">2.40</TD></TR>
 <TR>
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">confectionery</TD>
 <TH style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">black&nbsp;chocolate</TH>
 <TD style="BACKGROUND-COLOR: white">0.90</TD>
-<TD style="BACKGROUND-COLOR: white">0%</TD>
+<TD style="BACKGROUND-COLOR: white">0.00</TD>
 <TD style="BACKGROUND-COLOR: white">0.90</TD></TR>
 <TR>
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">confectionery</TD>
 <TH style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">white&nbsp;chocolate</TH>
 <TD style="BACKGROUND-COLOR: white">0.80</TD>
-<TD style="BACKGROUND-COLOR: white">0%</TD>
+<TD style="BACKGROUND-COLOR: white">0.00</TD>
 <TD style="BACKGROUND-COLOR: white">0.80</TD></TR>
 <TR>
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">fruit</TD>
 <TH style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">orange</TH>
 <TD style="BACKGROUND-COLOR: white">4.95</TD>
-<TD style="BACKGROUND-COLOR: white">0%</TD>
+<TD style="BACKGROUND-COLOR: white">0.00</TD>
 <TD style="BACKGROUND-COLOR: white">4.95</TD></TR>
 <TR>
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">fruit</TD>
@@ -535,8 +448,8 @@
 <P>please note that even if <STRONG>.style()</STRONG> take the <STRONG>rowNumber </STRONG>as a parameter, it is internally stored as a reference to the Row object, so any further insertion / sort&nbsp;will still work</P>
 <P>&nbsp;</P>
 <P>the <STRONG>style </STRONG>parameter is either an object compatible with $.css() like {backgroundColor:'white'} (please note the camel case for the CSS attribute background-color)</P>
-<P>or it can be a function(rowdata,colName,value) that return such an object. note that <STRONG>f(jcFunc)</STRONG> returns such functions, which is convinient for simple conditions, since it does create some suggar code in order to access directly the cells of the row by name. Inside such function <STRONG>this</STRONG> represent the Row object, so <STRONG>this.table</STRONG> represents the table </P></DIV><PRE id=code0058 class="ELEMENT CODE EDITABLE" contentEditable=false><P>priceList</P><P>.style({backgroundColor:'orange'},undefined,'discount')</P><P>.style({backgroundColor:'yellow'},0)</P><P>.style({backgroundColor:'red'},3,'discount')</P><P>.style(f("rowData.discount!=0?{backgroundColor:'green'}:{}"),undefined,'todayPrice$EUR')&nbsp;//put&nbsp;in&nbsp;green&nbsp;any&nbsp;discounted&nbsp;price</P></PRE>
-<DIV id=out0058 class=OUTPUT>
+<P>or it can be a function(rowdata,colName,value) that return such an object. note that <STRONG>f(jcFunc)</STRONG> returns such functions, which is convinient for simple conditions, since it does create some suggar code in order to access directly the cells of the row by name. Inside such function <STRONG>this</STRONG> represent the Row object, so <STRONG>this.table</STRONG> represents the table </P></DIV><PRE id=code0058 class="ELEMENT CODE EDITABLE" contentEditable=false><P>priceList</P><P>.style({backgroundColor:'orange',format:jc.percent(0)},undefined,'discount')</P><P>.style({backgroundColor:'yellow'},0)</P><P>.style({backgroundColor:'red'},3,'discount')</P><P>.style(f("rowData.discount!=0?{backgroundColor:'green'}:{}"),undefined,'todayPrice$EUR')&nbsp;//put&nbsp;in&nbsp;green&nbsp;any&nbsp;discounted&nbsp;price</P></PRE>
+<DIV id=out0058 class="OUTPUT SUCCESS">
 <TABLE style="BACKGROUND-COLOR: grey">
 <THEAD>
 <TR>
@@ -574,9 +487,9 @@
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">fruit</TD>
 <TH style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">pineapple</TH>
 <TD style="BACKGROUND-COLOR: white">5.50</TD>
-<TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: orange"></TD>
+<TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: orange"><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD style="BACKGROUND-COLOR: green">NaN</TD></TR></TBODY></TABLE></DIV><PRE id=code0064 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.inspect(priceList.options.styles)</PRE>
-<DIV id=out0064 class=OUTPUT>
+<DIV id=out0064 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>[] </LEGEND>
 <TABLE>
@@ -586,10 +499,10 @@
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>left for not numbers</B><BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>1</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>general style: {backgroundColor:'white'}</B><BR></SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(decimals)</B><BR>&nbsp;returns&nbsp;a&nbsp;formating&nbsp;object&nbsp;{number:function(obj)}&nbsp;that&nbsp;formats&nbsp;the&nbsp;number&nbsp;with&nbsp;fixed&nbsp;decimals</SPAN></TD></TR>
 <TR>
 <TH vAlign=top>2</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>colStyle for discount: {backgroundColor:'orange'}</B><BR></SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(decimals)</B><BR>&nbsp;returns&nbsp;a&nbsp;formating&nbsp;object&nbsp;{number:function(obj)}&nbsp;that&nbsp;formats&nbsp;the&nbsp;number&nbsp;with&nbsp;fixed&nbsp;decimals</SPAN></TD></TR>
 <TR>
 <TH vAlign=top>3</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>rowStyle for [object Row]: {backgroundColor:'yellow'}</B><BR></SPAN></TD></TR>
@@ -600,7 +513,7 @@
 <TH vAlign=top>5</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>colStyle for todayPrice$EUR: rowData.discount!=0?{backgroundColor:'green'}:{}</B><BR></SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
 <DIV id=rich0069 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>Now everything is dynamically calculated. setting a new value to a cell will take effect on every aspect. In fact, the table is only calculated when needed, in our example when displayed. So a serie of <STRONG>.setCell()</STRONG> is very efficient since nothing will be calculated before it is needed</DIV><PRE id=code0066 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.setCell('white chocolate','discount',0.2)</PRE>
-<DIV id=out0066 class=OUTPUT>
+<DIV id=out0066 class="OUTPUT SUCCESS">
 <TABLE style="BACKGROUND-COLOR: grey">
 <THEAD>
 <TR>
@@ -638,10 +551,10 @@
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">fruit</TD>
 <TH style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">pineapple</TH>
 <TD style="BACKGROUND-COLOR: white">5.50</TD>
-<TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: orange"></TD>
+<TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: orange"><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD style="BACKGROUND-COLOR: green">NaN</TD></TR></TBODY></TABLE></DIV>
 <DIV id=rich0070 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>even though the rows where previously specified by numbers, infact they are internally stored as reference to the Row object, so any further sort has no influence on the styling</DIV><PRE id=code0069 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.sort({price$EUR:-1})</PRE>
-<DIV id=out0069 class=OUTPUT>
+<DIV id=out0069 class="OUTPUT SUCCESS">
 <TABLE style="BACKGROUND-COLOR: grey">
 <THEAD>
 <TR>
@@ -655,7 +568,7 @@
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">fruit</TD>
 <TH style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">pineapple</TH>
 <TD style="BACKGROUND-COLOR: white">5.50</TD>
-<TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: orange"></TD>
+<TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: orange"><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD style="BACKGROUND-COLOR: green">NaN</TD></TR>
 <TR>
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">fruit</TD>
@@ -680,12 +593,12 @@
 <TH style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">white&nbsp;chocolate</TH>
 <TD style="BACKGROUND-COLOR: white">0.80</TD>
 <TD style="BACKGROUND-COLOR: orange">20%</TD>
-<TD style="BACKGROUND-COLOR: green">0.64</TD></TR></TBODY></TABLE></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0074 class="ELEMENT SECTION" sizset="24" sizcache="1">
-<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.10 .find() to create subset</H2>
-<DIV sizset="24" sizcache="1" container="sectionContent">
-<DIV id=rich0075 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>Sometime you want to display only a portion of a table corresponding to some criteria. In order to do so, find creates a new table object but using the same options and Rows object than the original table. So any change to the subset will directly impact the table</DIV><PRE id=code0072 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.find({category:'fruit'}).rename('fruits')</PRE>
-<DIV id=out0072 class=OUTPUT>
+<TD style="BACKGROUND-COLOR: green">0.64</TD></TR></TBODY></TABLE></DIV></DIV></DIV>
+<DIV id=sect0074 class="ELEMENT SECTION" sizset="22" sizcache="1">
+<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.11 .find() to create subset</H2>
+<DIV sizset="22" sizcache="1" container="sectionContent">
+<DIV id=rich0075 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>Sometime you want to display only a portion of a table corresponding to some criteria. In order to do so,<STRONG> find creates a new table</STRONG> object but using the same options and Rows object than the original table. So any change to the subset will directly impact the table</DIV><PRE id=code0072 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList.find({category:'fruit'}).rename('fruits')</PRE>
+<DIV id=out0072 class="OUTPUT SUCCESS">
 <TABLE style="BACKGROUND-COLOR: grey">
 <THEAD>
 <TR>
@@ -699,7 +612,7 @@
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">fruit</TD>
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">pineapple</TD>
 <TD style="BACKGROUND-COLOR: white">5.50</TD>
-<TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: orange"></TD>
+<TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: orange"><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD style="BACKGROUND-COLOR: green">NaN</TD></TR>
 <TR>
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">fruit</TD>
@@ -713,7 +626,7 @@
 <TD style="BACKGROUND-COLOR: yellow">3.60</TD>
 <TD style="BACKGROUND-COLOR: yellow">33%</TD>
 <TD style="BACKGROUND-COLOR: green">2.40</TD></TR></TBODY></TABLE></DIV><PRE id=code0076 class="ELEMENT CODE EDITABLE" contentEditable=false>fruits.setCell(1,'price$EUR',3.80)</PRE>
-<DIV id=out0076 class=OUTPUT>
+<DIV id=out0076 class="OUTPUT SUCCESS">
 <TABLE style="BACKGROUND-COLOR: grey">
 <THEAD>
 <TR>
@@ -727,7 +640,7 @@
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">fruit</TD>
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">pineapple</TD>
 <TD style="BACKGROUND-COLOR: white">5.50</TD>
-<TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: orange"></TD>
+<TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: orange"><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD style="BACKGROUND-COLOR: green">NaN</TD></TR>
 <TR>
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">fruit</TD>
@@ -741,7 +654,7 @@
 <TD style="BACKGROUND-COLOR: yellow">3.60</TD>
 <TD style="BACKGROUND-COLOR: yellow">33%</TD>
 <TD style="BACKGROUND-COLOR: green">2.40</TD></TR></TBODY></TABLE></DIV><PRE id=code0078 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList</PRE>
-<DIV id=out0078 class=OUTPUT>
+<DIV id=out0078 class="OUTPUT SUCCESS">
 <TABLE style="BACKGROUND-COLOR: grey">
 <THEAD>
 <TR>
@@ -755,7 +668,7 @@
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">fruit</TD>
 <TH style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">pineapple</TH>
 <TD style="BACKGROUND-COLOR: white">5.50</TD>
-<TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: orange"></TD>
+<TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: orange"><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD style="BACKGROUND-COLOR: green">NaN</TD></TR>
 <TR>
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">fruit</TD>
@@ -782,7 +695,7 @@
 <TD style="BACKGROUND-COLOR: orange">20%</TD>
 <TD style="BACKGROUND-COLOR: green">0.64</TD></TR></TBODY></TABLE></DIV>
 <DIV id=rich0079 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>But any added row will only belong to the new table. This can be convenient to add subtotal or other decoration rows&nbsp;</DIV><PRE id=code0080 class="ELEMENT CODE EDITABLE" contentEditable=false>fruits.add({category:'fruit',article:'banana',price$EUR:2.50,discount:0})</PRE>
-<DIV id=out0080 class=OUTPUT>
+<DIV id=out0080 class="OUTPUT SUCCESS">
 <TABLE style="BACKGROUND-COLOR: grey">
 <THEAD>
 <TR>
@@ -796,7 +709,7 @@
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">fruit</TD>
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">pineapple</TD>
 <TD style="BACKGROUND-COLOR: white">5.50</TD>
-<TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: orange"></TD>
+<TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: orange"><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD style="BACKGROUND-COLOR: green">NaN</TD></TR>
 <TR>
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">fruit</TD>
@@ -816,7 +729,7 @@
 <TD style="BACKGROUND-COLOR: white">2.50</TD>
 <TD style="BACKGROUND-COLOR: orange">0%</TD>
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white"></TD></TR></TBODY></TABLE></DIV><PRE id=code0081 class="ELEMENT CODE EDITABLE" contentEditable=false>priceList&nbsp; // is unchanged</PRE>
-<DIV id=out0081 class=OUTPUT>
+<DIV id=out0081 class="OUTPUT SUCCESS">
 <TABLE style="BACKGROUND-COLOR: grey">
 <THEAD>
 <TR>
@@ -830,7 +743,7 @@
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">fruit</TD>
 <TH style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">pineapple</TH>
 <TD style="BACKGROUND-COLOR: white">5.50</TD>
-<TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: orange"></TD>
+<TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: orange"><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD style="BACKGROUND-COLOR: green">NaN</TD></TR>
 <TR>
 <TD style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">fruit</TD>
@@ -855,8 +768,29 @@
 <TH style="TEXT-ALIGN: left; BACKGROUND-COLOR: white">white&nbsp;chocolate</TH>
 <TD style="BACKGROUND-COLOR: white">0.80</TD>
 <TD style="BACKGROUND-COLOR: orange">20%</TD>
-<TD style="BACKGROUND-COLOR: green">0.64</TD></TR></TBODY></TABLE></DIV></DIV></DIV><PRE id=code0008 class="ELEMENT CODE EDITABLE" contentEditable=false><P>var&nbsp;fCategory&nbsp;=&nbsp;f("priceList.lookup({article:article}).category");</P><P>table('myOrder')</P><P>.add({article:'apple',quantity:3,category:fCategory})</P><P>.update({price$EUR:f("priceList.lookup({article:article}).price$EUR"),total$EUR:f("quantity*price$EUR")})</P></PRE>
-<DIV id=out0008 class=OUTPUT>
+<TD style="BACKGROUND-COLOR: green">0.64</TD></TR></TBODY></TABLE></DIV></DIV></DIV>
+<DIV id=sect0092 class="ELEMENT SECTION" sizset="27" sizcache="1">
+<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.12 .lookup() to get the data of a row</H2>
+<DIV sizset="27" sizcache="1" container="sectionContent">
+<DIV id=rich0093 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>if you search the data of a row matching a criteria, you can do so with the lookup method. <STRONG>please note it returns the data</STRONG>, not a Row object</DIV><PRE id=code0094 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.inspect(priceList.lookup({price$EUR:5.50}))</PRE>
+<DIV id=out0094 class="OUTPUT SUCCESS">
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>category</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>fruit</TD></TR>
+<TR>
+<TH vAlign=top>article</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>pineapple</TD></TR>
+<TR>
+<TH vAlign=top>price$EUR</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>5.5</TD></TR>
+<TR>
+<TH vAlign=top>todayPrice$EUR</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;V(undefined):f("rowData.price$EUR*(1-rowData.discount)")==&gt;NaN]</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV><PRE id=code0008 class="ELEMENT CODE EDITABLE" contentEditable=false><P>var&nbsp;fCategory&nbsp;=&nbsp;f("priceList.lookup({article:article}).category");</P><P>table('myOrder')</P><P>.add({article:'apple',quantity:3,category:fCategory})</P><P>.update({price$EUR:f("priceList.lookup({article:article}).price$EUR"),total$EUR:f("quantity*price$EUR")})</P></PRE>
+<DIV id=out0008 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
 <TR>
@@ -871,21 +805,4 @@
 <TD>3</TD>
 <TD style="TEXT-ALIGN: left">fruit</TD>
 <TD>3.6</TD>
-<TD>10.8</TD></TR></TBODY></TABLE></DIV><PRE id=code0082 class="ELEMENT CODE EDITABLE" contentEditable=false>"toto".valueOf()</PRE>
-<DIV id=out0082 class=OUTPUT>toto</DIV><PRE id=code0010 class="ELEMENT CODE EDITABLE" contentEditable=false><P>myOrder.setCell(0,'article','black chocolate')</P></PRE>
-<DIV id=out0010 class=OUTPUT>
-<TABLE>
-<THEAD>
-<TR>
-<TH>article</TH>
-<TH>quantity</TH>
-<TH>category</TH>
-<TH>price$EUR</TH>
-<TH>total$EUR</TH></TR></THEAD>
-<TBODY>
-<TR>
-<TD style="TEXT-ALIGN: left">black&nbsp;chocolate</TD>
-<TD>3</TD>
-<TD style="TEXT-ALIGN: left">confectionery</TD>
-<TD>0.9</TD>
-<TD>2.7</TD></TR></TBODY></TABLE></DIV></DIV></DIV></DIV></BODY></HTML>
+<TD>10.8</TD></TR></TBODY></TABLE></DIV></DIV></DIV></DIV></BODY></HTML>
