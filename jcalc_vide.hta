@@ -24,14 +24,55 @@
 <DIV id=menu class=TOOLBAR>
 <DIV><INPUT onclick=jc.showCode(event) type=checkbox>codes</INPUT><INPUT onclick=jc.showCut(event) type=checkbox>cuts</INPUT><INPUT onclick=jc.showTest(event) type=checkbox>tests</INPUT><INPUT onclick=jc.showTrace(event) type=checkbox>traces</INPUT><INPUT onclick=jc.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
 <DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
-<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick=jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement) style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick=jc.template.convertTo(jc.selectedElement,jc.templateChoice$.val()) style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION></SELECT><BUTTON onclick=jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement) style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
+<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].convert(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION></SELECT><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
 <DIV id=objectToolBar></DIV></DIV></DIV>
-<DIV id=jcContent class=CONTAINER sizcache="1" sizset="0"><PRE id=code0002 class="ELEMENT CODE EDITABLE" contentEditable=false> </PRE>
+<DIV id=jcContent class=CONTAINER sizcache="1" sizset="0" container="sectionContent"><PRE id=code0002 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.vars.o1 = {first:'PA',name:'Nicole'}</P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">jc.vars.o2 = {first:'Marc',parent:o1}</FONT></P><P>jc.vars.o3 = {first:'Tanguy',parent:o2}</P></PRE>
 <DIV id=out0002 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
 <TBODY>
 <TR>
-<TH vAlign=top>toto</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></BODY></HTML>
+<TH vAlign=top>first</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>Tanguy</TD></TR>
+<TR>
+<TH vAlign=top>parent</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;Object]</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0004 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.get.call(o2,'first')</P></PRE>
+<DIV id=out0004 class="OUTPUT SUCCESS">Marc</DIV><PRE id=code0003 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.get.call(o2,'name')</P></PRE>
+<DIV id=out0003 class="OUTPUT SUCCESS">Nicole</DIV><PRE id=code0006 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.get.call(o3,'name')</PRE>
+<DIV id=out0006 class="OUTPUT SUCCESS">Nicole</DIV><PRE id=code0008 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.inspect(jc.set.call(o2,'ch&nbsp;des&nbsp;paquerets&nbsp;9','address','street'),5)</PRE>
+<DIV id=out0008 class="OUTPUT SUCCESS">
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>first</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"Marc"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>parent</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>first</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"PA"</SPAN></TD></TR>
+<TR>
+<TH vAlign=top>name</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"Nicole"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TH vAlign=top>address</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>street</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></BODY></HTML>

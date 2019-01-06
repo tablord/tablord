@@ -54,7 +54,7 @@
                 func:function(f){return jc.help(f)},
                 array:function(a){return a.toString()},              
                 domElement:function(element){return 'DOM Element<SPAN class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(jc.purgeJQueryAttr(element.outerHTML)))+'</SPAN>'},
-                obj:function(obj){return jc.inspect(obj).span()},
+                obj:function(obj){return jc.inspect(obj).span().toString()},
                 date:function(date){return date.yyyymmdd()},
                 number:function(n){return n.toString()},
                 string:function(s){return s}
@@ -151,6 +151,7 @@
     return {width:d.body.clientWidth, height:d.body.clientHeight};
   }
 
+//TODO à quoi sert calc déjà????
   String.prototype.calc = function(decimal) {
     var s=this.replace(/[^0-9\.\+\*\\\-]+/g,'');
     var n = eval(s);
@@ -413,6 +414,57 @@
   }
 
   
+  jc.get = function(/*path*/) {
+    // applied as a method (either declare MyClass.prototype.get = jc.get or jc.get.call(obj,path)
+    // returns this.path1.path2.path3 or undefined if at any stage it becomes undefined
+    // and search also in this.parent is case of undefined property
+    // enables a cascad search of a property
+    var o = this;
+    while (o) {
+      var subO = o;
+      for (var i=0;i<arguments.length;i++){
+        subO = subO[arguments[i]];
+        if (subO === undefined) break;
+      }
+      if (subO !== undefined) return subO;
+
+      o = o.parent;
+    }
+    return undefined;
+  }
+
+  jc.merge = function(/*path*/) {
+    // applied as a method (either declare MyClass.prototype.merge = jc.merge or jc.merge.call(obj,path)
+    // like jc.get, but if the result is an object
+    var o = this;
+    while (o) {
+      var subO = o;
+      for (var i=0;i<arguments.length;i++){
+        subO = subO[arguments[i]];
+        if (subO === undefined) break;
+      }
+      if (subO !== undefined) return subO;
+
+      o = o.parent;
+    }
+    return undefined;
+  }
+
+  jc.set = function(value /*,path*/) {
+    // set the value of the property of this.path1.path2... and creates, if needed the intermediate objects
+    var o = this;
+    for (var i=1;i<arguments.length-1;i++) {
+      var p = o[arguments[i]];
+      if (p === undefined) {
+        o = o[arguments[i]] = {};
+      }
+      else {
+        o = p;
+      }
+    }
+    o[arguments[i]] = value;
+    return this;
+  }  
 
   // edi related functions ////////////////////////////////////////////
   var geval = eval;
@@ -1027,7 +1079,6 @@
       nbPassed: $('.TEST.SUCCESS').length,
       nbFailed: $('.TEST.ERROR').length
     }
-a('before stringify',result)
     jc.fso.writeFile(jc.arguments.testResultFileName, JSON.stringify(result), 8);
   }
 
@@ -1557,7 +1608,7 @@ a('before stringify',result)
   }
 
   jc.findblockNumber = function() {
-    $('.CODE').each(function(i,e) {
+    $('.ELEMENT').each(function(i,e) {
       var n = Number(e.id.slice(4));
       if (!isNaN(n)) {
         jc.blockNumber = Math.max(jc.blockNumber,n);
@@ -1773,7 +1824,6 @@ a('before stringify',result)
   jc.writeResults = function() {
     // write the jc.results as JSON in a file of the same name .jres
     var resFileName = ''+jc.url.drive+jc.url.path+jc.url.fileName+'.jres';
-a('inside writeResults',jc.results)
     jc.fso.writeFile(resFileName,JSON.stringify(jc.results));
   }
 
@@ -1950,11 +2000,11 @@ a('inside writeResults',jc.results)
     if (obj.outerHTML) { // an Element
       return format.domElement(obj);
     }
-    if ($.isPlainObject(obj)) {
-      return format.obj(obj);
-    }
     if (obj.getUTCDate) {
       return format.date(obj)
+    }
+    if (obj.constructor == Object) {
+      return format.obj(obj);
     }
     if (obj.valueOf) {
       var val = obj.valueOf();   // typicall the case of v() where valueOf return whatever has been stored in the V object
@@ -1965,6 +2015,7 @@ a('inside writeResults',jc.results)
     return jc.toHtml(obj.toString());
   }
 
+//TODO keep or kill??
   jc.setFormatOptions = function(options,format) {
     if (options.format === undefined) options.format = {};
     if (jc.formatters[format] === undefined) throw new Error('the format '+format+" dosen't exist")
@@ -1992,7 +2043,7 @@ a('inside writeResults',jc.results)
   jc.displayResult = function(result,output) {
     $(output.outputElement)
     .empty().removeClass('ERROR').addClass('SUCCESS')
-    .append((result !== undefined) && (result !== null) && (typeof result.node$ === 'function') && result.node$() 
+    .append(((result !== undefined) && (result !== null) && (typeof result.node$ === 'function') && result.node$() )
             || jc.format(result)
            )
     .prepend(output.toString())
@@ -2097,7 +2148,7 @@ a('inside writeResults',jc.results)
       var res = jc.runHtaFile(arguments[i]);
       results.push({file:arguments[i],errCode:res.errCode,nbPassed:res.testStatus.nbPassed,nbFailed:res.testStatus.nbFailed,dateTime:res.testStatus.dateTime});
     }
-    return table().addRows(results).style(function(t,r,c){return ((c=='nbFailed')&&(t.cell(r,c) != 0))?{backgroundColor:'red'}:{}});
+    return table().addRows(results).colStyle(function(r,c,value){return (value !== 0)?{backgroundColor:'red'}:{}},'nbFailed');
   }
 
   jc.animate = function (interval,fromCodeId,toCodeId,endCondition) {
