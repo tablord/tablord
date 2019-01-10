@@ -433,23 +433,6 @@
     return undefined;
   }
 
-  jc.merge = function(/*path*/) {
-    // applied as a method (either declare MyClass.prototype.merge = jc.merge or jc.merge.call(obj,path)
-    // like jc.get, but if the result is an object
-    var o = this;
-    while (o) {
-      var subO = o;
-      for (var i=0;i<arguments.length;i++){
-        subO = subO[arguments[i]];
-        if (subO === undefined) break;
-      }
-      if (subO !== undefined) return subO;
-
-      o = o.parent;
-    }
-    return undefined;
-  }
-
   jc.set = function(value /*,path*/) {
     // set the value of the property of this.path1.path2... and creates, if needed the intermediate objects
     var o = this;
@@ -465,6 +448,14 @@
     o[arguments[i]] = value;
     return this;
   }  
+
+  // functions for reduce /////////////////////////////////////////////
+  jc.reduce = {};
+  jc.reduce.sum = function(a,b) {return a+b};
+  jc.reduce.min = Math.min;
+  jc.reduce.max = Math.max;
+  jc.reduce.sumCount = function(sc,b) {sc.count++;sc.sum+=b;return sc};
+
 
   // edi related functions ////////////////////////////////////////////
   var geval = eval;
@@ -490,6 +481,7 @@
   }
   catch (e) {
     JSON = {};
+
     JSON.stringify = function(obj){
       if (typeof obj == 'number') {
         return obj.toString();
@@ -518,6 +510,7 @@
       }
       throw new Error("INTERNAL ERROR: can't stringify "+jc.inspect(obj));
     };
+
     JSON.parse = function(json){
       var r;
       return eval('r='+json);   // unsecure quick and dirty before having a true JSON
@@ -2303,7 +2296,7 @@
   // upgrades from previous versions ////////////////////////////////////////////////////////////////////////////////
     jc.upgradeModules = function() {
     // checks that this is the lastest modules and if not replaces what is needed
-    var modulesNeeded = ['jquery-1.5.1.min.js','jcalcEdi.js','units.js','jcalc.js','axe.js','stateMachine.js','BOM.js','sys.js','ocrRdy.js','finance.js'];
+    var modulesNeeded = ['jquery-1.5.1.min.js','jcalcEdi.js','units.js','jcalc.js','axe.js','stateMachine.js','sys.js','ocrRdy.js','finance.js'];
     var allModules = modulesNeeded.concat('jquery.js'); // including deprecated modules
     var modules = [];
     var $script = $('SCRIPT').filter(function(){return $.inArray(this.src,allModules)!=-1});

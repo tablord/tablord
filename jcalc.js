@@ -50,7 +50,7 @@
     return this.value;
   }
 
-  V.prototype.toJson = function () {
+  V.prototype.toJSON = function () {
     return this.code()?'f('+JSON.stringify(this.code())+')':JSON.stringify(this.value);
   }
 
@@ -68,7 +68,7 @@
 
   V.prototype.toString = function() {
     // return the summary of the variable
-    return '[object V('+this.name+'):'+(this.func?this.toJson()+'==>':'')+this.valueOf()+']';
+    return '[object V('+this.name+'):'+(this.func?this.toJSON()+'==>':'')+this.valueOf()+']';
   }
 
   V.prototype.view = function(options) {
@@ -104,7 +104,7 @@
   V.prototype.updateCode = function() {
     // generate the code that represents the element as edited
     // can be used to replace the existing code 
-    var code = 'v('+JSON.stringify(this.name)+','+this.toJson()+')';
+    var code = 'v('+JSON.stringify(this.name)+','+this.toJSON()+')';
     this.codeElement.innerHTML = jc.toHtml(code+'.edit()');
   }
 
@@ -142,7 +142,7 @@
           jcFunc.replace(/^\s*\{(.*)\}\s*$/,'({$1})');
           code = 'return '+jcFunc;
         }
-        var f = new Function('rowData','col','with (jc.vars){with(rowData||{}) {'+code+'}}');
+        var f = new Function('rowData','col','value','with (jc.vars){with(rowData||{}) {'+code+'}}');
         f.userCode = jcFunc;
         f.toString = function(){return this.userCode};
         f.joJson = function(){return 'f("'+JSON.stringify(this.userCode)+'")'};
@@ -162,7 +162,7 @@
 
   // Row //////////////////////////////////////////////
 
-  function Row(obj,table) {
+  jc.Row = function(obj,table) {
     // create a Row from an object or a Row. 
     // only ownProperties (not inherited) are used is the Row
     this._ = {};
@@ -175,15 +175,15 @@
     }
   }
 
-  Row.prototype.cell = function(col) {
+  jc.Row.prototype.cell = function(col) {
     return this._[col];
   }  
 
-  Row.prototype.val = function(col) {
+  jc.Row.prototype.val = function(col) {
     return this._[col] && this._[col].valueOf();
   }  
 
-  Row.prototype.setCell = function (col,value) {
+  jc.Row.prototype.setCell = function (col,value) {
     if (typeof value == "function") {
       var f = new V(undefined,value);  //wrap the function into a V
       f.row = this;       //and assign the _row,_col 
@@ -195,11 +195,11 @@
     return this;
   }
 
-  Row.prototype.toString = function() {
+  jc.Row.prototype.toString = function() {
     return "[object Row]";
   }
 
-  Row.prototype.eachCol = function(func) {
+  jc.Row.prototype.eachCol = function(func) {
     // func must be function(colname,colObject)
     for (var col in this._) {
       func(col,this._[col]);
@@ -207,7 +207,58 @@
     return this;
   }
 
-  Row.prototype.toJSON = function() {
+  jc.Row.prototype.reduce = function(reduceF,criteria,initialValue) {
+    // apply a reduce function on a column
+    // criteria is an optional f(jcFunc) that process only row that return true
+    var first = true;
+    var r;
+    if (initialValue !== undefined) {
+      r = initialValue;
+      first = false;
+    }
+    for (var colName in this._) {
+      var value = this.val(colName);
+      if ((criteria===undefined)||(criteria.call(this,this._,colName,value))) {
+        if (first) {
+          r = value;
+          first = false;
+        }
+        else {
+          r = reduceF(r,value);
+        }
+      }
+    }
+    return r;
+  }
+
+  jc.Row.prototype.sum = function(criteria) {
+    // return the sum of the row
+    return this.reduce(function(a,b){return a+b},criteria)
+  }
+
+  jc.Row.prototype.min = function(criteria) {
+    // return the min of the row
+    return this.reduce(Math.min,criteria);
+  }
+
+  jc.Row.prototype.max = function(criteria) {
+    // return the min of the row
+    return this.reduce(Math.max,criteria);
+  }
+
+  jc.Row.prototype.average = function(criteria) {
+    // return the average of the row
+    var sc = this.reduce(colName,function(r,b){r.count++;r.sum+=b;return r},criteria,{count:0,sum:0});
+    return sc.sum/sc.count;
+  }
+
+  jc.Row.prototype.rms = function(colName,criteria) {
+    // return the root mean square of the row
+    var sc = this.reduce(function(r,b){r.count++;r.sum+=b*b;return r},criteria,{count:0,sum:0});
+    return Math.sqrt(sc.sum/sc.count);
+  }
+
+  jc.Row.prototype.toJSON = function() {
     var e = [];
     this.eachCol(function(colName,colObject){
       e.push(JSON.stringify(colName)+':'+JSON.stringify(colObject));
@@ -215,7 +266,7 @@
     return '{'+ e.join(',')+ '}';
   }
 
-  Row.prototype.span = function (options) {
+  jc.Row.prototype.span = function (options) {
     options = options || {};
     if (!options.cols) {
       options.cols = {};
@@ -237,13 +288,13 @@
     return jc.html(h);
   }
 
-  Row.prototype.list = function() {
+  jc.Row.prototype.list = function() {
     var h = '<table>';
     this.eachCol(function (col,val) {h += '<tr><th>'+col+'</th><td>'+val+'</td></tr>'});
     return jc.html(h+'</table>');
   }
 
-  Row.prototype.isRow = true;
+  jc.Row.prototype.isRow = true;
 
 
 // Col   //////////////////////////////////////////////////////////////
@@ -384,12 +435,17 @@
     return this;
   }
 
+  jc.Table.prototype.showOnly = function(columns) {
+    this.hide(jc.keys(this.cols)).show(columns);
+    return this;
+  }
+
   jc.Table.prototype.add = function(row) {
     // add a row
     // row can be either a simple object or a Row object
     // return the table for method chaining
     
-    row = new Row($.extend(true,{},this.options.defValues,row),this);
+    row = new jc.Row($.extend(true,{},this.options.defValues,row),this);
     row.index = this.length;
     this[this.length++] = row;
     this.registerPk(row);
@@ -463,19 +519,24 @@
     return c.valueOf();
   }
 
-  jc.Table.prototype.reduce = function(colName,reduceF,criteria) {
+  jc.Table.prototype.reduce = function(colName,reduceF,criteria,initialValue) {
     // apply a reduce function on a column
     // criteria is an optional f(jcFunc) that process only row that return true
     var first = true;
     var r;
+    if (initialValue !== undefined) {
+      r = initialValue;
+      first = false;
+    }
     for (var i=0;i<this.length;i++) {
+      var value = this.val(i,colName);
       if ((criteria===undefined)||(criteria.call(this[i],this[i]._,colName,value))) {
         if (first) {
-          r = this.val(i,colName);
+          r = value;
           first = false;
         }
         else {
-          r = reduceF(r,this.val(i,colName));
+          r = reduceF(r,value);
         }
       }
     }
@@ -483,18 +544,30 @@
   }
 
   jc.Table.prototype.sum = function(colName,criteria) {
-    // return the sum of the column
-    return this.reduce(colName,function(a,b){return a+b})
+    // return the sum of the column 
+    return this.reduce(colName,function(a,b){return a+b},criteria)
   }
 
   jc.Table.prototype.min = function(colName,criteria) {
-    // return the min of the colum
+    // return the min of the column 
     return this.reduce(colName,Math.min,criteria);
   }
 
   jc.Table.prototype.max = function(colName,criteria) {
-    // return the min of the colum
+    // return the min of the column
     return this.reduce(colName,Math.max,criteria);
+  }
+
+  jc.Table.prototype.average = function(colName,criteria) {
+    // return the average of the column
+    var sc = this.reduce(colName,function(r,b){r.count++;r.sum+=b;return r},criteria,{count:0,sum:0});
+    return sc.sum/sc.count;
+  }
+
+  jc.Table.prototype.rms = function(colName,criteria) {
+    // return the root mean square of the column
+    var sc = this.reduce(colName,function(r,b){r.count++;r.sum+=b*b;return r},criteria,{count:0,sum:0});
+    return Math.sqrt(sc.sum/sc.count);
   }
 
   jc.Table.prototype.setCell = function(row,col,value) {
@@ -727,13 +800,13 @@
     $(this.codeElement).addClass('AUTOEDIT').attr('jcObject',this.name);
     
     var h = '<div><var>'+this.name+'</var><table><tr><th>#</th>';
-    for (var col in this.options.cols) {
+    for (var col in this.cols) {
       h += '<th>'+col+'</th>';
     }
     h += '</tr>';
     for (var row=0; row<this.length; row++) {
       h += '<tr><th draggable=true>'+row+'</th>';
-      for (var col in this.options.cols) {
+      for (var col in this.cols) {
         h += '<td>'+jc.editor.html(this.cell(row,col),{jcObject:this.name,'jcRow':row,jcCol:col})+'</td>';
       }
       h += '</tr>';
@@ -758,7 +831,6 @@
     // generate the code that represents the element as edited
     // can be used to replace the existing code 
     var code = 'table('+JSON.stringify(this.name)+')\n';
-    code += '.cols('+JSON.stringify(this.options.cols)+')\n';
     for (var i=0; i<this.length; i++) {
       code += '.add('+this[i].toJSON()+')\n';
     }
@@ -828,6 +900,8 @@
   jc.View.prototype.sum = jc.Table.prototype.sum;
   jc.View.prototype.max = jc.Table.prototype.max;
   jc.View.prototype.min = jc.Table.prototype.min;
+  jc.View.prototype.average = jc.Table.prototype.average;
+  jc.View.prototype.rms = jc.Table.prototype.rms;
 
   jc.View.prototype.toString = function() {
     // return a string summarizing the table
