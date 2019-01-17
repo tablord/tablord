@@ -94,7 +94,7 @@
 
   // classical formating functions ////////////////////////////////////////////
   
-  jc.Format = function() {}
+  jc.Format = function Format() {}
     // this class is compatible with the format property of options object used in jc.format(value,options)
     // but it has methods that helps to build this object
 
@@ -586,6 +586,10 @@
 
   // Inspector ////////////////////////////////////////////////////////
   jc.Inspector = function Inspector(obj,depth,name) {
+    // Inspector object are made to have both .toString and .span methods
+    // so they can be displayed either in an html or plain text context
+    // - depth (default 1) give at what depth object properties are also inspected
+    // - name (optional) gives a name to be shown in the display
     this.obj = obj;
     this.name = name || '';
     this.depth = depth || 1;
@@ -708,6 +712,9 @@
 
 
   jc.inspect = function(obj,depth,name){
+    // return an Inspector object so obj can be displayed either in an html or plain text context
+    // - depth (default 1) give at what depth object properties are also inspected
+    // - name (optional) gives a name to be shown in the display
     return new jc.Inspector(obj,depth,name);
   }
 
@@ -1029,6 +1036,104 @@
     return new jc.HTML('<SPAN class=HELP><b>'+signature+'</b><br/>'+comments.join('<br/>')+(constructor?jc.inspect(func.prototype,'methods').span():'')+'</SPAN>');
   }
 
+  // HELP system ///////////////////////////////////////////////////////////////////////
+
+  jc.HelpIndex = function HelpIndex() {
+    // HelpIndex objects contain an index of all functions of the system
+    // jc.help.index is created automatically by the system
+    this.update();
+    this.history = [];
+    this.historyPos = -1;
+  }
+
+  jc.HelpIndex.prototype.update = function (object,path) {
+    // update the index 
+    if (object === undefined) {
+      object = jc;
+      path =  'jc.'
+      this.index = [];
+    }
+
+    for (prop in object) {
+      if (typeof object[prop] === 'function') {
+        this.index.push({prop:prop,path:path,func:object[prop]});
+        if (jc.constructorName(prop)) {
+          this.update(object[prop].prototype,path+prop+'.prototype.');
+        }
+      }
+    }
+    return this;
+  }
+
+  jc.HelpIndex.prototype.find = function(name) {
+    // return all entry corresponding to name: name can be partial
+    // if name is a full path (ie. jc.help) the result is an exact match
+    // if not (ie no . notation) any entry having name inside is valid 
+    var res = [];
+    var m = name.match(/^(.+\.)(.*)$/i);
+    
+    if (m) {
+      var path = m[1];
+      var prop = m[2];
+      for (var i=0;i<this.index.length;i++) {
+        if ((this.index[i].prop === prop) && (this.index[i].path === path)) {
+          res.push(this.index[i]);
+          return res;
+        }
+      }
+    }
+    else {
+      var regExp = new RegExp('^(.*)('+name+')(.*)$','i');
+      for (var i=0;i<this.index.length;i++) {
+        if (this.index[i].prop.search(regExp)!==-1) res.push(this.index[i]);
+      }
+    }
+    return res;
+  }
+
+  jc.HelpIndex.prototype.show =function(name) {
+    // show in the help Panel the help on name
+    this.history[++this.historyPos] = jc.helpSearch$.val();
+    this.history.length = this.historyPos+1;
+    jc.helpSearch$.val(name);
+    jc.helpOutput$.html(jc.help.index.help$(name));
+  }
+
+  jc.HelpIndex.prototype.back = function() {
+    // return on the previous search
+    if (this.historyPos>=0){
+      var name = this.history[this.historyPos--];
+      jc.helpSearch$.val(name);
+      jc.helpOutput$.html(jc.help.index.help$(name));
+    }
+  }
+
+  jc.HelpIndex.prototype.help$ = function(name) {
+    // return the html in order to display the result of the search of name
+    var regExp = new RegExp('^(.*)('+name+')(.*)$','i');
+    var res = this.find(name);
+    var n$ = $('<table>');
+    for (var i = 0; i<res.length; i++) {
+      var path = res[i].path.replace(/^(.*\.[A-Z]\w*)\./,'<span class=HELPLINK onclick="jc.help.index.show(\'$1\');">$1</span>.');
+      n$.append($('<TR><TD valign="top" class=LEFT>'+path+res[i].prop.replace(regExp,'$1<b>$2</b>$3')+'</TD><TD class=LEFT>'+jc.help(res[i].func)+'</TD></TR>'));
+    }
+    return n$;
+  }
+
+  jc.HelpIndex.prototype.undocumentedClasses = function() {
+    // return a list of index entries of fuunction that are potential Classes (start with uppercase)
+    // without proper documentation (ie. function ClassName(...) )
+    // for maintenance only
+    var res = [];
+    for (var i = 0;i<this.index.length; i++) {
+      if (jc.constructorName(this.index[i].prop)){
+        if (jc.functionName(this.index[i].func) === '') {
+          res.push(this.index[i]);
+        }
+      }
+    }
+    return res;
+  }
 
   // navigation within document ////////////////////////////////////////////////////////
   jc.sectionBeingExecuted$ = function() {
@@ -1084,6 +1189,9 @@
   };
 
   // Editor ////////////////////////////////////////////////////////////////////////////
+
+
+  jc.Editor = function Editor(){
   // the goal of Editor is to offer a genenral mechanism in order to help implement 
   // jcObject edition capabilities.
   // this mechanism is the following:
@@ -1115,10 +1223,6 @@
   //                      TODO: provide mechanism for simple object / arrays
   //
   //  jc.editor.simpleTypeToolBar$ a jQuery storing the necessary toolBar for the simple types
-  //
-  ///////////////////////////////////////////////////////////////////////////////////////
-
-  jc.Editor = function(){
 
   }
 
@@ -1344,7 +1448,11 @@
 
   // Template //////////////////////////////////////////////////////////////////////////
  
-  jc.Template = function(name){
+  jc.Template = function Template(name){
+    // Template objects are generators of DOM ELEMENT 
+    // there is one single instance for any number of DOM instances
+    // for example Template('code') is the Template object of all CODE Elements
+    // normally users create template through the `jc.template function
     this.name = name;
   };
 
@@ -1674,6 +1782,11 @@
     window.print();
   }
      
+  jc.helpSearchChange = function(event) {
+    // event handler for the search box
+    jc.helpOutput$.html(jc.help.index.help$(event.currentTarget.value));
+  }
+
   jc.updateTemplateChoice = function() {
     var currentValue = jc.templateChoice$.val();
     jc.templateChoice$.empty();
@@ -1714,12 +1827,10 @@
       '<DIV id=objectToolBar></DIV>'
     );
     
-    jc.helpToolBar$ = $('<DIV>search</DIV>').append('<INPUT>').append('<DIV>');
-
     jc.templateChoice$ = $('<SELECT>');
     jc.updateTemplateChoice();
 
-    jc.selectionToolBar$ = $('<DIV>')
+    jc.selectionToolBar$ = $('<DIV/>')
       .append('<SPAN id=codeId>no selection</SPAN>')
       .append('<BUTTON id="cutBtn" onclick=jc.cutBlock(jc.selectedElement);>cut</BUTTON>')
       .append('<BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement,jc.currentContainer$.attr(\'container\'))">&#8593;</BUTTON>')
@@ -1730,16 +1841,17 @@
       .append('<BUTTON id="toTestBtn" onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON>')
       .append(jc.objectToolBar$)
       .hide();
+    
+    jc.helpSearch$ = $('<INPUT/>').keyup(jc.helpSearchChange);
+    jc.helpOutput$ = $('<DIV  style="overflow:auto;max-height:400px;">please type your search above</DIV>');
+    jc.helpPanel$ = $('<DIV><SPAN style="color:red;cursor:pointer;" onclick="jc.helpPanel$.hide(300)">&nbsp;&#215;&nbsp;</SPAN></DIV>')
+                    .append(jc.helpSearch$)
+                    .append('<span style="color:#8dff60;cursor:pointer;" onclick="jc.help.index.back()">&#9668;</span>')
+                    .append(jc.helpOutput$)
+                    //.hide();
 
     jc.menu$ =  $(
-    '<DIV id=menu class=TOOLBAR>'+
-      '<DIV>'+
-        '<INPUT onclick="jc.showCode(event)"'+(b$.attr('showCode')=="true"?' checked':'')+' type=checkbox>codes</INPUT>'+
-        '<INPUT onclick="jc.showCut(event)"'+(b$.attr('showCut')=="true"?' checked':'')+' type=checkbox>cuts</INPUT>'+
-        '<INPUT onclick="jc.showTest(event)"'+(b$.attr('showTest')=="true"?' checked':'')+' type=checkbox>tests</INPUT>'+
-        '<INPUT onclick="jc.showTrace(event)"'+(b$.attr('showTrace')=="true"?' checked':'')+' type=checkbox>traces</INPUT>'+
-        '<INPUT onclick="jc.setAutoRun(event)"'+(jc.autoRun?' checked':'')+' type=checkbox>auto run</INPUT>'+
-      '</DIV>'+
+    '<DIV id=menu class=TOOLBAR style="float:right;max-width:50%;">'+
       '<DIV>'+
         '<BUTTON id=runUntilSelectedBtn onclick=jc.execUntilSelected(); style="color: #8dff60;">&#9658;|</BUTTON>'+
         '<BUTTON id=runAllBtn onclick=jc.execAll(); style="color: #8dff60;">&#9658;&#9658;</BUTTON>'+
@@ -1747,9 +1859,16 @@
         '<BUTTON id="clearOutputsBtn" onclick="jc.clearOutputs();">clear</BUTTON>'+
         '<BUTTON id="saveBtn" onclick="jc.save();">save</BUTTON>'+
         '<BUTTON onclick="jc.print();">print</BUTTON>'+
+        '<BUTTON onclick="jc.helpPanel$.toggle(100);">help</BUTTON>'+
+        '<INPUT onclick="jc.showCode(event)"'+(b$.attr('showCode')=="true"?' checked':'')+' type=checkbox>codes</INPUT>'+
+        '<INPUT onclick="jc.showCut(event)"'+(b$.attr('showCut')=="true"?' checked':'')+' type=checkbox>cuts</INPUT>'+
+        '<INPUT onclick="jc.showTest(event)"'+(b$.attr('showTest')=="true"?' checked':'')+' type=checkbox>tests</INPUT>'+
+        '<INPUT onclick="jc.showTrace(event)"'+(b$.attr('showTrace')=="true"?' checked':'')+' type=checkbox>traces</INPUT>'+
+        '<INPUT onclick="jc.setAutoRun(event)"'+(jc.autoRun?' checked':'')+' type=checkbox>auto run</INPUT>'+
       '</DIV>'+
     '</DIV>')
     .append(jc.selectionToolBar$)
+    .append(jc.helpPanel$);
 
     $('BODY').prepend(jc.menu$);
 
@@ -2008,31 +2127,6 @@
     return jc.toHtml(obj.toString());
   }
 
-//TODO keep or kill??
-  jc.setFormatOptions = function(options,format) {
-    if (options.format === undefined) options.format = {};
-    if (jc.formatters[format] === undefined) throw new Error('the format '+format+" dosen't exist")
-    jc.formatters[format](options)
-    return options;
-  }
-
-  jc.formatters = {
-    '0'          : function(options) {options.format.number = function(n){return n.toFixed(0)}},
-    '0.0'        : function(options) {options.format.number = function(n){return n.toFixed(1)}},
-    '0.00'       : function(options) {options.format.number = function n2(n){return n.toFixed(2)}},
-    '0.000'      : function(options) {options.format.number = function(n){return n.toFixed(3)}},
-    '0.0000'     : function(options) {options.format.number = function(n){return n.toFixed(4)}},
-    '0.00000'    : function(options) {options.format.number = function(n){return n.toFixed(5)}},
-    '0.000000'   : function(options) {options.format.number = function(n){return n.toFixed(6)}},
-    '0%'         : function(options) {options.format.number = function(n){return Number(n*100).toFixed(0)+'%'}},
-    '0.0%'       : function(options) {options.format.number = function(n){return Number(n*100).toFixed(1)+'%'}},
-    '0.00%'      : function(options) {options.format.number = function(n){return Number(n*100).toFixed(2)+'%'}},
-    '0.000%'     : function(options) {options.format.number = function(n){return Number(n*100).toFixed(3)+'%'}},
-    '0.0000%'    : function(options) {options.format.number = function(n){return Number(n*100).toFixed(4)+'%'}},
-    '0.00000%'   : function(options) {options.format.number = function(n){return Number(n*100).toFixed(5)+'%'}},
-    '0.000000%'  : function(options) {options.format.number = function(n){return Number(n*100).toFixed(6)+'%'}},
-    'undefinedBlank' : function(options) {options.format.undef = function(){return ''}}
-  }
   jc.displayResult = function(result,output) {
     $(output.outputElement)
     .empty().removeClass('ERROR').addClass('SUCCESS')
@@ -2369,6 +2463,7 @@
     $(window).bind('beforeunload',jc.beforeUnload);
     $('body').keydown(jc.bodyKeyDown);
     jc.autoRun = $('body').attr('autoRun')!==false;
+    jc.help.index = new jc.HelpIndex();
     if (jc.autoRun) jc.execAll();
   });  
   

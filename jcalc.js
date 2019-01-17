@@ -162,7 +162,7 @@
 
   // Row //////////////////////////////////////////////
 
-  jc.Row = function(obj,table) {
+  jc.Row = function Row(obj,table) {
     // create a Row from an object or a Row. 
     // only ownProperties (not inherited) are used is the Row
     this._ = {};
@@ -298,7 +298,9 @@
 
 
 // Col   //////////////////////////////////////////////////////////////
-  jc.Col = function(name,table) {
+  jc.Col = function Col(name,table) {
+    // Col objects represent a column of a Table
+    // internal use only
     this.name = name;
     this.table = table;
   }
@@ -310,11 +312,9 @@
 
 // Table //////////////////////////////////////////////////////////////
 
-  jc.Table = function(name,parent) {
+  jc.Table = function Table(name) {
     // constructor of a new Table instance
-    // if parent != undefined, set options etc in such a way that it inherits properties and options from the parent
     this.name = name;
-    this.parent = parent
     this.length = 0;
     this.pk = undefined;
     this.pks = {}; 
@@ -855,7 +855,7 @@
 
 // View  //////////////////////////////////////////////////////////////
 
-  jc.View = function(parent) {
+  jc.View = function View(parent) {
     this.parent = parent;
     this.length = 0;
 
@@ -1399,7 +1399,7 @@
   }
     
 
-  // JcValue //////////////////////////////////////////////////
+  // IValue //////////////////////////////////////////////////
 
   jc.IValue = function JcValue(name,css,html,scene) {
     jc.IElement.call(this,name,css,html || name,scene);
@@ -1428,9 +1428,10 @@
   }
 
 /*
-  // JcFileName //////////////////////////////////////////////////
+  // IFileName //////////////////////////////////////////////////
 
   jc.IFileName = function JcFileName(name,css,html,scene) {
+    // IFileName is an IElement for <INPUT type=file>
     jc.IElement.call(this,name,css,html || name,scene);
     this._value = 0;
   }
@@ -1446,9 +1447,10 @@
   }
 */
 
-  // JcCheckBox //////////////////////////////////////////////////
+  // ICheckBox //////////////////////////////////////////////////
 
-  jc.ICheckBox = function(name,css,html,scene) {
+  jc.ICheckBox = function ICheckBox(name,css,html,scene) {
+    // ICheckBox is an IElement for <INPUT type=checkbox>
     jc.IElement.call(this,name,css,html || name,scene);
   }
 
@@ -1479,7 +1481,6 @@
   // Scene ///////////////////////////////////////////////////////////////////////
 
   jc.Scene = function Scene(name,css,html) {
-  // Scene constructor
   // a scene has itself as scene so all .div.. methods of IElement are also valid
     jc.IElement.call(this,name,css || {},html || '',this); 
     this.length = 0;
@@ -1540,6 +1541,7 @@
   // Cloud ///////////////////////////////////////////////
 
   jc.Cloud = function Cloud(name,css,html) {
+    // Cloud is a Scene that contains IElement that represents a Cloud of information
     jc.Scene.call(this,name,css,html);
     this.repulseForce = jc.repulseForce;    
     this.centripetalForce = jc.centripetalForce;

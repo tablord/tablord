@@ -299,6 +299,11 @@ pre {
   color:red;
 }
 
+.HELPLINK {
+  color:blue;
+  cursor:pointer;
+}
+
 .DIFF.EQUAL {
   background-color: #8dff60;
 }
