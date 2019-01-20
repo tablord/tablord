@@ -49,13 +49,15 @@
             defaults:{
               format:{            // default formating methods  this can be redefined in some JCalc objects like v table... in options.
                 undef:function(){return '<SPAN style=color:red;>undefined</SPAN>'},
+                nullObj:function(){return '<SPAN style=color:red;>null</SPAN>'},
                 emptStr:function(){return '<SPAN style=color:red;>empty string</SPAN>'},
                 func:function(f){return jc.help(f)},
                 array:function(a){return a.toString()},              
                 domElement:function(element){return 'DOM Element<SPAN class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(jc.purgeJQueryAttr(element.outerHTML)))+'</SPAN>'},
-                obj:function(obj){return jc.inspect(obj).span()},
+                obj:function(obj){return jc.inspect(obj).span().toString()},
                 date:function(date){return date.yyyymmdd()},
-                number:function(n){return n.toString()}
+                number:function(n){return n.toString()},
+                string:function(s){return s}
               }
             },
 
@@ -91,13 +93,39 @@
   jc.helps = {'jc.credits':jc.credits};
 
   // classical formating functions ////////////////////////////////////////////
-  jc.toFixed = function(decimals) {
-    // returns a fomating function(obj) that formats the number with fixed decimals
+  
+  jc.Format = function() {}
+    // this class is compatible with the format property of options object used in jc.format(value,options)
+    // but it has methods that helps to build this object
+
+  jc.Format.prototype.fixed = function(decimals) {
+    // returns a formating object {number:function(obj)} that formats the number with fixed decimals
+    var o = this.constructor === jc.Format?this:new jc.Format();
     var f = function (n) {return n.toFixed(decimals)};
     f.toString = function() {return 'display precision of '+decimals+' decimals'};
-    return f;
+    o.number = f;
+    return o;
   }
 
+  jc.Format.prototype.undefinedBlank = function() {
+    // returns a format object {undef:f()}
+    var o = this.constructor === jc.Format?this:new jc.Format();
+    var f = function () {return ''};
+    f.toString = function() {return 'undefined is blank'};
+    o.undef = f;
+    return o;
+  }
+
+  jc.percent = function(decimals) {
+    // returns a fomating function(obj) that formats the number with fixed decimals
+    var o = this.constructor === jc.Format?this:new jc.Format();
+    var f = function (n) {return Number(100*n).toFixed(decimals)+'%'};
+    f.toString = function() {return 'display number as percent with a precision of '+decimals+' decimals'};
+    o.number = f;
+    return o;
+  }
+
+  $.extend(jc,jc.Format.prototype); // make those methods directly availlable to jc
     
   jc.getScrollOffsets = function(w) {
     w = w||window;
@@ -123,11 +151,13 @@
     return {width:d.body.clientWidth, height:d.body.clientHeight};
   }
 
+//TODO à quoi sert calc déjà????
   String.prototype.calc = function(decimal) {
     var s=this.replace(/[^0-9\.\+\*\\\-]+/g,'');
     var n = eval(s);
     return Number(n).toFixed(decimal);
   }
+
 
   //JQuery extentions /////////////////////////////////////////////////
   $.fn.span = function() {
@@ -232,6 +262,72 @@
     return this;
   }
 
+
+
+
+  $.fn.getItemscopeData = function() {
+    // jquery must be a single itemscope element
+    var data = {};
+
+    function set(itemprop,value) {
+      if (itemprop.slice(-2) == '[]') {
+        data[itemprop] = data[itemprop] || [];
+        data[itemprop].push(value);
+      }
+      else {
+        data[itemprop] = value;
+      } 
+    }
+    
+    if (this[0].id) data._id = this[0].id;
+    this.children().each(function(i,element) {
+      var itemprop = element.itemprop;
+      if (itemprop !== undefined) {
+        if (element.itemscope !== undefined) {
+          set(itemprop,$(element).getItemscopeData()); 
+        }
+        else {
+          set(itemprop,$(element).getItemValue());
+        }
+      }
+      else {  // this node is not an itemprop, look if its children have data
+        $.extend(true,data,$(element).getItemscopeData()); 
+      }
+      
+    });
+    return data;
+  }
+
+  $.fn.getData = function(criteria,fields) {
+    // return data object for the jQuery, very similarly as a mongoDB .find
+    // the object is NOT compatible with microdata, but much easier to use
+    // even if not as flexible as microdata
+    // it assumes that propertie's name that are arrays end with []
+    // and all other properties have 0 or 1 value
+    // this function assume that all jQuery elements are itemscope
+    // So it is possible to get data from nested nodes
+    // and is the responsibility of the caller to know what to do
+    // the parameter result is only intended for recusivity purpose and should be undefined
+    // the structure also set "_id" if id is defined at the itemscope element
+    result = [];
+    this.each(function(i,element){
+      var data = $(element).getItemscopeData();
+      if (jc.objMatchCriteria(data,criteria)) {
+        if (fields == undefined){
+          result.push(data);
+        }
+        else {
+          var ro = {};
+          for (var f in fields) {
+            if (fields[f] == 1) ro[f] = data[f];
+          }
+          result.push(ro);
+        }
+      }
+    });
+    return result;
+  }
+
   $.fn.getMicrodata = function(result) {
     // return microdata object for the jQuery.
     // the object is JSON compatible with the HTML Microdata specification
@@ -314,8 +410,52 @@
     else {
       var items$ = $('[itemtype="'+url+'"]');
     }
-    return items$.filter(function(i){return $(this).parent().closest('[itemscope=""]').length === 0});
+    return items$.filter(function(){return $(this).parent().closest('[itemscope=""]').length === 0});
   }
+
+  
+  jc.get = function(/*path*/) {
+    // applied as a method (either declare MyClass.prototype.get = jc.get or jc.get.call(obj,path)
+    // returns this.path1.path2.path3 or undefined if at any stage it becomes undefined
+    // and search also in this.parent is case of undefined property
+    // enables a cascad search of a property
+    var o = this;
+    while (o) {
+      var subO = o;
+      for (var i=0;i<arguments.length;i++){
+        subO = subO[arguments[i]];
+        if (subO === undefined) break;
+      }
+      if (subO !== undefined) return subO;
+
+      o = o.parent;
+    }
+    return undefined;
+  }
+
+  jc.set = function(value /*,path*/) {
+    // set the value of the property of this.path1.path2... and creates, if needed the intermediate objects
+    var o = this;
+    for (var i=1;i<arguments.length-1;i++) {
+      var p = o[arguments[i]];
+      if (p === undefined) {
+        o = o[arguments[i]] = {};
+      }
+      else {
+        o = p;
+      }
+    }
+    o[arguments[i]] = value;
+    return this;
+  }  
+
+  // functions for reduce /////////////////////////////////////////////
+  jc.reduce = {};
+  jc.reduce.sum = function(a,b) {return a+b};
+  jc.reduce.min = Math.min;
+  jc.reduce.max = Math.max;
+  jc.reduce.sumCount = function(sc,b) {sc.count++;sc.sum+=b;return sc};
+
 
   // edi related functions ////////////////////////////////////////////
   var geval = eval;
@@ -325,6 +465,7 @@
   // a bit more secured: since IE<9 executes localy, it was possible do destroy local variable by defining functions or var
   // with this trick, one can still create global variables by just assigning (eg: jc.vars='toto' destroys the global variable jc.vars)
   // to be checked what could be done to improve
+    code.replace(/^\s*\{(.*)\}\s*$/,'({$1})');
 
     jc.errorHandler.code = code;
     code = 'var output = jc.output; with (jc.vars) {\n'+code+'\n};';   //output becomes a closure, so finalize function can use it during finalizations
@@ -340,6 +481,7 @@
   }
   catch (e) {
     JSON = {};
+
     JSON.stringify = function(obj){
       if (typeof obj == 'number') {
         return obj.toString();
@@ -368,6 +510,7 @@
       }
       throw new Error("INTERNAL ERROR: can't stringify "+jc.inspect(obj));
     };
+
     JSON.parse = function(json){
       var r;
       return eval('r='+json);   // unsecure quick and dirty before having a true JSON
@@ -442,7 +585,7 @@
   
 
   // Inspector ////////////////////////////////////////////////////////
-  jc.Inspector = function Inspector(obj,name,depth) {
+  jc.Inspector = function Inspector(obj,depth,name) {
     this.obj = obj;
     this.name = name || '';
     this.depth = depth || 1;
@@ -564,8 +707,8 @@
   }
 
 
-  jc.inspect = function(obj,name,depth){
-    return new jc.Inspector(obj,name,depth);
+  jc.inspect = function(obj,depth,name){
+    return new jc.Inspector(obj,depth,name);
   }
 
   jc.heir = function (p) {
@@ -622,16 +765,22 @@
     return o;
   }
 
+  jc.objMatchCriteria = function(obj,criteria) {
+    criteria = criteria || {};
+    for (var k in criteria) {
+      if (obj[k] !== criteria[k]) return false;
+    }
+    return true;
+  }
+
   jc.findInArrayOfObject = function(criteria,a) {
-    // find the first object in the array of object a that has all criteria true
+    // find the first object in the array (or array like) of object a that has all criteria true
     // example jc.findInArrayOfObject({toto:5},[{toto:1,tutu:5},{toto:5}])
     // will return 1
-    next: for (var i=0; i<a.length; i++) {
-      for (var k in criteria) {
-        if (a[i][k] !== criteria[k]) continue next;
-      }
-      return i;
+    for (var i=0; i<a.length; i++) {
+      if (jc.objMatchCriteria(a[i],criteria)) return i;
     }
+    return -1;
   }
 
   jc.pad = function(integer,numberOfDigits){
@@ -777,7 +926,24 @@
         return "'"+obj.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,"\\n")+"'";
       }
     }
-    else if ($.isPlainObject(obj)) {
+    else if (obj === undefined) {
+      return 'undefined';
+    }
+    else if (obj === null) {
+      return 'null';
+    }
+    else if (typeof obj === 'function') {
+      return obj.toString();
+    }
+    else if (obj.toJSON) {
+      return obj.toJSON();
+    }
+    else if ($.isArray(obj)) {
+      var sa=[];
+      $.each(obj, function(i,value) {sa.push(jc.toJSCode(value,stringQuote))});
+      return '['+sa.join(',')+']';
+    }
+    else {
       var sa=[];
       $.each(obj, function(name,value) {
         if (!jc.isJSid(name)) name = jc.toJSCode(name,stringQuote);
@@ -785,18 +951,6 @@
       });
       return '{'+sa.join(',')+'}';
     }
-    else if ($.isArray(obj)) {
-      var sa=[];
-      $.each(obj, function(i,value) {sa.push(jc.toJSCode(value,stringQuote))});
-      return '['+sa.join(',')+']';
-    }
-    else if (obj === undefined) {
-      return 'undefined';
-    }
-    else if (typeof obj === 'function') {
-      return obj.toString();
-    }
-    return obj.toJSON();
   }
 
   jc.htmlAttribute = function(attr,value) {
@@ -825,7 +979,9 @@
     
   jc.signature = function(func) {
     // returns only the signature of the function
-    return func.toString().match(/(function.*?\))/)[0];
+    var m = func.toString().match(/(function.*?\))/);
+    if (m) return m[0];
+    return func.toString();
   }
 
   jc.functionName = function (func) {
@@ -870,7 +1026,7 @@
       }
       else break;
     }
-    return new jc.HTML('<div class=HELP><b>'+signature+'</b><br>'+comments.join('<br>')+(constructor?jc.inspect(func.prototype,'methods').span():'')+'</DIV>');
+    return new jc.HTML('<SPAN class=HELP><b>'+signature+'</b><br/>'+comments.join('<br/>')+(constructor?jc.inspect(func.prototype,'methods').span():'')+'</SPAN>');
   }
 
 
@@ -1185,6 +1341,7 @@
     return $(element).parentsUntil('BODY').filter('.SECTION').length;
   }
 
+
   // Template //////////////////////////////////////////////////////////////////////////
  
   jc.Template = function(name){
@@ -1270,6 +1427,24 @@
     return 'template '+this.name+' created [<a href="'+this.url()+'">'+this.url()+'</a>]';
   }
 
+  jc.Template.prototype.find = function(criteria,fields) {
+    // return the data of a template collection as mongodb would do
+   
+    return jc.getItems$(this.url()).getData(criteria,fields);
+  }
+
+  jc.Template.MicrodataToData = function(microdata) {
+    // transforms the microdata structure where all properties are array into a structure
+    // closer to mongoBD.
+    // in order to do so:
+    // - properties which names end with [] will be kept as array
+    // - properties which names do not end with [] will be transformed as the value of the first element
+    //   of the array. if the array has more than one element, an Error will be raised.
+    
+
+  }
+
+
   jc.Template.urlToName = function(url) {
     if (url === undefined) return undefined;
     return url.match(/.*\/(.*)$/)[1];
@@ -1278,8 +1453,6 @@
   jc.Template.moveContainerContent = function(oldElement$,newElement$) {
     // move into newElement$ all Container's content found in oldElements
     // both oldElement$ and newElement$ should be jquery with one single element to give predictable results
-    
-
   }
 
   jc.Template.setElement$Containers = function(element$,containers){
@@ -1318,58 +1491,6 @@
     return containers;
   }
 
-/*
-
-  jc.Template.setElements$WithData = function(elements$,data){
-    // set all itemprop elements with data (recurse through children and data)
-    elements$.each(function(i,element){
-      var e$ = $(element);
-      var itemprop = element.itemprop;
-      if (itemprop !== undefined) {
-        if (e$.hasClass('EDITABLE')) {
-          e$.html(data[itemprop]===undefined?'':data[itemprop]);  //TODO JSON ???
-          return;
-        }
-        else if (element.itemscope !== undefined) {
-          jc.Template.setElements$WithData(e$.children(),data[itemprop]); 
-        } 
-        else if (element.tagName == 'SELECT') {
-          e$.val(data[itemprop]);
-        }
-        else throw new Error('an element with itemprop must either be an itemscope or be class=EDITABLE\n'+jc.format(element));
-      }
-      else {  // this node is not an itemprop, look in its children with the same data
-        jc.Template.setElements$WithData(e$.children(),data); 
-      }
-    });
-  }
-
-
-  jc.Template.getElements$Data = function(elements$){
-    // get all itemprop elements with data (recurse through children and data)
-    var data = {};
-    elements$.each(function(i,element){
-      var e$ = $(element);
-      var itemprop = element.itemprop;
-      if (itemprop !== undefined) {
-        if (e$.hasClass('EDITABLE')) {
-          data[itemprop] = e$.html() || '';
-        }
-        else if (element.itemscope !== undefined) {
-          data[itemprop] = jc.Template.getElements$Data(e$.children()); 
-        } 
-        else if (element.tagName == 'SELECT') {
-          data[itemprop] = e$.val()
-        }
-        else throw new Error('an element with itemprop must either be an itemscope or be class=EDITABLE or a SELECT tag\n'+jc.format(element));
-      }
-      else {  // this node is not an itemprop, look if its children have data
-        $.extend(true,data,jc.Template.getElements$Data(e$.children())); 
-      }
-    });
-    return data;
-  }
-*/
 
 
   jc.updateTemplateChoice = function () {}; // dummy so far, will be trully defined later on when creating menu;
@@ -1381,14 +1502,14 @@
     // .name: a name like an id optionaly followed by #version
     // and must define one of the 3
     // .fields: {field1:{options},field2:{options}....}
-    //          field1 is the name of the field
+    //          field1 is the name of the field if field name ends with [] the field is an array of values
     //          options is an object
     //          types
     //          - number:{}                     the field is a number
     //          - string:{}                     the field is a string:  default if nothing is specified
     //          - function:function(data){...}  the field is calculated (=> readonly) and the html is the result of this function
     //          - select:{choice1:val1,choice2:val2...) the field is a <SELECT>
-    //          - container:"template1:itemprop template2:itemprop" 
+    //          - container:"template1 template2" 
     //                 a container that accepts the specified template names and how the itemprop . if "", accepts anything
     //
     //          formating
@@ -1480,7 +1601,7 @@
   }
 
   jc.findblockNumber = function() {
-    $('.CODE').each(function(i,e) {
+    $('.ELEMENT').each(function(i,e) {
       var n = Number(e.id.slice(4));
       if (!isNaN(n)) {
         jc.blockNumber = Math.max(jc.blockNumber,n);
@@ -1506,7 +1627,7 @@
     var out = window.document.getElementById(outId);
     if (out == undefined) {
       var tag = (element.tagName=='SPAN'?'SPAN':'DIV');
-      $('<'+tag+' class=OUTPUT id='+outId+'>no output</'+tag+'>').insertAfter(element);
+      out = $('<'+tag+' class=OUTPUT id='+outId+'>no output</'+tag+'>').insertAfter(element)[0];
     }
     return out;
   }
@@ -1837,6 +1958,11 @@
 
 
   jc.format = function(obj,options) {
+    // format obj using by priority
+    // 1) options.format
+    // 2) the jc.defaults.format
+    // and according to the type
+
     if (options) {
       var format = $.extend(true,{},jc.defaults.format,options.format);
     }
@@ -1846,8 +1972,11 @@
     if (typeof obj === 'number') {
       return format.number(obj)
     }
-    if (obj == undefined) {
+    if (obj === undefined) {
       return format.undef();
+    }
+    if (obj === null) {
+      return format.nullObj();
     }
     if (obj === '') {
       return format.emptStr();
@@ -1859,16 +1988,16 @@
       return format.array(obj);
     }
     if (obj.span) {
-      return obj.span();
+      return obj.span().toString(); //span() usually return a HTML object;
     }
     if (obj.outerHTML) { // an Element
       return format.domElement(obj);
     }
-    if ($.isPlainObject(obj)) {
-      return format.obj(obj);
-    }
     if (obj.getUTCDate) {
       return format.date(obj)
+    }
+    if (obj.constructor == Object) {
+      return format.obj(obj);
     }
     if (obj.valueOf) {
       var val = obj.valueOf();   // typicall the case of v() where valueOf return whatever has been stored in the V object
@@ -1876,14 +2005,39 @@
         return jc.format(val,options);   // format the result of valueOf
       }
     }
-    return jc.toHtml(obj);       // fallback is to let display either valueOf or toString
+    return jc.toHtml(obj.toString());
   }
 
+//TODO keep or kill??
+  jc.setFormatOptions = function(options,format) {
+    if (options.format === undefined) options.format = {};
+    if (jc.formatters[format] === undefined) throw new Error('the format '+format+" dosen't exist")
+    jc.formatters[format](options)
+    return options;
+  }
+
+  jc.formatters = {
+    '0'          : function(options) {options.format.number = function(n){return n.toFixed(0)}},
+    '0.0'        : function(options) {options.format.number = function(n){return n.toFixed(1)}},
+    '0.00'       : function(options) {options.format.number = function n2(n){return n.toFixed(2)}},
+    '0.000'      : function(options) {options.format.number = function(n){return n.toFixed(3)}},
+    '0.0000'     : function(options) {options.format.number = function(n){return n.toFixed(4)}},
+    '0.00000'    : function(options) {options.format.number = function(n){return n.toFixed(5)}},
+    '0.000000'   : function(options) {options.format.number = function(n){return n.toFixed(6)}},
+    '0%'         : function(options) {options.format.number = function(n){return Number(n*100).toFixed(0)+'%'}},
+    '0.0%'       : function(options) {options.format.number = function(n){return Number(n*100).toFixed(1)+'%'}},
+    '0.00%'      : function(options) {options.format.number = function(n){return Number(n*100).toFixed(2)+'%'}},
+    '0.000%'     : function(options) {options.format.number = function(n){return Number(n*100).toFixed(3)+'%'}},
+    '0.0000%'    : function(options) {options.format.number = function(n){return Number(n*100).toFixed(4)+'%'}},
+    '0.00000%'   : function(options) {options.format.number = function(n){return Number(n*100).toFixed(5)+'%'}},
+    '0.000000%'  : function(options) {options.format.number = function(n){return Number(n*100).toFixed(6)+'%'}},
+    'undefinedBlank' : function(options) {options.format.undef = function(){return ''}}
+  }
   jc.displayResult = function(result,output) {
     $(output.outputElement)
     .empty().removeClass('ERROR').addClass('SUCCESS')
-    .append(  ((result !== undefined) && (result !== null) && (typeof result.node$ === 'function') && result.node$() )
-            || jc.format(result).toString()
+    .append(((result !== undefined) && (result !== null) && (typeof result.node$ === 'function') && result.node$() )
+            || jc.format(result)
            )
     .prepend(output.toString())
     .before(trace.span().toString()) // traces are not part of the result
@@ -1915,7 +2069,7 @@
     jc.displayResult(res,jc.output);
     // test
     if (test != undefined) {
-      if (jc.trimHtml(out.innerHTML) == jc.trimHtml(test.innerHTML)) {   //TODO rethink how to compare
+      if (out && (jc.trimHtml(out.innerHTML) == jc.trimHtml(test.innerHTML))) {   //TODO rethink how to compare
         $(test).removeClass('ERROR').addClass('SUCCESS');
       }
       else {
@@ -1987,7 +2141,7 @@
       var res = jc.runHtaFile(arguments[i]);
       results.push({file:arguments[i],errCode:res.errCode,nbPassed:res.testStatus.nbPassed,nbFailed:res.testStatus.nbFailed,dateTime:res.testStatus.dateTime});
     }
-    return table().addRows(results).style(function(t,r,c){return ((c=='nbFailed')&&(t.cell(r,c) != 0))?{backgroundColor:'red'}:{}});
+    return table().addRows(results).colStyle(function(r,c,value){return (value !== 0)?{backgroundColor:'red'}:{}},'nbFailed');
   }
 
   jc.animate = function (interval,fromCodeId,toCodeId,endCondition) {
@@ -2114,30 +2268,35 @@
   }
 
   jc.showOutputHtml = function(checkBox) {
-    var out = jc.outputElement(jc.selectedElement) || {id:'no output',innerHTML:''};
-    var test = jc.testElement(jc.selectedElement) || {id:'no test',innerHTML:''};
-    var diff = '';
-    if (out && test) {
-      var i = 0;
-      var hout  = jc.trimHtml(out.innerHTML)
-      var htest = jc.trimHtml(test.innerHTML)
-      while ((i<hout.length) && (i<htest.length) && (hout.charAt(i) === htest.charAt(i))) {
-        i++;
-      }
-      diff = 'first difference at position '+i+'\n'+
-             'out :'+hout.slice(i,i+20)+'\n'+
-             'test:'+htest.slice(i,i+20)+'\n\n';
-    }  
-    window.alert(diff+
-                 out.id+':\n'+out.innerHTML+'\n\n'+
-                 test.id+':\n'+test.innerHTML);
+    if ($(jc.selectedElement).hasClass('CODE')) {
+      var out = jc.outputElement(jc.selectedElement) || {id:'no output',innerHTML:''};
+      var test = jc.testElement(jc.selectedElement) || {id:'no test',innerHTML:''};
+      var diff = '';
+      if (out && test) {
+        var i = 0;
+        var hout  = jc.trimHtml(out.innerHTML)
+        var htest = jc.trimHtml(test.innerHTML)
+        while ((i<hout.length) && (i<htest.length) && (hout.charAt(i) === htest.charAt(i))) {
+          i++;
+        }
+        diff = 'first difference at position '+i+'\n'+
+               'out :'+hout.slice(i,i+20)+'\n'+
+               'test:'+htest.slice(i,i+20)+'\n\n';
+      }  
+      window.alert(diff+
+                   out.id+':\n'+out.innerHTML+'\n\n'+
+                   test.id+':\n'+test.innerHTML);
+    }
+    else {
+      window.alert(jc.selectedElement.outerHTML);
+    }
   }
 
 
   // upgrades from previous versions ////////////////////////////////////////////////////////////////////////////////
     jc.upgradeModules = function() {
     // checks that this is the lastest modules and if not replaces what is needed
-    var modulesNeeded = ['jquery-1.5.1.min.js','jcalcEdi.js','units.js','jcalc.js','axe.js','stateMachine.js','BOM.js','sys.js','ocrRdy.js','finance.js'];
+    var modulesNeeded = ['jquery-1.5.1.min.js','jcalcEdi.js','units.js','jcalc.js','axe.js','stateMachine.js','sys.js','ocrRdy.js','finance.js'];
     var allModules = modulesNeeded.concat('jquery.js'); // including deprecated modules
     var modules = [];
     var $script = $('SCRIPT').filter(function(){return $.inArray(this.src,allModules)!=-1});
@@ -2169,6 +2328,8 @@
     if (jc.content$.length == 0) {                                   
       b$.wrapInner('<DIV id=jcContent container="items"/>');
     }
+    $('.CONTAINER').removeClass('.CONTAINER').attr('container','sectionContent');
+    $('.SECTIONCONTAINER').removeClass('SECTIONCONTAINER').attr('container','sectionContent');
 
     // since v0.0145 the <body> attributes hideCodes,hideCut,hideTest,hideTrace are deprecated
     var b$ = $('BODY');

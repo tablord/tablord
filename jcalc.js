@@ -44,12 +44,13 @@
     // if the variable is in fact a function, executes the function and return its value
     if (this.func) {
       var row = this.row && this.row._;
-      return this.func(row,this.col);
+      var res = this.func(row,this.col);
+      return res
     }
     return this.value;
   }
 
-  V.prototype.toJson = function () {
+  V.prototype.toJSON = function () {
     return this.code()?'f('+JSON.stringify(this.code())+')':JSON.stringify(this.value);
   }
 
@@ -67,7 +68,7 @@
 
   V.prototype.toString = function() {
     // return the summary of the variable
-    return '[object V('+this.name+'):'+this.valueOf()+']';
+    return '[object V('+this.name+'):'+(this.func?this.toJSON()+'==>':'')+this.valueOf()+']';
   }
 
   V.prototype.view = function(options) {
@@ -103,7 +104,7 @@
   V.prototype.updateCode = function() {
     // generate the code that represents the element as edited
     // can be used to replace the existing code 
-    var code = 'v('+JSON.stringify(this.name)+','+this.toJson()+')';
+    var code = 'v('+JSON.stringify(this.name)+','+this.toJSON()+')';
     this.codeElement.innerHTML = jc.toHtml(code+'.edit()');
   }
 
@@ -138,9 +139,10 @@
       try {
         var code = jcFunc;
         if (jcFunc.search(/return/)== -1) {
+          jcFunc.replace(/^\s*\{(.*)\}\s*$/,'({$1})');
           code = 'return '+jcFunc;
         }
-        var f = new Function('row','col','with (jc.vars){with(row||{}) {'+code+'}}');
+        var f = new Function('rowData','col','value','with (jc.vars){with(rowData||{}) {'+code+'}}');
         f.userCode = jcFunc;
         f.toString = function(){return this.userCode};
         f.joJson = function(){return 'f("'+JSON.stringify(this.userCode)+'")'};
@@ -160,24 +162,28 @@
 
   // Row //////////////////////////////////////////////
 
-  function Row(obj) {
-    // create a Row from an object
+  jc.Row = function(obj,table) {
+    // create a Row from an object or a Row. 
     // only ownProperties (not inherited) are used is the Row
     this._ = {};
+    this.table = table;
+    if (obj.isRow) obj = obj._;
     for (var k in obj) {
       if (obj.hasOwnProperty(k)) {
         this.setCell(k,obj[k]);
       }
     }
-    this._style = {};  // this._style[undefined] is the default style for this Row
-                       // this._style[colname]   is the overwritten parameters for cell of colname of this row
   }
 
-  Row.prototype.cell = function(col) {
-    return this._[col].valueOf();
+  jc.Row.prototype.cell = function(col) {
+    return this._[col];
   }  
 
-  Row.prototype.setCell = function (col,value) {
+  jc.Row.prototype.val = function(col) {
+    return this._[col] && this._[col].valueOf();
+  }  
+
+  jc.Row.prototype.setCell = function (col,value) {
     if (typeof value == "function") {
       var f = new V(undefined,value);  //wrap the function into a V
       f.row = this;       //and assign the _row,_col 
@@ -189,27 +195,11 @@
     return this;
   }
 
-  Row.prototype.style = function(style,col) {
-    // if col is undefined, set the default style for the row
-    // style is an object that defines the css attributes and their values like {color:"red",background-color:"yellow"}
-    //       alternatively, a style can be defined as a function(table,rowNumber,colName) that return a style object.
-    //       note that in the case of style defined on a row, this function will be called with f([this],0,colname)
-    //            so table[rowNumber] == this row
-    this._style[col] = style;
-    return this;
-  }
-
-  Row.prototype.getStyle = function(col) {
-    // returns the calculated style object for a given cell of this row (or for the row if col == undefined)
-    var rowStyle = $.isFunction(this._style[undefined])?this._style[undefined]([this],0,col/*fake table so that table[0]=thisrow*/):this._style[undefined];
-    return $.extend(rowStyle,$.isFunction(this._style[col])?this._style[col]([this],0,col)/*fake table so that table[0]=thisrow*/:this._style[col]);
-  }
-
-  Row.prototype.toString = function() {
+  jc.Row.prototype.toString = function() {
     return "[object Row]";
   }
 
-  Row.prototype.eachCol = function(func) {
+  jc.Row.prototype.eachCol = function(func) {
     // func must be function(colname,colObject)
     for (var col in this._) {
       func(col,this._[col]);
@@ -217,7 +207,58 @@
     return this;
   }
 
-  Row.prototype.toJSON = function() {
+  jc.Row.prototype.reduce = function(reduceF,criteria,initialValue) {
+    // apply a reduce function on a column
+    // criteria is an optional f(jcFunc) that process only row that return true
+    var first = true;
+    var r;
+    if (initialValue !== undefined) {
+      r = initialValue;
+      first = false;
+    }
+    for (var colName in this._) {
+      var value = this.val(colName);
+      if ((criteria===undefined)||(criteria.call(this,this._,colName,value))) {
+        if (first) {
+          r = value;
+          first = false;
+        }
+        else {
+          r = reduceF(r,value);
+        }
+      }
+    }
+    return r;
+  }
+
+  jc.Row.prototype.sum = function(criteria) {
+    // return the sum of the row
+    return this.reduce(function(a,b){return a+b},criteria)
+  }
+
+  jc.Row.prototype.min = function(criteria) {
+    // return the min of the row
+    return this.reduce(Math.min,criteria);
+  }
+
+  jc.Row.prototype.max = function(criteria) {
+    // return the min of the row
+    return this.reduce(Math.max,criteria);
+  }
+
+  jc.Row.prototype.average = function(criteria) {
+    // return the average of the row
+    var sc = this.reduce(colName,function(r,b){r.count++;r.sum+=b;return r},criteria,{count:0,sum:0});
+    return sc.sum/sc.count;
+  }
+
+  jc.Row.prototype.rms = function(colName,criteria) {
+    // return the root mean square of the row
+    var sc = this.reduce(function(r,b){r.count++;r.sum+=b*b;return r},criteria,{count:0,sum:0});
+    return Math.sqrt(sc.sum/sc.count);
+  }
+
+  jc.Row.prototype.toJSON = function() {
     var e = [];
     this.eachCol(function(colName,colObject){
       e.push(JSON.stringify(colName)+':'+JSON.stringify(colObject));
@@ -225,7 +266,7 @@
     return '{'+ e.join(',')+ '}';
   }
 
-  Row.prototype.span = function (options) {
+  jc.Row.prototype.span = function (options) {
     options = options || {};
     if (!options.cols) {
       options.cols = {};
@@ -233,7 +274,7 @@
         options.cols[col]=1;
       });
     }
-    var h = '<table cellpadding="4" cellspacing="0"><thead><tr>';  // TODO modify to style
+    var h = '<table><thead><tr>';  // TODO modify to style
     for (var col in options.cols) {
       h += '<th>'+col+'</th>';
     }
@@ -241,73 +282,178 @@
     h += '<tr>';
     for (var col in options.cols) {
       var cell = this._[col];
-      h += (col=="_id")?'<th>'+cell+'</th>':'<td>'+cell+'</td>';  //******************** format???
+      h += (col=="_id")?'<th>'+cell+'</th>':'<td>'+jc.format(cell)+'</td>';
     }
     h += '</tr></tbody></table>';
     return jc.html(h);
   }
 
-  Row.prototype.list = function() {
+  jc.Row.prototype.list = function() {
     var h = '<table>';
     this.eachCol(function (col,val) {h += '<tr><th>'+col+'</th><td>'+val+'</td></tr>'});
     return jc.html(h+'</table>');
   }
 
-  Row.prototype.isRow = true;
+  jc.Row.prototype.isRow = true;
+
+
+// Col   //////////////////////////////////////////////////////////////
+  jc.Col = function(name,table) {
+    this.name = name;
+    this.table = table;
+  }
+
+  jc.Col.prototype.toString = function() {
+    return '[object Col '+this.name+']';
+  }
+
 
 // Table //////////////////////////////////////////////////////////////
 
-  function Table(name) {
+  jc.Table = function(name,parent) {
     // constructor of a new Table instance
+    // if parent != undefined, set options etc in such a way that it inherits properties and options from the parent
     this.name = name;
+    this.parent = parent
     this.length = 0;
-    this._cols = {};
-    this._id = {};
-    this._style = {};  
+    this.pk = undefined;
+    this.pks = {}; 
+    this.cols = {};
+    var leftStyle = function(table,row,col,value,style){if (typeof value!=='number') style.textAlign='left'};
+    leftStyle.toString = function(){return 'left for not numbers'};
+    this.options = {tableStyle:{},
+                    styles:[leftStyle],
+                    defValues:{},
+                    colOrder:[],
+                    visibleCols:jc.heir(this.cols)
+                   };  
   }
   
-  Table.prototype.cols = function(cols) {
-    // set the columns that are displayed by default
-    // return the table for command chaining
-    // cols is an object like
-    // { colname:{},   // any object make the column visible
-    //   colname:{style:{cssAttr:val,...}  // make the column visible and set its default style 
-    //                                     // note that cols style are stronger thant rows style  
-    this._cols = cols;
+  jc.Table.prototype.set = jc.set;
+  jc.Table.prototype.get = jc.get;
+
+  jc.Table.prototype.rename = function(name) {
+    // if name is undefined return the name
+    // otherwise set a new name and return this
+
+    if (name===undefined) {
+      return this.name;
+    }
+    if (this.name) delete jc.vars[name];
+    this.name = name
+    jc.vars[name] = this;
     return this;
   }
 
-  Table.prototype.updateCols = function(withRow) {
+  jc.Table.prototype.registerPk = function(row) {
+    if (this.pk !== undefined) {
+      var pkVal = row.cell(this.pk).valueOf();
+      if (this.pks[pkVal]===undefined){
+        this.pks[pkVal] = row;
+      }
+      else {
+        throw new Error('duplicated value in primaryKey: '+pkVal+' found twice at '+this.pks[pk].index+' and '+i);
+      }
+    }
+  }
+
+  jc.Table.prototype.primaryKey = function(pkCol) {
+    // set the primary key colName
+    this.pk = pkCol;
+    this.pks = {};
+    for (var i=0;i<this.length;i++) {
+      this.registerPk(this[i]);
+    }
+    return this;
+  }
+
+
+  jc.Table.prototype.defCol = function(name, defValue, style) {
+    // set the column attribute
+    // 
+    // defValue is the value that is used when a new Row is added and that column is not defined
+    // it can be a JavaScript value (number, object.. or an f(jcFunc)
+    // the style if set will call colStyle
+    var c = new jc.Col(name);
+    this.cols[name]=c;
+    this.options.defValues[name]=defValue;
+    c.defValue = defValue;
+    if (style) this.colStyle(style,name);
+    return this;
+  }
+
+  jc.Table.prototype.updateCols = function(withRow) {
     // updates the cols description with the fields found in withRow
     // normally for internal use only
     // return the table for command chaining
 
     for (var col in withRow._) {
-      if (this._cols[col]==undefined) {
-        this._cols[col] = {};
+      if (this.cols[col]==undefined) {
+        this.cols[col] = new jc.Col(col);
+        if ($.inArray(col,this.options.colOrder)===-1) this.options.colOrder.push(col);
       }
     }
     return this;
   }
 
-  Table.prototype.add = function(row) {
+  jc.Table.prototype.colOrder = function(order) {
+    // if order = array of colName: set a new order
+    // if order == undefined return the current order
+    if (order) {
+      this.options.colOrder = order;
+      return this;
+    }
+
+    order = this.options.colOrder.concat(); // make a copy
+    for (var col in this.cols) {
+      if ($.inArray(col,this.options.colOrder)===-1) order.push(col); 
+    }
+    return order;
+  }
+
+  jc.Table.prototype.show = function(columns,visible) {
+    // show all columns specified in the columns array
+    // if visible = true or undefined,  ensure this columns are visible if it exist
+    // if visible = false, ensure this columns are hidden
+    // if visible = null,  reset to the default (specialy for View)
+    if (visible === null) {
+      for (var i in columns) {
+        delete this.options.visibleCols[columns[i]];
+      }
+    }
+    else {
+      visible = visible !== false;
+      for (var i in columns) {
+        this.options.visibleCols[columns[i]] = visible ;
+      }
+    }
+    return this;
+  }
+
+  jc.Table.prototype.hide = function(columns) {
+    this.show(columns,false);
+    return this;
+  }
+
+  jc.Table.prototype.showOnly = function(columns) {
+    this.hide(jc.keys(this.cols)).show(columns);
+    return this;
+  }
+
+  jc.Table.prototype.add = function(row) {
     // add a row
     // row can be either a simple object or a Row object
     // return the table for method chaining
-
-    if (!row.isRow) {
-      row = new Row(row); // transform it to a Row
-    }
-    row.table = this;
+    
+    row = new jc.Row($.extend(true,{},this.options.defValues,row),this);
+    row.index = this.length;
     this[this.length++] = row;
-    if (row._._id) {
-      this._id[row._._id] = row;
-    }
+    this.registerPk(row);
     this.updateCols(row);
     return this;
   }
   
-  Table.prototype.addRows = function(rows) {
+  jc.Table.prototype.addRows = function(rows) {
     // add multiple rows
     // rows must be an array or array-like of objects
     // columns are ajusted automatically
@@ -317,9 +463,38 @@
     return this;
   }
 
-  Table.prototype.forEachRow = function(func) {
+  jc.Table.prototype.update = function(cols,keepOnlyValue) {
+    // cols is an object {colName:value,....}
+    // value can be a simple value like a number or a string, 
+    // but can also be a jcFunc produced by f(jcFunc)
+    // that will either be stored in the table 
+    // or be used during the update to calculate the static value of the cell
+    // if keepOnlyValue == true
+
+    this.forEachRow(function(i,row){
+      for (var colName in cols) {
+        if (keepOnlyValue) {
+          var val = cols[colName];
+          if (typeof val === 'function') val = val.call(row,row._,colName);
+          if (val !== null) row.setCell(colName,val);
+        }
+        else {
+          row.setCell(colName,cols[colName]);
+        }
+      }
+    });
+    for (var colName in cols) {
+      if (this.cols[colName]==undefined) {
+        this.cols[colName] = new jc.Col();
+        if ($.inArray(colName,this.options.colOrder)===-1) this.options.colOrder.push(colName);
+      }
+    }
+    return this;
+  }
+  
+  jc.Table.prototype.forEachRow = function(func) {
     // execute func for each row of the table
-    // func must be function(i,row)
+    // func must be function(i,row) in which this represents the Row object
     // return the table for command chaining
     for (var i=0; i<this.length; i++) {
       func(i,this[i])
@@ -327,52 +502,191 @@
     return this;
   }
 
-  Table.prototype.cell = function(row,col) {
-    return this[row] && this[row]._[col];
+
+  jc.Table.prototype.cell = function(row,col) {
+    // return the content of the cell: if the cell is a function: return the function
+    if (typeof row == 'number'){
+      return this[row] && this[row].cell(col);
+    }
+    row = this.pks[row];
+    return row && row.cell(col);
   }
 
-  Table.prototype.setCell = function(row,col,value) {
-    this[row].setCell(col,value);
-    return this;
+  jc.Table.prototype.val = function(row,col) {
+    // return the VALUE of the cell: if a function, this function is calculated first
+    var c=this.cell(row,col);
+    if (c===undefined) return undefined;
+    return c.valueOf();
   }
 
-  Table.prototype.tableStyle = function(style) {
-    this._tableStyle = style;
-    return this;
+  jc.Table.prototype.reduce = function(colName,reduceF,criteria,initialValue) {
+    // apply a reduce function on a column
+    // criteria is an optional f(jcFunc) that process only row that return true
+    var first = true;
+    var r;
+    if (initialValue !== undefined) {
+      r = initialValue;
+      first = false;
+    }
+    for (var i=0;i<this.length;i++) {
+      var value = this.val(i,colName);
+      if ((criteria===undefined)||(criteria.call(this[i],this[i]._,colName,value))) {
+        if (first) {
+          r = value;
+          first = false;
+        }
+        else {
+          r = reduceF(r,value);
+        }
+      }
+    }
+    return r;
   }
 
-  Table.prototype.style = function(style,rowNumber,colName){
-    // .setStyle(style)  will set the default style for the complete table
-    // .setStyle(style,rowNumber) will set the default style for a given row
-    // .setStyle(style,undefined,colName) will set the default style for a column
-    // .setStyle(style,rowNumber,colName) will set the style for a given cell
-    // style can either be an object {cssAttr=val,...} or a function(table,rowNumber,colName)
+  jc.Table.prototype.sum = function(colName,criteria) {
+    // return the sum of the column 
+    return this.reduce(colName,function(a,b){return a+b},criteria)
+  }
 
-    if ((rowNumber == undefined) && (colName == undefined)){
-      this._style = style;
+  jc.Table.prototype.min = function(colName,criteria) {
+    // return the min of the column 
+    return this.reduce(colName,Math.min,criteria);
+  }
+
+  jc.Table.prototype.max = function(colName,criteria) {
+    // return the min of the column
+    return this.reduce(colName,Math.max,criteria);
+  }
+
+  jc.Table.prototype.average = function(colName,criteria) {
+    // return the average of the column
+    var sc = this.reduce(colName,function(r,b){r.count++;r.sum+=b;return r},criteria,{count:0,sum:0});
+    return sc.sum/sc.count;
+  }
+
+  jc.Table.prototype.rms = function(colName,criteria) {
+    // return the root mean square of the column
+    var sc = this.reduce(colName,function(r,b){r.count++;r.sum+=b*b;return r},criteria,{count:0,sum:0});
+    return Math.sqrt(sc.sum/sc.count);
+  }
+
+  jc.Table.prototype.setCell = function(row,col,value) {
+    if (this.cols[col] === undefined) {
+      this.cols[col] = new jc.Col(col);
+      if ($.inArray(col,this.options.colOrder==-1)) this.options.colOrder.push(col);
+    }
+    if (typeof row === 'number') {
+      var r = this[row];
+    }
+    else {
+      var r = this.pks[row];
+    }
+    if (r === undefined) {
+      r = {};
+      r[col]=value;
+      if (typeof row === 'string') r[this.pk]=row;
+      this.add(r);
       return this;
     }
-    if (rowNumber == undefined) {
-      this._cols[colName].style = style;
-      return this;
+    
+    if (col === this.pk) {
+      this.pks[r.val(col)]=undefined;
+      this.registerPk(r);
     }
-    this[rowNumber].style(style,colName);
+    r.setCell(col,value);
     return this;
   }
 
-  Table.prototype.getTableStaticStyle = function() {
-    return ($.isFunction(this._style)?{}:this._style) || {};
+  jc.Table.prototype.lookup = function(criteria) {
+    // return the data of the first row matching the criteria
+
+    var row = this.findFirst(criteria);
+    if (row) return row._;
+    return {}; // if not found, return empty data, so it can still be dereferenced
   }
 
-  Table.prototype.getStyle = function(rowNumber,colName) {
-    // return the calculated style for a given cell
-    var defColStyle = this._cols[colName] && this._cols[colName].style;
-    if ($.isFunction(defColStyle)) defColStyle = defColStyle(this,rowNumber,colName);
-    var style =  $.extend({},defColStyle,this[rowNumber].getStyle(colName));
+  jc.Table.prototype.tableStyle = function(style) {
+    for (var attr in style) {
+      this.options.tableStyle[attr] = style[attr];
+    }
+    return this;
+  }
+
+  jc.Table.prototype.colStyle = function(style,colName){
+    // set the style for a column
+    // style can be either an object of $.css() parameters
+    //       or a function(data,col,value) where this represents the row object which is compatible with f("jcFunc")
+    //       and which return an object of css parameters
+
+    var fStyle = function(table,row,col,value,compoundStyle) {
+      if (col === colName) {
+        $.extend(true,compoundStyle,typeof style === 'function'?style.call(row,row._,col,value):style);
+      }
+    }
+    fStyle.toString = function() {return 'colStyle for '+colName+': '+jc.toJSCode(style)}
+    this.options.styles.push(fStyle);
+    return this;
+  }
+
+  jc.Table.prototype.rowStyle = function(style,rowNumber){
+    // set the style for a row
+    var expRow = this[rowNumber];
+    var fStyle = function(table,row,col,value,compoundStyle) {
+      if (row === expRow) {
+        $.extend(true,compoundStyle,typeof style === 'function'?style.call(row,row._,col,value):style);
+      }
+    }
+    fStyle.toString = function() {return 'rowStyle for '+expRow+': '+jc.toJSCode(style)}
+    this.options.styles.push(fStyle);
+    return this;
+  }
+  
+  jc.Table.prototype.style = function(newStyle,rowNumber,colName){
+    // .style(newStyle)  will set the default newStyle for the complete table
+    // .style(newStyle,rowNumber) will set the default style for a given row
+    // .style(newStyle,undefined,colName) will set the default style for a column
+    // .style(newStyle,rowNumber,colName) will set the style for a given cell
+    // newStyle can either be an object {cssAttr=val,...} or a function(table,rowNumber,colName)
+
+    if ((rowNumber === undefined) && (colName === undefined)){
+      var fStyle = function(table,row,col,value,compoundStyle) {
+        $.extend(true,compoundStyle,typeof newStyle === 'function'?newStyle.call(row,row._,col,value):newStyle);
+      }
+      this.options.styles.push(fStyle);
+      fStyle.toString = function() {return 'general style: '+jc.toJSCode(newStyle)}
+      return this;
+    }
+    if (rowNumber === undefined) {
+      this.colStyle(newStyle,colName);
+      return this;
+    }
+    if (colName === undefined) {
+      this.rowStyle(newStyle,rowNumber);
+      return this;
+    }
+
+    var expRow = this[rowNumber];
+    var fStyle = function(table,row,col,value,compoundStyle) {
+      if ((row === expRow) && (col === colName)) {
+        $.extend(true,compoundStyle,typeof newStyle === 'function'?newStyle.call(row,row._,col,value):newStyle);
+      }
+    }
+    fStyle.toString = function() {return 'cell style for '+expRow+','+colName+': '+jc.toJSCode(newStyle)}
+    this.options.styles.push(fStyle);
+    return this;
+  }
+
+
+  jc.Table.prototype.compoundStyle = function(row,colName,value) {
+    // calculate the compound style for a given cell
+    var style = (this.parent && this.parent.compoundStyle(row,colName,value)) || {};
+    for (var i=0;i<this.options.styles.length;i++) {
+      this.options.styles[i](this,row,colName,value,style);
+    }
     return style;
   }
 
-  Table.prototype.sort = function(cols) {
+  jc.Table.prototype.sort = function(cols) {
     // sort the table according to the "cols" criteria
     // cols is an object of the form:
     //   {  col1: 1    // 1 means ascending  alphabetic or numeric order
@@ -395,12 +709,36 @@
     return this;
   }
 
-  Table.prototype.toString = function() {
+  jc.Table.prototype.find = function(criteria) {
+    // return a new view of this table that has only the rows that match the criteria
+    // the rows of this view ARE THE ORIGINAL ROWS
+    // any function in a cell still refer to the original table.
+
+    var view = new jc.View(this);
+    for (var i=0; i<this.length; i++) {
+      if (jc.objMatchCriteria(this[i]._,criteria)){
+        view[view.length++] = this[i];
+      }
+    }
+    return view;
+  }
+
+  jc.Table.prototype.findFirst = function(criteria) {
+    // mongoDB find() as if the table was a small mongoDB
+    // return the first Row of this table that match the criteria
+    for (var i=0; i<this.length; i++) {
+      if (jc.objMatchCriteria(this[i]._,criteria)){
+        return this[i];
+      }
+    }
+  }
+
+  jc.Table.prototype.toString = function() {
     // return a string summarizing the table
     return '[object Table('+this.name+') of '+this.length+' rows]';
   }
 
-  Table.prototype.toJSON = function() {
+  jc.Table.prototype.toJSON = function() {
     var e = [];
     this.forEachRow(function(i,row){
       e.push(row.toJSON())
@@ -408,77 +746,51 @@
     return '['+e.join(',\n')+']';
   }
   
-
-  Table.prototype.node$ = function(options) {
+  jc.Table.prototype.node$ = function() {
     // display the table without its name
-    // the span(options) method of table can take many option to customize the presentation of the table
-    // options:{
-    //    cols:{
-    //      col1:{className:'HEAD'},  // set the class(es) of this col
-    //      col2:1          // any value make this col visible
-    //      '*':1           // adds any not already defined col as visible
-    //    rows:[..row numbers]  // specifies which row to display in what order
-
-    options = $.extend(true,{},jc.defaults,options);
-    options.cols = options.cols || this._cols;
-    if (options.cols['*']) {
-      delete options.cols['*'];
-      for (var col in this._cols) {
-        if (!options.cols[col]) {
-          options.cols[col] = this._cols[col];
-        }
-      }
-    }
-    options.rows = options.rows || range(0,this.length-1);
-    var t$ = $('<table/>').css($.isFunction(this._tableStyle)?this._tableStyle(this):this._tableStyle || {});
+    var t$ = $('<table/>').css(this.options.tableStyle || {});
     var h$ = $('<thead/>');
     var b$ = $('<tbody/>');
     var r$ = $('<tr/>');
-    for (var col in options.cols) {
-      r$.append('<th>'+col+'</th>');
+    var colOrder = this.colOrder();
+    for (var i in colOrder) {
+      if (this.options.visibleCols[colOrder[i]] !== false) r$.append('<th>'+colOrder[i]+'</th>');
     }
     h$.append(r$);
-    for (var i=0;i<options.rows.length;i++) {
-      var row = options.rows[i];
+    for (var rowNumber=0;rowNumber<this.length;rowNumber++) {
+      var row = this[rowNumber];
       r$ = $('<tr/>'); 
-      for (var col in options.cols) {
-        var c = options.cols[col];
-        if (options.cols[col] != 0) {
-          if (col == "_id") {
-            var cell$ = $('<th>'+jc.format(this.cell(row,col),options)+'</th>');
-          }
-          else {
-            var cell$ = $('<td>'+jc.format(this.cell(row,col),options)+'</td>');
-          }
-          cell$
-          .css($.isFunction(this._style)?this._style(this,row,col):this._style)
-          .css(this.getStyle(row,col))
-          .addClass(c.className)
+      for (var i in colOrder) {
+        var col = colOrder[i];
+        if (this.options.visibleCols[col] !== false) {
+          var val = row.val(col)
+          var cell$ = col===this.pk?$('<th></th>'):$('<td></td>');
+          var style = this.compoundStyle(row,col,val);
+          cell$.html(jc.format(val,style)).css(style);
+          r$.append(cell$);
         }
-        r$.append(cell$);
       }
       b$.append(r$);
     }
-    
     t$.append(h$).append(b$);
     return t$;
   }
 
-  Table.prototype.span = function(options) {
-    // backward compatibility
-    return this.node$(options)[0].outerHTML;
+  jc.Table.prototype.span = function() {
+    // deprecated: only for backward compatibility: use node$ instead
+    return jc.html(this.node$()[0].outerHTML);
   }
 
-  Table.prototype.view = function(options) {
+  jc.Table.prototype.view = function() {
     //display the table, including its name in a <div>
     var table = this;
-    return {node$:function(){return $('<div>').append('<var>'+table.name+'</var>').append(table.node$(options))}};
+    return {node$:function(){return $('<div>').append('<var>'+table.name+'</var>').append(table.node$())}};
   }
 
 
   // editor interface ////////////////////////////////////////////////////
     
-  Table.prototype.edit = function(options) {
+  jc.Table.prototype.edit = function(options) {
     // edit is similar to span, but gernerates HTML code in order to edit the object interactively
     // it will also set the code to AUTOEDIT class which means that it should no longer be modified by the user since it will
     // be generated by the edition mecanism.
@@ -488,13 +800,13 @@
     $(this.codeElement).addClass('AUTOEDIT').attr('jcObject',this.name);
     
     var h = '<div><var>'+this.name+'</var><table><tr><th>#</th>';
-    for (var col in this._cols) {
+    for (var col in this.cols) {
       h += '<th>'+col+'</th>';
     }
     h += '</tr>';
     for (var row=0; row<this.length; row++) {
       h += '<tr><th draggable=true>'+row+'</th>';
-      for (var col in this._cols) {
+      for (var col in this.cols) {
         h += '<td>'+jc.editor.html(this.cell(row,col),{jcObject:this.name,'jcRow':row,jcCol:col})+'</td>';
       }
       h += '</tr>';
@@ -503,11 +815,11 @@
     return jc.html(h);
   }
 
-  Table.prototype.getEditableValue = function(editor) {
+  jc.Table.prototype.getEditableValue = function(editor) {
     return this.cell(Number(editor.attr('jcRow')),editor.attr('jcCol'));
   }
 
-  Table.prototype.setEditableValue = function(editor) {
+  jc.Table.prototype.setEditableValue = function(editor) {
     this.setCell(Number(editor.attr('jcRow')),editor.attr('jcCol'),editor.value);
     jc.setModified(true);
     var obj = this;
@@ -515,11 +827,10 @@
   }
 
 
-  Table.prototype.updateCode = function() {
+  jc.Table.prototype.updateCode = function() {
     // generate the code that represents the element as edited
     // can be used to replace the existing code 
     var code = 'table('+JSON.stringify(this.name)+')\n';
-    code += '.cols('+JSON.stringify(this._cols)+')\n';
     for (var i=0; i<this.length; i++) {
       code += '.add('+this[i].toJSON()+')\n';
     }
@@ -537,10 +848,69 @@
     }
 
     if ((local == true) || (name == undefined)) {
-      return new Table(name);
+      return new jc.Table(name);
     }
-    return jc.vars[name] = new Table(name);
+    return jc.vars[name] = new jc.Table(name);
   }
+
+// View  //////////////////////////////////////////////////////////////
+
+  jc.View = function(parent) {
+    this.parent = parent;
+    this.length = 0;
+
+    this.pk = parent.pk;
+    this.pks = parent.pks;          //hash table is empty but inherit from primary key
+    this.options = {tableStyle:jc.heir(parent.options.tableStyle),
+                    styles:[],      //no additionnal styles, since it will be computed 
+                    colOrder:parent.options.colOrder,
+                    visibleCols:jc.heir(parent.options.visibleCols)
+                   };  
+    this.cols = {};
+    for (var col in parent.cols) this.cols[col] = new jc.Col(col,this);
+  }
+
+  jc.View.prototype.set = jc.set;
+  jc.View.prototype.get = jc.get;
+  jc.View.prototype.rename = jc.Table.prototype.rename;
+  jc.View.prototype.colOrder = jc.Table.prototype.colOrder;
+  jc.View.prototype.show = jc.Table.prototype.show;
+  jc.View.prototype.hide = jc.Table.prototype.hide;
+  jc.View.prototype.forEachRow = jc.Table.prototype.forEachRow;
+  jc.View.prototype.cell = function(row,col) {
+    // return the content of the cell: if the cell is a function: return the function
+    if (typeof row == 'number'){
+      return this[row] && this[row].cell(col);
+    }
+    row = parent.pks[row];
+    if ((row===undefined) || ($.inArray(row,this) == -1)) return undefined;
+    return row.cell(col);
+  }
+
+  jc.View.prototype.val = jc.Table.prototype.val;
+  jc.View.prototype.lookup = jc.Table.prototype.lookup;
+  jc.View.prototype.tableStyle = jc.Table.prototype.tableStyle;
+  jc.View.prototype.colStyle = jc.Table.prototype.colStyle;
+  jc.View.prototype.rowStyle = jc.Table.prototype.rowStyle;
+  jc.View.prototype.style = jc.Table.prototype.style;
+  jc.View.prototype.compoundStyle = jc.Table.prototype.compoundStyle; 
+  jc.View.prototype.sort = jc.Table.prototype.sort;
+  jc.View.prototype.find = jc.Table.prototype.find;
+  jc.View.prototype.reduce = jc.Table.prototype.reduce;
+  jc.View.prototype.sum = jc.Table.prototype.sum;
+  jc.View.prototype.max = jc.Table.prototype.max;
+  jc.View.prototype.min = jc.Table.prototype.min;
+  jc.View.prototype.average = jc.Table.prototype.average;
+  jc.View.prototype.rms = jc.Table.prototype.rms;
+
+  jc.View.prototype.toString = function() {
+    // return a string summarizing the table
+    return '[object View '+this.name+' of Table '+this.parent.name+' of '+this.length+' rows]';
+  }
+
+  jc.View.prototype.toJSON = jc.Table.prototype.toJSON;
+  jc.View.prototype.node$ = jc.Table.prototype.node$;
+
 
   // Output ///////////////////////////////////////////////
 
@@ -680,9 +1050,9 @@
     return this;
   }
 
-  jc.HTML.prototype._tag = function(tagNameAnAttributes ,elements) {
-    this.htmlCode += '<'+tagNameAnAttributes+'>';
-    var tagEnd = '</'+tagNameAnAttributes.split(' ')[0]+'>';
+  jc.HTML.prototype._tag = function(tagNameAndAttributes ,elements) {
+    this.htmlCode += '<'+tagNameAndAttributes+'>';
+    var tagEnd = '</'+tagNameAndAttributes.split(' ')[0]+'>';
     if ((elements == undefined) || (!elements.length)) {
       this.tagsEnd.push(tagEnd);
       return this;
