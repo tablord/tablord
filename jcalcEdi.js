@@ -90,13 +90,144 @@
 
 
   jc.credits = {name:jc.name,version:jc.version,authors:jc.authors,rights:jc.rights};
+
+  // HELP system ///////////////////////////////////////////////////////////////////////
+  // must be defined very early so that every module can also add documentation
+            
+  jc.HelpIndex = function() {
+    // HelpIndex objects contain an index of all functions of the system
+    // jc.help.index is created automatically by the system
+    this.index = [];
+    this.history = [];
+    this.historyPos = -1;
+  }
+  jc.HelpIndex.className = 'jc.HelpIndex';
+
+  jc.HelpIndex.prototype.update = function (object,path) {
+    // update the index 
+    for (prop in object) {
+      if (typeof object[prop] == 'function') {
+        this.index.push({prop:prop,path:path,func:object[prop]});
+        if (object[prop].className) {
+          this.update(object[prop].prototype,path+prop+'.prototype.');
+          this.update(object[prop],path+prop+'.');
+        }
+      }
+    }
+    return this;
+  }
+
+  jc.HelpIndex.prototype.find = function(name) {
+    // return all entry corresponding to name: name can be partial
+    // if name is a full path (ie. jc.help) the result is an exact match
+    // if not (ie no . notation) any entry having name inside is valid 
+    var res = [];
+    var m = name.match(/^(.+\.)(.*)$/i);
+    
+    if (m) {
+      var path = m[1];
+      var prop = m[2];
+      for (var i=0;i<this.index.length;i++) {
+        if ((this.index[i].prop === prop) && (this.index[i].path === path)) {
+          res.push(this.index[i]);
+          return res;
+        }
+      }
+    }
+    else {
+      var regExp = new RegExp('^(.*)('+name+')(.*)$','i');
+      for (var i=0;i<this.index.length;i++) {
+        if (this.index[i].prop.search(regExp)!==-1) res.push(this.index[i]);
+      }
+    }
+    return res;
+  }
+
+  jc.HelpIndex.prototype.show =function(name) {
+    // show in the help Panel the help on name
+    this.history[++this.historyPos] = jc.helpSearch$.val();
+    this.history.length = this.historyPos+1;
+    jc.helpSearch$.val(name);
+    jc.helpOutput$.html(jc.help.index.help$(name));
+  }
+
+  jc.HelpIndex.prototype.back = function() {
+    // return on the previous search
+    if (this.historyPos>=0){
+      var name = this.history[this.historyPos--];
+      jc.helpSearch$.val(name);
+      jc.helpOutput$.html(jc.help.index.help$(name));
+    }
+  }
+
+  jc.HelpIndex.prototype.help$ = function(name) {
+    // return the html in order to display the result of the search of name
+    var regExp = new RegExp('^(.*)('+name+')(.*)$','i');
+    var res = this.find(name);
+    var n$ = $('<table>');
+    for (var i = 0; i<res.length; i++) {
+      var path = res[i].path.replace(/^(.*\.[A-Z]\w*)\./,'<span class=HELPLINK onclick="jc.help.index.show(\'$1\');">$1</span>.');
+      n$.append($('<TR><TD valign="top" class=LEFT>'+path+res[i].prop.replace(regExp,'$1<b>$2</b>$3')+'</TD><TD class=LEFT>'+jc.help(res[i].func)+'</TD></TR>'));
+    }
+    return n$;
+  }
+
+  jc.HelpIndex.prototype.undocumentedClasses = function() {
+    // return a list of index entries of function that are potential Classes (start with uppercase)
+    // without proper documentation (ie. className property defined on the constructor)
+    // for maintenance only
+    var res = [];
+    for (var i = 0;i<this.index.length; i++) {
+      if (jc.constructorName(this.index[i].prop)){
+        if (this.index[i].func.className !== (this.index[i].path+this.index[i].prop)) {
+          res.push(this.index[i]);
+        }
+      }
+    }
+    return res;
+  }
+
   jc.helps = {'jc.credits':jc.credits};
+
+  jc.help = function(func) {
+  // returns the signature of the function and the first comment in a pretty html 
+  // - func: the function to be inspected
+  // if func is undefined returns all helps of all installed modules
+  // if func starts with a UpperCase it is considered as a constructor
+    if (func == undefined) {
+      var h = '';
+      for (var module in jc.helps) {
+        h += jc.inspect(jc.helps[module],module).span();
+      }
+      return new jc.HTML(h);
+    }
+    var source = func.toString().split('\n');
+    var comments = []
+    var signature = jc.signature(func);
+    if(func.className) comments.push('constructor for '+func.className+' objects');
+
+    for (var i=1; i<source.length; i++) {
+      var comment = source[i].match(/^\s*\/\/(.*)$/);
+      if (comment && (comment.length ==2)) {
+        comments.push(jc.toHtml(comment[1]));
+      }
+      else break;
+    }
+    return new jc.HTML('<SPAN class=HELP><b>'+signature+'</b><br/>'+comments.join('<br/>')+(func.className?jc.inspect(func.prototype,'methods').span():'')+'</SPAN>');
+  }
+
+  jc.help.index = new jc.HelpIndex();
+  jc.help.update = function(object,path) {
+    // update the help index with all functions of object that will be recorded under path
+    jc.help.index.update(object,path);
+  }
 
   // classical formating functions ////////////////////////////////////////////
   
-  jc.Format = function Format() {}
+  jc.Format = function() {}
     // this class is compatible with the format property of options object used in jc.format(value,options)
     // but it has methods that helps to build this object
+  jc.Format.className='jc.Format';
 
   jc.Format.prototype.fixed = function(decimals) {
     // returns a formating object {number:function(obj)} that formats the number with fixed decimals
@@ -116,7 +247,7 @@
     return o;
   }
 
-  jc.percent = function(decimals) {
+  jc.Format.prototype.percent = function(decimals) {
     // returns a fomating function(obj) that formats the number with fixed decimals
     var o = this.constructor === jc.Format?this:new jc.Format();
     var f = function (n) {return Number(100*n).toFixed(decimals)+'%'};
@@ -160,6 +291,7 @@
 
 
   //JQuery extentions /////////////////////////////////////////////////
+
   $.fn.span = function() {
     var s = ['<ol start=0>'];
     for (var i=0; i < this.length; i++) {
@@ -389,7 +521,7 @@
     });
     return this;
   }          
-
+  jc.help.update($,'$.');
 
   jc.getItems$ = function(url) {
     // returns a jQuery of all itemscope in the document having the itemtype=url
@@ -456,6 +588,26 @@
   jc.reduce.max = Math.max;
   jc.reduce.sumCount = function(sc,b) {sc.count++;sc.sum+=b;return sc};
 
+  // color functions //////////////////////////////////////////////////
+
+  jc.hue = function(h) {
+    h = h % 360;
+    if (h<0) h+=360;
+
+    if (h <  60) return {r:255,g:h/60*255,b:0};
+    if (h < 120) return {r:255-(h-60)/60*255,g:255,b:0};
+    if (h < 180) return {r:0,g:255,b:(h-120)/60*255};
+    if (h < 240) return {r:0,g:255-(h-180)/60*255,b:255};
+    if (h < 300) return {r:(h-240)/60*255,g:0,b:255}; 
+    return {r:255,g:0,b:255-(h-300)/60*255};
+  }
+
+  jc.hsl = function(h,s,l) {
+    // return a string 'rgb(...)' 
+    var color = jc.hue(h); //TODO integrate s,l
+    return 'rgb('+color.r+','+color.g+','+color.b+')';
+  } 
+
 
   // edi related functions ////////////////////////////////////////////
   var geval = eval;
@@ -518,20 +670,27 @@
     
   }    
 
+  jc.help.update(JSON,'JSON.');
   // debug //////////////////////////////////////////////////////////
 
 
 
   function a(/*objects*/) {
+    // show a dialog with the text view of the objects 
+    // returns the last object in order to be able to use a(x) in an expression
     var message = '';
     for (var i=0; i<arguments.length; i++){
       message += jc.inspect(arguments[i]).toString()+'\n';
     }
     window.alert(message);
+    return arguments[arguments.length-1];
   }
 
 
   function trace(/*objects*/) {
+    // write to the trace the content of all objects passed in the parameters
+    // use trace.on() to enable traces and trace.off() to disable traces
+    // you can also use trace.push() and trace.pop() to save restore the trace states
     if (trace._on) { 
       var message = '';
       for (var i=0; i<arguments.length; i++){
@@ -582,6 +741,8 @@
     return '';
   }
 
+  jc.help.update({a:a,trace:trace},'');
+  jc.help.update(trace,'trace.');
   
 
   // Inspector ////////////////////////////////////////////////////////
@@ -594,7 +755,8 @@
     this.name = name || '';
     this.depth = depth || 1;
   }
-  
+  jc.Inspector.className = 'jc.Inspector';
+
   jc.Inspector.prototype.legend = function() {
     // returns the legend for a given object
     var l;
@@ -811,7 +973,7 @@
     // if url is an ordinary file name it is first transformed to an url with file:///
     url = url.replace(/\\/g,'/');
     if (/file:|http[s]?:|mailto:|ftp:/i.test(url)==false) url='file:///'+url;
-    var urlSplitRegExp = /(\w+):((\/\/((\w+):(\w+)@)?([\w\.]+)(:(\w+))?)|(\/\/\/(\w:)?))?(\/.+\/)?(\w+).(\w+)(\#(\w+))?(\?(.+))?/;
+    var urlSplitRegExp = /(\w+):((\/\/((\w+):(\w+)@)?([\w\.]+)(:(\w+))?)|(\/\/\/(\w:)?))?(\/.+\/)?(.+)\.(\w+)(\#(\w+))?(\?(.+))?/;
     var comp = url.match(urlSplitRegExp);
     if (comp == null) throw new Error(url+" doesn't look like an URL");
     var res = {};
@@ -844,6 +1006,12 @@
     res.arguments = args;
     return res;
   }
+
+  jc.fileName = function(url) {
+    // return the fileName.ext of url (or os file)
+    var comp = jc.urlComponents(url);
+    return comp.fileName+'.'+comp.ext;
+  }  
 
   // Math helpers /////////////////
 
@@ -1006,134 +1174,7 @@
     return (name.search(/[A-Z]/) === 0);
   }
 
-  jc.help = function(func) {
-  // returns the signature of the function and the first comment in a pretty html 
-  // - func: the function to be inspected
-  // if func is undefined returns all helps of all installed modules
-  // if func starts with a UpperCase it is considered as a constructor
-    if (func == undefined) {
-      var h = '';
-      for (var module in jc.helps) {
-        h += jc.inspect(jc.helps[module],module).span();
-      }
-      return new jc.HTML(h);
-    }
-    var source = func.toString().split('\n');
-    var comments = []
-    var m = source[0].match(/(function *([a-zA-Z0-9_$]*).*?\))/);
-    var signature = m?m[0]:func.toString();  // if a jcFunc, the function keyword will not be found
-    var name = m && m[2];
-    var constructor = jc.constructorName(name)
-    if(constructor) comments.push('constructor for '+name+' objects');
 
-    for (var i=1; i<source.length; i++) {
-      var comment = source[i].match(/^\s*\/\/(.*)$/);
-      if (comment && (comment.length ==2)) {
-        comments.push(jc.toHtml(comment[1]));
-      }
-      else break;
-    }
-    return new jc.HTML('<SPAN class=HELP><b>'+signature+'</b><br/>'+comments.join('<br/>')+(constructor?jc.inspect(func.prototype,'methods').span():'')+'</SPAN>');
-  }
-
-  // HELP system ///////////////////////////////////////////////////////////////////////
-
-  jc.HelpIndex = function HelpIndex() {
-    // HelpIndex objects contain an index of all functions of the system
-    // jc.help.index is created automatically by the system
-    this.update();
-    this.history = [];
-    this.historyPos = -1;
-  }
-
-  jc.HelpIndex.prototype.update = function (object,path) {
-    // update the index 
-    if (object === undefined) {
-      object = jc;
-      path =  'jc.'
-      this.index = [];
-    }
-
-    for (prop in object) {
-      if (typeof object[prop] === 'function') {
-        this.index.push({prop:prop,path:path,func:object[prop]});
-        if (jc.constructorName(prop)) {
-          this.update(object[prop].prototype,path+prop+'.prototype.');
-        }
-      }
-    }
-    return this;
-  }
-
-  jc.HelpIndex.prototype.find = function(name) {
-    // return all entry corresponding to name: name can be partial
-    // if name is a full path (ie. jc.help) the result is an exact match
-    // if not (ie no . notation) any entry having name inside is valid 
-    var res = [];
-    var m = name.match(/^(.+\.)(.*)$/i);
-    
-    if (m) {
-      var path = m[1];
-      var prop = m[2];
-      for (var i=0;i<this.index.length;i++) {
-        if ((this.index[i].prop === prop) && (this.index[i].path === path)) {
-          res.push(this.index[i]);
-          return res;
-        }
-      }
-    }
-    else {
-      var regExp = new RegExp('^(.*)('+name+')(.*)$','i');
-      for (var i=0;i<this.index.length;i++) {
-        if (this.index[i].prop.search(regExp)!==-1) res.push(this.index[i]);
-      }
-    }
-    return res;
-  }
-
-  jc.HelpIndex.prototype.show =function(name) {
-    // show in the help Panel the help on name
-    this.history[++this.historyPos] = jc.helpSearch$.val();
-    this.history.length = this.historyPos+1;
-    jc.helpSearch$.val(name);
-    jc.helpOutput$.html(jc.help.index.help$(name));
-  }
-
-  jc.HelpIndex.prototype.back = function() {
-    // return on the previous search
-    if (this.historyPos>=0){
-      var name = this.history[this.historyPos--];
-      jc.helpSearch$.val(name);
-      jc.helpOutput$.html(jc.help.index.help$(name));
-    }
-  }
-
-  jc.HelpIndex.prototype.help$ = function(name) {
-    // return the html in order to display the result of the search of name
-    var regExp = new RegExp('^(.*)('+name+')(.*)$','i');
-    var res = this.find(name);
-    var n$ = $('<table>');
-    for (var i = 0; i<res.length; i++) {
-      var path = res[i].path.replace(/^(.*\.[A-Z]\w*)\./,'<span class=HELPLINK onclick="jc.help.index.show(\'$1\');">$1</span>.');
-      n$.append($('<TR><TD valign="top" class=LEFT>'+path+res[i].prop.replace(regExp,'$1<b>$2</b>$3')+'</TD><TD class=LEFT>'+jc.help(res[i].func)+'</TD></TR>'));
-    }
-    return n$;
-  }
-
-  jc.HelpIndex.prototype.undocumentedClasses = function() {
-    // return a list of index entries of fuunction that are potential Classes (start with uppercase)
-    // without proper documentation (ie. function ClassName(...) )
-    // for maintenance only
-    var res = [];
-    for (var i = 0;i<this.index.length; i++) {
-      if (jc.constructorName(this.index[i].prop)){
-        if (jc.functionName(this.index[i].func) === '') {
-          res.push(this.index[i]);
-        }
-      }
-    }
-    return res;
-  }
 
   // navigation within document ////////////////////////////////////////////////////////
   jc.sectionBeingExecuted$ = function() {
@@ -1225,7 +1266,8 @@
   //  jc.editor.simpleTypeToolBar$ a jQuery storing the necessary toolBar for the simple types
 
   }
-
+  jc.Editor.className = 'jc.Editor';
+ 
   jc.Editor.prototype.createToolBar = function() {
     this.toolBar$ = $('<SPAN/>')
       .append('<input type="radio" name="type" value="string" onclick="jc.editor.force(\'string\');">String</input>')
@@ -1455,6 +1497,8 @@
     // normally users create template through the `jc.template function
     this.name = name;
   };
+
+  jc.Template.className = 'jc.Template';
 
   jc.Template.urlBase = 'http://tablord.com/templates/';
 
@@ -2393,14 +2437,14 @@
     var modulesNeeded = ['jquery-1.5.1.min.js','jcalcEdi.js','units.js','jcalc.js','axe.js','stateMachine.js','sys.js','ocrRdy.js','finance.js'];
     var allModules = modulesNeeded.concat('jquery.js'); // including deprecated modules
     var modules = [];
-    var $script = $('SCRIPT').filter(function(){return $.inArray(this.src,allModules)!=-1});
-    $script.each(function(i,e){modules.push(e.src)});
+    var $script = $('SCRIPT').filter(function(){return $.inArray(jc.fileName(this.src),allModules)!=-1});
+    $script.each(function(i,e){modules.push(jc.fileName(e.src))});
     if (modules.toString() == modulesNeeded.toString()) return; // everything is just as expected
 
     // otherwise we have to upgrade
     var h = '';
     $.each(modulesNeeded,function(i,m){h+='<SCRIPT src="'+m+'"></SCRIPT>'});
-    window.prompt('your need to edit your scripts to upgrade',h);
+    window.prompt(/*'your need to edit your scripts to upgrade\n'+*/modules+'\n'+modulesNeeded,h);
   }
 
     
@@ -2463,7 +2507,7 @@
     $(window).bind('beforeunload',jc.beforeUnload);
     $('body').keydown(jc.bodyKeyDown);
     jc.autoRun = $('body').attr('autoRun')!==false;
-    jc.help.index = new jc.HelpIndex();
+    jc.help.update(jc,'jc.');
     if (jc.autoRun) jc.execAll();
   });  
   
