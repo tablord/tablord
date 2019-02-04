@@ -3,15 +3,15 @@
     
   
   // calcul ///////////////////
-  function V(name,value) {
-    //constructor for a new instance of V
+  jc.Var = function(name,value) {
     //rarely use it directly, but use the v() function instead that also register the variable
-    //in the v namespace
+    //in the jc.vars namespace
     this.setName(name);
     this.setValue(value);
   }
+  jc.Var.className = 'jc.Var';
 
-  V.prototype.setName = function(name) {
+  jc.Var.prototype.setName = function(name) {
     // for internal use only
     // changes the name of the variable and also
     // updates .label and .unit
@@ -26,7 +26,7 @@
     else this.label = this.name;
   }
 
-  V.prototype.setValue = function(value){
+  jc.Var.prototype.setValue = function(value){
     if (typeof value == "function") {
       this.func =value;
       this.type = 'function';
@@ -39,7 +39,7 @@
     return this;
   }
 
-  V.prototype.valueOf = function () {
+  jc.Var.prototype.valueOf = function () {
     // return the value of the variable
     // if the variable is in fact a function, executes the function and return its value
     if (this.func) {
@@ -50,34 +50,34 @@
     return this.value;
   }
 
-  V.prototype.toJSON = function () {
+  jc.Var.prototype.toJSON = function () {
     return this.code()?'f('+JSON.stringify(this.code())+')':JSON.stringify(this.value);
   }
 
-  V.prototype.code = function() {
+  jc.Var.prototype.code = function() {
     // return the code of the embedded function if such a function exists
     //        or undefined if not a function
     if (this.func) return this.func.toString();
     return undefined
   }
  
-  V.prototype.to = function(unit) {
+  jc.Var.prototype.to = function(unit) {
     // return the value converted to unit
     return jc.Units.convert(this.valueOf(),this.unit,unit);
   }
 
-  V.prototype.toString = function() {
+  jc.Var.prototype.toString = function() {
     // return the summary of the variable
-    return '[object V('+this.name+'):'+(this.func?this.toJSON()+'==>':'')+this.valueOf()+']';
+    return '[object jc.Var('+this.name+'):'+(this.func?this.toJSON()+'==>':'')+this.valueOf()+']';
   }
 
-  V.prototype.view = function(options) {
+  jc.Var.prototype.view = function(options) {
     // returns an HTML object with VariableName = value
     options = $.extend(true,{},jc.defaults,options);
     return jc.html('<var>'+this.label+'</var> = <span class=VALUE>'+jc.format(this.valueOf(),options)+'</span>'+(this.unit?'&nbsp;<span class=UNIT>'+this.unit+'</span>':''));
   }
 
-  V.prototype.edit = function() {
+  jc.Var.prototype.edit = function() {
     // returns an HTML object with the necessary controls to edit the variable
     this.codeElement = jc.output.codeElement;   
     $(this.codeElement).addClass('AUTOEDIT').attr('jcObject',this.name);
@@ -85,7 +85,7 @@
   }
 
 
-  V.prototype.getEditableValue = function(editor) {
+  jc.Var.prototype.getEditableValue = function(editor) {
     if (this.func) {
       return this;
     }
@@ -94,14 +94,14 @@
     }
   }
 
-  V.prototype.setEditableValue = function(editor) {
+  jc.Var.prototype.setEditableValue = function(editor) {
     this.setValue(editor.value);
     jc.setModified(true);
     var obj = this;
     window.setTimeout(function(){obj.updateCode();jc.run()},0);
   }
   
-  V.prototype.updateCode = function() {
+  jc.Var.prototype.updateCode = function() {
     // generate the code that represents the element as edited
     // can be used to replace the existing code 
     var code = 'v('+JSON.stringify(this.name)+','+this.toJSON()+')';
@@ -109,7 +109,7 @@
   }
 
 
-  V.prototype.isV = true;
+  jc.Var.prototype.isV = true;
 
   function v(name,value) {
     // v(name) returns the variable name: rarely used since name alone will represent the same as well as jc.vars[name]
@@ -122,7 +122,7 @@
         jc.vars[name].setValue(value);
         return jc.vars[name]
       }
-      return jc.vars[name] = new V(name,value);
+      return jc.vars[name] = new jc.Var(name,value);
     }
     return jc.vars[name];
   }
@@ -174,6 +174,7 @@
       }
     }
   }
+  jc.Row.className = 'jc.Row';
 
   jc.Row.prototype.cell = function(col) {
     return this._[col];
@@ -185,7 +186,7 @@
 
   jc.Row.prototype.setCell = function (col,value) {
     if (typeof value == "function") {
-      var f = new V(undefined,value);  //wrap the function into a V
+      var f = new jc.Var(undefined,value);  //wrap the function into a V
       f.row = this;       //and assign the _row,_col 
       f.col = col;
       this._[col] = f;
@@ -304,6 +305,7 @@
     this.name = name;
     this.table = table;
   }
+  jc.Col.className = 'jc.Col';
 
   jc.Col.prototype.toString = function() {
     return '[object Col '+this.name+']';
@@ -328,6 +330,7 @@
                     visibleCols:jc.heir(this.cols)
                    };  
   }
+  jc.Table.className = 'jc.Table';
   
   jc.Table.prototype.set = jc.set;
   jc.Table.prototype.get = jc.get;
@@ -869,6 +872,7 @@
     this.cols = {};
     for (var col in parent.cols) this.cols[col] = new jc.Col(col,this);
   }
+  jc.View.className = 'jc.View';
 
   jc.View.prototype.set = jc.set;
   jc.View.prototype.get = jc.get;
@@ -933,6 +937,7 @@
     this.htmlCode = html || '';
     this.tagsEnd = [];
   }
+  jc.HTML.className = 'jc.HTML';
 
   jc.HTML.prototype.asNode = function() {
     var html = this;
@@ -1136,6 +1141,7 @@
     this.$[0].IElement = this; // special attribute back to the IElement
     this.$.$end = this;
   }
+  jc.IElement.className = 'jc.IElement';
 
   jc.IElement.prototype.create$ = function(css,html) {
     // return the jQuery object corresponding to the DOM element of the JcElement
@@ -1404,7 +1410,8 @@
   jc.IValue = function JcValue(name,css,html,scene) {
     jc.IElement.call(this,name,css,html || name,scene);
   }
- 
+  jc.IValue.className = 'jc.IValue';
+
   jc.makeInheritFrom(jc.IValue,jc.IElement);
 
   jc.IValue.prototype.value = function(newValue) {
@@ -1435,6 +1442,7 @@
     jc.IElement.call(this,name,css,html || name,scene);
     this._value = 0;
   }
+  jc.IFileName.className = 'jc.IFileName';
 
   jc.makeInheritFrom(jc.IFileName,jc.IElement);
 
@@ -1453,6 +1461,7 @@
     // ICheckBox is an IElement for <INPUT type=checkbox>
     jc.IElement.call(this,name,css,html || name,scene);
   }
+  jc.ICheckBox.className = 'jc.ICheckBox';
 
   jc.makeInheritFrom(jc.ICheckBox,jc.IElement);
 
@@ -1485,6 +1494,7 @@
     jc.IElement.call(this,name,css || {},html || '',this); 
     this.length = 0;
   }
+  jc.Scene.className = 'jc.Scene';
 
   jc.makeInheritFrom(jc.Scene,jc.IElement);
 
@@ -1546,6 +1556,7 @@
     this.repulseForce = jc.repulseForce;    
     this.centripetalForce = jc.centripetalForce;
   }
+  jc.Cloud.className = 'jc.Cloud';
 
   jc.makeInheritFrom(jc.Cloud,jc.Scene);
 

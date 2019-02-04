@@ -105,12 +105,13 @@
 
   jc.HelpIndex.prototype.update = function (object,path) {
     // update the index 
-    for (prop in object) {
+
+    for (var prop in object) {
       if (typeof object[prop] == 'function') {
         this.index.push({prop:prop,path:path,func:object[prop]});
-        if (object[prop].className) {
-          this.update(object[prop].prototype,path+prop+'.prototype.');
-          this.update(object[prop],path+prop+'.');
+        if (object[prop].className===path+prop) {
+          this.update(object[prop].prototype,path+prop+'.prototype.');   // methods
+          this.update(object[prop],path+prop+'.');                       // static methods
         }
       }
     }
@@ -191,9 +192,9 @@
 
   jc.help = function(func) {
   // returns the signature of the function and the first comment in a pretty html 
+  //         followed by the content of the .help() static method of func if any
   // - func: the function to be inspected
-  // if func is undefined returns all helps of all installed modules
-  // if func starts with a UpperCase it is considered as a constructor
+
     if (func == undefined) {
       var h = '';
       for (var module in jc.helps) {
@@ -213,10 +214,27 @@
       }
       else break;
     }
-    return new jc.HTML('<SPAN class=HELP><b>'+signature+'</b><br/>'+comments.join('<br/>')+(func.className?jc.inspect(func.prototype,'methods').span():'')+'</SPAN>');
+    var methods = '';
+    if (func.className) {
+      methods = '<fieldset><legend>methods</legend><table>';
+      for (var m in func.prototype) {
+        if (typeof func.prototype[m] === 'function'){
+          methods += '<tr><th valign="top">'+m+'</th><td valign="top" style="text-align:left;">'+jc.help(func.prototype[m])+'</td></tr>'; 
+        }
+      }
+      methods += '</table></fieldset><fieldset><legend>static methods</legend><table>';
+      for (var m in func) {
+        if (typeof func[m] === 'function'){
+          methods += '<tr><th valign="top">'+m+'</th><td valign="top" style="text-align:left;">'+jc.help(func[m])+'</td></tr>'; 
+        }
+      }
+      methods += '</table></fieldset>';
+    };
+    return new jc.HTML('<SPAN class=HELP><b>'+signature+'</b><br/>'+comments.join('<br/>')+(func.help?func.help():'')+methods+'</SPAN>');
   }
 
   jc.help.index = new jc.HelpIndex();
+
   jc.help.update = function(object,path) {
     // update the help index with all functions of object that will be recorded under path
     jc.help.index.update(object,path);
@@ -632,7 +650,8 @@
     var test = JSON == undefined; // in ECMA3 JSON doesn't exist and will make this statement crash
   }
   catch (e) {
-    JSON = {};
+    JSON = function(){};
+    JSON.className='JSON';
 
     JSON.stringify = function(obj){
       if (typeof obj == 'number') {
@@ -671,6 +690,7 @@
   }    
 
   jc.help.update(JSON,'JSON.');
+  jc.help.update({JSON:JSON},'');
   // debug //////////////////////////////////////////////////////////
 
 
@@ -1585,14 +1605,14 @@
     return jc.getItems$(this.url()).getData(criteria,fields);
   }
 
-  jc.Template.MicrodataToData = function(microdata) {
+  jc.Template.microdataToData = function(microdata) {
     // transforms the microdata structure where all properties are array into a structure
     // closer to mongoBD.
     // in order to do so:
     // - properties which names end with [] will be kept as array
     // - properties which names do not end with [] will be transformed as the value of the first element
     //   of the array. if the array has more than one element, an Error will be raised.
-    
+    a('TODO not yet implemented')
 
   }
 
@@ -2239,8 +2259,9 @@
 
   jc.runHtaFile = function(fileName,noWait,parameters) {
     // run an other file
-    // if runOnce is false or undefined, just open the file and returns without waiting
-    //            is true run the file with ?runonce. it is the file responsibility to behave in this manner
+    // if noWait is false or undefined, just open the file and returns without waiting
+    //           is true run the file with ?runonce. it is the file responsibility to behave in this manner
+    //                   this function will return the result object produced by the .hta file
     // parameters is encoded for uri and added to the searchstring 
     var params = [];
     if (noWait) {
@@ -2484,30 +2505,36 @@
 
   $(window).load(function () {
     // upgrades ////////////////////////////////////////////////////
-    jc.upgradeModules();
-    jc.upgradeFramework();
-    if (window.document.compatMode != 'CSS1Compat') {
-      window.alert('your document must have <!DOCTYPE html> as first line in order to run properly: please save and re-run it');
+    try {
+      jc.upgradeModules();
+      jc.upgradeFramework();
+      if (window.document.compatMode != 'CSS1Compat') {
+        window.alert('your document must have <!DOCTYPE html> as first line in order to run properly: please save and re-run it');
+      }
+      // prepare the sheet ///////////////////////////////////////////
+      jc.url = jc.urlComponents(window.document.location.href);
+      $('.SELECTED').removeClass('SELECTED');
+      $('.ELEMENT').live("click",jc.elementClick);
+      $('.EDITABLE').live("keydown",jc.editableKeyDown);
+      $('.EDITOR').live("change",jc.Editor.eventHandler).live("click",jc.Editor.eventHandler);
+      $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR');
+      $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
+
+      $('.SCENE').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
+      $('.INTERACTIVE').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
+      $('.LINK').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
+
+
+      jc.findblockNumber();
+      jc.initToolBars();
+      $(window).bind('beforeunload',jc.beforeUnload);
+      $('body').keydown(jc.bodyKeyDown);
+      jc.autoRun = $('body').attr('autoRun')!==false;
+      jc.help.update(jc,'jc.');
     }
-    // prepare the sheet ///////////////////////////////////////////
-    jc.url = jc.urlComponents(window.document.location.href);
-    $('.SELECTED').removeClass('SELECTED');
-    $('.ELEMENT').live("click",jc.elementClick);
-    $('.EDITABLE').live("keydown",jc.editableKeyDown);
-    $('.EDITOR').live("change",jc.Editor.eventHandler).live("click",jc.Editor.eventHandler);
-    $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR');
-    $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
-
-    $('.SCENE').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
-    $('.INTERACTIVE').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
-    $('.LINK').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
-
-    jc.findblockNumber();
-    jc.initToolBars();
-    $(window).bind('beforeunload',jc.beforeUnload);
-    $('body').keydown(jc.bodyKeyDown);
-    jc.autoRun = $('body').attr('autoRun')!==false;
-    jc.help.update(jc,'jc.');
+    catch (e) {
+      window.alert(e.message);
+    }
     if (jc.autoRun) jc.execAll();
   });  
   

@@ -6,6 +6,7 @@ jc.Axe = function Axe(name) {
   this.functions = [{f:jc.Axe.prototype.faccelerate,init:{t:-Infinity,p:0,v:0,a:0,phase:'init'}}];
   this.decimals = 3;
 }
+jc.Axe.className = 'jc.Axe';
 
 jc.Axe.prototype.toString = function() {
   return '[Axe'+this._name+' with '+this.functions.length+' functions]';
@@ -43,7 +44,11 @@ jc.Axe.prototype.accelerate = function(init){
 }
 
 jc.Axe.prototype.move = function(init){
-
+  //init is an object specifing one or more of the following parameters
+  // t: initial time
+  // p: final position
+  // a: default acceleration
+  
 //TODO pour les petits déplacement (d < df) ce n'est pas encore ok !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   var t,t1,tc,t2,t3,tf,ts,a1,a2,a3,v0,v1,v2,v3,d,d1,d2,d3,dc,ds,df, dir,at_t,defaults;
