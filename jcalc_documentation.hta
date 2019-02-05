@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<HTML sizset="0" sizcache="1" APPLICATIONNAME="D:\Documents\programmation\jcalc\jcalcV0\jcalc_documentation.hta" xmlns="http://www.w3.org/1999/xhtml" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="JCalc:General documentation" SCROLL="yes" SINGLEINSTANCE="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
+<HTML xmlns="http://www.w3.org/1999/xhtml" APPLICATIONNAME="D:\Documents\programmation\jcalc\jcalcV0\jcalc_documentation.hta" sizcache="1" sizset="0" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="JCalc:General documentation" SINGLEINSTANCE="yes" SCROLL="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
 <SCRIPT src="jquery-1.5.1.min.js"></SCRIPT>
 
 <SCRIPT src="jcalcEdi.js"></SCRIPT>
@@ -20,14 +20,15 @@
 
 <SCRIPT src="finance.js"></SCRIPT>
 </HEAD>
-<BODY sizset="0" sizcache="1"  designMode="on" showCode="true" showCut="true" showTest="true" showTrace="true">
-<DIV id=menu class=TOOLBAR>
-<DIV><INPUT onclick=jc.showCode(event) CHECKED type=checkbox>codes</INPUT><INPUT onclick=jc.showCut(event) CHECKED type=checkbox>cuts</INPUT><INPUT onclick=jc.showTest(event) CHECKED type=checkbox>tests</INPUT><INPUT onclick=jc.showTrace(event) CHECKED type=checkbox>traces</INPUT><INPUT onclick=jc.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
-<DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60" >&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON></DIV>
-<DIV style="POSITION: ; ZOOM: 1; FILTER:   ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].convert(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION><OPTION value=person>person</OPTION></SELECT><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
-<DIV id=objectToolBar><SPAN><INPUT onclick="jc.editor.force('string');" type=radio value=string name=type>String</INPUT><INPUT onclick="jc.editor.force('number')" CHECKED type=radio value=number name=type>Number</INPUT><INPUT onclick="jc.editor.force('function')" type=radio value=function name=type>Function</INPUT><INPUT onchange=jc.editor.funcCodeChange(); onclick=jc.editor.funcCodeClick(); name=funcCode ><INPUT onclick="jc.editor.force('undefined')" type=radio value=undefined name=type>undefined</INPUT></SPAN></DIV></DIV></DIV>
-<DIV id=jcContent class=CONTAINER sizset="0" sizcache="1" container="sectionContent"><PRE id=code0170 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.credits</PRE>
-<DIV id=out0170 class="OUTPUT SUCCESS">
+<BODY sizcache="1" sizset="0"  showTrace="true" showTest="true" showCut="true" showCode="true" designMode="on">
+<DIV id=menu class=TOOLBAR style="MAX-WIDTH: 50%; FLOAT: right">
+<DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON><BUTTON onclick=jc.helpPanel$.toggle(100); style="HEIGHT: 23px; WIDTH: 43px">help</BUTTON><INPUT onclick=jc.showCode(event) CHECKED type=checkbox>codes</INPUT><INPUT onclick=jc.showCut(event) CHECKED type=checkbox>cuts</INPUT><INPUT onclick=jc.showTest(event) CHECKED type=checkbox>tests</INPUT><INPUT onclick=jc.showTrace(event) CHECKED type=checkbox>traces</INPUT><INPUT onclick=jc.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
+<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].convert(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT ><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION><OPTION value=person>person</OPTION></SELECT><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px" >&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
+<DIV id=objectToolBar></DIV></DIV>
+<DIV><SPAN onclick=jc.helpPanel$.hide(300) style="CURSOR: pointer; COLOR: red">&nbsp;×&nbsp;</SPAN><INPUT ><SPAN onclick=jc.help.index.back() style="CURSOR: pointer; COLOR: #8dff60">&#9668;</SPAN>
+<DIV style="OVERFLOW: auto; MAX-HEIGHT: 400px">please type your search above</DIV></DIV></DIV>
+<DIV id=jcContent class=CONTAINER sizcache="1" sizset="0" container="sectionContent"><PRE id=code0170 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.credits</PRE>
+<DIV id=out0170 class=OUTPUT>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -48,7 +49,7 @@
 <H1 class="SECTIONTITLE EDITABLE" contentEditable=false>1 table of content</H1>
 <DIV container="sectionContent">
 <DIV class="ELEMENT EMPTY" contentEditable=false>empty container: click here to add an element</DIV></DIV></DIV><PRE id=code0002 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.tableOfContent</PRE>
-<DIV id=out0002 class="OUTPUT SUCCESS">
+<DIV id=out0002 class=OUTPUT>
 <DIV class=INTERACTIVE>
 <DIV class=TOC0>1 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_documentation.hta#sect0003">table of content</A></DIV>
 <DIV class=TOC0>2 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_documentation.hta#sect0004">Introduction</A></DIV>
@@ -87,15 +88,15 @@
 <DIV class=TOC1>3.5 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_documentation.hta#sect0209">output</A></DIV>
 <DIV class=TOC1>3.6 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_documentation.hta#sect0158">function delaration</A></DIV>
 <DIV class=TOC0>4 <A href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_documentation.hta#sect0047">known issue:</A></DIV></DIV></DIV>
-<DIV id=sect0004 class="SECTION ELEMENT" sizset="3" sizcache="1">
+<DIV id=sect0004 class="SECTION ELEMENT" sizcache="1" sizset="3">
 <H1 class="SECTIONTITLE EDITABLE" contentEditable=false>2 Introduction</H1>
-<DIV sizset="3" sizcache="1" container="sectionContent">
-<DIV id=sect0006 class="SECTION ELEMENT" sizset="3" sizcache="1">
-<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>2.1 What is <SPAN id=code0008 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0008 class="OUTPUT SUCCESS">JCalc</SPAN>?</H2>
-<DIV sizset="3" sizcache="1" container="sectionContent">
-<DIV id=rich0004 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="3" sizcache="1">
+<DIV sizcache="1" sizset="3" container="sectionContent">
+<DIV id=sect0006 class="SECTION ELEMENT" sizcache="1" sizset="3">
+<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>2.1 What is <SPAN id=code0008 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0008 class=OUTPUT>JCalc</SPAN>?</H2>
+<DIV sizcache="1" sizset="3" container="sectionContent">
+<DIV id=rich0004 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="3">
 <P>A bit of Word, a bit of wikipedia, a bit of Excel and a bit of python "notebook".</P>
-<P sizset="3" sizcache="1"><SPAN id=code0009 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0009 class="OUTPUT SUCCESS">JCalc</SPAN></P>is born out a frustration: if you want to do a descent report for a scientific publication or a business plan, or any document that mixes both text and some calculation (in fact almost anything that is not poetry), you eventually come to a big dilema: should I use Word our should I use Excel? of course Word because I need quite a lot of explanation and of course Ecel because I use quite a bit of calculation. At the end, you cut and paste excel tables in Word. So far so good (in fact already some pain, but ok, worth the pain). But then the good news is someone read your work! Here is the bad news: someone read your work, find it very interresting and "just" point out: "what about if &#8364; / $ is 10% higher?" Ouuups! of course, most probably you can change some cells in Excel and it will do the maths... and then you cut &amp; paste again in Word, re-read all the text to see where you included some figure that now are no longer valid and and and... you fear the next question since you realize this job is very time consuming. 
+<P sizcache="1" sizset="3"><SPAN id=code0009 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0009 class=OUTPUT>JCalc</SPAN></P>is born out a frustration: if you want to do a descent report for a scientific publication or a business plan, or any document that mixes both text and some calculation (in fact almost anything that is not poetry), you eventually come to a big dilema: should I use Word our should I use Excel? of course Word because I need quite a lot of explanation and of course Ecel because I use quite a bit of calculation. At the end, you cut and paste excel tables in Word. So far so good (in fact already some pain, but ok, worth the pain). But then the good news is someone read your work! Here is the bad news: someone read your work, find it very interresting and "just" point out: "what about if &#8364; / $ is 10% higher?" Ouuups! of course, most probably you can change some cells in Excel and it will do the maths... and then you cut &amp; paste again in Word, re-read all the text to see where you included some figure that now are no longer valid and and and... you fear the next question since you realize this job is very time consuming. 
 <P></P>
 <P>&nbsp;</P>
 <P>The second frustration comes from Excel itself: as long as you do some simple calculation, this is extreamly efficient. but as soon as you start to do some complex work, this becomes extremely frustrating since complex equations with meaningless cells name like A3+C5+D2/2 are almost impossible to maintain.</P>
@@ -104,8 +105,8 @@
 <P>I past position I faced many time this dilemna and dreamed of something better, or at least different. At that time I was impressed by wikipedia, that has some very specific macro mecanisme that helps to do some job, but could not replace Excel and python Notebook that is excellent to do complex maths, but has almost no capability to edit text. and notebook is relativelly complex to install, so not for anyone.</P>
 <P>&nbsp;</P>
 <P>Of course had no time to make this dream come true, but as life is a continuous surprise, all of a sudden I had too much time... this was&nbsp;<STRONG>the</STRONG> occasion to make this dream come true</P></DIV></DIV></DIV>
-<DIV id=sect0007 class="SECTION ELEMENT" sizset="4" sizcache="0">
-<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>2.2 Fundamentals of <SPAN id=code0010 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0010 class="OUTPUT SUCCESS">JCalc</SPAN></H2>
+<DIV id=sect0007 class="SECTION ELEMENT" sizcache="0" sizset="4">
+<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>2.2 Fundamentals of <SPAN id=code0010 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0010 class=OUTPUT>JCalc</SPAN></H2>
 <DIV container="sectionContent">
 <DIV id=rich0008 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>The fundamentals are</P>
@@ -115,59 +116,59 @@
 <LI>simple file based system for the beginning. In the future some work will be done in servers. 
 <LI>A system that can mix text and calculation in a very fluid manner</LI></UL>
 <P>&nbsp;</P></DIV></DIV></DIV>
-<DIV id=sect0005 class="SECTION ELEMENT" sizset="6" sizcache="1">
-<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>2.3 What is not <SPAN id=code0011 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0011 class="OUTPUT SUCCESS">JCalc</SPAN></H2>
-<DIV sizset="6" sizcache="1" container="sectionContent">
-<DIV id=rich0006 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="6" sizcache="1"><SPAN id=code0012 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0012 class="OUTPUT SUCCESS">JCalc</SPAN>is not Excel compatible, nor Word compatible etc... You suffer in one of this software... well you will probably continue to suffer for a while to tweek macros as long as you do not have the courage to jump to <SPAN id=code0013 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0013 class="OUTPUT SUCCESS">JCalc</SPAN></DIV></DIV></DIV>
-<DIV id=sect0015 class="SECTION ELEMENT" sizset="9" sizcache="1">
-<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>2.4 Basic block of <SPAN id=code0017 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0017 class="OUTPUT SUCCESS">JCalc</SPAN></H2>
-<DIV sizset="9" sizcache="1" container="sectionContent">
-<DIV id=rich0016 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="9" sizcache="1">
-<P sizset="9" sizcache="1">A <SPAN id=code0019 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0019 class="OUTPUT SUCCESS">JCalc</SPAN></P>document is composed of some basic block 
+<DIV id=sect0005 class="SECTION ELEMENT" sizcache="1" sizset="6">
+<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>2.3 What is not <SPAN id=code0011 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0011 class=OUTPUT>JCalc</SPAN></H2>
+<DIV sizcache="1" sizset="6" container="sectionContent">
+<DIV id=rich0006 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="6"><SPAN id=code0012 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0012 class=OUTPUT>JCalc</SPAN>is not Excel compatible, nor Word compatible etc... You suffer in one of this software... well you will probably continue to suffer for a while to tweek macros as long as you do not have the courage to jump to <SPAN id=code0013 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0013 class=OUTPUT>JCalc</SPAN></DIV></DIV></DIV>
+<DIV id=sect0015 class="SECTION ELEMENT" sizcache="1" sizset="9">
+<H2 class="SECTIONTITLE EDITABLE" contentEditable=false>2.4 Basic block of <SPAN id=code0017 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0017 class=OUTPUT>JCalc</SPAN></H2>
+<DIV sizcache="1" sizset="9" container="sectionContent">
+<DIV id=rich0016 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="9">
+<P sizcache="1" sizset="9">A <SPAN id=code0019 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0019 class=OUTPUT>JCalc</SPAN></P>document is composed of some basic block 
 <P></P>
 <P>&nbsp;</P></DIV>
-<DIV id=sect0018 class="SECTION ELEMENT" sizset="10" sizcache="1">
+<DIV id=sect0018 class="SECTION ELEMENT" sizcache="1" sizset="10">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>2.4.1 Section</H3>
-<DIV sizset="10" sizcache="1" container="sectionContent">
-<DIV id=rich0023 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="10" sizcache="1">
+<DIV sizcache="1" sizset="10" container="sectionContent">
+<DIV id=rich0023 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="10">
 <P>A section is a container that structures the text in chapter, sub chapter etc... </P>
-<P sizset="10" sizcache="1">Sections will be automatically numbered and taken into account in the <SPAN id=code0021 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.link("table of content")</SPAN><SPAN id=out0021 class="OUTPUT SUCCESS"><A class=LINK href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_documentation.hta#sect0003">table of content</A></SPAN></P>that links can be made&nbsp;<SPAN id=code0035 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.link("jc.link")</SPAN><SPAN id=out0035 class="OUTPUT SUCCESS"><SPAN title="#jc.link is not found in the table of content" class=INVALIDLINK>jc.link</SPAN></SPAN>&nbsp; 
+<P sizcache="1" sizset="10">Sections will be automatically numbered and taken into account in the <SPAN id=code0021 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.link("table of content")</SPAN><SPAN id=out0021 class=OUTPUT><A class=LINK href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_documentation.hta#sect0003">table of content</A></SPAN></P>that links can be made&nbsp;<SPAN id=code0035 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.link("jc.link")</SPAN><SPAN id=out0035 class=OUTPUT><SPAN title="#jc.link is not found in the table of content" class=INVALIDLINK>jc.link</SPAN></SPAN>&nbsp; 
 <P></P>
 <P>A section is a title and a container of other blocks.</P>
 <P>Identation is managed automatically.</P></DIV></DIV></DIV>
-<DIV id=sect0020 class="SECTION ELEMENT" sizset="13" sizcache="1">
+<DIV id=sect0020 class="SECTION ELEMENT" sizcache="1" sizset="13">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>2.4.2 Rich Text</H3>
-<DIV sizset="13" sizcache="1" container="sectionContent">
+<DIV sizcache="1" sizset="13" container="sectionContent">
 <DIV id=rich0022 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>A Rich Text element consists of a simple HTML editor.</P></DIV>
-<DIV id=sect0045 class="SECTION ELEMENT" sizset="13" sizcache="1">
-<H4 class="SECTIONTITLE EDITABLE" contentEditable=false>2.4.2.1 code reformating <SPAN id=code0054 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">'\{\{ \}\}'</SPAN><SPAN id=out0054 class="OUTPUT SUCCESS">{{&nbsp;}}</SPAN></H4>
-<DIV sizset="13" sizcache="1" container="sectionContent">
-<DIV id=rich0046 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="13" sizcache="1">Inside Rich Text, code can be inserted by using the <SPAN id=code0026 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">'\{\{...\}\}'</SPAN><SPAN id=out0026 class="OUTPUT SUCCESS">{{...}}</SPAN>&nbsp;syntaxe. for example, writing <SPAN id=code0028 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">'\{\{3+5\}\}'</SPAN><SPAN id=out0028 class="OUTPUT SUCCESS">{{3+5}}</SPAN>will transform into a code block having <STRONG><EM>3+5</EM></STRONG>&nbsp;as code and an output block like this <SPAN id=code0029 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">3+5</SPAN><SPAN id=out0029 class="OUTPUT SUCCESS">8</SPAN>&nbsp;(&lt;-- just click here to edit and understand how this works) 
+<DIV id=sect0045 class="SECTION ELEMENT" sizcache="1" sizset="13">
+<H4 class="SECTIONTITLE EDITABLE" contentEditable=false>2.4.2.1 code reformating <SPAN id=code0054 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">'\{\{ \}\}'</SPAN><SPAN id=out0054 class=OUTPUT>{{&nbsp;}}</SPAN></H4>
+<DIV sizcache="1" sizset="13" container="sectionContent">
+<DIV id=rich0046 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="13">Inside Rich Text, code can be inserted by using the <SPAN id=code0026 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">'\{\{...\}\}'</SPAN><SPAN id=out0026 class=OUTPUT>{{...}}</SPAN>&nbsp;syntaxe. for example, writing <SPAN id=code0028 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">'\{\{3+5\}\}'</SPAN><SPAN id=out0028 class=OUTPUT>{{3+5}}</SPAN>will transform into a code block having <STRONG><EM>3+5</EM></STRONG>&nbsp;as code and an output block like this <SPAN id=code0029 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">3+5</SPAN><SPAN id=out0029 class=OUTPUT>8</SPAN>&nbsp;(&lt;-- just click here to edit and understand how this works) 
 <P>&nbsp;</P>
-<P sizset="16" sizcache="1">when you click on a rich text block, one will see all <SPAN id=code0044 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.link('code')</SPAN><SPAN id=out0044 class="OUTPUT SUCCESS"><A class=LINK href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_documentation.hta#sect0022">code</A></SPAN> 
+<P sizcache="1" sizset="16">when you click on a rich text block, one will see all <SPAN id=code0044 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.link('code')</SPAN><SPAN id=out0044 class=OUTPUT><A class=LINK href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_documentation.hta#sect0022">code</A></SPAN> 
 <P></P></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0022 class="SECTION ELEMENT" sizset="17" sizcache="1">
+<DIV id=sect0022 class="SECTION ELEMENT" sizcache="1" sizset="17">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>2.4.3 code</H3>
-<DIV sizset="17" sizcache="1" container="sectionContent">
+<DIV sizcache="1" sizset="17" container="sectionContent">
 <DIV id=rich0063 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>A code section is very similar to the one that is created within Rich Text but consist of one block in itself</P>
 <P>usually, this is intended for either a bunch of variable declaration, calculation and other, while within Rich Text this is more "showing the result of some already calculated variables".</P>
 <P>&nbsp;</P>
 <P>code is followed by an output division and has an optional test element below a complete example</P></DIV><PRE id=code0064 class="CODE ELEMENT EDITABLE" contentEditable=false>10+12</PRE>
-<DIV id=out0064 class="OUTPUT SUCCESS">22</DIV>
-<DIV id=test0064 class="TEST SUCCESS">22</DIV>
-<DIV id=rich0065 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="18" sizcache="1">The <SPAN id=code0068 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.html('&lt;span class=CODEEXAMPLE&gt;code&lt;/span&gt;')</SPAN><SPAN id=out0068 class="OUTPUT SUCCESS"><SPAN class=CODEEXAMPLE>code</SPAN></SPAN>is followed by an <SPAN id=code0073 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.html('&lt;span class="OUTPUTEXAMPLE SUCCESS"&gt;output&lt;/span&gt;')</SPAN><SPAN id=out0073 class="OUTPUT SUCCESS"><SPAN class="OUTPUTEXAMPLE SUCCESS">output</SPAN></SPAN>and followed by an optionnal&nbsp;<SPAN id=code0066 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.html('&lt;span class=TESTEXAMPLE&gt;testElement&lt;/span&gt;')</SPAN><SPAN id=out0066 class="OUTPUT SUCCESS"><SPAN class=TESTEXAMPLE>testElement</SPAN></SPAN></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0229 class="ELEMENT SECTION" sizset="21" sizcache="1">
+<DIV id=out0064 class=OUTPUT>22</DIV>
+<DIV id=test0064 class=TEST>22</DIV>
+<DIV id=rich0065 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="18">The <SPAN id=code0068 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.html('&lt;span class=CODEEXAMPLE&gt;code&lt;/span&gt;')</SPAN><SPAN id=out0068 class=OUTPUT><SPAN class=CODEEXAMPLE>code</SPAN></SPAN>is followed by an <SPAN id=code0073 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.html('&lt;span class="OUTPUTEXAMPLE SUCCESS"&gt;output&lt;/span&gt;')</SPAN><SPAN id=out0073 class=OUTPUT><SPAN class=OUTPUTEXAMPLE>output</SPAN></SPAN>and followed by an optionnal&nbsp;<SPAN id=code0066 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.html('&lt;span class=TESTEXAMPLE&gt;testElement&lt;/span&gt;')</SPAN><SPAN id=out0066 class=OUTPUT><SPAN class=TESTEXAMPLE>testElement</SPAN></SPAN></DIV></DIV></DIV></DIV></DIV>
+<DIV id=sect0229 class="ELEMENT SECTION" sizcache="1" sizset="21">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>2.5 Template block</H2>
-<DIV class=CONTAINER sizset="21" sizcache="1" container="sectionContent">
+<DIV class=CONTAINER sizcache="1" sizset="21" container="sectionContent">
 <DIV id=rich0234 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>In addition to the basic blocks, the user can define Template block and use them. Technically speaking, code, richText and section blocks also are templates, but they are defined in the EDI.</DIV>
-<DIV id=sect0233 class="ELEMENT SECTION" sizset="21" sizcache="1">
+<DIV id=sect0233 class="ELEMENT SECTION" sizcache="1" sizset="21">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>2.5.1 jc.template</H3>
-<DIV class=CONTAINER sizset="21" sizcache="1" container="sectionContent"><PRE id=code0235 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.help(jc.template)</PRE>
-<DIV id=out0235 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function(newTemplate,itemprop)</B><BR>&nbsp;create&nbsp;a&nbsp;new&nbsp;template&nbsp;and&nbsp;register&nbsp;it<BR>&nbsp;it&nbsp;will&nbsp;inherit&nbsp;from&nbsp;jc.Template&nbsp;<BR>&nbsp;newTemplate&nbsp;is&nbsp;a&nbsp;simple&nbsp;object&nbsp;that&nbsp;must&nbsp;at&nbsp;least&nbsp;define<BR>&nbsp;.name:&nbsp;a&nbsp;name&nbsp;like&nbsp;an&nbsp;id&nbsp;optionaly&nbsp;followed&nbsp;by&nbsp;#version<BR>&nbsp;and&nbsp;must&nbsp;define&nbsp;one&nbsp;of&nbsp;the&nbsp;3<BR>&nbsp;.fields:&nbsp;{field1:{options},field2:{options}....}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;field1&nbsp;is&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;field&nbsp;if&nbsp;field&nbsp;name&nbsp;ends&nbsp;with&nbsp;[]&nbsp;the&nbsp;field&nbsp;is&nbsp;an&nbsp;array&nbsp;of&nbsp;values<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;options&nbsp;is&nbsp;an&nbsp;object<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;types<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;number:{}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;field&nbsp;is&nbsp;a&nbsp;number<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;string:{}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;field&nbsp;is&nbsp;a&nbsp;string:&nbsp;&nbsp;default&nbsp;if&nbsp;nothing&nbsp;is&nbsp;specified<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;function:function(data){...}&nbsp;&nbsp;the&nbsp;field&nbsp;is&nbsp;calculated&nbsp;(=&gt;&nbsp;readonly)&nbsp;and&nbsp;the&nbsp;html&nbsp;is&nbsp;the&nbsp;result&nbsp;of&nbsp;this&nbsp;function<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;select:{choice1:val1,choice2:val2...)&nbsp;the&nbsp;field&nbsp;is&nbsp;a&nbsp;<WBR>&lt;SELECT&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;container:"template1&nbsp;template2"&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;container&nbsp;that&nbsp;accepts&nbsp;the&nbsp;specified&nbsp;template&nbsp;names&nbsp;and&nbsp;how&nbsp;the&nbsp;itemprop&nbsp;.&nbsp;if&nbsp;"",&nbsp;accepts&nbsp;anything<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;formating<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;label:&nbsp;specifies&nbsp;the&nbsp;label&nbsp;in&nbsp;front&nbsp;of&nbsp;the&nbsp;field.&nbsp;by&nbsp;default&nbsp;fieldName<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;fields&nbsp;is&nbsp;defined,&nbsp;standard&nbsp;html&nbsp;code&nbsp;will&nbsp;automatically&nbsp;be&nbsp;generated<BR>&nbsp;&nbsp;&nbsp;&nbsp;so&nbsp;do&nbsp;not&nbsp;define&nbsp;.fields&nbsp;if&nbsp;you&nbsp;want&nbsp;to&nbsp;define&nbsp;.html<BR>&nbsp;.html:&nbsp;a&nbsp;string&nbsp;representing&nbsp;the&nbsp;html&nbsp;code&nbsp;of&nbsp;the&nbsp;template<BR>&nbsp;.element$:&nbsp;a&nbsp;function()&nbsp;returning&nbsp;a&nbsp;DOM&nbsp;Element;&nbsp;normally&nbsp;not&nbsp;defined&nbsp;and&nbsp;inherited&nbsp;form&nbsp;jc.Template</SPAN></DIV><PRE id=code0236 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.template({name:'person',fields:{firstName:{},middleName:{},lastName:{}}})</PRE>
-<DIV id=out0236 class="OUTPUT SUCCESS">template person created [<A href="http://tablord.com/templates/person">http://tablord.com/templates/person</A>]</DIV><PRE id=code0238 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.templates</PRE>
-<DIV id=out0238 class="OUTPUT SUCCESS">
+<DIV class=CONTAINER sizcache="1" sizset="21" container="sectionContent"><PRE id=code0235 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.help(jc.template)</PRE>
+<DIV id=out0235 class=OUTPUT><SPAN class=HELP><B>function(newTemplate,itemprop)</B><BR>&nbsp;create&nbsp;a&nbsp;new&nbsp;template&nbsp;and&nbsp;register&nbsp;it<BR>&nbsp;it&nbsp;will&nbsp;inherit&nbsp;from&nbsp;jc.Template&nbsp;<BR>&nbsp;newTemplate&nbsp;is&nbsp;a&nbsp;simple&nbsp;object&nbsp;that&nbsp;must&nbsp;at&nbsp;least&nbsp;define<BR>&nbsp;.name:&nbsp;a&nbsp;name&nbsp;like&nbsp;an&nbsp;id&nbsp;optionaly&nbsp;followed&nbsp;by&nbsp;#version<BR>&nbsp;and&nbsp;must&nbsp;define&nbsp;one&nbsp;of&nbsp;the&nbsp;3<BR>&nbsp;.fields:&nbsp;{field1:{options},field2:{options}....}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;field1&nbsp;is&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;field&nbsp;if&nbsp;field&nbsp;name&nbsp;ends&nbsp;with&nbsp;[]&nbsp;the&nbsp;field&nbsp;is&nbsp;an&nbsp;array&nbsp;of&nbsp;values<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;options&nbsp;is&nbsp;an&nbsp;object<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;types<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;number:{}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;field&nbsp;is&nbsp;a&nbsp;number<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;string:{}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;field&nbsp;is&nbsp;a&nbsp;string:&nbsp;&nbsp;default&nbsp;if&nbsp;nothing&nbsp;is&nbsp;specified<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;function:function(data){...}&nbsp;&nbsp;the&nbsp;field&nbsp;is&nbsp;calculated&nbsp;(=&gt;&nbsp;readonly)&nbsp;and&nbsp;the&nbsp;html&nbsp;is&nbsp;the&nbsp;result&nbsp;of&nbsp;this&nbsp;function<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;select:{choice1:val1,choice2:val2...)&nbsp;the&nbsp;field&nbsp;is&nbsp;a&nbsp;<WBR>&lt;SELECT&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;container:"template1&nbsp;template2"&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;container&nbsp;that&nbsp;accepts&nbsp;the&nbsp;specified&nbsp;template&nbsp;names&nbsp;and&nbsp;how&nbsp;the&nbsp;itemprop&nbsp;.&nbsp;if&nbsp;"",&nbsp;accepts&nbsp;anything<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;formating<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;label:&nbsp;specifies&nbsp;the&nbsp;label&nbsp;in&nbsp;front&nbsp;of&nbsp;the&nbsp;field.&nbsp;by&nbsp;default&nbsp;fieldName<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;fields&nbsp;is&nbsp;defined,&nbsp;standard&nbsp;html&nbsp;code&nbsp;will&nbsp;automatically&nbsp;be&nbsp;generated<BR>&nbsp;&nbsp;&nbsp;&nbsp;so&nbsp;do&nbsp;not&nbsp;define&nbsp;.fields&nbsp;if&nbsp;you&nbsp;want&nbsp;to&nbsp;define&nbsp;.html<BR>&nbsp;.html:&nbsp;a&nbsp;string&nbsp;representing&nbsp;the&nbsp;html&nbsp;code&nbsp;of&nbsp;the&nbsp;template<BR>&nbsp;.element$:&nbsp;a&nbsp;function()&nbsp;returning&nbsp;a&nbsp;DOM&nbsp;Element;&nbsp;normally&nbsp;not&nbsp;defined&nbsp;and&nbsp;inherited&nbsp;form&nbsp;jc.Template</SPAN></DIV><PRE id=code0236 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.template({name:'person',fields:{firstName:{},middleName:{},lastName:{}}})</PRE>
+<DIV id=out0236 class=OUTPUT>template person created [<A href="http://tablord.com/templates/person">http://tablord.com/templates/person</A>]</DIV><PRE id=code0238 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.templates</PRE>
+<DIV id=out0238 class=OUTPUT>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -190,7 +191,7 @@
 <DIV id=rich0239 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>
 <P>then a template can be inserted in the text like any other block by selecting this template in the block pick list. </P>
 <P>Note that once inserted, the block is not "live" i.e. any change to the template definition will not be automatically reflected.</P></DIV>
-<DIV class=ELEMENT itemscope itemtype="http://tablord.com/templates/person.html">
+<DIV class=ELEMENT itemtype="http://tablord.com/templates/person.html" itemscope>
 <TABLE width="100%">
 <TBODY>
 <TR>
@@ -205,7 +206,7 @@
 <TH>lastName</TH>
 <TD class=LEFT width="90%">
 <DIV class="FIELD EDITABLE" contentEditable=false itemprop="lastName">Nicole</DIV></TD></TR></TBODY></TABLE></DIV>
-<DIV class=ELEMENT itemscope itemtype="http://tablord.com/templates/person.html">
+<DIV class=ELEMENT itemtype="http://tablord.com/templates/person.html" itemscope>
 <TABLE width="100%">
 <TBODY>
 <TR>
@@ -220,11 +221,11 @@
 <TH>lastName</TH>
 <TD class=LEFT width="90%">
 <DIV class="FIELD EDITABLE" contentEditable=false itemprop="lastName">Smith</DIV></TD></TR></TBODY></TABLE></DIV>
-<DIV id=sect0241 class="ELEMENT SECTION" sizset="24" sizcache="1">
+<DIV id=sect0241 class="ELEMENT SECTION" sizcache="1" sizset="24">
 <H4 class="SECTIONTITLE EDITABLE" contentEditable=false>2.5.1.1 jc.template.data</H4>
-<DIV class=CONTAINER sizset="24" sizcache="1" container="sectionContent">
+<DIV class=CONTAINER sizcache="1" sizset="24" container="sectionContent">
 <DIV id=rich0242 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>In order to get the data of templates, one can use jc.template.data(url) that return an array of objects, which is handy to create tables. Please note that the search of template is done on the <STRONG>entire</STRONG> document as it is at the time of the code execution. Normally this is not an issue since template are mostly used as a way to enter manually structured data, but it can become of concern if some template block are created programmatically within the document.</DIV><PRE id=code0240 class="ELEMENT CODE EDITABLE" contentEditable=false>jc.inspect(jc.getItems$('http://tablord.com/templates/person.html').getMicrodata(),'',10)</PRE>
-<DIV id=out0240 class="OUTPUT SUCCESS">
+<DIV id=out0240 class=OUTPUT>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} 10</LEGEND>
 <TABLE>
@@ -232,57 +233,57 @@
 <TR>
 <TH vAlign=top>items</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;Object],[object&nbsp;Object]</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0243 class="ELEMENT CODE EDITABLE" contentEditable=false>table().addRows(jc.getItems$('http://tablord.com/templates/person.html').getMicrodata())</PRE>
-<DIV id=out0243 class="OUTPUT SUCCESS">
+<DIV id=out0243 class=OUTPUT>
 <TABLE>
 <THEAD>
 <TR></TR></THEAD>
 <TBODY></TBODY></TABLE></DIV></DIV></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0069 class="SECTION ELEMENT" sizset="26" sizcache="1">
+<DIV id=sect0069 class="SECTION ELEMENT" sizcache="1" sizset="26">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>2.6 Code Execution </H2>
-<DIV sizset="26" sizcache="1" container="sectionContent">
-<DIV id=sect0213 class="SECTION ELEMENT" sizset="26" sizcache="1">
+<DIV sizcache="1" sizset="26" container="sectionContent">
+<DIV id=sect0213 class="SECTION ELEMENT" sizcache="1" sizset="26">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>2.6.1 Run Until Selected button or ctrl-Enter</H3>
-<DIV sizset="26" sizcache="1" container="sectionContent">
-<DIV id=rich0219 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="26" sizcache="1">
-<P sizset="26" sizcache="1">While editing an element, you can either click on the "run until selected" <SPAN id=code0216 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.html($('#runUntilSelectedBtn')[0].outerHTML)</SPAN><SPAN id=out0216 class="OUTPUT SUCCESS"><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON></SPAN></P>or press ctrl-Enter. Both will run all code element until (and including) the currently selected Element. 
+<DIV sizcache="1" sizset="26" container="sectionContent">
+<DIV id=rich0219 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="26">
+<P sizcache="1" sizset="26">While editing an element, you can either click on the "run until selected" <SPAN id=code0216 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.html($('#runUntilSelectedBtn')[0].outerHTML)</SPAN><SPAN id=out0216 class=OUTPUT><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON></SPAN></P>or press ctrl-Enter. Both will run all code element until (and including) the currently selected Element. 
 <P></P>
 <P>Please note that every run is done in a new fresh environnement, so every previously declared variable through v, table... are deleted before execution.</P></DIV></DIV></DIV>
-<DIV id=sect0215 class="SECTION ELEMENT" sizset="27" sizcache="1">
+<DIV id=sect0215 class="SECTION ELEMENT" sizcache="1" sizset="27">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>2.6.2 Run All and auto run</H3>
-<DIV sizset="27" sizcache="1" container="sectionContent">
-<DIV id=rich0217 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="27" sizcache="1">
+<DIV sizcache="1" sizset="27" container="sectionContent">
+<DIV id=rich0217 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="27">
 <P>if the sheet is marked with auto run (by default) it will be executed fully on the openning of the sheet.</P>
-<P sizset="27" sizcache="1">you can reexecute everything by pressing the run all button <SPAN id=code0218 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.html($('#runAllBtn')[0].outerHTML)</SPAN><SPAN id=out0218 class="OUTPUT SUCCESS"><BUTTON onclick=jc.execAll(); id=runAllBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60" >&#9658;&#9658;</BUTTON></SPAN></P>. In both cases, the execution start by creating a fresh new variables environnement 
+<P sizcache="1" sizset="27">you can reexecute everything by pressing the run all button <SPAN id=code0218 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.html($('#runAllBtn')[0].outerHTML)</SPAN><SPAN id=out0218 class=OUTPUT><BUTTON onclick=jc.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON></SPAN></P>. In both cases, the execution start by creating a fresh new variables environnement 
 <P></P></DIV></DIV></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0070 class="SECTION ELEMENT" sizset="29" sizcache="1">
-<H1 class="SECTIONTITLE EDITABLE" contentEditable=false>3 the <SPAN id=code0072 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0072 class="OUTPUT SUCCESS">JCalc</SPAN>library</H1>
-<DIV sizset="29" sizcache="1" container="sectionContent">
+<DIV id=sect0070 class="SECTION ELEMENT" sizcache="1" sizset="29">
+<H1 class="SECTIONTITLE EDITABLE" contentEditable=false>3 the <SPAN id=code0072 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0072 class=OUTPUT>JCalc</SPAN>library</H1>
+<DIV sizcache="1" sizset="29" container="sectionContent">
 <DIV id=rich0071 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false></DIV>
-<DIV id=sect0076 class="SECTION ELEMENT" sizset="29" sizcache="1">
+<DIV id=sect0076 class="SECTION ELEMENT" sizcache="1" sizset="29">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>3.1 Variable declaration</H2>
-<DIV sizset="29" sizcache="1" container="sectionContent">
-<DIV id=rich0077 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="29" sizcache="1">
-<P sizset="29" sizcache="1">the most uncommon part of <SPAN id=code0079 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0079 class="OUTPUT SUCCESS">JCalc</SPAN></P>for already knowlegable JavaScript users is how to declare variables. 
+<DIV sizcache="1" sizset="29" container="sectionContent">
+<DIV id=rich0077 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="29">
+<P sizcache="1" sizset="29">the most uncommon part of <SPAN id=code0079 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0079 class=OUTPUT>JCalc</SPAN></P>for already knowlegable JavaScript users is how to declare variables. 
 <P></P>
 <P>As all calculation will occure in the client, technically speaking, all should impact the JavaScript environnement, which is very impractical. if you would declare a variable "window" nothing would be reachable anymore since "window" is <STRONG>the</STRONG> root of many things in browser JavaScript.</P>
 <P>&nbsp;</P>
 <P>In order to avoid this problem, variables are declared using the v function like below</P></DIV><PRE id=code0078 class="CODE ELEMENT EDITABLE" contentEditable=false>v('myVariable','its value')</PRE>
-<DIV id=out0078 class="OUTPUT SUCCESS">its&nbsp;value</DIV>
+<DIV id=out0078 class=OUTPUT>its&nbsp;value</DIV>
 <DIV id=rich0080 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>by doing so <STRONG>myVariable</STRONG> is created. In fact, <STRONG>v.myVariable</STRONG> is created with an object of class <STRONG>V</STRONG> and is referenced in <STRONG>jc.vars</STRONG></P>
 <P>Any code is executed inside a <EM><STRONG>with(jc.vars)</STRONG></EM> which means that <STRONG>myVariable</STRONG> is directly accessible</P>
 <P>so the following code will retrieve what was stored</P></DIV><PRE id=code0081 class="CODE ELEMENT EDITABLE" contentEditable=false>myVariable</PRE>
-<DIV id=out0081 class="OUTPUT SUCCESS">its&nbsp;value</DIV>
+<DIV id=out0081 class=OUTPUT>its&nbsp;value</DIV>
 <DIV id=rich0082 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>As <STRONG>myVariable</STRONG> is a object of class <STRONG>V</STRONG> it has some methods like <STRONG>.view</STRONG></DIV><PRE id=code0083 class="CODE ELEMENT EDITABLE" contentEditable=false>myVariable.view()</PRE>
-<DIV id=out0083 class="OUTPUT SUCCESS"><VAR>myVariable</VAR> = <SPAN class=VALUE>its&nbsp;value</SPAN></DIV>
+<DIV id=out0083 class=OUTPUT><VAR>myVariable</VAR> = <SPAN class=VALUE>its&nbsp;value</SPAN></DIV>
 <DIV id=rich0084 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>this shows the name of the variable as well as its current value</P>
 <P>&nbsp;</P>
 <P>another practical tool is</P><PRE>jc.inspect()</PRE>
 <P>&nbsp;</P></DIV><PRE id=code0098 class="CODE ELEMENT EDITABLE" contentEditable=false><P>jc.inspect(myVariable)</P></PRE>
-<DIV id=out0098 class="OUTPUT SUCCESS">
+<DIV id=out0098 class=OUTPUT>
 <DIV class=INSPECT>
-<FIELDSET><LEGEND>[object V(myVariable):its value] </LEGEND>
+<FIELDSET><LEGEND>[object jc.Var(myVariable):its value] </LEGEND>
 <TABLE>
 <TBODY>
 <TR>
@@ -339,76 +340,76 @@
 <TR>
 <TH vAlign=top>isV</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>true</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
-<DIV id=rich0099 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="34" sizcache="1">
-<P sizset="34" sizcache="1">more will be detailled in <SPAN id=code0100 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.link("jc.inspect")</SPAN><SPAN id=out0100 class="OUTPUT SUCCESS"><A class=LINK href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_documentation.hta#sect0186">jc.inspect</A></SPAN></P>but for now just take it as a good way to inspect anything and a way to get help on an object 
+<DIV id=rich0099 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="34">
+<P sizcache="1" sizset="34">more will be detailled in <SPAN id=code0100 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.link("jc.inspect")</SPAN><SPAN id=out0100 class=OUTPUT><A class=LINK href="file:///D:/Documents/programmation/jcalc/jcalcV0/jcalc_documentation.hta#sect0186">jc.inspect</A></SPAN></P>but for now just take it as a good way to inspect anything and a way to get help on an object 
 <P></P>
 <P>&nbsp;</P>
 <P>you can inspect anything, so you can also&nbsp;just type <STRONG>jc.vars</STRONG> to have a look of&nbsp;all declared variables.</P></DIV><PRE id=code0105 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.vars</PRE>
-<DIV id=out0105 class="OUTPUT SUCCESS">
+<DIV id=out0105 class=OUTPUT>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
 <TBODY>
 <TR>
 <TH vAlign=top>myVariable</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;V(myVariable):its&nbsp;value]</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;jc.Var(myVariable):its&nbsp;value]</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
 <DIV id=rich0106 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>If you want to create a pure javaScript variable, just store it in jc.vars in order to avoid to polute to global name space.</P>
 <P>this also has another benefice: jc.vars is cleared before any execution of the sheet (either full run or only run from the beginning to the current selection). Doing so prevents having a sheet that executes properly using a variable that was defined before but that is no longer in any code. This seems to work, but will no longer work once you reopen the sheet.</P></DIV><PRE id=code0223 class="CODE ELEMENT EDITABLE" contentEditable=false><P>jc.vars.myJavaScriptVariable1 = 5;</P><P>jc.vars.myJavaScriptVariable2 = $('#code0223');</P><P>jc.vars</P></PRE>
-<DIV id=out0223 class="OUTPUT SUCCESS">
+<DIV id=out0223 class=OUTPUT>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
 <TBODY>
 <TR>
 <TH vAlign=top>myVariable</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;V(myVariable):its&nbsp;value]</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;jc.Var(myVariable):its&nbsp;value]</TD></TR>
 <TR>
 <TH vAlign=top>myJavaScriptVariable1</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>5</TD></TR>
 <TR>
 <TH vAlign=top>myJavaScriptVariable2</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;JQuery]&nbsp;length:1</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
-<DIV id=sect0107 class="SECTION ELEMENT" sizset="37" sizcache="1">
+<DIV id=sect0107 class="SECTION ELEMENT" sizcache="1" sizset="37">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.1.1 Naming conventions</H3>
-<DIV sizset="37" sizcache="1" container="sectionContent">
-<DIV id=rich0108 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="37" sizcache="1">
-<P sizset="37" sizcache="1">In <SPAN id=code0109 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0109 class="OUTPUT SUCCESS">JCalc</SPAN></P>one should avoid starting a variable name by _ since those are reserved for the library usage (like _simulation). 
+<DIV sizcache="1" sizset="37" container="sectionContent">
+<DIV id=rich0108 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="37">
+<P sizcache="1" sizset="37">In <SPAN id=code0109 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0109 class=OUTPUT>JCalc</SPAN></P>one should avoid starting a variable name by _ since those are reserved for the library usage (like _simulation). 
 <P></P>
-<P sizset="38" sizcache="1">If you do so, you will be sure that this name space is for you and no upgrade of <SPAN id=code0110 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0110 class="OUTPUT SUCCESS">JCalc</SPAN></P>will interfear in your variables. 
+<P sizcache="1" sizset="38">If you do so, you will be sure that this name space is for you and no upgrade of <SPAN id=code0110 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0110 class=OUTPUT>JCalc</SPAN></P>will interfear in your variables. 
 <P></P>
 <P>For the rest, it's up to you, but common good practice for JavaScript is to camelCase every word but the first and avoid underscore.</P>
 <P>&nbsp;</P>
 <P>the library follows those common conventions:</P>
 <P>a function stating with a CapitalCase is a constructor (~ a Class)</P></DIV></DIV></DIV>
-<DIV id=sect0085 class="SECTION ELEMENT" sizset="39" sizcache="1">
+<DIV id=sect0085 class="SECTION ELEMENT" sizcache="1" sizset="39">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.1.2 Unit support</H3>
-<DIV sizset="39" sizcache="1" container="sectionContent">
-<DIV id=rich0086 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="39" sizcache="1">
-<P sizset="39" sizcache="1">One on the very common programming mistake is to missmatch units, adding for example $ and &#8364; and of course having strange results. Unfortunally no modern language supports properly units (which is a shame). JavaScript is no exception :-( . So, even if this is far from perfect, some provision have been given in <SPAN id=code0088 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0088 class="OUTPUT SUCCESS">JCalc</SPAN></P>while remaining pure JavaScript. 
+<DIV sizcache="1" sizset="39" container="sectionContent">
+<DIV id=rich0086 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="39">
+<P sizcache="1" sizset="39">One on the very common programming mistake is to missmatch units, adding for example $ and &#8364; and of course having strange results. Unfortunally no modern language supports properly units (which is a shame). JavaScript is no exception :-( . So, even if this is far from perfect, some provision have been given in <SPAN id=code0088 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0088 class=OUTPUT>JCalc</SPAN></P>while remaining pure JavaScript. 
 <P></P>
 <P>&nbsp;</P>
 <P>By convention the unit is located in the variable name after a <STRONG>$</STRONG> sign</P></DIV><PRE id=code0087 class="CODE ELEMENT EDITABLE" contentEditable=false>v('currentPrice$USD',1234).view()</PRE>
-<DIV id=out0087 class="OUTPUT SUCCESS"><VAR>currentPrice</VAR> = <SPAN class=VALUE>1234</SPAN>&nbsp;<SPAN class=UNIT>USD</SPAN></DIV><PRE id=code0089 class="CODE ELEMENT EDITABLE" contentEditable=false>currentPrice$USD</PRE>
-<DIV id=out0089 class="OUTPUT SUCCESS">1234</DIV><PRE id=code0090 class="CODE ELEMENT EDITABLE" contentEditable=false>currentPrice$USD.unit</PRE>
-<DIV id=out0090 class="OUTPUT SUCCESS">USD</DIV><PRE id=code0091 class="CODE ELEMENT EDITABLE" contentEditable=false>currentPrice$USD.label</PRE>
-<DIV id=out0091 class="OUTPUT SUCCESS">currentPrice</DIV>
-<DIV id=rich0092 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="44" sizcache="1">
-<P sizset="44" sizcache="1">In the future some capability of unit convertion will be given. nothing prevents you to write code like <SPAN id=code0093 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.codeExample('currentPrice$USD-margin$EUR')</SPAN><SPAN id=out0093 class="OUTPUT SUCCESS"><SPAN class=CODEEXAMPLE>currentPrice$USD-margin$EUR</SPAN></SPAN> 
+<DIV id=out0087 class=OUTPUT><VAR>currentPrice</VAR> = <SPAN class=VALUE>1234</SPAN>&nbsp;<SPAN class=UNIT>USD</SPAN></DIV><PRE id=code0089 class="CODE ELEMENT EDITABLE" contentEditable=false>currentPrice$USD</PRE>
+<DIV id=out0089 class=OUTPUT>1234</DIV><PRE id=code0090 class="CODE ELEMENT EDITABLE" contentEditable=false>currentPrice$USD.unit</PRE>
+<DIV id=out0090 class=OUTPUT>USD</DIV><PRE id=code0091 class="CODE ELEMENT EDITABLE" contentEditable=false>currentPrice$USD.label</PRE>
+<DIV id=out0091 class=OUTPUT>currentPrice</DIV>
+<DIV id=rich0092 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="44">
+<P sizcache="1" sizset="44">In the future some capability of unit convertion will be given. nothing prevents you to write code like <SPAN id=code0093 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.codeExample('currentPrice$USD-margin$EUR')</SPAN><SPAN id=out0093 class=OUTPUT><SPAN class=CODEEXAMPLE>currentPrice$USD-margin$EUR</SPAN></SPAN> 
 <P></P>but at least this notation makes you a little bit more aware of the problem.</DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0173 class="SECTION ELEMENT" sizset="45" sizcache="1">
+<DIV id=sect0173 class="SECTION ELEMENT" sizcache="1" sizset="45">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>3.2 view the result</H2>
-<DIV sizset="45" sizcache="1" container="sectionContent">
+<DIV sizcache="1" sizset="45" container="sectionContent">
 <DIV id=rich0174 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>The simpliest method to view a result is just to execute a code that ends with some results like in a JavaScript console</P></DIV><PRE id=code0175 class="CODE ELEMENT EDITABLE" contentEditable=false>2+3</PRE>
-<DIV id=out0175 class="OUTPUT SUCCESS">5</DIV>
-<DIV id=rich0176 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="46" sizcache="1">in <SPAN id=code0178 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0178 class="OUTPUT SUCCESS">JCalc</SPAN>, when a piece of code returns a result, it will first look if this is a simple type and display it in a human format</DIV><PRE id=code0177 class="CODE ELEMENT EDITABLE" contentEditable=false>undefined</PRE>
-<DIV id=out0177 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV><PRE id=code0179 class="CODE ELEMENT EDITABLE" contentEditable=false>''</PRE>
-<DIV id=out0179 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">empty string</SPAN></DIV>
+<DIV id=out0175 class=OUTPUT>5</DIV>
+<DIV id=rich0176 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="46">in <SPAN id=code0178 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0178 class=OUTPUT>JCalc</SPAN>, when a piece of code returns a result, it will first look if this is a simple type and display it in a human format</DIV><PRE id=code0177 class="CODE ELEMENT EDITABLE" contentEditable=false>undefined</PRE>
+<DIV id=out0177 class=OUTPUT><SPAN style="COLOR: red">undefined</SPAN></DIV><PRE id=code0179 class="CODE ELEMENT EDITABLE" contentEditable=false>''</PRE>
+<DIV id=out0179 class=OUTPUT><SPAN style="COLOR: red">empty string</SPAN></DIV>
 <DIV id=rich0182 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>note that this is close to the toString(), so an array will show like a list.</DIV><PRE id=code0180 class="CODE ELEMENT EDITABLE" contentEditable=false>[1,2,3]</PRE>
-<DIV id=out0180 class="OUTPUT SUCCESS">1,2,3</DIV>
-<DIV id=rich0183 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="50" sizcache="1">then if this is an object, it will try to use the <STRONG>span()</STRONG> method to get an decent html representation of the object. This works well on the <SPAN id=code0184 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0184 class="OUTPUT SUCCESS">JCalc</SPAN>library that consitently implement this method</DIV><PRE id=code0185 class="CODE ELEMENT EDITABLE" contentEditable=false><P>table('aTable')</P><P>.add({id:'zero',col1:1,col2:2,col3:3})</P><P>.add({id:'one' ,col1:10,col2:20,col3:30})</P><P>.add({id:'two' ,col1:100,col2:200,col3:300})</P></PRE>
-<DIV id=out0185 class="OUTPUT SUCCESS">
+<DIV id=out0180 class=OUTPUT>1,2,3</DIV>
+<DIV id=rich0183 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="50">then if this is an object, it will try to use the <STRONG>span()</STRONG> method to get an decent html representation of the object. This works well on the <SPAN id=code0184 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0184 class=OUTPUT>JCalc</SPAN>library that consitently implement this method</DIV><PRE id=code0185 class="CODE ELEMENT EDITABLE" contentEditable=false><P>table('aTable')</P><P>.add({id:'zero',col1:1,col2:2,col3:3})</P><P>.add({id:'one' ,col1:10,col2:20,col3:30})</P><P>.add({id:'two' ,col1:100,col2:200,col3:300})</P></PRE>
+<DIV id=out0185 class=OUTPUT>
 <TABLE>
 <THEAD>
 <TR>
@@ -432,17 +433,17 @@
 <TD>100</TD>
 <TD>200</TD>
 <TD>300</TD></TR></TBODY></TABLE></DIV><PRE id=code0197 class="CODE ELEMENT EDITABLE" contentEditable=false><P>function sum(a,b) {return a+b};</P><P>sum</P></PRE>
-<DIV id=out0197 class="OUTPUT SUCCESS"></DIV>
-<DIV id=sect0186 class="SECTION ELEMENT" sizset="53" sizcache="1">
+<DIV id=out0197 class=OUTPUT></DIV>
+<DIV id=sect0186 class="SECTION ELEMENT" sizcache="1" sizset="53">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.2.1 jc.inspect</H3>
-<DIV sizset="53" sizcache="1" container="sectionContent">
+<DIV sizcache="1" sizset="53" container="sectionContent">
 <DIV id=rich0187 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>sometime you need to be close to the technical result, and the native format is to ambigous. this is specially the case with array that looks very much like a string, specially if empty</P>
 <P><STRONG>jc.inspect</STRONG> give you a better technical representation</P>
 <P>&nbsp;</P></DIV><PRE id=code0188 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect(2+3)</PRE>
-<DIV id=out0188 class="OUTPUT SUCCESS">5</DIV><PRE id=code0189 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect('toto')</PRE>
-<DIV id=out0189 class="OUTPUT SUCCESS"><SPAN class=INSPECT>"toto"</SPAN></DIV><PRE id=code0190 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect([1,2])</PRE>
-<DIV id=out0190 class="OUTPUT SUCCESS">
+<DIV id=out0188 class=OUTPUT>5</DIV><PRE id=code0189 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect('toto')</PRE>
+<DIV id=out0189 class=OUTPUT><SPAN class=INSPECT>"toto"</SPAN></DIV><PRE id=code0190 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect([1,2])</PRE>
+<DIV id=out0190 class=OUTPUT>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>[] </LEGEND>
 <TABLE>
@@ -453,12 +454,12 @@
 <TR>
 <TH vAlign=top>1</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0192 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect([])</PRE>
-<DIV id=out0192 class="OUTPUT SUCCESS">
+<DIV id=out0192 class=OUTPUT>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>[] </LEGEND>
 <TABLE>
 <TBODY></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0194 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect({toto:1,tutu:{firstName:'tutu',lastName:'Smith'}})</PRE>
-<DIV id=out0194 class="OUTPUT SUCCESS">
+<DIV id=out0194 class=OUTPUT>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -470,7 +471,7 @@
 <TH vAlign=top>tutu</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;Object]</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
 <DIV id=rich0195 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>jc.inspect can also work at a certain level of depth. be carefull however that it can often generate very big amount of data if missused, also note that you can give a legend </DIV><PRE id=code0196 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect({toto:1,tutu:{firstName:'tutu',lastName:'Smith'}},'my legend',2)</PRE>
-<DIV id=out0196 class="OUTPUT SUCCESS">
+<DIV id=out0196 class=OUTPUT>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} 2</LEGEND>
 <TABLE>
@@ -491,7 +492,7 @@
 <TR>
 <TH vAlign=top>lastName</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>Smith</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0200 class="CODE ELEMENT EDITABLE" contentEditable=false><P>function sum(a,b) {return a+b};</P><P>sum.c= 5;</P><P>jc.inspect(sum)</P></PRE>
-<DIV id=out0200 class="OUTPUT SUCCESS">
+<DIV id=out0200 class=OUTPUT>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>function sum(a,b) </LEGEND>
 <TABLE>
@@ -499,7 +500,7 @@
 <TR>
 <TH vAlign=top>c</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>5</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0201 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect(aTable,'another legend',2)</PRE>
-<DIV id=out0201 class="OUTPUT SUCCESS">
+<DIV id=out0201 class=OUTPUT>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>[object Table(aTable) of 3 rows] 2</LEGEND>
 <TABLE>
@@ -691,9 +692,6 @@
 <TH vAlign=top>name</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"aTable"</SPAN></TD></TR>
 <TR>
-<TH vAlign=top>parent</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">undefined</SPAN></TD></TR>
-<TR>
 <TH vAlign=top>length</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR>
 <TR>
@@ -873,13 +871,13 @@
 <TR>
 <TH vAlign=top>updateCode</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>&nbsp;generate&nbsp;the&nbsp;code&nbsp;that&nbsp;represents&nbsp;the&nbsp;element&nbsp;as&nbsp;edited<BR>&nbsp;can&nbsp;be&nbsp;used&nbsp;to&nbsp;replace&nbsp;the&nbsp;existing&nbsp;code&nbsp;</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV>
-<DIV id=sect0202 class="SECTION ELEMENT" sizset="61" sizcache="1">
+<DIV id=sect0202 class="SECTION ELEMENT" sizcache="1" sizset="61">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.2.2 jc.help</H3>
-<DIV sizset="61" sizcache="1" container="sectionContent">
+<DIV sizcache="1" sizset="61" container="sectionContent">
 <DIV id=rich0203 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>jc.help show the essential of a function</DIV><PRE id=code0204 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.help(v)</PRE>
-<DIV id=out0204 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function v(name,value)</B><BR>&nbsp;v(name)&nbsp;returns&nbsp;the&nbsp;variable&nbsp;name:&nbsp;rarely&nbsp;used&nbsp;since&nbsp;name&nbsp;alone&nbsp;will&nbsp;represent&nbsp;the&nbsp;same&nbsp;as&nbsp;well&nbsp;as&nbsp;jc.vars[name]<BR>&nbsp;v(name,value)&nbsp;creates&nbsp;a&nbsp;new&nbsp;variable&nbsp;if&nbsp;it&nbsp;does&nbsp;not&nbsp;already&nbsp;exists&nbsp;and&nbsp;sets&nbsp;a&nbsp;new&nbsp;value</SPAN></DIV>
-<DIV id=rich0206 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="62" sizcache="1">without parameters, jc.help show the help of <SPAN id=code0207 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0207 class="OUTPUT SUCCESS">JCalc</SPAN></DIV><PRE id=code0205 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.help()</PRE>
-<DIV id=out0205 class="OUTPUT SUCCESS">
+<DIV id=out0204 class=OUTPUT><SPAN class=HELP><B>function v(name,value)</B><BR>&nbsp;v(name)&nbsp;returns&nbsp;the&nbsp;variable&nbsp;name:&nbsp;rarely&nbsp;used&nbsp;since&nbsp;name&nbsp;alone&nbsp;will&nbsp;represent&nbsp;the&nbsp;same&nbsp;as&nbsp;well&nbsp;as&nbsp;jc.vars[name]<BR>&nbsp;v(name,value)&nbsp;creates&nbsp;a&nbsp;new&nbsp;variable&nbsp;if&nbsp;it&nbsp;does&nbsp;not&nbsp;already&nbsp;exists&nbsp;and&nbsp;sets&nbsp;a&nbsp;new&nbsp;value</SPAN></DIV>
+<DIV id=rich0206 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="62">without parameters, jc.help show the help of <SPAN id=code0207 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0207 class=OUTPUT>JCalc</SPAN></DIV><PRE id=code0205 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.help()</PRE>
+<DIV id=out0205 class=OUTPUT>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -909,7 +907,7 @@
 <TBODY>
 <TR>
 <TH vAlign=top>inspect</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(obj,depth,name)</B><BR></SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(obj,depth,name)</B><BR>&nbsp;return&nbsp;an&nbsp;Inspector&nbsp;object&nbsp;so&nbsp;obj&nbsp;can&nbsp;be&nbsp;displayed&nbsp;either&nbsp;in&nbsp;an&nbsp;html&nbsp;or&nbsp;plain&nbsp;text&nbsp;context<BR>&nbsp;-&nbsp;depth&nbsp;(default&nbsp;1)&nbsp;give&nbsp;at&nbsp;what&nbsp;depth&nbsp;object&nbsp;properties&nbsp;are&nbsp;also&nbsp;inspected<BR>&nbsp;-&nbsp;name&nbsp;(optional)&nbsp;gives&nbsp;a&nbsp;name&nbsp;to&nbsp;be&nbsp;shown&nbsp;in&nbsp;the&nbsp;display</SPAN></TD></TR>
 <TR>
 <TH vAlign=top>keys</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(obj)</B><BR>&nbsp;returns&nbsp;an&nbsp;Array&nbsp;with&nbsp;all&nbsp;keys&nbsp;(=non&nbsp;inherited&nbsp;properties)&nbsp;of&nbsp;an&nbsp;object<BR>&nbsp;replacement&nbsp;for&nbsp;ECMA5&nbsp;</SPAN></TD></TR>
@@ -936,7 +934,7 @@
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria,a)</B><BR>&nbsp;find&nbsp;the&nbsp;first&nbsp;object&nbsp;in&nbsp;the&nbsp;array&nbsp;(or&nbsp;array&nbsp;like)&nbsp;of&nbsp;object&nbsp;a&nbsp;that&nbsp;has&nbsp;all&nbsp;criteria&nbsp;true<BR>&nbsp;example&nbsp;jc.findInArrayOfObject({toto:5},[{toto:1,tutu:5},{toto:5}])<BR>&nbsp;will&nbsp;return&nbsp;1</SPAN></TD></TR>
 <TR>
 <TH vAlign=top>help</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(func)</B><BR>&nbsp;returns&nbsp;the&nbsp;signature&nbsp;of&nbsp;the&nbsp;function&nbsp;and&nbsp;the&nbsp;first&nbsp;comment&nbsp;in&nbsp;a&nbsp;pretty&nbsp;html&nbsp;<BR>&nbsp;-&nbsp;func:&nbsp;the&nbsp;function&nbsp;to&nbsp;be&nbsp;inspected<BR>&nbsp;if&nbsp;func&nbsp;is&nbsp;undefined&nbsp;returns&nbsp;all&nbsp;helps&nbsp;of&nbsp;all&nbsp;installed&nbsp;modules<BR>&nbsp;if&nbsp;func&nbsp;starts&nbsp;with&nbsp;a&nbsp;UpperCase&nbsp;it&nbsp;is&nbsp;considered&nbsp;as&nbsp;a&nbsp;constructor</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(func)</B><BR>&nbsp;returns&nbsp;the&nbsp;signature&nbsp;of&nbsp;the&nbsp;function&nbsp;and&nbsp;the&nbsp;first&nbsp;comment&nbsp;in&nbsp;a&nbsp;pretty&nbsp;html&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;followed&nbsp;by&nbsp;the&nbsp;content&nbsp;of&nbsp;the&nbsp;.help()&nbsp;static&nbsp;method&nbsp;of&nbsp;func&nbsp;if&nbsp;any<BR>&nbsp;-&nbsp;func:&nbsp;the&nbsp;function&nbsp;to&nbsp;be&nbsp;inspected</SPAN></TD></TR>
 <TR>
 <TH vAlign=top>testStatus</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>&nbsp;set&nbsp;a&nbsp;finalize&nbsp;function&nbsp;that&nbsp;will&nbsp;write&nbsp;to&nbsp;the&nbsp;current&nbsp;output&nbsp;the&nbsp;number&nbsp;of&nbsp;test&nbsp;Failure<BR>&nbsp;in&nbsp;the&nbsp;section&nbsp;that&nbsp;includes&nbsp;the&nbsp;code&nbsp;that&nbsp;executes&nbsp;this&nbsp;function<BR>&nbsp;mostly&nbsp;used&nbsp;in&nbsp;a&nbsp;small&nbsp;code&nbsp;inside&nbsp;the&nbsp;title&nbsp;of&nbsp;a&nbsp;section&nbsp;to&nbsp;summerize&nbsp;the&nbsp;tests&nbsp;below</SPAN></TD></TR>
@@ -953,10 +951,10 @@
 <TR>
 <TH vAlign=top>symbole</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(unit)</B><BR>&nbsp;returns&nbsp;the&nbsp;"pretty"&nbsp;symbole&nbsp;for&nbsp;unit&nbsp;or&nbsp;unit&nbsp;itself&nbsp;if&nbsp;none&nbsp;if&nbsp;found</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0143 class="SECTION ELEMENT" sizset="64" sizcache="1">
+<DIV id=sect0143 class="SECTION ELEMENT" sizcache="1" sizset="64">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>3.3 General methods</H2>
-<DIV sizset="64" sizcache="1" container="sectionContent">
-<DIV id=rich0144 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="64" sizcache="1">in the <SPAN id=code0146 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0146 class="OUTPUT SUCCESS">JCalc</SPAN>there are some methods that all object implements</DIV>
+<DIV sizcache="1" sizset="64" container="sectionContent">
+<DIV id=rich0144 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="64">in the <SPAN id=code0146 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.name</SPAN><SPAN id=out0146 class=OUTPUT>JCalc</SPAN>there are some methods that all object implements</DIV>
 <DIV id=sect0145 class="SECTION ELEMENT">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.3.1 toString</H3>
 <DIV container="sectionContent">
@@ -976,17 +974,17 @@
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.3.4 view</H3>
 <DIV container="sectionContent">
 <DIV id=rich0151 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>similar to span and also returns an HTML object, but displayed in a &lt;DIV&gt; and displaying more informations like the instance name or other usefull information</DIV></DIV></DIV>
-<DIV id=sect0154 class="SECTION ELEMENT" sizset="65" sizcache="1">
+<DIV id=sect0154 class="SECTION ELEMENT" sizcache="1" sizset="65">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.3.5 method chaining</H3>
-<DIV sizset="65" sizcache="1" container="sectionContent">
-<DIV id=rich0155 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="65" sizcache="1">
+<DIV sizcache="1" sizset="65" container="sectionContent">
+<DIV id=rich0155 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="65">
 <P>most methods returns the calling object excepted when the method clearly specifies another result. so method chaining is easy like</P>
-<P sizset="65" sizcache="1"><SPAN id=code0156 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.codeExample("table('myTable').add({some row}).addRows([...]).sort()")</SPAN><SPAN id=out0156 class="OUTPUT SUCCESS"><SPAN class=CODEEXAMPLE>table('myTable').add({some row}).addRows([...]).sort()</SPAN></SPAN> 
+<P sizcache="1" sizset="65"><SPAN id=code0156 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.codeExample("table('myTable').add({some row}).addRows([...]).sort()")</SPAN><SPAN id=out0156 class=OUTPUT><SPAN class=CODEEXAMPLE>table('myTable').add({some row}).addRows([...]).sort()</SPAN></SPAN> 
 <P></P></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0095 class="SECTION ELEMENT" sizset="66" sizcache="1">
+<DIV id=sect0095 class="SECTION ELEMENT" sizcache="1" sizset="66">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>3.4 Table</H2>
-<DIV sizset="66" sizcache="1" container="sectionContent"><PRE id=code0101 class="CODE ELEMENT EDITABLE" contentEditable=false><P>table('myTable')</P><P>.add({_id:'zero',col1:1,col2:2,col3:3})</P><P>.add({_id:'one' ,col1:10,col2:20,col3:30})</P><P>.add({_id:'two' ,col1:100,col2:200,col3:300})</P></PRE>
-<DIV id=out0101 class="OUTPUT SUCCESS">
+<DIV sizcache="1" sizset="66" container="sectionContent"><PRE id=code0101 class="CODE ELEMENT EDITABLE" contentEditable=false><P>table('myTable')</P><P>.add({_id:'zero',col1:1,col2:2,col3:3})</P><P>.add({_id:'one' ,col1:10,col2:20,col3:30})</P><P>.add({_id:'two' ,col1:100,col2:200,col3:300})</P></PRE>
+<DIV id=out0101 class=OUTPUT>
 <TABLE>
 <THEAD>
 <TR>
@@ -1011,14 +1009,14 @@
 <TD>200</TD>
 <TD>300</TD></TR></TBODY></TABLE></DIV>
 <DIV id=rich0103 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>now <STRONG>myTable</STRONG> is created in the same name space as the variables created with&nbsp;<STRONG>v</STRONG>()&nbsp; which is located in <STRONG>jc.vars</STRONG></DIV><PRE id=code0104 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect(jc.vars)</PRE>
-<DIV id=out0104 class="OUTPUT SUCCESS">
+<DIV id=out0104 class=OUTPUT>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
 <TBODY>
 <TR>
 <TH vAlign=top>myVariable</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;V(myVariable):its&nbsp;value]</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;jc.Var(myVariable):its&nbsp;value]</TD></TR>
 <TR>
 <TH vAlign=top>myJavaScriptVariable1</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>5</TD></TR>
@@ -1027,7 +1025,7 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;JQuery]&nbsp;length:1</TD></TR>
 <TR>
 <TH vAlign=top>currentPrice$USD</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;V(currentPrice$USD):1234]</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;jc.Var(currentPrice$USD):1234]</TD></TR>
 <TR>
 <TH vAlign=top>aTable</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;Table(aTable)&nbsp;of&nbsp;3&nbsp;rows]</TD></TR>
@@ -1035,7 +1033,7 @@
 <TH vAlign=top>myTable</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;Table(myTable)&nbsp;of&nbsp;3&nbsp;rows]</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
 <DIV id=rich0112 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>a Table object is an array like, so each row can be found using [x]</DIV><PRE id=code0113 class="CODE ELEMENT EDITABLE" contentEditable=false>myTable[2]</PRE>
-<DIV id=out0113 class="OUTPUT SUCCESS">
+<DIV id=out0113 class=OUTPUT>
 <TABLE>
 <THEAD>
 <TR>
@@ -1050,7 +1048,7 @@
 <TD>200</TD>
 <TD>300</TD></TR></TBODY></TABLE></DIV>
 <DIV id=rich0114 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>every row is an object so the column can be found using either [] or the dot notation</DIV><PRE id=code0115 class="CODE ELEMENT EDITABLE" contentEditable=false>myTable[2]</PRE>
-<DIV id=out0115 class="OUTPUT SUCCESS">
+<DIV id=out0115 class=OUTPUT>
 <TABLE>
 <THEAD>
 <TR>
@@ -1064,16 +1062,16 @@
 <TD>100</TD>
 <TD>200</TD>
 <TD>300</TD></TR></TBODY></TABLE></DIV><PRE id=code0116 class="CODE ELEMENT EDITABLE" contentEditable=false>myTable[2]._['col3']</PRE>
-<DIV id=out0116 class="OUTPUT SUCCESS">300</DIV><PRE id=code0220 class="CODE ELEMENT EDITABLE" contentEditable=false><P>// exactly the same as above:</P><P>myTable[2]._.col3</P></PRE>
-<DIV id=out0220 class="OUTPUT SUCCESS">300</DIV><PRE id=code0221 class="CODE ELEMENT EDITABLE" contentEditable=false><P>// or another method</P><P>myTable.cell(2,'col3')</P></PRE>
-<DIV id=out0221 class="OUTPUT SUCCESS">300</DIV>
-<DIV id=sect0119 class="SECTION ELEMENT" sizset="73" sizcache="1">
+<DIV id=out0116 class=OUTPUT>300</DIV><PRE id=code0220 class="CODE ELEMENT EDITABLE" contentEditable=false><P>// exactly the same as above:</P><P>myTable[2]._.col3</P></PRE>
+<DIV id=out0220 class=OUTPUT>300</DIV><PRE id=code0221 class="CODE ELEMENT EDITABLE" contentEditable=false><P>// or another method</P><P>myTable.cell(2,'col3')</P></PRE>
+<DIV id=out0221 class=OUTPUT>300</DIV>
+<DIV id=sect0119 class="SECTION ELEMENT" sizcache="1" sizset="73">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.4.1 span</H3>
-<DIV sizset="73" sizcache="1" container="sectionContent">
-<DIV id=rich0120 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="73" sizcache="1">
-<P sizset="73" sizcache="1"><SPAN id=code0121 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.help(myTable.span)</SPAN><SPAN id=out0121 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function()</B><BR>&nbsp;deprecated:&nbsp;only&nbsp;for&nbsp;backward&nbsp;compatibility:&nbsp;use&nbsp;node$&nbsp;instead</SPAN></SPAN> 
+<DIV sizcache="1" sizset="73" container="sectionContent">
+<DIV id=rich0120 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="73">
+<P sizcache="1" sizset="73"><SPAN id=code0121 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.help(myTable.span)</SPAN><SPAN id=out0121 class=OUTPUT><SPAN class=HELP><B>function()</B><BR>&nbsp;deprecated:&nbsp;only&nbsp;for&nbsp;backward&nbsp;compatibility:&nbsp;use&nbsp;node$&nbsp;instead</SPAN></SPAN> 
 <P></P></DIV><PRE id=code0123 class="CODE ELEMENT EDITABLE" contentEditable=false><P>myTable.span({cols:{_id:1,col1:1}});</P></PRE>
-<DIV id=out0123 class="OUTPUT SUCCESS">
+<DIV id=out0123 class=OUTPUT>
 <TABLE>
 <THEAD>
 <TR>
@@ -1097,7 +1095,7 @@
 <TD>100</TD>
 <TD>200</TD>
 <TD>300</TD></TR></TBODY></TABLE></DIV><PRE id=code0124 class="CODE ELEMENT EDITABLE" contentEditable=false>myTable.span({cols:{col1:{head:1,className:'RIGHT'},col2:1}})</PRE>
-<DIV id=out0124 class="OUTPUT SUCCESS">
+<DIV id=out0124 class=OUTPUT>
 <TABLE>
 <THEAD>
 <TR>
@@ -1122,11 +1120,11 @@
 <TD>200</TD>
 <TD>300</TD></TR></TBODY></TABLE></DIV></DIV></DIV>
 <DIV id=rich0118 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false></DIV>
-<DIV id=sect0126 class="SECTION ELEMENT" sizset="76" sizcache="1">
+<DIV id=sect0126 class="SECTION ELEMENT" sizcache="1" sizset="76">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.4.2 sort</H3>
-<DIV sizset="76" sizcache="1" container="sectionContent">
-<DIV id=rich0127 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="76" sizcache="1"><SPAN id=code0128 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.help(myTable.sort)</SPAN><SPAN id=out0128 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function(cols)</B><BR>&nbsp;sort&nbsp;the&nbsp;table&nbsp;according&nbsp;to&nbsp;the&nbsp;"cols"&nbsp;criteria<BR>&nbsp;cols&nbsp;is&nbsp;an&nbsp;object&nbsp;of&nbsp;the&nbsp;form:<BR>&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;col1:&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;1&nbsp;means&nbsp;ascending&nbsp;&nbsp;alphabetic&nbsp;or&nbsp;numeric&nbsp;order<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col2:-1&nbsp;&nbsp;&nbsp;&nbsp;//-1&nbsp;means&nbsp;descending&nbsp;alphabetic&nbsp;or&nbsp;numeric&nbsp;order<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col3:&nbsp;function(a,b)&nbsp;{...&nbsp;//&nbsp;any&nbsp;function&nbsp;that&nbsp;compare&nbsp;a&nbsp;and&nbsp;b&nbsp;and&nbsp;returns&nbsp;&gt;0&nbsp;if&nbsp;a&gt;b,&nbsp;<WBR>&lt;0&nbsp;if&nbsp;a<WBR>&lt;b,&nbsp;0&nbsp;if&nbsp;a==b<BR>&nbsp;return&nbsp;the&nbsp;table&nbsp;for&nbsp;command&nbsp;chaining</SPAN></SPAN></DIV><PRE id=code0129 class="CODE ELEMENT EDITABLE" contentEditable=false>myTable.sort({_id:1})</PRE>
-<DIV id=out0129 class="OUTPUT SUCCESS">
+<DIV sizcache="1" sizset="76" container="sectionContent">
+<DIV id=rich0127 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="76"><SPAN id=code0128 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">jc.help(myTable.sort)</SPAN><SPAN id=out0128 class=OUTPUT><SPAN class=HELP><B>function(cols)</B><BR>&nbsp;sort&nbsp;the&nbsp;table&nbsp;according&nbsp;to&nbsp;the&nbsp;"cols"&nbsp;criteria<BR>&nbsp;cols&nbsp;is&nbsp;an&nbsp;object&nbsp;of&nbsp;the&nbsp;form:<BR>&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;col1:&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;1&nbsp;means&nbsp;ascending&nbsp;&nbsp;alphabetic&nbsp;or&nbsp;numeric&nbsp;order<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col2:-1&nbsp;&nbsp;&nbsp;&nbsp;//-1&nbsp;means&nbsp;descending&nbsp;alphabetic&nbsp;or&nbsp;numeric&nbsp;order<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col3:&nbsp;function(a,b)&nbsp;{...&nbsp;//&nbsp;any&nbsp;function&nbsp;that&nbsp;compare&nbsp;a&nbsp;and&nbsp;b&nbsp;and&nbsp;returns&nbsp;&gt;0&nbsp;if&nbsp;a&gt;b,&nbsp;<WBR>&lt;0&nbsp;if&nbsp;a<WBR>&lt;b,&nbsp;0&nbsp;if&nbsp;a==b<BR>&nbsp;return&nbsp;the&nbsp;table&nbsp;for&nbsp;command&nbsp;chaining</SPAN></SPAN></DIV><PRE id=code0129 class="CODE ELEMENT EDITABLE" contentEditable=false>myTable.sort({_id:1})</PRE>
+<DIV id=out0129 class=OUTPUT>
 <TABLE>
 <THEAD>
 <TR>
@@ -1150,7 +1148,7 @@
 <TD>1</TD>
 <TD>2</TD>
 <TD>3</TD></TR></TBODY></TABLE></DIV><PRE id=code0130 class="CODE ELEMENT EDITABLE" contentEditable=false>myTable.sort({_id:-1})</PRE>
-<DIV id=out0130 class="OUTPUT SUCCESS">
+<DIV id=out0130 class=OUTPUT>
 <TABLE>
 <THEAD>
 <TR>
@@ -1176,7 +1174,7 @@
 <TD>30</TD></TR></TBODY></TABLE></DIV>
 <DIV id=rich0131 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>note that <STRONG>sort</STRONG> sorts in place the table, so the row number are different</P></DIV><PRE id=code0132 class="CODE ELEMENT EDITABLE" contentEditable=false>myTable[1]</PRE>
-<DIV id=out0132 class="OUTPUT SUCCESS">
+<DIV id=out0132 class=OUTPUT>
 <TABLE>
 <THEAD>
 <TR>
@@ -1191,7 +1189,7 @@
 <TD>200</TD>
 <TD>300</TD></TR></TBODY></TABLE></DIV>
 <DIV id=rich0133 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false></DIV><PRE id=code0134 class="CODE ELEMENT EDITABLE" contentEditable=false>myTable.view()</PRE>
-<DIV id=out0134 class="OUTPUT SUCCESS">
+<DIV id=out0134 class=OUTPUT>
 <DIV><VAR>myTable</VAR>
 <TABLE>
 <THEAD>
@@ -1216,11 +1214,11 @@
 <TD>10</TD>
 <TD>20</TD>
 <TD>30</TD></TR></TBODY></TABLE></DIV></DIV></DIV></DIV>
-<DIV id=sect0136 class="SECTION ELEMENT" sizset="81" sizcache="1">
+<DIV id=sect0136 class="SECTION ELEMENT" sizcache="1" sizset="81">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.4.3 addRows</H3>
-<DIV sizset="81" sizcache="1" container="sectionContent"><PRE id=code0137 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.help(jc.Table.prototype.addRows)</PRE>
-<DIV id=out0137 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function(rows)</B><BR>&nbsp;add&nbsp;multiple&nbsp;rows<BR>&nbsp;rows&nbsp;must&nbsp;be&nbsp;an&nbsp;array&nbsp;or&nbsp;array-like&nbsp;of&nbsp;objects<BR>&nbsp;columns&nbsp;are&nbsp;ajusted&nbsp;automatically</SPAN></DIV><PRE id=code0138 class="CODE ELEMENT EDITABLE" contentEditable=false><P>myTable.addRows([</P><P>{_id:'four',col1:1000,col4:4000},</P><P>{_id:'five',col1:10000,col4:40000}]);</P></PRE>
-<DIV id=out0138 class="OUTPUT SUCCESS">
+<DIV sizcache="1" sizset="81" container="sectionContent"><PRE id=code0137 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.help(jc.Table.prototype.addRows)</PRE>
+<DIV id=out0137 class=OUTPUT><SPAN class=HELP><B>function(rows)</B><BR>&nbsp;add&nbsp;multiple&nbsp;rows<BR>&nbsp;rows&nbsp;must&nbsp;be&nbsp;an&nbsp;array&nbsp;or&nbsp;array-like&nbsp;of&nbsp;objects<BR>&nbsp;columns&nbsp;are&nbsp;ajusted&nbsp;automatically</SPAN></DIV><PRE id=code0138 class="CODE ELEMENT EDITABLE" contentEditable=false><P>myTable.addRows([</P><P>{_id:'four',col1:1000,col4:4000},</P><P>{_id:'five',col1:10000,col4:40000}]);</P></PRE>
+<DIV id=out0138 class=OUTPUT>
 <TABLE>
 <THEAD>
 <TR>
@@ -1260,10 +1258,10 @@
 <TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD>40000</TD></TR></TBODY></TABLE></DIV></DIV></DIV>
-<DIV id=sect0225 class="SECTION ELEMENT" sizset="83" sizcache="1">
+<DIV id=sect0225 class="SECTION ELEMENT" sizcache="1" sizset="83">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.4.4 edit</H3>
-<DIV sizset="83" sizcache="1" container="sectionContent"><PRE id=code0227 class="CODE AUTOEDIT ELEMENT EDITABLE" contentEditable=false jcObject="newTable">table("newTable")<BR>.add({"toto":127,"tutu":1452,"somme":f("toto+tutu")})<BR>.add({"toto":133,"tutu":145,"somme":f("toto+tutu")})<BR>.edit()</PRE>
-<DIV id=out0227 class="OUTPUT SUCCESS">
+<DIV sizcache="1" sizset="83" container="sectionContent"><PRE id=code0227 class="CODE AUTOEDIT ELEMENT EDITABLE" contentEditable=false jcObject="newTable">table("newTable")<BR>.add({"toto":127,"tutu":1452,"somme":f("toto+tutu")})<BR>.add({"toto":133,"tutu":145,"somme":f("toto+tutu")})<BR>.edit()</PRE>
+<DIV id=out0227 class=OUTPUT>
 <DIV><VAR>newTable</VAR>
 <TABLE>
 <TBODY>
@@ -1274,17 +1272,17 @@
 <TH>somme</TH></TR>
 <TR>
 <TH draggable="true">0</TH>
-<TD><INPUT class="EDITOR number" value=127 jcObject="newTable" jcCol="toto" jcRow="0"></TD>
-<TD><INPUT class="EDITOR number" value=1452 jcObject="newTable" jcCol="tutu" jcRow="0"></TD>
-<TD><INPUT class="EDITOR function RIGHT" value=1579 jcObject="newTable" jcCol="somme" jcRow="0"></TD></TR>
+<TD><INPUT class="EDITOR number" value=127 jcObject="newTable" jcRow="0" jcCol="toto"></TD>
+<TD><INPUT class="EDITOR number" value=1452 jcObject="newTable" jcRow="0" jcCol="tutu"></TD>
+<TD><INPUT class="EDITOR function RIGHT" value=1579 jcObject="newTable" jcRow="0" jcCol="somme"></TD></TR>
 <TR>
 <TH draggable="true">1</TH>
-<TD><INPUT class="EDITOR number" value=133 jcObject="newTable" jcCol="toto" jcRow="1"></TD>
-<TD><INPUT class="EDITOR number" value=145 jcObject="newTable" jcCol="tutu" jcRow="1"></TD>
-<TD><INPUT class="EDITOR function RIGHT" value=278 jcObject="newTable" jcCol="somme" jcRow="1"></TD></TR></TBODY></TABLE></DIV></DIV></DIV></DIV>
+<TD><INPUT class="EDITOR number" value=133 jcObject="newTable" jcRow="1" jcCol="toto"></TD>
+<TD><INPUT class="EDITOR number" value=145 jcObject="newTable" jcRow="1" jcCol="tutu"></TD>
+<TD><INPUT class="EDITOR function RIGHT" value=278 jcObject="newTable" jcRow="1" jcCol="somme"></TD></TR></TBODY></TABLE></DIV></DIV></DIV></DIV>
 <DIV id=rich0136 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>You can always inspect a class prototype to have information on the different methods</P></DIV><PRE id=code0122 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect(jc.Table.prototype)</PRE>
-<DIV id=out0122 class="OUTPUT SUCCESS">
+<DIV id=out0122 class=OUTPUT>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
@@ -1415,12 +1413,12 @@
 <TR>
 <TH vAlign=top>updateCode</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>&nbsp;generate&nbsp;the&nbsp;code&nbsp;that&nbsp;represents&nbsp;the&nbsp;element&nbsp;as&nbsp;edited<BR>&nbsp;can&nbsp;be&nbsp;used&nbsp;to&nbsp;replace&nbsp;the&nbsp;existing&nbsp;code&nbsp;</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0117 class="CODE ELEMENT EDITABLE" contentEditable=false></PRE>
-<DIV id=out0117 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV></DIV></DIV>
-<DIV id=sect0209 class="SECTION ELEMENT" sizset="86" sizcache="1">
+<DIV id=out0117 class=OUTPUT><SPAN style="COLOR: red">undefined</SPAN></DIV></DIV></DIV>
+<DIV id=sect0209 class="SECTION ELEMENT" sizcache="1" sizset="86">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>3.5 output</H2>
-<DIV sizset="86" sizcache="1" container="sectionContent">
+<DIV sizcache="1" sizset="86" container="sectionContent">
 <DIV id=rich0210 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>so far</DIV><PRE id=code0211 class="CODE ELEMENT EDITABLE" contentEditable=false>jc.inspect(output)</PRE>
-<DIV id=out0211 class="OUTPUT SUCCESS">
+<DIV id=out0211 class=OUTPUT>
 <DIV class=INSPECT>
 <FIELDSET><LEGEND></LEGEND>
 <TABLE>
@@ -1509,15 +1507,15 @@
 <TR>
 <TH vAlign=top>alert</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(message)</B><BR></SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV>
-<DIV id=sect0158 class="SECTION ELEMENT" sizset="87" sizcache="1">
+<DIV id=sect0158 class="SECTION ELEMENT" sizcache="1" sizset="87">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>3.6 function delaration</H2>
-<DIV sizset="87" sizcache="1" container="sectionContent">
-<DIV id=rich0159 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="87" sizcache="1">
+<DIV sizcache="1" sizset="87" container="sectionContent">
+<DIV id=rich0159 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizcache="1" sizset="87">
 <P>such a spreadsheet would be of no use if we can not make calculation.</P>
 <P>&nbsp;</P>
-<P sizset="87" sizcache="1">As we already have declared <SPAN id=code0161 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">currentPrice$USD.view()</SPAN><SPAN id=out0161 class="OUTPUT SUCCESS"><VAR>currentPrice</VAR> = <SPAN class=VALUE>1234</SPAN>&nbsp;<SPAN class=UNIT>USD</SPAN></SPAN></P>we can now define the following <SPAN id=code0162 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">v('costOfGood$USD',1000).view()</SPAN><SPAN id=out0162 class="OUTPUT SUCCESS"><VAR>costOfGood</VAR> = <SPAN class=VALUE>1000</SPAN>&nbsp;<SPAN class=UNIT>USD</SPAN></SPAN> 
+<P sizcache="1" sizset="87">As we already have declared <SPAN id=code0161 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">currentPrice$USD.view()</SPAN><SPAN id=out0161 class=OUTPUT><VAR>currentPrice</VAR> = <SPAN class=VALUE>1234</SPAN>&nbsp;<SPAN class=UNIT>USD</SPAN></SPAN></P>we can now define the following <SPAN id=code0162 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">v('costOfGood$USD',1000).view()</SPAN><SPAN id=out0162 class=OUTPUT><VAR>costOfGood</VAR> = <SPAN class=VALUE>1000</SPAN>&nbsp;<SPAN class=UNIT>USD</SPAN></SPAN> 
 <P></P>so now we can calculate the margin as a formula</DIV><PRE id=code0160 class="CODE ELEMENT EDITABLE" contentEditable=false>v('margin$USD',f('currentPrice$USD-costOfGood$USD')).view()</PRE>
-<DIV id=out0160 class="OUTPUT SUCCESS"><VAR>margin</VAR> = <SPAN class=VALUE>234</SPAN>&nbsp;<SPAN class=UNIT>USD</SPAN></DIV>
+<DIV id=out0160 class=OUTPUT><VAR>margin</VAR> = <SPAN class=VALUE>234</SPAN>&nbsp;<SPAN class=UNIT>USD</SPAN></DIV>
 <DIV id=rich0163 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>let explain a little bit of the magic of <STRONG>f()</STRONG></P>
 <P>f takes a string parameter that will become the body of the function</P><PRE>function (row,col) {</PRE><PRE>  with (jc.vars) {</PRE><PRE>    with (row || {}) {</PRE><PRE>      <EM>return </EM>// your body will be here</PRE><PRE>    }</PRE><PRE>  }</PRE><PRE>}</PRE>
@@ -1526,12 +1524,12 @@
 <P>Please note that <STRONG>return</STRONG> is automatically added at the beginning of your body if no return is found inside the body</P>
 <P>&nbsp;</P>
 <P>please note the you also could have written your own anonymous function like below:</P></DIV><PRE id=code0166 class="CODE ELEMENT EDITABLE" contentEditable=false><P>v('vendorCommission$USD',function(){return jc.vars.currentPrice$USD*0.1}).view();</P></PRE>
-<DIV id=out0166 class="OUTPUT SUCCESS"><VAR>vendorCommission</VAR> = <SPAN class=VALUE>123.4</SPAN>&nbsp;<SPAN class=UNIT>USD</SPAN></DIV>
+<DIV id=out0166 class=OUTPUT><VAR>vendorCommission</VAR> = <SPAN class=VALUE>123.4</SPAN>&nbsp;<SPAN class=UNIT>USD</SPAN></DIV>
 <DIV id=rich0167 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>as we have seen above the function is created with row, col parameters.</P>
 <P>This is of use if the function is used inside a table.</P>
 <P>Please note the explicit usage of .style in order to set another format for the numbers</P></DIV><PRE id=code0168 class="CODE ELEMENT EDITABLE" contentEditable=false><P>table('myTable2').addRows([</P><P>{article:'apple',costOfGood$USD:1,margin$USD:0.5,listPrice$USD:f('costOfGood$USD+margin$USD')},</P><P>{article:'orange',costOfGood$USD:2,margin$USD:0.75,listPrice$USD:f('costOfGood$USD+margin$USD')},</P><P>{article:'pineApple',costOfGood$USD:5,margin$USD:1.5,listPrice$USD:f('costOfGood$USD+margin$USD')}])</P><P>.style({format:jc.fixed(2)})</P></PRE>
-<DIV id=out0168 class="OUTPUT SUCCESS">
+<DIV id=out0168 class=OUTPUT>
 <TABLE>
 <THEAD>
 <TR>
@@ -1559,4 +1557,5 @@
 <DIV id=sect0047 class="SECTION ELEMENT">
 <H1 class="SECTIONTITLE EDITABLE" contentEditable=false>4 known issue:</H1>
 <DIV container="sectionContent">
-<DIV class="ELEMENT EMPTY" contentEditable=false>empty container: click here to add an element</DIV></DIV></DIV></DIV></BODY></HTML>
+<DIV class="ELEMENT EMPTY" contentEditable=false>empty container: click here to add an element</DIV></DIV></DIV><PRE id=code0245 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.updateResultsTestStatus();</P><P>jc.inspect(jc.results,'',2);</P><P>if ('runonce' in jc.url.arguments) window.close();</P></PRE>
+<DIV id=out0245 class=OUTPUT><SPAN style="COLOR: red">undefined</SPAN></DIV></DIV></BODY></HTML>

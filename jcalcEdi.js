@@ -683,8 +683,7 @@
     };
 
     JSON.parse = function(json){
-      var r;
-      return eval('r='+json);   // unsecure quick and dirty before having a true JSON
+      return (new Function('return '+json))();  //as jQuery does
     }
     
   }    
