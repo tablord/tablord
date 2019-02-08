@@ -1,17 +1,17 @@
 
-  // jcalc library /////////////////////////////////////////////////////
+  // tablord library /////////////////////////////////////////////////////
     
   
   // calcul ///////////////////
-  jc.Var = function(name,value) {
+  tb.Var = function(name,value) {
     //rarely use it directly, but use the v() function instead that also register the variable
-    //in the jc.vars namespace
+    //in the tb.vars namespace
     this.setName(name);
     this.setValue(value);
   }
-  jc.Var.className = 'jc.Var';
+  tb.Var.className = 'tb.Var';
 
-  jc.Var.prototype.setName = function(name) {
+  tb.Var.prototype.setName = function(name) {
     // for internal use only
     // changes the name of the variable and also
     // updates .label and .unit
@@ -26,7 +26,7 @@
     else this.label = this.name;
   }
 
-  jc.Var.prototype.setValue = function(value){
+  tb.Var.prototype.setValue = function(value){
     if (typeof value == "function") {
       this.func =value;
       this.type = 'function';
@@ -39,7 +39,7 @@
     return this;
   }
 
-  jc.Var.prototype.valueOf = function () {
+  tb.Var.prototype.valueOf = function () {
     // return the value of the variable
     // if the variable is in fact a function, executes the function and return its value
     if (this.func) {
@@ -50,42 +50,42 @@
     return this.value;
   }
 
-  jc.Var.prototype.toJSON = function () {
+  tb.Var.prototype.toJSON = function () {
     return this.code()?'f('+JSON.stringify(this.code())+')':JSON.stringify(this.value);
   }
 
-  jc.Var.prototype.code = function() {
+  tb.Var.prototype.code = function() {
     // return the code of the embedded function if such a function exists
     //        or undefined if not a function
     if (this.func) return this.func.toString();
     return undefined
   }
  
-  jc.Var.prototype.to = function(unit) {
+  tb.Var.prototype.to = function(unit) {
     // return the value converted to unit
-    return jc.Units.convert(this.valueOf(),this.unit,unit);
+    return tb.Units.convert(this.valueOf(),this.unit,unit);
   }
 
-  jc.Var.prototype.toString = function() {
+  tb.Var.prototype.toString = function() {
     // return the summary of the variable
-    return '[object jc.Var('+this.name+'):'+(this.func?this.toJSON()+'==>':'')+this.valueOf()+']';
+    return '[object tb.Var('+this.name+'):'+(this.func?this.toJSON()+'==>':'')+this.valueOf()+']';
   }
 
-  jc.Var.prototype.view = function(options) {
+  tb.Var.prototype.view = function(options) {
     // returns an HTML object with VariableName = value
-    options = $.extend(true,{},jc.defaults,options);
-    return jc.html('<var>'+this.label+'</var> = <span class=VALUE>'+jc.format(this.valueOf(),options)+'</span>'+(this.unit?'&nbsp;<span class=UNIT>'+this.unit+'</span>':''));
+    options = $.extend(true,{},tb.defaults,options);
+    return tb.html('<var>'+this.label+'</var> = <span class=VALUE>'+tb.format(this.valueOf(),options)+'</span>'+(this.unit?'&nbsp;<span class=UNIT>'+this.unit+'</span>':''));
   }
 
-  jc.Var.prototype.edit = function() {
+  tb.Var.prototype.edit = function() {
     // returns an HTML object with the necessary controls to edit the variable
-    this.codeElement = jc.output.codeElement;   
+    this.codeElement = tb.output.codeElement;   
     $(this.codeElement).addClass('AUTOEDIT').attr('jcObject',this.name);
-    return jc.html('<var>'+this.label+'</var>'+jc.editor.html(this.valueOf(),{jcObject:this.name})+(this.unit?'&nbsp;<span class=UNIT>'+this.unit+'</span>':''));
+    return tb.html('<var>'+this.label+'</var>'+tb.editor.html(this.valueOf(),{jcObject:this.name})+(this.unit?'&nbsp;<span class=UNIT>'+this.unit+'</span>':''));
   }
 
 
-  jc.Var.prototype.getEditableValue = function(editor) {
+  tb.Var.prototype.getEditableValue = function(editor) {
     if (this.func) {
       return this;
     }
@@ -94,37 +94,37 @@
     }
   }
 
-  jc.Var.prototype.setEditableValue = function(editor) {
+  tb.Var.prototype.setEditableValue = function(editor) {
     this.setValue(editor.value);
-    jc.setModified(true);
+    tb.setModified(true);
     var obj = this;
-    window.setTimeout(function(){obj.updateCode();jc.run()},0);
+    window.setTimeout(function(){obj.updateCode();tb.run()},0);
   }
   
-  jc.Var.prototype.updateCode = function() {
+  tb.Var.prototype.updateCode = function() {
     // generate the code that represents the element as edited
     // can be used to replace the existing code 
     var code = 'v('+JSON.stringify(this.name)+','+this.toJSON()+')';
-    this.codeElement.innerHTML = jc.toHtml(code+'.edit()');
+    this.codeElement.innerHTML = tb.toHtml(code+'.edit()');
   }
 
 
-  jc.Var.prototype.isV = true;
+  tb.Var.prototype.isV = true;
 
   function v(name,value) {
-    // v(name) returns the variable name: rarely used since name alone will represent the same as well as jc.vars[name]
+    // v(name) returns the variable name: rarely used since name alone will represent the same as well as tb.vars[name]
     // v(name,value) creates a new variable if it does not already exists and sets a new value
     if (value != undefined) {
       if (value.toUTCString) { // a Date: v stors a Date as this
-        return jc.vars[name]=value;
+        return tb.vars[name]=value;
       }
-      if (jc.vars[name]) {
-        jc.vars[name].setValue(value);
-        return jc.vars[name]
+      if (tb.vars[name]) {
+        tb.vars[name].setValue(value);
+        return tb.vars[name]
       }
-      return jc.vars[name] = new jc.Var(name,value);
+      return tb.vars[name] = new tb.Var(name,value);
     }
-    return jc.vars[name];
+    return tb.vars[name];
   }
 
 
@@ -142,7 +142,7 @@
           jcFunc.replace(/^\s*\{(.*)\}\s*$/,'({$1})');
           code = 'return '+jcFunc;
         }
-        var f = new Function('rowData','col','value','with (jc.vars){with(rowData||{}) {'+code+'}}');
+        var f = new Function('rowData','col','value','with (tb.vars){with(rowData||{}) {'+code+'}}');
         f.userCode = jcFunc;
         f.toString = function(){return this.userCode};
         f.joJson = function(){return 'f("'+JSON.stringify(this.userCode)+'")'};
@@ -162,7 +162,7 @@
 
   // Row //////////////////////////////////////////////
 
-  jc.Row = function Row(obj,table) {
+  tb.Row = function Row(obj,table) {
     // create a Row from an object or a Row. 
     // only ownProperties (not inherited) are used is the Row
     this._ = {};
@@ -174,19 +174,19 @@
       }
     }
   }
-  jc.Row.className = 'jc.Row';
+  tb.Row.className = 'tb.Row';
 
-  jc.Row.prototype.cell = function(col) {
+  tb.Row.prototype.cell = function(col) {
     return this._[col];
   }  
 
-  jc.Row.prototype.val = function(col) {
+  tb.Row.prototype.val = function(col) {
     return this._[col] && this._[col].valueOf();
   }  
 
-  jc.Row.prototype.setCell = function (col,value) {
+  tb.Row.prototype.setCell = function (col,value) {
     if (typeof value == "function") {
-      var f = new jc.Var(undefined,value);  //wrap the function into a V
+      var f = new tb.Var(undefined,value);  //wrap the function into a V
       f.row = this;       //and assign the _row,_col 
       f.col = col;
       this._[col] = f;
@@ -196,11 +196,11 @@
     return this;
   }
 
-  jc.Row.prototype.toString = function() {
+  tb.Row.prototype.toString = function() {
     return "[object Row]";
   }
 
-  jc.Row.prototype.eachCol = function(func) {
+  tb.Row.prototype.eachCol = function(func) {
     // func must be function(colname,colObject)
     for (var col in this._) {
       func(col,this._[col]);
@@ -208,7 +208,7 @@
     return this;
   }
 
-  jc.Row.prototype.reduce = function(reduceF,criteria,initialValue) {
+  tb.Row.prototype.reduce = function(reduceF,criteria,initialValue) {
     // apply a reduce function on a column
     // criteria is an optional f(jcFunc) that process only row that return true
     var first = true;
@@ -232,34 +232,34 @@
     return r;
   }
 
-  jc.Row.prototype.sum = function(criteria) {
+  tb.Row.prototype.sum = function(criteria) {
     // return the sum of the row
     return this.reduce(function(a,b){return a+b},criteria)
   }
 
-  jc.Row.prototype.min = function(criteria) {
+  tb.Row.prototype.min = function(criteria) {
     // return the min of the row
     return this.reduce(Math.min,criteria);
   }
 
-  jc.Row.prototype.max = function(criteria) {
+  tb.Row.prototype.max = function(criteria) {
     // return the min of the row
     return this.reduce(Math.max,criteria);
   }
 
-  jc.Row.prototype.average = function(criteria) {
+  tb.Row.prototype.average = function(criteria) {
     // return the average of the row
     var sc = this.reduce(colName,function(r,b){r.count++;r.sum+=b;return r},criteria,{count:0,sum:0});
     return sc.sum/sc.count;
   }
 
-  jc.Row.prototype.rms = function(colName,criteria) {
+  tb.Row.prototype.rms = function(colName,criteria) {
     // return the root mean square of the row
     var sc = this.reduce(function(r,b){r.count++;r.sum+=b*b;return r},criteria,{count:0,sum:0});
     return Math.sqrt(sc.sum/sc.count);
   }
 
-  jc.Row.prototype.toJSON = function() {
+  tb.Row.prototype.toJSON = function() {
     var e = [];
     this.eachCol(function(colName,colObject){
       e.push(JSON.stringify(colName)+':'+JSON.stringify(colObject));
@@ -267,7 +267,7 @@
     return '{'+ e.join(',')+ '}';
   }
 
-  jc.Row.prototype.span = function (options) {
+  tb.Row.prototype.span = function (options) {
     options = options || {};
     if (!options.cols) {
       options.cols = {};
@@ -283,38 +283,38 @@
     h += '<tr>';
     for (var col in options.cols) {
       var cell = this._[col];
-      h += (col=="_id")?'<th>'+cell+'</th>':'<td>'+jc.format(cell)+'</td>';
+      h += (col=="_id")?'<th>'+cell+'</th>':'<td>'+tb.format(cell)+'</td>';
     }
     h += '</tr></tbody></table>';
-    return jc.html(h);
+    return tb.html(h);
   }
 
-  jc.Row.prototype.list = function() {
+  tb.Row.prototype.list = function() {
     var h = '<table>';
     this.eachCol(function (col,val) {h += '<tr><th>'+col+'</th><td>'+val+'</td></tr>'});
-    return jc.html(h+'</table>');
+    return tb.html(h+'</table>');
   }
 
-  jc.Row.prototype.isRow = true;
+  tb.Row.prototype.isRow = true;
 
 
 // Col   //////////////////////////////////////////////////////////////
-  jc.Col = function Col(name,table) {
+  tb.Col = function Col(name,table) {
     // Col objects represent a column of a Table
     // internal use only
     this.name = name;
     this.table = table;
   }
-  jc.Col.className = 'jc.Col';
+  tb.Col.className = 'tb.Col';
 
-  jc.Col.prototype.toString = function() {
+  tb.Col.prototype.toString = function() {
     return '[object Col '+this.name+']';
   }
 
 
 // Table //////////////////////////////////////////////////////////////
 
-  jc.Table = function Table(name) {
+  tb.Table = function Table(name) {
     // constructor of a new Table instance
     this.name = name;
     this.length = 0;
@@ -327,28 +327,28 @@
                     styles:[leftStyle],
                     defValues:{},
                     colOrder:[],
-                    visibleCols:jc.heir(this.cols)
+                    visibleCols:tb.heir(this.cols)
                    };  
   }
-  jc.Table.className = 'jc.Table';
+  tb.Table.className = 'tb.Table';
   
-  jc.Table.prototype.set = jc.set;
-  jc.Table.prototype.get = jc.get;
+  tb.Table.prototype.set = tb.set;
+  tb.Table.prototype.get = tb.get;
 
-  jc.Table.prototype.rename = function(name) {
+  tb.Table.prototype.rename = function(name) {
     // if name is undefined return the name
     // otherwise set a new name and return this
 
     if (name===undefined) {
       return this.name;
     }
-    if (this.name) delete jc.vars[name];
+    if (this.name) delete tb.vars[name];
     this.name = name
-    jc.vars[name] = this;
+    tb.vars[name] = this;
     return this;
   }
 
-  jc.Table.prototype.registerPk = function(row) {
+  tb.Table.prototype.registerPk = function(row) {
     if (this.pk !== undefined) {
       var pkVal = row.cell(this.pk).valueOf();
       if (this.pks[pkVal]===undefined){
@@ -360,7 +360,7 @@
     }
   }
 
-  jc.Table.prototype.primaryKey = function(pkCol) {
+  tb.Table.prototype.primaryKey = function(pkCol) {
     // set the primary key colName
     this.pk = pkCol;
     this.pks = {};
@@ -371,13 +371,13 @@
   }
 
 
-  jc.Table.prototype.defCol = function(name, defValue, style) {
+  tb.Table.prototype.defCol = function(name, defValue, style) {
     // set the column attribute
     // 
     // defValue is the value that is used when a new Row is added and that column is not defined
     // it can be a JavaScript value (number, object.. or an f(jcFunc)
     // the style if set will call colStyle
-    var c = new jc.Col(name);
+    var c = new tb.Col(name);
     this.cols[name]=c;
     this.options.defValues[name]=defValue;
     c.defValue = defValue;
@@ -385,21 +385,21 @@
     return this;
   }
 
-  jc.Table.prototype.updateCols = function(withRow) {
+  tb.Table.prototype.updateCols = function(withRow) {
     // updates the cols description with the fields found in withRow
     // normally for internal use only
     // return the table for command chaining
 
     for (var col in withRow._) {
       if (this.cols[col]==undefined) {
-        this.cols[col] = new jc.Col(col);
+        this.cols[col] = new tb.Col(col);
         if ($.inArray(col,this.options.colOrder)===-1) this.options.colOrder.push(col);
       }
     }
     return this;
   }
 
-  jc.Table.prototype.colOrder = function(order) {
+  tb.Table.prototype.colOrder = function(order) {
     // if order = array of colName: set a new order
     // if order == undefined return the current order
     if (order) {
@@ -414,7 +414,7 @@
     return order;
   }
 
-  jc.Table.prototype.show = function(columns,visible) {
+  tb.Table.prototype.show = function(columns,visible) {
     // show all columns specified in the columns array
     // if visible = true or undefined,  ensure this columns are visible if it exist
     // if visible = false, ensure this columns are hidden
@@ -433,22 +433,22 @@
     return this;
   }
 
-  jc.Table.prototype.hide = function(columns) {
+  tb.Table.prototype.hide = function(columns) {
     this.show(columns,false);
     return this;
   }
 
-  jc.Table.prototype.showOnly = function(columns) {
-    this.hide(jc.keys(this.cols)).show(columns);
+  tb.Table.prototype.showOnly = function(columns) {
+    this.hide(tb.keys(this.cols)).show(columns);
     return this;
   }
 
-  jc.Table.prototype.add = function(row) {
+  tb.Table.prototype.add = function(row) {
     // add a row
     // row can be either a simple object or a Row object
     // return the table for method chaining
     
-    row = new jc.Row($.extend(true,{},this.options.defValues,row),this);
+    row = new tb.Row($.extend(true,{},this.options.defValues,row),this);
     row.index = this.length;
     this[this.length++] = row;
     this.registerPk(row);
@@ -456,7 +456,7 @@
     return this;
   }
   
-  jc.Table.prototype.addRows = function(rows) {
+  tb.Table.prototype.addRows = function(rows) {
     // add multiple rows
     // rows must be an array or array-like of objects
     // columns are ajusted automatically
@@ -466,7 +466,7 @@
     return this;
   }
 
-  jc.Table.prototype.update = function(cols,keepOnlyValue) {
+  tb.Table.prototype.update = function(cols,keepOnlyValue) {
     // cols is an object {colName:value,....}
     // value can be a simple value like a number or a string, 
     // but can also be a jcFunc produced by f(jcFunc)
@@ -488,14 +488,14 @@
     });
     for (var colName in cols) {
       if (this.cols[colName]==undefined) {
-        this.cols[colName] = new jc.Col();
+        this.cols[colName] = new tb.Col();
         if ($.inArray(colName,this.options.colOrder)===-1) this.options.colOrder.push(colName);
       }
     }
     return this;
   }
   
-  jc.Table.prototype.forEachRow = function(func) {
+  tb.Table.prototype.forEachRow = function(func) {
     // execute func for each row of the table
     // func must be function(i,row) in which this represents the Row object
     // return the table for command chaining
@@ -506,7 +506,7 @@
   }
 
 
-  jc.Table.prototype.cell = function(row,col) {
+  tb.Table.prototype.cell = function(row,col) {
     // return the content of the cell: if the cell is a function: return the function
     if (typeof row == 'number'){
       return this[row] && this[row].cell(col);
@@ -515,14 +515,14 @@
     return row && row.cell(col);
   }
 
-  jc.Table.prototype.val = function(row,col) {
+  tb.Table.prototype.val = function(row,col) {
     // return the VALUE of the cell: if a function, this function is calculated first
     var c=this.cell(row,col);
     if (c===undefined) return undefined;
     return c.valueOf();
   }
 
-  jc.Table.prototype.reduce = function(colName,reduceF,criteria,initialValue) {
+  tb.Table.prototype.reduce = function(colName,reduceF,criteria,initialValue) {
     // apply a reduce function on a column
     // criteria is an optional f(jcFunc) that process only row that return true
     var first = true;
@@ -546,36 +546,36 @@
     return r;
   }
 
-  jc.Table.prototype.sum = function(colName,criteria) {
+  tb.Table.prototype.sum = function(colName,criteria) {
     // return the sum of the column 
     return this.reduce(colName,function(a,b){return a+b},criteria)
   }
 
-  jc.Table.prototype.min = function(colName,criteria) {
+  tb.Table.prototype.min = function(colName,criteria) {
     // return the min of the column 
     return this.reduce(colName,Math.min,criteria);
   }
 
-  jc.Table.prototype.max = function(colName,criteria) {
+  tb.Table.prototype.max = function(colName,criteria) {
     // return the min of the column
     return this.reduce(colName,Math.max,criteria);
   }
 
-  jc.Table.prototype.average = function(colName,criteria) {
+  tb.Table.prototype.average = function(colName,criteria) {
     // return the average of the column
     var sc = this.reduce(colName,function(r,b){r.count++;r.sum+=b;return r},criteria,{count:0,sum:0});
     return sc.sum/sc.count;
   }
 
-  jc.Table.prototype.rms = function(colName,criteria) {
+  tb.Table.prototype.rms = function(colName,criteria) {
     // return the root mean square of the column
     var sc = this.reduce(colName,function(r,b){r.count++;r.sum+=b*b;return r},criteria,{count:0,sum:0});
     return Math.sqrt(sc.sum/sc.count);
   }
 
-  jc.Table.prototype.setCell = function(row,col,value) {
+  tb.Table.prototype.setCell = function(row,col,value) {
     if (this.cols[col] === undefined) {
-      this.cols[col] = new jc.Col(col);
+      this.cols[col] = new tb.Col(col);
       if ($.inArray(col,this.options.colOrder==-1)) this.options.colOrder.push(col);
     }
     if (typeof row === 'number') {
@@ -600,7 +600,7 @@
     return this;
   }
 
-  jc.Table.prototype.lookup = function(criteria) {
+  tb.Table.prototype.lookup = function(criteria) {
     // return the data of the first row matching the criteria
 
     var row = this.findFirst(criteria);
@@ -608,14 +608,14 @@
     return {}; // if not found, return empty data, so it can still be dereferenced
   }
 
-  jc.Table.prototype.tableStyle = function(style) {
+  tb.Table.prototype.tableStyle = function(style) {
     for (var attr in style) {
       this.options.tableStyle[attr] = style[attr];
     }
     return this;
   }
 
-  jc.Table.prototype.colStyle = function(style,colName){
+  tb.Table.prototype.colStyle = function(style,colName){
     // set the style for a column
     // style can be either an object of $.css() parameters
     //       or a function(data,col,value) where this represents the row object which is compatible with f("jcFunc")
@@ -626,12 +626,12 @@
         $.extend(true,compoundStyle,typeof style === 'function'?style.call(row,row._,col,value):style);
       }
     }
-    fStyle.toString = function() {return 'colStyle for '+colName+': '+jc.toJSCode(style)}
+    fStyle.toString = function() {return 'colStyle for '+colName+': '+tb.toJSCode(style)}
     this.options.styles.push(fStyle);
     return this;
   }
 
-  jc.Table.prototype.rowStyle = function(style,rowNumber){
+  tb.Table.prototype.rowStyle = function(style,rowNumber){
     // set the style for a row
     var expRow = this[rowNumber];
     var fStyle = function(table,row,col,value,compoundStyle) {
@@ -639,12 +639,12 @@
         $.extend(true,compoundStyle,typeof style === 'function'?style.call(row,row._,col,value):style);
       }
     }
-    fStyle.toString = function() {return 'rowStyle for '+expRow+': '+jc.toJSCode(style)}
+    fStyle.toString = function() {return 'rowStyle for '+expRow+': '+tb.toJSCode(style)}
     this.options.styles.push(fStyle);
     return this;
   }
   
-  jc.Table.prototype.style = function(newStyle,rowNumber,colName){
+  tb.Table.prototype.style = function(newStyle,rowNumber,colName){
     // .style(newStyle)  will set the default newStyle for the complete table
     // .style(newStyle,rowNumber) will set the default style for a given row
     // .style(newStyle,undefined,colName) will set the default style for a column
@@ -656,7 +656,7 @@
         $.extend(true,compoundStyle,typeof newStyle === 'function'?newStyle.call(row,row._,col,value):newStyle);
       }
       this.options.styles.push(fStyle);
-      fStyle.toString = function() {return 'general style: '+jc.toJSCode(newStyle)}
+      fStyle.toString = function() {return 'general style: '+tb.toJSCode(newStyle)}
       return this;
     }
     if (rowNumber === undefined) {
@@ -674,13 +674,13 @@
         $.extend(true,compoundStyle,typeof newStyle === 'function'?newStyle.call(row,row._,col,value):newStyle);
       }
     }
-    fStyle.toString = function() {return 'cell style for '+expRow+','+colName+': '+jc.toJSCode(newStyle)}
+    fStyle.toString = function() {return 'cell style for '+expRow+','+colName+': '+tb.toJSCode(newStyle)}
     this.options.styles.push(fStyle);
     return this;
   }
 
 
-  jc.Table.prototype.compoundStyle = function(row,colName,value) {
+  tb.Table.prototype.compoundStyle = function(row,colName,value) {
     // calculate the compound style for a given cell
     var style = (this.parent && this.parent.compoundStyle(row,colName,value)) || {};
     for (var i=0;i<this.options.styles.length;i++) {
@@ -689,7 +689,7 @@
     return style;
   }
 
-  jc.Table.prototype.sort = function(cols) {
+  tb.Table.prototype.sort = function(cols) {
     // sort the table according to the "cols" criteria
     // cols is an object of the form:
     //   {  col1: 1    // 1 means ascending  alphabetic or numeric order
@@ -712,36 +712,36 @@
     return this;
   }
 
-  jc.Table.prototype.find = function(criteria) {
+  tb.Table.prototype.find = function(criteria) {
     // return a new view of this table that has only the rows that match the criteria
     // the rows of this view ARE THE ORIGINAL ROWS
     // any function in a cell still refer to the original table.
 
-    var view = new jc.View(this);
+    var view = new tb.View(this);
     for (var i=0; i<this.length; i++) {
-      if (jc.objMatchCriteria(this[i]._,criteria)){
+      if (tb.objMatchCriteria(this[i]._,criteria)){
         view[view.length++] = this[i];
       }
     }
     return view;
   }
 
-  jc.Table.prototype.findFirst = function(criteria) {
+  tb.Table.prototype.findFirst = function(criteria) {
     // mongoDB find() as if the table was a small mongoDB
     // return the first Row of this table that match the criteria
     for (var i=0; i<this.length; i++) {
-      if (jc.objMatchCriteria(this[i]._,criteria)){
+      if (tb.objMatchCriteria(this[i]._,criteria)){
         return this[i];
       }
     }
   }
 
-  jc.Table.prototype.toString = function() {
+  tb.Table.prototype.toString = function() {
     // return a string summarizing the table
     return '[object Table('+this.name+') of '+this.length+' rows]';
   }
 
-  jc.Table.prototype.toJSON = function() {
+  tb.Table.prototype.toJSON = function() {
     var e = [];
     this.forEachRow(function(i,row){
       e.push(row.toJSON())
@@ -749,7 +749,7 @@
     return '['+e.join(',\n')+']';
   }
   
-  jc.Table.prototype.node$ = function() {
+  tb.Table.prototype.node$ = function() {
     // display the table without its name
     var t$ = $('<table/>').css(this.options.tableStyle || {});
     var h$ = $('<thead/>');
@@ -769,7 +769,7 @@
           var val = row.val(col)
           var cell$ = col===this.pk?$('<th></th>'):$('<td></td>');
           var style = this.compoundStyle(row,col,val);
-          cell$.html(jc.format(val,style)).css(style);
+          cell$.html(tb.format(val,style)).css(style);
           r$.append(cell$);
         }
       }
@@ -779,12 +779,12 @@
     return t$;
   }
 
-  jc.Table.prototype.span = function() {
+  tb.Table.prototype.span = function() {
     // deprecated: only for backward compatibility: use node$ instead
-    return jc.html(this.node$()[0].outerHTML);
+    return tb.html(this.node$()[0].outerHTML);
   }
 
-  jc.Table.prototype.view = function() {
+  tb.Table.prototype.view = function() {
     //display the table, including its name in a <div>
     var table = this;
     return {node$:function(){return $('<div>').append('<var>'+table.name+'</var>').append(table.node$())}};
@@ -793,13 +793,13 @@
 
   // editor interface ////////////////////////////////////////////////////
     
-  jc.Table.prototype.edit = function(options) {
+  tb.Table.prototype.edit = function(options) {
     // edit is similar to span, but gernerates HTML code in order to edit the object interactively
     // it will also set the code to AUTOEDIT class which means that it should no longer be modified by the user since it will
     // be generated by the edition mecanism.
     
     // premier jet: toute la table est éditée peut être simple et efficasse: en cas de tables partielles, faire simplement plusieurs tables et faire une fct pour lier plusieurs tables
-    this.codeElement = jc.output.codeElement;   
+    this.codeElement = tb.output.codeElement;   
     $(this.codeElement).addClass('AUTOEDIT').attr('jcObject',this.name);
     
     var h = '<div><var>'+this.name+'</var><table><tr><th>#</th>';
@@ -810,34 +810,34 @@
     for (var row=0; row<this.length; row++) {
       h += '<tr><th draggable=true>'+row+'</th>';
       for (var col in this.cols) {
-        h += '<td>'+jc.editor.html(this.cell(row,col),{jcObject:this.name,'jcRow':row,jcCol:col})+'</td>';
+        h += '<td>'+tb.editor.html(this.cell(row,col),{jcObject:this.name,'jcRow':row,jcCol:col})+'</td>';
       }
       h += '</tr>';
     }    
     h+='</table></div>';
-    return jc.html(h);
+    return tb.html(h);
   }
 
-  jc.Table.prototype.getEditableValue = function(editor) {
+  tb.Table.prototype.getEditableValue = function(editor) {
     return this.cell(Number(editor.attr('jcRow')),editor.attr('jcCol'));
   }
 
-  jc.Table.prototype.setEditableValue = function(editor) {
+  tb.Table.prototype.setEditableValue = function(editor) {
     this.setCell(Number(editor.attr('jcRow')),editor.attr('jcCol'),editor.value);
-    jc.setModified(true);
+    tb.setModified(true);
     var obj = this;
-    window.setTimeout(function(){obj.updateCode();jc.run()},0);
+    window.setTimeout(function(){obj.updateCode();tb.run()},0);
   }
 
 
-  jc.Table.prototype.updateCode = function() {
+  tb.Table.prototype.updateCode = function() {
     // generate the code that represents the element as edited
     // can be used to replace the existing code 
     var code = 'table('+JSON.stringify(this.name)+')\n';
     for (var i=0; i<this.length; i++) {
       code += '.add('+this[i].toJSON()+')\n';
     }
-    this.codeElement.innerHTML = jc.toHtml(code+'.edit()');
+    this.codeElement.innerHTML = tb.toHtml(code+'.edit()');
   }
         
 
@@ -846,42 +846,42 @@
     // returns an already existing table or creates a new table
     // - name is the name of the instance
     // - if local=true, the instance is not registered in v
-    if (jc.vars[name] && jc.vars[name].constructor == Table){
-      return jc.vars[name];
+    if (tb.vars[name] && tb.vars[name].constructor == Table){
+      return tb.vars[name];
     }
 
     if ((local == true) || (name == undefined)) {
-      return new jc.Table(name);
+      return new tb.Table(name);
     }
-    return jc.vars[name] = new jc.Table(name);
+    return tb.vars[name] = new tb.Table(name);
   }
 
 // View  //////////////////////////////////////////////////////////////
 
-  jc.View = function View(parent) {
+  tb.View = function View(parent) {
     this.parent = parent;
     this.length = 0;
 
     this.pk = parent.pk;
     this.pks = parent.pks;          //hash table is empty but inherit from primary key
-    this.options = {tableStyle:jc.heir(parent.options.tableStyle),
+    this.options = {tableStyle:tb.heir(parent.options.tableStyle),
                     styles:[],      //no additionnal styles, since it will be computed 
                     colOrder:parent.options.colOrder,
-                    visibleCols:jc.heir(parent.options.visibleCols)
+                    visibleCols:tb.heir(parent.options.visibleCols)
                    };  
     this.cols = {};
-    for (var col in parent.cols) this.cols[col] = new jc.Col(col,this);
+    for (var col in parent.cols) this.cols[col] = new tb.Col(col,this);
   }
-  jc.View.className = 'jc.View';
+  tb.View.className = 'tb.View';
 
-  jc.View.prototype.set = jc.set;
-  jc.View.prototype.get = jc.get;
-  jc.View.prototype.rename = jc.Table.prototype.rename;
-  jc.View.prototype.colOrder = jc.Table.prototype.colOrder;
-  jc.View.prototype.show = jc.Table.prototype.show;
-  jc.View.prototype.hide = jc.Table.prototype.hide;
-  jc.View.prototype.forEachRow = jc.Table.prototype.forEachRow;
-  jc.View.prototype.cell = function(row,col) {
+  tb.View.prototype.set = tb.set;
+  tb.View.prototype.get = tb.get;
+  tb.View.prototype.rename = tb.Table.prototype.rename;
+  tb.View.prototype.colOrder = tb.Table.prototype.colOrder;
+  tb.View.prototype.show = tb.Table.prototype.show;
+  tb.View.prototype.hide = tb.Table.prototype.hide;
+  tb.View.prototype.forEachRow = tb.Table.prototype.forEachRow;
+  tb.View.prototype.cell = function(row,col) {
     // return the content of the cell: if the cell is a function: return the function
     if (typeof row == 'number'){
       return this[row] && this[row].cell(col);
@@ -891,29 +891,29 @@
     return row.cell(col);
   }
 
-  jc.View.prototype.val = jc.Table.prototype.val;
-  jc.View.prototype.lookup = jc.Table.prototype.lookup;
-  jc.View.prototype.tableStyle = jc.Table.prototype.tableStyle;
-  jc.View.prototype.colStyle = jc.Table.prototype.colStyle;
-  jc.View.prototype.rowStyle = jc.Table.prototype.rowStyle;
-  jc.View.prototype.style = jc.Table.prototype.style;
-  jc.View.prototype.compoundStyle = jc.Table.prototype.compoundStyle; 
-  jc.View.prototype.sort = jc.Table.prototype.sort;
-  jc.View.prototype.find = jc.Table.prototype.find;
-  jc.View.prototype.reduce = jc.Table.prototype.reduce;
-  jc.View.prototype.sum = jc.Table.prototype.sum;
-  jc.View.prototype.max = jc.Table.prototype.max;
-  jc.View.prototype.min = jc.Table.prototype.min;
-  jc.View.prototype.average = jc.Table.prototype.average;
-  jc.View.prototype.rms = jc.Table.prototype.rms;
+  tb.View.prototype.val = tb.Table.prototype.val;
+  tb.View.prototype.lookup = tb.Table.prototype.lookup;
+  tb.View.prototype.tableStyle = tb.Table.prototype.tableStyle;
+  tb.View.prototype.colStyle = tb.Table.prototype.colStyle;
+  tb.View.prototype.rowStyle = tb.Table.prototype.rowStyle;
+  tb.View.prototype.style = tb.Table.prototype.style;
+  tb.View.prototype.compoundStyle = tb.Table.prototype.compoundStyle; 
+  tb.View.prototype.sort = tb.Table.prototype.sort;
+  tb.View.prototype.find = tb.Table.prototype.find;
+  tb.View.prototype.reduce = tb.Table.prototype.reduce;
+  tb.View.prototype.sum = tb.Table.prototype.sum;
+  tb.View.prototype.max = tb.Table.prototype.max;
+  tb.View.prototype.min = tb.Table.prototype.min;
+  tb.View.prototype.average = tb.Table.prototype.average;
+  tb.View.prototype.rms = tb.Table.prototype.rms;
 
-  jc.View.prototype.toString = function() {
+  tb.View.prototype.toString = function() {
     // return a string summarizing the table
     return '[object View '+this.name+' of Table '+this.parent.name+' of '+this.length+' rows]';
   }
 
-  jc.View.prototype.toJSON = jc.Table.prototype.toJSON;
-  jc.View.prototype.node$ = jc.Table.prototype.node$;
+  tb.View.prototype.toJSON = tb.Table.prototype.toJSON;
+  tb.View.prototype.node$ = tb.Table.prototype.node$;
 
 
   // Output ///////////////////////////////////////////////
@@ -921,7 +921,7 @@
   function newOutput (codeElement,outputElement) {
     // outputElement is, if specified, the Element where HTML will be dumped
     //         element is essential if HTML uses the finalize() method
-    h = new jc.HTML();
+    h = new tb.HTML();
     h.codeElement = codeElement;
     h.outputElement = outputElement;
     h.span = function(){return ''};  // so that if a statment ends with an output, it will no show the output twice
@@ -933,27 +933,27 @@
 
 
 
-  function jc.HTML(html) {
+  function tb.HTML(html) {
     this.htmlCode = html || '';
     this.tagsEnd = [];
   }
-  jc.HTML.className = 'jc.HTML';
+  tb.HTML.className = 'tb.HTML';
 
-  jc.HTML.prototype.asNode = function() {
+  tb.HTML.prototype.asNode = function() {
     var html = this;
     return {node$:function() {return $(html.toString())},html:html}
   }
 
-  jc.HTML.prototype.toString = function() {
+  tb.HTML.prototype.toString = function() {
     return this.htmlCode+this.tagsEnd.join('');
   }
 
-  jc.HTML.prototype.removeJQueryAttr = function() {
+  tb.HTML.prototype.removeJQueryAttr = function() {
     this.htmlCode = this.htmlCode.replace(/jQuery\d+="\d+"/g,'');
     return this;
   }
   
-  jc.HTML.prototype.toAscii = function() {
+  tb.HTML.prototype.toAscii = function() {
     // same as toString(), but no character is bigger than &#255; every such a character is transformed into &#xxx;
     // Needed for this /&ç&"@ activeX of FileSystem
     var h = this.toString();
@@ -972,21 +972,21 @@
     return asciiH;
   }
     
-  jc.HTML.prototype.span = jc.HTML.prototype.toString;
+  tb.HTML.prototype.span = tb.HTML.prototype.toString;
 
-  jc.HTML.prototype.html = function (html) {
+  tb.HTML.prototype.html = function (html) {
   // insert any html
     this.htmlCode += html;
     return this;
   }
 
-  jc.HTML.prototype.showHtml = function (html) {
+  tb.HTML.prototype.showHtml = function (html) {
   // show html as html code
-    this.htmlCode += '<span class=INSPECTHTML>'+jc.toHtml(html)+'</span>';
+    this.htmlCode += '<span class=INSPECTHTML>'+tb.toHtml(html)+'</span>';
     return this;
   }
 
-  jc.HTML.prototype.showDiff = function(e1,e2) {
+  tb.HTML.prototype.showDiff = function(e1,e2) {
     if (e1.length != e2.length) {
       this.htmlCode += '<span class=DIFFSAME>e1.length=='+e1.length+' != e2.length=='+e2.length+'</span>';
     }
@@ -997,55 +997,55 @@
     return this;
   }
 
-  jc.HTML.prototype.showHtmlDiff = function(e1,e2) {
+  tb.HTML.prototype.showHtmlDiff = function(e1,e2) {
     if (e1.length != e2.length) {
       this.htmlCode += '<span class=DIFFERENT>e1.length=='+e1.length+' != e2.length=='+e2.length+'</span>';
     }
     for (var i=0; (i<e1.length) && (i<e2.length); i++) {
       if (e1.charAt(i) != e2.charAt(i)) break;
     }
-    this.htmlCode += '<span class=DIFFSAME>'+jc.toHtml(e1.slice(0,i))+'</span><br>e1:<span class=DIFFERENT>'+jc.toHtml(e1.slice(i))+'</span><br>e2:<span class=DIFFERENT>'+jc.toHtml(e2.slice(i))+'</span>';
+    this.htmlCode += '<span class=DIFFSAME>'+tb.toHtml(e1.slice(0,i))+'</span><br>e1:<span class=DIFFERENT>'+tb.toHtml(e1.slice(i))+'</span><br>e2:<span class=DIFFERENT>'+tb.toHtml(e2.slice(i))+'</span>';
     return this;
   }
     
-  jc.HTML.prototype.p = function (/*elements*/) {
+  tb.HTML.prototype.p = function (/*elements*/) {
     this._tag('P',arguments);
     return this;
   }
-  jc.HTML.prototype.ul = function (/*elements*/) {
+  tb.HTML.prototype.ul = function (/*elements*/) {
     this._tag('UL',arguments);
     return this;
   }
-  jc.HTML.prototype.ol = function (/*elements*/) {
+  tb.HTML.prototype.ol = function (/*elements*/) {
     this._tag('OL',arguments);
     return this;
   }
-  jc.HTML.prototype.li = function (/*elements*/) {
+  tb.HTML.prototype.li = function (/*elements*/) {
     this._tag('LI',arguments);
     return this;
   }
-  jc.HTML.prototype.pre = function (/*elements*/) {
+  tb.HTML.prototype.pre = function (/*elements*/) {
     this._tag('PRE',arguments);
     return this;
   }
-  jc.HTML.prototype.hr = function (){
+  tb.HTML.prototype.hr = function (){
     this._tag('HR',[]);
     return this
   }
-  jc.HTML.prototype.h = function (/*elements*/) {
-    this._tag('H'+jc.htmlIndent,arguments);
+  tb.HTML.prototype.h = function (/*elements*/) {
+    this._tag('H'+tb.htmlIndent,arguments);
     return this;
   }
 
-  jc.HTML.prototype.indent = function(levels) {
+  tb.HTML.prototype.indent = function(levels) {
     // increment the header level
     // levels: number of level to increment (default is 1)
     levels = levels || 1;
-    jc.htmlIndent += levels;
+    tb.htmlIndent += levels;
     return this;
   }
 
-  jc.HTML.prototype.tag = function(tagNameAndAttributes /*,elements*/) {
+  tb.HTML.prototype.tag = function(tagNameAndAttributes /*,elements*/) {
     // adds to the html <tagNameAndAttributes>span of all elements</tagName>
     // if element is empty, only adds <tagNameAndAttributes> and push the 
     // closing </tagName> on the stack waiting for an .end()
@@ -1055,7 +1055,7 @@
     return this;
   }
 
-  jc.HTML.prototype._tag = function(tagNameAndAttributes ,elements) {
+  tb.HTML.prototype._tag = function(tagNameAndAttributes ,elements) {
     this.htmlCode += '<'+tagNameAndAttributes+'>';
     var tagEnd = '</'+tagNameAndAttributes.split(' ')[0]+'>';
     if ((elements == undefined) || (!elements.length)) {
@@ -1078,29 +1078,29 @@
     return this;
   }
 
-  jc.HTML.prototype.end = function() {
+  tb.HTML.prototype.end = function() {
     // close the last opened tag
     this.htmlCode += this.tagsEnd.pop();
     return this;
   }  
     
-  jc.HTML.prototype.inspect = function(/*objects*/) {
+  tb.HTML.prototype.inspect = function(/*objects*/) {
     // adds to the HTML object the inspection of all objects passed in parameters
     for (var i=0; i<arguments.length; i++) {
-      this.htmlCode += jc.inspect(arguments[i]).span();
+      this.htmlCode += tb.inspect(arguments[i]).span();
     }
     return this;
   }
 
 
 
-  jc.HTML.prototype.sendTo = function(jquerySelector){
+  tb.HTML.prototype.sendTo = function(jquerySelector){
     var that = this;
     $(jquerySelector).each(function(i,e){e.innerHTML = that.html});
     return this
   }
 
-  jc.HTML.prototype.finalize = function(finalizationFunc) {
+  tb.HTML.prototype.finalize = function(finalizationFunc) {
     // finalizationFunc must be a function() {...}
     // note that as this function is defined within a code that will be created in secureEval, we are
     // also inside with(v) so any user variable is availlable as well as output is availlable because of the closure mecanism
@@ -1109,22 +1109,22 @@
       throw new Error('HTML.finalize can only be used if a code and output Element was associated');
     }
     this.finalizationFunc = finalizationFunc;
-    jc.finalizations.push(this);
+    tb.finalizations.push(this);
     return this;
   }
     
-  jc.HTML.prototype.alert = function(message) {
+  tb.HTML.prototype.alert = function(message) {
     window.alert(message);
     return this;
   }
 
-  jc.html = function(htmlcode) {
-    return new jc.HTML(htmlcode);
+  tb.html = function(htmlcode) {
+    return new tb.HTML(htmlcode);
   }
 
 
   // interactive Elements ////////////////////////////////////////////////////////
-  jc.IElement = function IElement(name,css,innerHtml,scene) {
+  tb.IElement = function IElement(name,css,innerHtml,scene) {
     //create a new JcElement that can be added inside scene
     //css is an object like {top:100,left:200....} that surcharge {top:0,left:0}
     //html is html code that will be used as innerHTML 
@@ -1141,14 +1141,14 @@
     this.$[0].IElement = this; // special attribute back to the IElement
     this.$.$end = this;
   }
-  jc.IElement.className = 'jc.IElement';
+  tb.IElement.className = 'tb.IElement';
 
-  jc.IElement.prototype.create$ = function(css,html) {
+  tb.IElement.prototype.create$ = function(css,html) {
     // return the jQuery object corresponding to the DOM element of the JcElement
     return $('<DIV>'+html+'</DIV>').addClass('IELEMENT').css(css);
   }
 
-  jc.IElement.prototype.top = function(newValue) {
+  tb.IElement.prototype.top = function(newValue) {
     // if newValue == undefined, return the current value of top
     // else set the new value
     if (newValue == undefined) return this.$.position().top;
@@ -1156,7 +1156,7 @@
     return this;
   }
 
-  jc.IElement.prototype.left = function(newValue) {
+  tb.IElement.prototype.left = function(newValue) {
     // if newValue === undefined, return the current value of left
     // else set the new value
     if (newValue == undefined) return this.$.position().left;
@@ -1164,7 +1164,7 @@
     return this;
   }
 
-  jc.IElement.prototype.width = function(newValue) {
+  tb.IElement.prototype.width = function(newValue) {
     // if newValue === undefined, return the current value of width
     // else set the new value
     if (newValue == undefined) return this.$.width();
@@ -1172,7 +1172,7 @@
     return this;
   }
 
-  jc.IElement.prototype.height = function(newValue) {
+  tb.IElement.prototype.height = function(newValue) {
     // if newValue === undefined, return the current value of height
     // else set the new value
     if (newValue == undefined) return this.$.height();
@@ -1180,7 +1180,7 @@
     return this;
   }
 
-  jc.IElement.prototype.html = function(newValue) {
+  tb.IElement.prototype.html = function(newValue) {
     // if newValue === undefined, return the current value of html
     // else set the new value
     if (newValue == undefined) return this.$.html();
@@ -1188,7 +1188,7 @@
     return this;
   }
 
-  jc.IElement.prototype.css = function(name,newValue) {
+  tb.IElement.prototype.css = function(name,newValue) {
     // if newValue === undefined, return the current value of html
     // else set the new value
     // can also be used with an object like {top:50,left:50,....}
@@ -1201,32 +1201,32 @@
     return this;
   }
 
-  jc.IElement.prototype.addForce = function(iElement,force) {
+  tb.IElement.prototype.addForce = function(iElement,force) {
     // add a force between this element and another iElement
     this.forces[iElement.name] = force;
   }
 
-  jc.IElement.prototype.addForces = function(forces) {
+  tb.IElement.prototype.addForces = function(forces) {
     // add new forces
     // forces is an object {jcElementName:forceFunction,....}
-    // forceFunction can be generated by jc.spring or any function(thisElement, otherElement) that return a force{x,y}
+    // forceFunction can be generated by tb.spring or any function(thisElement, otherElement) that return a force{x,y}
     // or undefined to cancel the force produced by a given element
     $.extend(this.forces,forces);
     return this;
   }
 
-  jc.IElement.prototype.clearForces = function() {
+  tb.IElement.prototype.clearForces = function() {
   // remove all forces on an IElement
     this.forces = {};
   }
 
-  jc.IElement.prototype.prepareAnimation = function() {
+  tb.IElement.prototype.prepareAnimation = function() {
     this.f = {x:0,y:0};
     if (!this.p) this.p = {x:this.left()+this.width()/2,y:this.top()+this.height()/2};
     return this;
   }
 
-  jc.IElement.prototype.applyForceWith = function(otherIElement,force){
+  tb.IElement.prototype.applyForceWith = function(otherIElement,force){
     //apply a force between this and the otherIElement
     f = force(this,otherIElement);
     this.f.x += f.x;
@@ -1236,14 +1236,14 @@
     return this;
   }
 
-  jc.IElement.prototype.applyForceToAll = function(iElements,force) {
+  tb.IElement.prototype.applyForceToAll = function(iElements,force) {
     // apply a force between this and each element of iElements
     for (var i = 0;i<iElements.length;i++) {
       this.applyForceWith(iElements[i],force);
     }
   }
 
-  jc.IElement.prototype.bounceOnBorders = function(top,left,bottom,right) {
+  tb.IElement.prototype.bounceOnBorders = function(top,left,bottom,right) {
     // modifies position and velocity in order to keep p inside a rectangle
     if ((this.p.x<left) && (this.v.x<0)) {
       this.p.x = left;
@@ -1264,7 +1264,7 @@
     return this;
   }
     
-  jc.IElement.prototype.animate = function(deltaT$ms) {
+  tb.IElement.prototype.animate = function(deltaT$ms) {
     // calculate all forces on this element, then calculate a new acceleration, speed and position
 
     var deltaT = (deltaT$ms || 100)/1000;
@@ -1278,8 +1278,8 @@
       thisElement.f.y += fe.y;
     });
 
-    thisElement.f.x = jc.limit(thisElement.f.x,-500,500);
-    thisElement.f.y = jc.limit(thisElement.f.y,-500,500);
+    thisElement.f.x = tb.limit(thisElement.f.x,-500,500);
+    thisElement.f.y = tb.limit(thisElement.f.y,-500,500);
 
     friction.x = -this.v.x*friction.u;
     friction.y = -this.v.y*friction.u;
@@ -1295,38 +1295,38 @@
     return this;
   }
 
-  jc.IElement.prototype.div = function(name,css,html) {
-    return this.scene.add(new jc.IElement(name,css,html,this.scene));
+  tb.IElement.prototype.div = function(name,css,html) {
+    return this.scene.add(new tb.IElement(name,css,html,this.scene));
   }
 
-  jc.IElement.prototype.value = function(name,css,html) {
-    return this.scene.add(new jc.IValue(name,css,html,this.scene));
+  tb.IElement.prototype.value = function(name,css,html) {
+    return this.scene.add(new tb.IValue(name,css,html,this.scene));
   }
 
-  jc.IElement.prototype.checkBox = function(name,css,html) {
-    return this.scene.add(new jc.ICheckBox(name,css,html,this.scene));
+  tb.IElement.prototype.checkBox = function(name,css,html) {
+    return this.scene.add(new tb.ICheckBox(name,css,html,this.scene));
   }
 
-  jc.IElement.prototype.trace = function(/*objects*/){
+  tb.IElement.prototype.trace = function(/*objects*/){
     trace(arguments);
     return this;
   }
 
-  jc.IElement.prototype.end = function() {
+  tb.IElement.prototype.end = function() {
     return this.scene;
   }
 
-  jc.IElement.prototype.toString = function() {
-    return '[object '+jc.functionName(this.constructor)+' '+this.name+']';
+  tb.IElement.prototype.toString = function() {
+    return '[object '+tb.functionName(this.constructor)+' '+this.name+']';
   }
 
-  jc.IElement.prototype.element$ = function() {
+  tb.IElement.prototype.element$ = function() {
     return this.$;
   }
 
 
   // forceFunctions ///////////////////////////////////////////
-  jc.spring = function(d,k) {
+  tb.spring = function(d,k) {
     // return a function that tries to keep 2 elements at a distance of d
     // with a spring of strength of k
     //
@@ -1349,7 +1349,7 @@
     }
   }
 
-  jc.ySpring = function(k) {
+  tb.ySpring = function(k) {
     // return a function that tries to keep 2 elements at the same y
     // with a spring of strength of k
     //
@@ -1363,9 +1363,9 @@
     }
   }
 
-  jc.repulseForce = function repulseForce(iE1,iE2) {
+  tb.repulseForce = function repulseForce(iE1,iE2) {
   // standard repulse force between 2 elements
-    var dist2 = jc.dist2(iE1.p,iE2.p);
+    var dist2 = tb.dist2(iE1.p,iE2.p);
     var k = 100;
     var f = {x:0,y:0};
     if (dist2 > 0) {
@@ -1379,10 +1379,10 @@
     return f;
   }
 
-  jc.centripetalForce = jc.spring(0,1);
+  tb.centripetalForce = tb.spring(0,1);
 
 
-  jc.repulseIElements = function(iElements,repulsionForce){
+  tb.repulseIElements = function(iElements,repulsionForce){
   // repulse all iElements between them by repulseForce
     
     for (var i = 0;i<iElements.length;i++) {
@@ -1392,7 +1392,7 @@
     }
   }
 
-  jc.repulseAndCenterIElements = function(iElements,repulsionForce,centripetalForce,center){
+  tb.repulseAndCenterIElements = function(iElements,repulsionForce,centripetalForce,center){
   // repulse all iElements between them by repulseForce
   // and attract all to center {x,y}
     var iECenter = {f:{x:0,y:0},p:center};
@@ -1407,14 +1407,14 @@
 
   // IValue //////////////////////////////////////////////////
 
-  jc.IValue = function JcValue(name,css,html,scene) {
-    jc.IElement.call(this,name,css,html || name,scene);
+  tb.IValue = function JcValue(name,css,html,scene) {
+    tb.IElement.call(this,name,css,html || name,scene);
   }
-  jc.IValue.className = 'jc.IValue';
+  tb.IValue.className = 'tb.IValue';
 
-  jc.makeInheritFrom(jc.IValue,jc.IElement);
+  tb.makeInheritFrom(tb.IValue,tb.IElement);
 
-  jc.IValue.prototype.value = function(newValue) {
+  tb.IValue.prototype.value = function(newValue) {
     // when used without parameters, return the current value
     // (same as valueOf)
     // with a parameter set a new value
@@ -1423,12 +1423,12 @@
     return this;
   }
   
-  jc.IValue.prototype.valueOf = function() {
+  tb.IValue.prototype.valueOf = function() {
     // returns the state of the value attribute
     return this.value();
   }
 
-  jc.IValue.prototype.create$ = function(css,html) {
+  tb.IValue.prototype.create$ = function(css,html) {
     // return the JQuery for a checkBox 
     // this checkBox will have the class IELEMENT and so will be positionned absolute
     return $('<SPAN class=IELEMENT>'+html+'<INPUT type="number" value=0></INPUT></SPAN>').css(css);
@@ -1437,16 +1437,16 @@
 /*
   // IFileName //////////////////////////////////////////////////
 
-  jc.IFileName = function JcFileName(name,css,html,scene) {
+  tb.IFileName = function JcFileName(name,css,html,scene) {
     // IFileName is an IElement for <INPUT type=file>
-    jc.IElement.call(this,name,css,html || name,scene);
+    tb.IElement.call(this,name,css,html || name,scene);
     this._value = 0;
   }
-  jc.IFileName.className = 'jc.IFileName';
+  tb.IFileName.className = 'tb.IFileName';
 
-  jc.makeInheritFrom(jc.IFileName,jc.IElement);
+  tb.makeInheritFrom(tb.IFileName,tb.IElement);
 
-  jc.IFileName.prototype.control = function() {
+  tb.IFileName.prototype.control = function() {
     // return the HTML code for a checkBox with id=id and text as content
     // this checkBox will have the class IELEMENT and so will be positionned absolute
     // at the same time a JcCheckBox is created with the same id allowing to interact
@@ -1457,15 +1457,15 @@
 
   // ICheckBox //////////////////////////////////////////////////
 
-  jc.ICheckBox = function ICheckBox(name,css,html,scene) {
+  tb.ICheckBox = function ICheckBox(name,css,html,scene) {
     // ICheckBox is an IElement for <INPUT type=checkbox>
-    jc.IElement.call(this,name,css,html || name,scene);
+    tb.IElement.call(this,name,css,html || name,scene);
   }
-  jc.ICheckBox.className = 'jc.ICheckBox';
+  tb.ICheckBox.className = 'tb.ICheckBox';
 
-  jc.makeInheritFrom(jc.ICheckBox,jc.IElement);
+  tb.makeInheritFrom(tb.ICheckBox,tb.IElement);
 
-  jc.ICheckBox.prototype.checked = function(newState) {
+  tb.ICheckBox.prototype.checked = function(newState) {
     // when used without parameters, return the current state of the corresponding checkBox (generally created with output.iCheckBox)
     // (same as valueOf)
     // with a parameter (true or false) set a new state to the checked attribute of the iCheckBox
@@ -1474,12 +1474,12 @@
     return this;
   }
   
-  jc.ICheckBox.prototype.valueOf = function() {
+  tb.ICheckBox.prototype.valueOf = function() {
     // returns the state of the checked attribute
     return this.checked();
   }
  
-  jc.ICheckBox.prototype.create$ = function(css,html) {
+  tb.ICheckBox.prototype.create$ = function(css,html) {
     // return the HTML code for a checkBox with id=id and text as content
     // this checkBox will have the class IELEMENT and so will be positionned absolute
     // at the same time a JcCheckBox is created with the same id allowing to interact
@@ -1489,21 +1489,21 @@
 
   // Scene ///////////////////////////////////////////////////////////////////////
 
-  jc.Scene = function Scene(name,css,html) {
+  tb.Scene = function Scene(name,css,html) {
   // a scene has itself as scene so all .div.. methods of IElement are also valid
-    jc.IElement.call(this,name,css || {},html || '',this); 
+    tb.IElement.call(this,name,css || {},html || '',this); 
     this.length = 0;
   }
-  jc.Scene.className = 'jc.Scene';
+  tb.Scene.className = 'tb.Scene';
 
-  jc.makeInheritFrom(jc.Scene,jc.IElement);
+  tb.makeInheritFrom(tb.Scene,tb.IElement);
 
-  jc.Scene.prototype.create$ = function(css,html) {
+  tb.Scene.prototype.create$ = function(css,html) {
     this.container$ = $('<DIV class=SCENECONTAINER>');
     return $('<DIV class=SCENE>').css(css).html(html).append(this.container$);
   }
 
-  jc.Scene.prototype.add = function(iElement) {
+  tb.Scene.prototype.add = function(iElement) {
     // add an IElement to the Scene;
     this[iElement.name] = iElement;
     this[this.length++] = iElement;
@@ -1511,7 +1511,7 @@
     return iElement;
   }    
 
-  jc.Scene.prototype.remove = function(iElement) {
+  tb.Scene.prototype.remove = function(iElement) {
   // remove iElement from the sceen
   // it does'nt destroy the iElement itself
   // but it also detach the DOM element so it is no longer part of the DOM tree
@@ -1524,7 +1524,7 @@
     return this;
   }
 
-  jc.Scene.prototype.animate = function(deltaT$ms) {
+  tb.Scene.prototype.animate = function(deltaT$ms) {
     var deltaT$ms = deltaT$ms || 100;
 
     for (var i = 0;i<this.length;i++) {
@@ -1536,31 +1536,31 @@
     }
   }
 
-  jc.Scene.prototype.node$ = function() {
+  tb.Scene.prototype.node$ = function() {
     return this.$;
   }
 
-  jc.scene = function(name,css) {
+  tb.scene = function(name,css) {
     // creates a new Scene and return a fake IElement that has scene as "parent" 
     // so that method chaining is only done at IElement level
-    var scene = new jc.Scene(name,css);
-    jc.vars[name] = scene;
+    var scene = new tb.Scene(name,css);
+    tb.vars[name] = scene;
     return scene; 
   }
 
   // Cloud ///////////////////////////////////////////////
 
-  jc.Cloud = function Cloud(name,css,html) {
+  tb.Cloud = function Cloud(name,css,html) {
     // Cloud is a Scene that contains IElement that represents a Cloud of information
-    jc.Scene.call(this,name,css,html);
-    this.repulseForce = jc.repulseForce;    
-    this.centripetalForce = jc.centripetalForce;
+    tb.Scene.call(this,name,css,html);
+    this.repulseForce = tb.repulseForce;    
+    this.centripetalForce = tb.centripetalForce;
   }
-  jc.Cloud.className = 'jc.Cloud';
+  tb.Cloud.className = 'tb.Cloud';
 
-  jc.makeInheritFrom(jc.Cloud,jc.Scene);
+  tb.makeInheritFrom(tb.Cloud,tb.Scene);
 
-  jc.Cloud.prototype.animate = function(deltaT$ms) {
+  tb.Cloud.prototype.animate = function(deltaT$ms) {
     var deltaT$ms = deltaT$ms || 100;
     var center = {x:this.width()/2,y:this.height()/2};
     var t = 0;
@@ -1572,16 +1572,16 @@
       this[i].prepareAnimation();
     }
 
-    jc.repulseAndCenterIElements(this,this.repulseForce,this.centripetalForce,center);
+    tb.repulseAndCenterIElements(this,this.repulseForce,this.centripetalForce,center);
 
     for (var i = 0;i<this.length;i++) {
       this[i].bounceOnBorders(t,l,b,r).animate(deltaT$ms);
     }
   }
 
-  jc.cloud = function(name,css){
-    var cloud = new jc.Cloud(name,css);
-    jc.vars[name] = cloud;
+  tb.cloud = function(name,css){
+    var cloud = new tb.Cloud(name,css);
+    tb.vars[name] = cloud;
     return cloud;
   }
   

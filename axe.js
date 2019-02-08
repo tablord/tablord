@@ -1,21 +1,21 @@
 
 
-jc.Axe = function Axe(name) {
+tb.Axe = function Axe(name) {
   // Axe objects simulate an axe
   this._name = name;
-  this.functions = [{f:jc.Axe.prototype.faccelerate,init:{t:-Infinity,p:0,v:0,a:0,phase:'init'}}];
+  this.functions = [{f:tb.Axe.prototype.faccelerate,init:{t:-Infinity,p:0,v:0,a:0,phase:'init'}}];
   this.decimals = 3;
 }
-jc.Axe.className = 'jc.Axe';
+tb.Axe.className = 'tb.Axe';
 
-jc.Axe.prototype.toString = function() {
+tb.Axe.prototype.toString = function() {
   return '[Axe'+this._name+' with '+this.functions.length+' functions]';
 }
 
-jc.Axe.prototype.appendFunction = function (f,init) {
+tb.Axe.prototype.appendFunction = function (f,init) {
   var last = this.functions.length-1;
   if ((last<0) || (init.t < this.functions[last].init.t)) {
-    throw new Error("jc.Axe.appendFunction: can't append a function with time "+init.t+" since last function starts at "+this.functions[last].init.t);
+    throw new Error("tb.Axe.appendFunction: can't append a function with time "+init.t+" since last function starts at "+this.functions[last].init.t);
   }
   var res = this.functions[last].f(this.functions[last].init,init.t); // calculate the next last point of previous function
   init.p = res.p;
@@ -24,7 +24,7 @@ jc.Axe.prototype.appendFunction = function (f,init) {
 } 
 
 
-jc.Axe.prototype.faccelerate = function (init,t) {
+tb.Axe.prototype.faccelerate = function (init,t) {
   //returns {t:t,p:xxx,v:xxx,a:init.a,j:xxxx} for a given t
   if (init.t == -Infinity) return {t:t,a:init.a,v:init.v,p:init.p};
   var dt = t-init.t;
@@ -34,16 +34,16 @@ jc.Axe.prototype.faccelerate = function (init,t) {
   return res;
 }
 
-jc.Axe.prototype.faccelerate.toString = function(){
+tb.Axe.prototype.faccelerate.toString = function(){
   return "accelerate";
 }
 
-jc.Axe.prototype.accelerate = function(init){
-  this.appendFunction(jc.Axe.prototype.faccelerate,init);
+tb.Axe.prototype.accelerate = function(init){
+  this.appendFunction(tb.Axe.prototype.faccelerate,init);
   return this;
 }
 
-jc.Axe.prototype.move = function(init){
+tb.Axe.prototype.move = function(init){
   //init is an object specifing one or more of the following parameters
   // t: initial time
   // p: final position
@@ -135,21 +135,21 @@ jc.Axe.prototype.move = function(init){
   this.functions.length = i+1;
 
   // now add the move
-  this.appendFunction(jc.Axe.prototype.faccelerate,{t:t,a:a1,phase:'t1'});
-  this.appendFunction(jc.Axe.prototype.faccelerate,{t:t+t1,a:0,phase:'tc'});
-  this.appendFunction(jc.Axe.prototype.faccelerate,{t:t+t1+tc,a:a2,phase:'t2'});
-  this.appendFunction(jc.Axe.prototype.faccelerate,{t:t+t1+tc+t2,a:0,phase:'ts'});
+  this.appendFunction(tb.Axe.prototype.faccelerate,{t:t,a:a1,phase:'t1'});
+  this.appendFunction(tb.Axe.prototype.faccelerate,{t:t+t1,a:0,phase:'tc'});
+  this.appendFunction(tb.Axe.prototype.faccelerate,{t:t+t1+tc,a:a2,phase:'t2'});
+  this.appendFunction(tb.Axe.prototype.faccelerate,{t:t+t1+tc+t2,a:0,phase:'ts'});
   if (ts>0) {
-    this.appendFunction(jc.Axe.prototype.faccelerate,{t:t+t1+tc+t2+ts,a:a3,phase:'t3'});
+    this.appendFunction(tb.Axe.prototype.faccelerate,{t:t+t1+tc+t2+ts,a:a3,phase:'t3'});
   }
   if (t3>0) {
-    this.appendFunction(jc.Axe.prototype.faccelerate,{t:t+t1+tc+t2+ts+t3,a:0,phase:'stop'});
+    this.appendFunction(tb.Axe.prototype.faccelerate,{t:t+t1+tc+t2+ts+t3,a:0,phase:'stop'});
   }
   return this;
 }
 
 
-jc.Axe.prototype.move.help = function() {
+tb.Axe.prototype.move.help = function() {
   var h ="   |<-------------- tt ----------------->|       \n"+
          "   |<--t1-->|<----- tc ------->|<t2>|    |       \n"+
          "   |        +------------------+ v1 |    |       \n"+
@@ -162,13 +162,13 @@ jc.Axe.prototype.move.help = function() {
          "   | /                              |    + v3    \n"+
          "   |+ v0                            |(df)|       \n"+
          "   +---------------------------------------------\n";
-  h = '<pre>'+jc.toHtml(h)+'</pre>';
+  h = '<pre>'+tb.toHtml(h)+'</pre>';
   h += 'by default: \n'+
        'a1 = a,  a2 = -a  a3 = a2 \n';
-  return jc.html(h);
+  return tb.html(h);
 }
       
-jc.Axe.prototype.at = function(t) {
+tb.Axe.prototype.at = function(t) {
   t = t || this.simulation.time$s;
   var i = this.functions.length-1;
   while ((i > 0) && (t < this.functions[i].init.t)) i--;
@@ -176,7 +176,7 @@ jc.Axe.prototype.at = function(t) {
 }
      
 
-jc.Axe.prototype.sample = function(start,end,step) {
+tb.Axe.prototype.sample = function(start,end,step) {
 // return a Table with all values form start to end, step by step
 
   var samples = table();
@@ -191,7 +191,7 @@ jc.Axe.prototype.sample = function(start,end,step) {
   return samples;
 }
 
-jc.Axe.prototype.span = function() {
+tb.Axe.prototype.span = function() {
   var cols = {t:1,p:1,v:1,a:1,j:1};
   for (var i in this.functions) {
     var f = this.functions[i];
@@ -217,16 +217,16 @@ jc.Axe.prototype.span = function() {
   return h;
 }
 
-jc.Axe.prototype.view = function() {
+tb.Axe.prototype.view = function() {
   return '<div class="SUCCESS">'+this._name+this.span()+'</div>';
 }
   
 function axe(name,params,simulation) {
   // params = {forward:{..same as move},backward:{..same as move},a:default acceleration,v1:default maxSpeed, v2:default approachSpeed}
-  var a = new jc.Axe(name);
-  a.simulation = simulation || jc.simulation;
+  var a = new tb.Axe(name);
+  a.simulation = simulation || tb.simulation;
   a.forward = $.extend(true,{a1:params.a,a2:-params.a,a3:-params.a,v1: (params.v1 || 1),v2: (params.v2 || 0),v3: (params.v3 || 0)},params.forward);
   a.backward = $.extend(true,{a1:-params.a,a2:params.a,a3:params.a,v1:-(params.v1 || 1),v2:-(params.v2 || 0),v3:-(params.v3 || 0)},params.backward);
-  return jc.vars[name] = a;
+  return tb.vars[name] = a;
 }
 

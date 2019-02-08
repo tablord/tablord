@@ -352,7 +352,7 @@ pre {
   color:blue;
 }
 
-#jcContent {
+#tbContent {
   padding-left:0px;  /*jcContent is a .CONTAINER but overrides everything that makes intentation */
   border-left: none;
   margin-top:4em;

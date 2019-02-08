@@ -1,11 +1,11 @@
-// jcalcEdi.js
+// tablordEdi.js
 //
-// This is the core of jcalc both defining the jc namespace that holds all global variables and functions
+// This is the core of tablord both defining the tb namespace that holds all global variables and functions
 // and where all EDI behaviour is coded
 // 
-// it needs the jcalc.js library and jquery (for now 1.5.1)
+// it needs the tablord.js library and jquery (for now 1.5.1)
 //
-// (CC-BY-SA 2018) according to https://creativecommons.org/
+// (CC-BY-SA 2019) according to https://creativecommons.org/
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -13,7 +13,7 @@
 
   // global variables /////////////////////////////////////////////////
 
-  var jc = {name:'JCalc',
+  var tb = {name:'Tablord',
             version:'0.1',
             authors:['Marc Nicole'],
             rights:'CC-BY-SA 2018',
@@ -22,20 +22,20 @@
                         //a new Output is created for each code. 
                         //it hold both the code and output Elements as well as the htlm
                         //at init an empty object so _codeElement and _outputElement are undefined
-                        //jc.output is only defined during user code execution in order to catch errors
+                        //tb.output is only defined during user code execution in order to catch errors
                         //from user code in association with the right output.
-                        //please note that jc.output == undefined during finalization code, but the finalization code
+                        //please note that tb.output == undefined during finalization code, but the finalization code
                         //defined by the user can still access output due to the closure mechanism of JavaScript
 
             traces:[],
             tracesMaxLength:100,
             htmlIndent:1,
-            simulation:undefined, // will be set in jc.execAll()
+            simulation:undefined, // will be set in tb.execAll()
             blockNumber:0,
             finalizations:[],     // a stack of output to be finalized
 
             intervalTimers:[],    // a list of intervalTimer handle in order to kill them (clearInterval) at the next run
-            inAnimation:false,    // true when execution take place through jc.animate()
+            inAnimation:false,    // true when execution take place through tb.animate()
             modified:false,       // file is modified
 
             templates:{},         // all native, locally defined and imported templates
@@ -44,17 +44,17 @@
 
             autoRun:true,
             url:{},               // the url of the sheet decomposed in protocol {host user password domain path fileName ext tag search arguments}
-            results:{},           // if != {}, when the sheet is closed a file with the same name .jres will be written and its content is JSON.stringify(jc.results)
+            results:{},           // if != {}, when the sheet is closed a file with the same name .jres will be written and its content is JSON.stringify(tb.results)
 
             defaults:{
-              format:{            // default formating methods  this can be redefined in some JCalc objects like v table... in options.
+              format:{            // default formating methods  this can be redefined in some Tablord objects like v table... in options.
                 undef:function(){return '<SPAN style=color:red;>undefined</SPAN>'},
                 nullObj:function(){return '<SPAN style=color:red;>null</SPAN>'},
                 emptStr:function(){return '<SPAN style=color:red;>empty string</SPAN>'},
-                func:function(f){return jc.help(f)},
+                func:function(f){return tb.help(f)},
                 array:function(a){return a.toString()},              
-                domElement:function(element){return 'DOM Element<SPAN class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(jc.purgeJQueryAttr(element.outerHTML)))+'</SPAN>'},
-                obj:function(obj){return jc.inspect(obj).span().toString()},
+                domElement:function(element){return 'DOM Element<SPAN class="INSPECTHTML">'+tb.toHtml(tb.trimHtml(tb.purgeJQueryAttr(element.outerHTML)))+'</SPAN>'},
+                obj:function(obj){return tb.inspect(obj).span().toString()},
                 date:function(date){return date.yyyymmdd()},
                 number:function(n){return n.toString()},
                 string:function(s){return s}
@@ -62,21 +62,21 @@
             },
 
             errorHandler:function(message,url,line) {
-              var out  = jc.output.outputElement;
+              var out  = tb.output.outputElement;
               if (out) {
                 if (url) {
                   out.innerHTML = message+'<br>'+url+' line:'+line+'<br>'+trace.span();
                 }
                 else {
-                  var code = jc.errorHandler.code || '';
+                  var code = tb.errorHandler.code || '';
                   var faults = message.match(/« (.+?) »/);
                   if (faults != null) {
                     var fault = faults[1];
-                    code = jc.output.codeElement.innerHTML
+                    code = tb.output.codeElement.innerHTML
                              .replace(/ /g,'&nbsp;')
                              .replace(new RegExp(fault,'g'),'<SPAN class="WRONG">'+fault+'</SPAN>');
-                    jc.output.codeElement.innerHTML = code
-                    jc.selectElement(jc.output.codeElement);
+                    tb.output.codeElement.innerHTML = code
+                    tb.selectElement(tb.output.codeElement);
                   }
                   out.innerHTML = trace.span()+message;
                 }
@@ -89,21 +89,21 @@
            };
 
 
-  jc.credits = {name:jc.name,version:jc.version,authors:jc.authors,rights:jc.rights};
+  tb.credits = {name:tb.name,version:tb.version,authors:tb.authors,rights:tb.rights};
 
   // HELP system ///////////////////////////////////////////////////////////////////////
   // must be defined very early so that every module can also add documentation
             
-  jc.HelpIndex = function() {
+  tb.HelpIndex = function() {
     // HelpIndex objects contain an index of all functions of the system
-    // jc.help.index is created automatically by the system
+    // tb.help.index is created automatically by the system
     this.index = [];
     this.history = [];
     this.historyPos = -1;
   }
-  jc.HelpIndex.className = 'jc.HelpIndex';
+  tb.HelpIndex.className = 'tb.HelpIndex';
 
-  jc.HelpIndex.prototype.update = function (object,path) {
+  tb.HelpIndex.prototype.update = function (object,path) {
     // update the index 
 
     for (var prop in object) {
@@ -118,9 +118,9 @@
     return this;
   }
 
-  jc.HelpIndex.prototype.find = function(name) {
+  tb.HelpIndex.prototype.find = function(name) {
     // return all entry corresponding to name: name can be partial
-    // if name is a full path (ie. jc.help) the result is an exact match
+    // if name is a full path (ie. tb.help) the result is an exact match
     // if not (ie no . notation) any entry having name inside is valid 
     var res = [];
     var m = name.match(/^(.+\.)(.*)$/i);
@@ -144,42 +144,42 @@
     return res;
   }
 
-  jc.HelpIndex.prototype.show =function(name) {
+  tb.HelpIndex.prototype.show =function(name) {
     // show in the help Panel the help on name
-    this.history[++this.historyPos] = jc.helpSearch$.val();
+    this.history[++this.historyPos] = tb.helpSearch$.val();
     this.history.length = this.historyPos+1;
-    jc.helpSearch$.val(name);
-    jc.helpOutput$.html(jc.help.index.help$(name));
+    tb.helpSearch$.val(name);
+    tb.helpOutput$.html(tb.help.index.help$(name));
   }
 
-  jc.HelpIndex.prototype.back = function() {
+  tb.HelpIndex.prototype.back = function() {
     // return on the previous search
     if (this.historyPos>=0){
       var name = this.history[this.historyPos--];
-      jc.helpSearch$.val(name);
-      jc.helpOutput$.html(jc.help.index.help$(name));
+      tb.helpSearch$.val(name);
+      tb.helpOutput$.html(tb.help.index.help$(name));
     }
   }
 
-  jc.HelpIndex.prototype.help$ = function(name) {
+  tb.HelpIndex.prototype.help$ = function(name) {
     // return the html in order to display the result of the search of name
     var regExp = new RegExp('^(.*)('+name+')(.*)$','i');
     var res = this.find(name);
     var n$ = $('<table>');
     for (var i = 0; i<res.length; i++) {
-      var path = res[i].path.replace(/^(.*\.[A-Z]\w*)\./,'<span class=HELPLINK onclick="jc.help.index.show(\'$1\');">$1</span>.');
-      n$.append($('<TR><TD valign="top" class=LEFT>'+path+res[i].prop.replace(regExp,'$1<b>$2</b>$3')+'</TD><TD class=LEFT>'+jc.help(res[i].func)+'</TD></TR>'));
+      var path = res[i].path.replace(/^(.*\.[A-Z]\w*)\./,'<span class=HELPLINK onclick="tb.help.index.show(\'$1\');">$1</span>.');
+      n$.append($('<TR><TD valign="top" class=LEFT>'+path+res[i].prop.replace(regExp,'$1<b>$2</b>$3')+'</TD><TD class=LEFT>'+tb.help(res[i].func)+'</TD></TR>'));
     }
     return n$;
   }
 
-  jc.HelpIndex.prototype.undocumentedClasses = function() {
+  tb.HelpIndex.prototype.undocumentedClasses = function() {
     // return a list of index entries of function that are potential Classes (start with uppercase)
     // without proper documentation (ie. className property defined on the constructor)
     // for maintenance only
     var res = [];
     for (var i = 0;i<this.index.length; i++) {
-      if (jc.constructorName(this.index[i].prop)){
+      if (tb.constructorName(this.index[i].prop)){
         if (this.index[i].func.className !== (this.index[i].path+this.index[i].prop)) {
           res.push(this.index[i]);
         }
@@ -188,29 +188,29 @@
     return res;
   }
 
-  jc.helps = {'jc.credits':jc.credits};
+  tb.helps = {'tb.credits':tb.credits};
 
-  jc.help = function(func) {
+  tb.help = function(func) {
   // returns the signature of the function and the first comment in a pretty html 
   //         followed by the content of the .help() static method of func if any
   // - func: the function to be inspected
 
     if (func == undefined) {
       var h = '';
-      for (var module in jc.helps) {
-        h += jc.inspect(jc.helps[module],module).span();
+      for (var module in tb.helps) {
+        h += tb.inspect(tb.helps[module],module).span();
       }
-      return new jc.HTML(h);
+      return new tb.HTML(h);
     }
     var source = func.toString().split('\n');
     var comments = []
-    var signature = jc.signature(func);
+    var signature = tb.signature(func);
     if(func.className) comments.push('constructor for '+func.className+' objects');
 
     for (var i=1; i<source.length; i++) {
       var comment = source[i].match(/^\s*\/\/(.*)$/);
       if (comment && (comment.length ==2)) {
-        comments.push(jc.toHtml(comment[1]));
+        comments.push(tb.toHtml(comment[1]));
       }
       else break;
     }
@@ -219,64 +219,64 @@
       methods = '<fieldset><legend>methods</legend><table>';
       for (var m in func.prototype) {
         if (typeof func.prototype[m] === 'function'){
-          methods += '<tr><th valign="top">'+m+'</th><td valign="top" style="text-align:left;">'+jc.help(func.prototype[m])+'</td></tr>'; 
+          methods += '<tr><th valign="top">'+m+'</th><td valign="top" style="text-align:left;">'+tb.help(func.prototype[m])+'</td></tr>'; 
         }
       }
       methods += '</table></fieldset><fieldset><legend>static methods</legend><table>';
       for (var m in func) {
         if (typeof func[m] === 'function'){
-          methods += '<tr><th valign="top">'+m+'</th><td valign="top" style="text-align:left;">'+jc.help(func[m])+'</td></tr>'; 
+          methods += '<tr><th valign="top">'+m+'</th><td valign="top" style="text-align:left;">'+tb.help(func[m])+'</td></tr>'; 
         }
       }
       methods += '</table></fieldset>';
     };
-    return new jc.HTML('<SPAN class=HELP><b>'+signature+'</b><br/>'+comments.join('<br/>')+(func.help?func.help():'')+methods+'</SPAN>');
+    return new tb.HTML('<SPAN class=HELP><b>'+signature+'</b><br/>'+comments.join('<br/>')+(func.help?func.help():'')+methods+'</SPAN>');
   }
 
-  jc.help.index = new jc.HelpIndex();
+  tb.help.index = new tb.HelpIndex();
 
-  jc.help.update = function(object,path) {
+  tb.help.update = function(object,path) {
     // update the help index with all functions of object that will be recorded under path
-    jc.help.index.update(object,path);
+    tb.help.index.update(object,path);
   }
 
   // classical formating functions ////////////////////////////////////////////
   
-  jc.Format = function() {}
-    // this class is compatible with the format property of options object used in jc.format(value,options)
+  tb.Format = function() {}
+    // this class is compatible with the format property of options object used in tb.format(value,options)
     // but it has methods that helps to build this object
-  jc.Format.className='jc.Format';
+  tb.Format.className='tb.Format';
 
-  jc.Format.prototype.fixed = function(decimals) {
+  tb.Format.prototype.fixed = function(decimals) {
     // returns a formating object {number:function(obj)} that formats the number with fixed decimals
-    var o = this.constructor === jc.Format?this:new jc.Format();
+    var o = this.constructor === tb.Format?this:new tb.Format();
     var f = function (n) {return n.toFixed(decimals)};
     f.toString = function() {return 'display precision of '+decimals+' decimals'};
     o.number = f;
     return o;
   }
 
-  jc.Format.prototype.undefinedBlank = function() {
+  tb.Format.prototype.undefinedBlank = function() {
     // returns a format object {undef:f()}
-    var o = this.constructor === jc.Format?this:new jc.Format();
+    var o = this.constructor === tb.Format?this:new tb.Format();
     var f = function () {return ''};
     f.toString = function() {return 'undefined is blank'};
     o.undef = f;
     return o;
   }
 
-  jc.Format.prototype.percent = function(decimals) {
+  tb.Format.prototype.percent = function(decimals) {
     // returns a fomating function(obj) that formats the number with fixed decimals
-    var o = this.constructor === jc.Format?this:new jc.Format();
+    var o = this.constructor === tb.Format?this:new tb.Format();
     var f = function (n) {return Number(100*n).toFixed(decimals)+'%'};
     f.toString = function() {return 'display number as percent with a precision of '+decimals+' decimals'};
     o.number = f;
     return o;
   }
 
-  $.extend(jc,jc.Format.prototype); // make those methods directly availlable to jc
+  $.extend(tb,tb.Format.prototype); // make those methods directly availlable to tb
     
-  jc.getScrollOffsets = function(w) {
+  tb.getScrollOffsets = function(w) {
     w = w||window;
     if(w.pageXOffset != null) return {left:w.pageXOffset, top:w.pageYOffset};
 
@@ -289,7 +289,7 @@
     return {left:d.body.scrollLeft, top: d.body.scrollTop };
   }
 
-  jc.getViewPortSize = function(w){
+  tb.getViewPortSize = function(w){
     w = w||window;
     if (w.innerWidth != null) return {width:w.innerWidth,Height:w.innerHeight};
   
@@ -300,11 +300,32 @@
     return {width:d.body.clientWidth, height:d.body.clientHeight};
   }
 
-//TODO à quoi sert calc déjà????
-  String.prototype.calc = function(decimal) {
-    var s=this.replace(/[^0-9\.\+\*\\\-]+/g,'');
-    var n = eval(s);
-    return Number(n).toFixed(decimal);
+  // some new Date methods
+
+  Date.prototype.nextMonth = function nextMonth(n) {
+    // return a date that is one month ahead than date
+    var d = new Date(this);
+    d.setMonth(d.getMonth()+(n||1));
+    return d;
+  }
+
+  Date.prototype.nextYear = function nextYear(n) {
+    // return a date that is one month ahead than date
+    var d = new Date(this);
+    d.setFullYear(d.getFullYear()+(n||1));
+    return d;
+  }
+
+  Date.prototype.adjustDay = function AdjustDay(day) {
+    // return a date that is the same month but different day if day is not undefined
+    var d = new Date(this);
+    d.setDate(day);
+    return d;
+  }
+
+  Date.prototype.yyyymmdd = function () {
+    // return the date in yyyy-mm-dd format
+    return this.getFullYear()+'-'+tb.pad(this.getMonth()+1,2)+'-'+tb.pad(this.getDate(),2);
   }
 
 
@@ -313,10 +334,10 @@
   $.fn.span = function() {
     var s = ['<ol start=0>'];
     for (var i=0; i < this.length; i++) {
-      s.push('<li class="INSPECTHTML">'+jc.toHtml(jc.trimHtml(jc.purgeJQueryAttr(this[i].outerHTML)))+'</li>');
+      s.push('<li class="INSPECTHTML">'+tb.toHtml(tb.trimHtml(tb.purgeJQueryAttr(this[i].outerHTML)))+'</li>');
     }
     s.push('</ol>');
-    return new jc.HTML('JQuery of '+this.length+' elements<br>'+s.join('<br>'));
+    return new tb.HTML('JQuery of '+this.length+' elements<br>'+s.join('<br>'));
   }  
 
   $.fn.toString = function(){
@@ -462,7 +483,7 @@
     result = [];
     this.each(function(i,element){
       var data = $(element).getItemscopeData();
-      if (jc.objMatchCriteria(data,criteria)) {
+      if (tb.objMatchCriteria(data,criteria)) {
         if (fields == undefined){
           result.push(data);
         }
@@ -539,9 +560,9 @@
     });
     return this;
   }          
-  jc.help.update($,'$.');
+  tb.help.update($,'$.');
 
-  jc.getItems$ = function(url) {
+  tb.getItems$ = function(url) {
     // returns a jQuery of all itemscope in the document having the itemtype=url
     // if url is undefined, gets all itemscope
     // if url ends with # select any url that match any version
@@ -564,8 +585,8 @@
   }
 
   
-  jc.get = function(/*path*/) {
-    // applied as a method (either declare MyClass.prototype.get = jc.get or jc.get.call(obj,path)
+  tb.get = function(/*path*/) {
+    // applied as a method (either declare MyClass.prototype.get = tb.get or tb.get.call(obj,path)
     // returns this.path1.path2.path3 or undefined if at any stage it becomes undefined
     // and search also in this.parent is case of undefined property
     // enables a cascad search of a property
@@ -583,7 +604,7 @@
     return undefined;
   }
 
-  jc.set = function(value /*,path*/) {
+  tb.set = function(value /*,path*/) {
     // set the value of the property of this.path1.path2... and creates, if needed the intermediate objects
     var o = this;
     for (var i=1;i<arguments.length-1;i++) {
@@ -600,15 +621,15 @@
   }  
 
   // functions for reduce /////////////////////////////////////////////
-  jc.reduce = {};
-  jc.reduce.sum = function(a,b) {return a+b};
-  jc.reduce.min = Math.min;
-  jc.reduce.max = Math.max;
-  jc.reduce.sumCount = function(sc,b) {sc.count++;sc.sum+=b;return sc};
+  tb.reduce = {};
+  tb.reduce.sum = function(a,b) {return a+b};
+  tb.reduce.min = Math.min;
+  tb.reduce.max = Math.max;
+  tb.reduce.sumCount = function(sc,b) {sc.count++;sc.sum+=b;return sc};
 
   // color functions //////////////////////////////////////////////////
 
-  jc.hue = function(h) {
+  tb.hue = function(h) {
     h = h % 360;
     if (h<0) h+=360;
 
@@ -620,27 +641,11 @@
     return {r:255,g:0,b:255-(h-300)/60*255};
   }
 
-  jc.hsl = function(h,s,l) {
+  tb.hsl = function(h,s,l) {
     // return a string 'rgb(...)' 
-    var color = jc.hue(h); //TODO integrate s,l
+    var color = tb.hue(h); //TODO integrate s,l
     return 'rgb('+color.r+','+color.g+','+color.b+')';
   } 
-
-
-  // edi related functions ////////////////////////////////////////////
-  var geval = eval;
-
-  jc.securedEval = function(code) {
-  // NRT0001
-  // a bit more secured: since IE<9 executes localy, it was possible do destroy local variable by defining functions or var
-  // with this trick, one can still create global variables by just assigning (eg: jc.vars='toto' destroys the global variable jc.vars)
-  // to be checked what could be done to improve
-    code.replace(/^\s*\{(.*)\}\s*$/,'({$1})');
-
-    jc.errorHandler.code = code;
-    code = 'var output = jc.output; with (jc.vars) {\n'+code+'\n};';   //output becomes a closure, so finalize function can use it during finalizations
-    return geval(code)
-  }
 
   // JSON ///////////////////////////////////////////////////////////
   //
@@ -679,7 +684,7 @@
       else if (obj.toUTCString) {  // fallback for IE7 that neither has toJSON nor toISOString
         return '"'+obj.toUTCString()+'"';
       }
-      throw new Error("INTERNAL ERROR: can't stringify "+jc.inspect(obj));
+      throw new Error("INTERNAL ERROR: can't stringify "+tb.inspect(obj));
     };
 
     JSON.parse = function(json){
@@ -688,8 +693,25 @@
     
   }    
 
-  jc.help.update(JSON,'JSON.');
-  jc.help.update({JSON:JSON},'');
+  tb.help.update(JSON,'JSON.');
+  tb.help.update({JSON:JSON},'');
+
+
+  // edi related functions ////////////////////////////////////////////
+  var geval = eval;
+
+  tb.securedEval = function(code) {
+  // NRT0001
+  // a bit more secured: since IE<9 executes localy, it was possible do destroy local variable by defining functions or var
+  // with this trick, one can still create global variables by just assigning (eg: tb.vars='toto' destroys the global variable tb.vars)
+  // to be checked what could be done to improve
+    code.replace(/^\s*\{(.*)\}\s*$/,'({$1})');  // if the code is just a litteral object {..} add brakets in order to deal with the with(tb.vars){ } statement
+
+    tb.errorHandler.code = code;
+    code = 'var output = tb.output; with (tb.vars) {\n'+code+'\n};';   //output becomes a closure, so finalize function can use it during finalizations
+    return geval(code)
+  }
+
   // debug //////////////////////////////////////////////////////////
 
 
@@ -699,7 +721,7 @@
     // returns the last object in order to be able to use a(x) in an expression
     var message = '';
     for (var i=0; i<arguments.length; i++){
-      message += jc.inspect(arguments[i]).toString()+'\n';
+      message += tb.inspect(arguments[i]).toString()+'\n';
     }
     window.alert(message);
     return arguments[arguments.length-1];
@@ -713,10 +735,10 @@
     if (trace._on) { 
       var message = '';
       for (var i=0; i<arguments.length; i++){
-        message += jc.inspect(arguments[i]).span();
+        message += tb.inspect(arguments[i]).span();
       }
       trace.messages.push(message);
-      if (trace.messages.length > jc.tracesMaxLength) {
+      if (trace.messages.length > tb.tracesMaxLength) {
         trace.messages.pop();
         trace.messages[0]='...';
       }
@@ -755,17 +777,17 @@
     if (trace.messages.length > 0){
       var h = '<DIV class=TRACE>'+trace.messages.length+' traces:<table class=DEBUG><tr><td class=TRACE>'+trace.messages.join('</td></tr><tr><td class=TRACE>')+'</td></tr></table></DIV>';
       trace.messages = [];
-      return new jc.HTML(h);
+      return new tb.HTML(h);
     }
     return '';
   }
 
-  jc.help.update({a:a,trace:trace},'');
-  jc.help.update(trace,'trace.');
+  tb.help.update({a:a,trace:trace},'');
+  tb.help.update(trace,'trace.');
   
 
   // Inspector ////////////////////////////////////////////////////////
-  jc.Inspector = function Inspector(obj,depth,name) {
+  tb.Inspector = function Inspector(obj,depth,name) {
     // Inspector object are made to have both .toString and .span methods
     // so they can be displayed either in an html or plain text context
     // - depth (default 1) give at what depth object properties are also inspected
@@ -774,9 +796,9 @@
     this.name = name || '';
     this.depth = depth || 1;
   }
-  jc.Inspector.className = 'jc.Inspector';
+  tb.Inspector.className = 'tb.Inspector';
 
-  jc.Inspector.prototype.legend = function() {
+  tb.Inspector.prototype.legend = function() {
     // returns the legend for a given object
     var l;
     if ($.isPlainObject(this.obj)) {
@@ -786,7 +808,7 @@
       l = '[]';
     }
     else if ($.isFunction(this.obj)) {
-      l = jc.signature(this.obj);
+      l = tb.signature(this.obj);
     }
     else if (this.obj === null) {
       l = 'null';
@@ -801,7 +823,7 @@
   }
 
     
-  jc.Inspector.prototype.toString = function (){
+  tb.Inspector.prototype.toString = function (){
     // display the object hold by the inspector as a string
 
     // BE CARFULL IN DEBUGGING THAT FUNCTION: DO NOT CALL a(....), 
@@ -830,12 +852,12 @@
     }
     var r = this.legend()+' '+this.name+'\n';
     for (var k in this.obj) {
-      r += k+':  '+jc.summary(this.obj[k])+'\n' 
+      r += k+':  '+tb.summary(this.obj[k])+'\n' 
     };
     return r;
   }
 
-  jc.Inspector.prototype.span = function (depth){
+  tb.Inspector.prototype.span = function (depth){
     depth = depth || this.depth;
     if (this.obj === undefined) {
       return '<SPAN class="INSPECT META">undefined</SPAN>';
@@ -850,7 +872,7 @@
       return '<SPAN class="INSPECT META">empty string</SPAN>';
     }
     if (typeof this.obj === 'string') {
-      return '<SPAN class=INSPECT>'+jc.toHtml(JSON.stringify(this.obj))+'</SPAN>';
+      return '<SPAN class=INSPECT>'+tb.toHtml(JSON.stringify(this.obj))+'</SPAN>';
     }
     if (this.obj.toGMTString !== undefined) {
       return '<SPAN class="INSPECT META">'+this.obj.toString()+' (ms:'+this.obj.valueOf()+')</SPAN>';
@@ -860,21 +882,21 @@
     for (var k in this.obj) {
       if (k==='constructor') continue;
       r += '<tr><th valign="top">'+k+'</th><td valign="top" style="text-align:left;">'+
-           (  (typeof this.obj[k] == 'function')?jc.help(this.obj[k]):
-                 ((depth == 1)?jc.toHtml(this.obj[k]):jc.inspect(this.obj[k]).span(depth-1))
+           (  (typeof this.obj[k] == 'function')?tb.help(this.obj[k]):
+                 ((depth == 1)?tb.toHtml(this.obj[k]):tb.inspect(this.obj[k]).span(depth-1))
            )
           +'</td></tr>'; 
     };
-    return new jc.HTML(r+'</table></fieldset></DIV>');
+    return new tb.HTML(r+'</table></fieldset></DIV>');
   }
 
   // general purpose helpers ////////////////////////////////////////////
 
-  jc.summary = function(obj) {
+  tb.summary = function(obj) {
     // return a 1 line summary of obj
     var l;
     if ($.isFunction(obj)) {
-      l = jc.signature(obj);
+      l = tb.signature(obj);
     }
     else if (obj === null) {
       l = 'null';
@@ -892,14 +914,14 @@
   }
 
 
-  jc.inspect = function(obj,depth,name){
+  tb.inspect = function(obj,depth,name){
     // return an Inspector object so obj can be displayed either in an html or plain text context
     // - depth (default 1) give at what depth object properties are also inspected
     // - name (optional) gives a name to be shown in the display
-    return new jc.Inspector(obj,depth,name);
+    return new tb.Inspector(obj,depth,name);
   }
 
-  jc.heir = function (p) {
+  tb.heir = function (p) {
     // return an heir of p
     if (p==null) throw TypeError();
     if (Object.create) return Object.create(p);
@@ -910,7 +932,7 @@
     return new F();
   }
 
-  jc.makeInheritFrom = function(newClass,ancestorClass) {
+  tb.makeInheritFrom = function(newClass,ancestorClass) {
     // make a newClass inherit from another ancestorClass
     // workaround for the lack of Object.create() in IE7
     // TODO: in IE7 brings an issue since the "constructor" property of ".prototype" becomes enumerable
@@ -919,12 +941,12 @@
     // return this
     if (typeof newClass !== 'function') throw new Error("makeInheritFrom: newClass is not a function");
     if (typeof ancestorClass !== 'function') throw new Error("makeInheritFrom: ancestorClass is not a function");
-    newClass.prototype = jc.heir(ancestorClass.prototype);
+    newClass.prototype = tb.heir(ancestorClass.prototype);
     newClass.prototype.constructor = newClass;
     return newClass;
   }
 
-  jc.keys = function(obj) {
+  tb.keys = function(obj) {
     // returns an Array with all keys (=non inherited properties) of an object
     // replacement for ECMA5 
     var res = [];
@@ -934,7 +956,7 @@
     return res;
   }
 
-  jc.values = function(obj) {
+  tb.values = function(obj) {
     // returns an Array with all values of all non inherited properties of an object
     var res = [];
     for (var k in obj) {
@@ -943,7 +965,7 @@
     return res;
   }
 
-  jc.copy = function(obj) {
+  tb.copy = function(obj) {
     // makes a copy of obj this version only copies the first level
     // does not copy any inheritance (result is an Object instance)
     var o = {};
@@ -953,7 +975,7 @@
     return o;
   }
 
-  jc.objMatchCriteria = function(obj,criteria) {
+  tb.objMatchCriteria = function(obj,criteria) {
     criteria = criteria || {};
     for (var k in criteria) {
       if (obj[k] !== criteria[k]) return false;
@@ -961,22 +983,22 @@
     return true;
   }
 
-  jc.findInArrayOfObject = function(criteria,a) {
+  tb.findInArrayOfObject = function(criteria,a) {
     // find the first object in the array (or array like) of object a that has all criteria true
-    // example jc.findInArrayOfObject({toto:5},[{toto:1,tutu:5},{toto:5}])
+    // example tb.findInArrayOfObject({toto:5},[{toto:1,tutu:5},{toto:5}])
     // will return 1
     for (var i=0; i<a.length; i++) {
-      if (jc.objMatchCriteria(a[i],criteria)) return i;
+      if (tb.objMatchCriteria(a[i],criteria)) return i;
     }
     return -1;
   }
 
-  jc.pad = function(integer,numberOfDigits){
+  tb.pad = function(integer,numberOfDigits){
     return ('00000000000000000'+integer).slice(-numberOfDigits);
   }
 
 
-  jc.urlComponents = function(url) {
+  tb.urlComponents = function(url) {
     // return an object with all components of an url
     // - protocol
     // - user
@@ -1007,6 +1029,12 @@
     res.ext      = comp[14];
     res.tag      = comp[16];
     res.search   = comp[18];
+    if (res.drive) {
+      res.absolutePath = res.drive+res.path;
+    }
+    else {
+      res.absolutePath = res.protocol+'://'+res.domain+res.path;
+    }
     var args = {};
     var pairs = res.search.split("&");
     for (var i=0;i< pairs.length;i++) {
@@ -1026,42 +1054,53 @@
     return res;
   }
 
-  jc.fileName = function(url) {
+  tb.fileName = function(url) {
     // return the fileName.ext of url (or os file)
-    var comp = jc.urlComponents(url);
+    var comp = tb.urlComponents(url);
     return comp.fileName+'.'+comp.ext;
   }  
 
+  tb.absoluteFileName = function (relativeFileName,path) {
+    // return a absolute path+filename combining the absolute path and the relative fileName
+    // TODO implement all .\ : yet works only if relativeFileName has no path
+    var comp = tb.urlComponents(relativeFileName)
+    if (comp.path === '') {
+      return path+comp.fileName+'.'+comp.ext;
+    }
+    return relativeFileName;
+  }
+
+
   // Math helpers /////////////////
 
-  jc.limit = function (value,min,max) {
+  tb.limit = function (value,min,max) {
     // return value bounded by min and max
     if (value < min) return min;
     if (value > max) return max;
     return value;
   }
 
-  jc.sign = function(value){
+  tb.sign = function(value){
     // returns 0 if value==0
     //         1 if value > 0
     //        -1 if value < 0
     return value===0?0:(value>0?1:-1);
   }
 
-  jc.dist2 = function(p1,p2) {
+  tb.dist2 = function(p1,p2) {
   // return dist^2 between 2 points {x,y}
     return Math.pow(p1.x-p2.x,2)+Math.pow(p1.y-p2.y,2);
   }
 
-  jc.dist = function(p1,p2) {
+  tb.dist = function(p1,p2) {
   // return the distance between 2 points {x,y}
-    return Math.sqrt(jc.dist2(p1,p2));
+    return Math.sqrt(tb.dist2(p1,p2));
   }
 
-  // helpers specific to jcalc ////////////////////////////////////////////////////////////////////
+  // helpers specific to Tablord ////////////////////////////////////////////////////////////////////
 
 
-  jc.purgeJQueryAttr = function(html) {
+  tb.purgeJQueryAttr = function(html) {
     // supress all jqueryxxx="yy" attributes, since they are meaningless for the user and also compromise the testability
     // since they depend on the context
 
@@ -1075,7 +1114,7 @@
     return result;
   }
 
-  jc.toString = function(html) {
+  tb.toString = function(html) {
     // transform the content (from innerHTML) to a string as if this content is a text editor
     // removes any tags other than <BR> and <P>
     var res = html
@@ -1089,7 +1128,7 @@
     return res;
   }
 
-  jc.toHtml = function(code) {
+  tb.toHtml = function(code) {
     // transform htmlCode in such a manner that the code can be visualised in a <pre>...
     return String(code)
              .replace(/&/g,"&amp;")
@@ -1100,12 +1139,12 @@
              .replace(/\n/g,"<br>");
   }
 
-  jc.isJSid = function (id) {
+  tb.isJSid = function (id) {
     // return true id id is a javaScript id 
     return id.match(/^[\w$]+\w*$/) !== null;
   }
 
-  jc.toJSCode = function(obj,stringQuote) {
+  tb.toJSCode = function(obj,stringQuote) {
     // return a string representing obj that can be interpreted by eval
     // stringQuote is by default ' but can be set to "
     stringQuote = stringQuote || "'";
@@ -1134,35 +1173,35 @@
     }
     else if ($.isArray(obj)) {
       var sa=[];
-      $.each(obj, function(i,value) {sa.push(jc.toJSCode(value,stringQuote))});
+      $.each(obj, function(i,value) {sa.push(tb.toJSCode(value,stringQuote))});
       return '['+sa.join(',')+']';
     }
     else {
       var sa=[];
       $.each(obj, function(name,value) {
-        if (!jc.isJSid(name)) name = jc.toJSCode(name,stringQuote);
-        sa.push(name+':'+jc.toJSCode(value,stringQuote))
+        if (!tb.isJSid(name)) name = tb.toJSCode(name,stringQuote);
+        sa.push(name+':'+tb.toJSCode(value,stringQuote))
       });
       return '{'+sa.join(',')+'}';
     }
   }
 
-  jc.htmlAttribute = function(attr,value) {
+  tb.htmlAttribute = function(attr,value) {
     // write an attribute according to its type
-    var h = ' '+attr+'='+(typeof value == 'number'?value:'"'+jc.toHtml(value).replace(/"/g,'&quote;')+'"');
+    var h = ' '+attr+'='+(typeof value == 'number'?value:'"'+tb.toHtml(value).replace(/"/g,'&quote;')+'"');
     return h;
   }
 
-  jc.codeExample = function(example) {
-    return jc.html('<span class=CODEEXAMPLE>'+example+'</span>');
+  tb.codeExample = function(example) {
+    return tb.html('<span class=CODEEXAMPLE>'+example+'</span>');
   }
 
-  jc.trimHtml = function(html) {
+  tb.trimHtml = function(html) {
   // suppress all unsignificant blanks and non visible char
     return html.replace(/[ \t\r\n]+/g,' ').replace(/> /g,'>').replace(/ </g,'<');
   }
 
-  jc.textContent = function(html) {
+  tb.textContent = function(html) {
   // return the text like textcontent that doesn't exist in IE7
   // first remove all tags having HIDDEN in class and then keeps the text only
   // TODO******** not ok for nested tags !!!! ********************************
@@ -1171,24 +1210,24 @@
 
   // helpers for functions ///////////////////////////////////////// 
     
-  jc.signature = function(func) {
+  tb.signature = function(func) {
     // returns only the signature of the function
     var m = func.toString().match(/(function.*?\))/);
     if (m) return m[0];
     return func.toString();
   }
 
-  jc.functionName = function (func) {
+  tb.functionName = function (func) {
     // returns the name of the function or '' if an anonymous function
     return func.toString().match(/function *([a-zA-Z0-9_$]*)/)[1];
   }
     
-  jc.constructorName = function(name) {
+  tb.constructorName = function(name) {
   // returns if name is a constructor name for a function 
   // the last identified starting with a capital character
-  // 'jc' --> false
+  // 'tb' --> false
   // 'Table' --> true
-  // 'jc.Table' --> true
+  // 'tb.Table' --> true
     if (typeof name !== 'string') return false;
     return (name.search(/[A-Z]/) === 0);
   }
@@ -1196,16 +1235,16 @@
 
 
   // navigation within document ////////////////////////////////////////////////////////
-  jc.sectionBeingExecuted$ = function() {
+  tb.sectionBeingExecuted$ = function() {
     // returns a jQuery containing the deepest section that contains the code currently in execution
-    return $(jc.currentElementBeingExecuted).closest('.SECTION');
+    return $(tb.currentElementBeingExecuted).closest('.SECTION');
   }
 
-  jc.testStatus = function() {
+  tb.testStatus = function() {
     // set a finalize function that will write to the current output the number of test Failure
     // in the section that includes the code that executes this function
     // mostly used in a small code inside the title of a section to summerize the tests below
-    var output = jc.output; // closure on jc.output
+    var output = tb.output; // closure on tb.output
     output.finalize(function(){
       var section = $(output.codeElement).closest('.SECTION');
       var numberOfSuccess= section.find('.TEST.SUCCESS').length;
@@ -1217,55 +1256,55 @@
     return 'test Status: ';
   }
 
-  jc.updateResultsTestStatus = function() {
-    // updates jc.results.testStatus with the number of test passed vs failed
-    jc.results.testStatus = {
+  tb.updateResultsTestStatus = function() {
+    // updates tb.results.testStatus with the number of test passed vs failed
+    tb.results.testStatus = {
       nbPassed : $('.TEST.SUCCESS').length,
       nbFailed : $('.TEST.ERROR').length,
       dateTime : new Date()
     };
-    return jc.results;
+    return tb.results;
   }
 
-  jc.writeTestResults = function () {
-    // if jc.arguments.testResultFileName, appends a line with {fileName:  ,nbPassed:  ,nbFailed: }
+  tb.writeTestResults = function () {
+    // if tb.arguments.testResultFileName, appends a line with {fileName:  ,nbPassed:  ,nbFailed: }
 
-    if (jc.arguments.testResultFileName == undefined) return;
+    if (tb.arguments.testResultFileName == undefined) return;
 
     var result = {
       fileName:window.document.location.href.match(/(.*)\?/)[1],
       nbPassed: $('.TEST.SUCCESS').length,
       nbFailed: $('.TEST.ERROR').length
     }
-    jc.fso.writeFile(jc.arguments.testResultFileName, JSON.stringify(result), 8);
+    tb.fso.writeFile(tb.arguments.testResultFileName, JSON.stringify(result), 8);
   }
 
-  jc.helps.jc = {inspect:jc.inspect,
-                 keys:jc.keys,copy:jc.copy,pad:jc.pad,
-                 inherit:jc.inherit,
-                 toString:jc.toString,toHtml:jc.toHtml,
-                 codeExample:jc.codeExample,findInArrayOfObject:jc.findInArrayOfObject,help:jc.help,testStatus:jc.testStatus,
-                 /*tableOfContent:jc.tableOfContent,*/link:jc.link
+  tb.helps.tb = {inspect:tb.inspect,
+                 keys:tb.keys,copy:tb.copy,pad:tb.pad,
+                 inherit:tb.inherit,
+                 toString:tb.toString,toHtml:tb.toHtml,
+                 codeExample:tb.codeExample,findInArrayOfObject:tb.findInArrayOfObject,help:tb.help,testStatus:tb.testStatus,
+                 /*tableOfContent:tb.tableOfContent,*/link:tb.link
   };
 
   // Editor ////////////////////////////////////////////////////////////////////////////
 
 
-  jc.Editor = function Editor(){
+  tb.Editor = function Editor(){
   // the goal of Editor is to offer a genenral mechanism in order to help implement 
-  // jcObject edition capabilities.
+  // tbObject edition capabilities.
   // this mechanism is the following:
   // an object that would like to propose edition capabilities has to offer the following interface
   //   .edit()  similar to .span() but return html code representing the object in edition.
-  //            usually .edit() calls jc.editor.html(...) in order to get the necessary html code that will
-  //            interact with jc.editor
+  //            usually .edit() calls tb.editor.html(...) in order to get the necessary html code that will
+  //            interact with tb.editor
   //   .codeElement this property must be created by edit() and must containt the codeElement that contains the .edit() function 
   //                and that will be updated after edition
   //
   //   .getEditableValue(editor)  will be called by the editor when the user selects a given DOM EDITOR element
   //                              this is the responsibility of the object to look on editor's properties that are specific to this
   //                              object to know how to get the value. the returned value can be a simple type (undefined,number,string)
-  //                              or a function. if this function has a .code property, it is considered to be a jcFunc and .code represents
+  //                              or a function. if this function has a .code property, it is considered to be a tbFunc and .code represents
   //                              only the body of the function (usually an expression)
   //   .setEditableValue(editor)  will be called by the editor when the user has finished to edit a given value.
   //                              this method has the responsibility to upgrade the code
@@ -1273,40 +1312,40 @@
   //                              in updateCode and call this function in setEditableValue through a window.setTimout(
   //   
   //--------------
-  //  jc.editor is a single instance object that provides most of the services and that dialogs with the DOM elements composing
+  //  tb.editor is a single instance object that provides most of the services and that dialogs with the DOM elements composing
   //            the user interface.
   //
-  //  jc.editor.html(...) return html code needed to create the editor for a simple value
+  //  tb.editor.html(...) return html code needed to create the editor for a simple value
   //                      if the value is simple (undefined, number, string or function) it will 
   //                      be handled natively.
   //                      if value is an object, it will return the code of object.edit()
   //                      TODO: provide mechanism for simple object / arrays
   //
-  //  jc.editor.simpleTypeToolBar$ a jQuery storing the necessary toolBar for the simple types
+  //  tb.editor.simpleTypeToolBar$ a jQuery storing the necessary toolBar for the simple types
 
   }
-  jc.Editor.className = 'jc.Editor';
+  tb.Editor.className = 'tb.Editor';
  
-  jc.Editor.prototype.createToolBar = function() {
+  tb.Editor.prototype.createToolBar = function() {
     this.toolBar$ = $('<SPAN/>')
-      .append('<input type="radio" name="type" value="string" onclick="jc.editor.force(\'string\');">String</input>')
-      .append('<input type="radio" name="type" value="number" onclick="jc.editor.force(\'number\')">Number</input>')
-      .append('<input type="radio" name="type" value="function" onclick="jc.editor.force(\'function\')">Function</input>')
-      .append(this.funcCode$=$('<input type="text"  name="funcCode" value="" onchange="jc.editor.funcCodeChange();" onclick="jc.editor.funcCodeClick();">'))
-      .append('<input type="radio" name="type" value="undefined" onclick="jc.editor.force(\'undefined\')">undefined</input>');
+      .append('<input type="radio" name="type" value="string" onclick="tb.editor.force(\'string\');">String</input>')
+      .append('<input type="radio" name="type" value="number" onclick="tb.editor.force(\'number\')">Number</input>')
+      .append('<input type="radio" name="type" value="function" onclick="tb.editor.force(\'function\')">Function</input>')
+      .append(this.funcCode$=$('<input type="text"  name="funcCode" value="" onchange="tb.editor.funcCodeChange();" onclick="tb.editor.funcCodeClick();">'))
+      .append('<input type="radio" name="type" value="undefined" onclick="tb.editor.force(\'undefined\')">undefined</input>');
   };
 
 
-  jc.Editor.prototype.funcCodeClick = function() {
+  tb.Editor.prototype.funcCodeClick = function() {
     this.force('function');
     $('[value=function]',this.toolBar$).attr('checked',true);
     this.funcCode$.focus();
   }
 
-  jc.Editor.prototype.funcCodeChange = function() {
+  tb.Editor.prototype.funcCodeChange = function() {
     this.value = f(this.funcCode$.val());
     this.type = 'function';
-    this.jcObject.setEditableValue(this);
+    this.tbObject.setEditableValue(this);
     return false; //?????
   }
 
@@ -1319,39 +1358,39 @@
   //              jamais le focus.  &&%ç%*&@
   ////////////
 
-  jc.Editor.eventHandler = function(event) {
+  tb.Editor.eventHandler = function(event) {
     // the event handler that will recieve click, keypress and change event
-    var obj = jc.vars[event.target.jcObject];
-    if (obj == undefined) throw new Error('event on a editor linked to a non existing object '+event.target.jcObject);
+    var obj = tb.vars[event.target.tbObject];
+    if (obj == undefined) throw new Error('event on a editor linked to a non existing object '+event.target.tbObject);
     switch (event.type) {
       case 'click':
-        if (obj.codeElement !== jc.selectedElement) {
-          jc.selectElement(obj.codeElement);
+        if (obj.codeElement !== tb.selectedElement) {
+          tb.selectElement(obj.codeElement);
         }
-        jc.editor.setCurrentEditor(event.target);
+        tb.editor.setCurrentEditor(event.target);
       return false; // prevent bubbling
 
       case 'change':
         var value = event.target.value;
-        switch (jc.editor.type) {
+        switch (tb.editor.type) {
           case 'number':
             if (!isNaN(Number(value))) {
               value = Number(value);
             }
             else {
-              jc.editor.force('string');
+              tb.editor.force('string');
               return false; // a new event will take place and finish the job
             }
             break;
           case 'function':
-            value = f(jc.editor.funcCode$.val());
+            value = f(tb.editor.funcCode$.val());
             break;
           case 'undefined':
             value = undefined;
             break;
         }
-        jc.editor.value = value;
-        obj.setEditableValue(jc.editor);
+        tb.editor.value = value;
+        obj.setEditableValue(tb.editor);
         return false;
 
       default :
@@ -1360,7 +1399,7 @@
     }
   }
 
-  jc.Editor.prototype.force = function(type) {
+  tb.Editor.prototype.force = function(type) {
     if (type == this.type) return;
 
     var editor$ = $(this.currentEditor);
@@ -1398,12 +1437,12 @@
   }
 
 
-  jc.Editor.prototype.setCurrentEditor = function(editor) {
+  tb.Editor.prototype.setCurrentEditor = function(editor) {
     this.currentEditor = editor;
     if (editor) {
-      this.jcObject = jc.vars[editor.jcObject];
-      jc.objectToolBar$.append(jc.editor.toolBar$);
-      this.value = this.jcObject.getEditableValue(this);
+      this.tbObject = tb.vars[editor.tbObject];
+      tb.objectToolBar$.append(tb.editor.toolBar$);
+      this.value = this.tbObject.getEditableValue(this);
       this.type = (this.value && this.value.isV)?'function':typeof this.value;
       var radio$ = $('[value='+this.type+']',this.toolBar$);
       radio$.attr('checked',true);
@@ -1423,14 +1462,14 @@
     }
   }
 
-  jc.Editor.prototype.attr = function(attr) {
+  tb.Editor.prototype.attr = function(attr) {
     // return the attr value of the html editor
     return this.currentEditor[attr];
   }
   
-  jc.Editor.prototype.html = function(value,params) {
+  tb.Editor.prototype.html = function(value,params) {
     // value : the initial value of the editor
-    // params : an object that at least has jcObject:nameOfTheObject in jc.vars
+    // params : an object that at least has tbObject:nameOfTheObject in tb.vars
     
     var type = typeof value;
     if (value && value.isV && value.code()) {
@@ -1445,20 +1484,20 @@
       throw new Error('objects are not yet supported in edition')
     }
 
-    var h = '<INPUT class="EDITOR '+type+'"'+jc.htmlAttribute('value',value);
+    var h = '<INPUT class="EDITOR '+type+'"'+tb.htmlAttribute('value',value);
     for (var p in params) {
-      h += jc.htmlAttribute(p,params[p]);
+      h += tb.htmlAttribute(p,params[p]);
     }
     h += '>';
     return h;
   };
 
 
-  jc.editor = new jc.Editor();
-  jc.editor.createToolBar();
+  tb.editor = new tb.Editor();
+  tb.editor.createToolBar();
 
   // Table of Content //////////////////////////////////////////////////////////////////
-  jc.tableOfContent = {
+  tb.tableOfContent = {
     toc : [],
     updateSections : function (element) {
       var currentNumbers = [];
@@ -1466,40 +1505,40 @@
       $('.SECTION').each(function (i,e) {
         if ($(e).hasClass('CUT')) return;
         var title = e.firstChild;
-        var level = jc.level(e);
+        var level = tb.level(e);
 
         currentNumbers[level] = (currentNumbers[level] || 0)+1;
         currentNumbers.length = level+1;
         var number = currentNumbers.join('.');
         var t = title.innerHTML.replace(/^[\d\.]*(\s|\&nbsp;)*/,'');
-        title.outerHTML = '<H'+(level+1)+' class="SECTIONTITLE EDITABLE" contentEditable='+(e===jc.selectedElement)+'>'+number+' '+t+'</H'+(level+1)+'>';
-        jc.tableOfContent.toc.push({number:number,level:level,title:jc.textContent(t),sectionId:e.id});
+        title.outerHTML = '<H'+(level+1)+' class="SECTIONTITLE EDITABLE" contentEditable='+(e===tb.selectedElement)+'>'+number+' '+t+'</H'+(level+1)+'>';
+        tb.tableOfContent.toc.push({number:number,level:level,title:tb.textContent(t),sectionId:e.id});
       });
     },
     find : function(title) {
-      return this.toc[jc.findInArrayOfObject({title:title},this.toc)];
+      return this.toc[tb.findInArrayOfObject({title:title},this.toc)];
     },
     span : function() {
       var h = '<DIV class=INTERACTIVE>';
       $.each(this.toc,function(i,t){
         h += '<div class=TOC'+t.level+'>'+t.number+' <a href="#'+t.sectionId+'">'+t.title+'</a></div>'
       });
-      return new jc.HTML(h+'</DIV>');
+      return new tb.HTML(h+'</DIV>');
     }
   };
     
-  jc.link = function(text,url) {
+  tb.link = function(text,url) {
     // if no url is given, text is used as a search into table of content to find the section
     // TODO: futur version will accept http url
     url = url || text;
-    var entry = jc.tableOfContent.find(url);
+    var entry = tb.tableOfContent.find(url);
     if (entry) {
-      return new jc.HTML('<a class=LINK href="#'+entry.sectionId+'">'+text+'</a>');
+      return new tb.HTML('<a class=LINK href="#'+entry.sectionId+'">'+text+'</a>');
     }
-    return new jc.HTML('<span class=INVALIDLINK title="#'+url+' is not found in the table of content">'+text+'</span>');
+    return new tb.HTML('<span class=INVALIDLINK title="#'+url+' is not found in the table of content">'+text+'</span>');
   }
 
-  jc.level = function(element) {
+  tb.level = function(element) {
     // returns the level of the element = number of section between body and the element
     // please note that the first section has level = 0 according to this definition 
     // (but the title will be a <H1>)
@@ -1509,31 +1548,31 @@
 
   // Template //////////////////////////////////////////////////////////////////////////
  
-  jc.Template = function Template(name){
+  tb.Template = function Template(name){
     // Template objects are generators of DOM ELEMENT 
     // there is one single instance for any number of DOM instances
     // for example Template('code') is the Template object of all CODE Elements
-    // normally users create template through the `jc.template function
+    // normally users create template through the `tb.template function
     this.name = name;
   };
 
-  jc.Template.className = 'jc.Template';
+  tb.Template.className = 'tb.Template';
 
-  jc.Template.urlBase = 'http://tablord.com/templates/';
+  tb.Template.urlBase = 'http://tablord.com/templates/';
 
-  jc.Template.prototype.url = function(){
-    return jc.Template.urlBase + this.name;
+  tb.Template.prototype.url = function(){
+    return tb.Template.urlBase + this.name;
   }
 
-  jc.Template.prototype.insertBefore = function(element,itemprop) {
+  tb.Template.prototype.insertBefore = function(element,itemprop) {
     var newElement$ = this.element$(itemprop);
     newElement$.insertBefore(element);
-    jc.selectElement(newElement$[0]);
-    jc.setModified(true);
-    jc.run();
+    tb.selectElement(newElement$[0]);
+    tb.setModified(true);
+    tb.run();
   }
 
-  jc.Template.prototype.insertAfter  = function(element,itemprop) {
+  tb.Template.prototype.insertAfter  = function(element,itemprop) {
     var element$ = $(element);
     if (element$.hasClass('CODE')) {
       if (element$.next().hasClass('OUTPUT')) element$=element$.next();
@@ -1541,20 +1580,20 @@
     }
     var newElement$ = this.element$(itemprop);
     newElement$.insertAfter(element$);
-    jc.selectElement(newElement$[0]);
-    jc.setModified(true);
-    jc.run();
+    tb.selectElement(newElement$[0]);
+    tb.setModified(true);
+    tb.run();
   }
 
-  jc.Template.prototype.convert = function(element,itemprop) {
+  tb.Template.prototype.convert = function(element,itemprop) {
     // convert element to template(name)
 
     var e$ = $(element);
     var data = $.extend(true,e$.data('itemData') || {},e$.getMicrodata());
     var id = element.id;
-    var containers = $.extend(true,e$.data('containers') || {},jc.Template.getElement$Containers(e$));
-    var k = jc.keys(data);
-    if (k.length > 1) throw new Error('element.convert error: data has more than 1 head key\n'+jc.toJSCode(data));
+    var containers = $.extend(true,e$.data('containers') || {},tb.Template.getElement$Containers(e$));
+    var k = tb.keys(data);
+    if (k.length > 1) throw new Error('element.convert error: data has more than 1 head key\n'+tb.toJSCode(data));
     var newData = {};
     newData[itemprop || 'items'] = data[k[0]] || {};
     var new$ = this.element$(itemprop,id);
@@ -1563,15 +1602,15 @@
     }
     else {
       new$.setMicrodata(newData);    
-      jc.Template.setElement$Containers(new$,containers);
+      tb.Template.setElement$Containers(new$,containers);
     }
     new$
     .data('itemData',newData) // keep data in a element property so it can retrieve lost data in case of a convertion mistake (not handling all fields)
     .data('containers',containers);
 
-    if (jc.selectedElement===element) {
+    if (tb.selectedElement===element) {
       e$.replaceWith(new$);
-      jc.selectElement(new$[0]);
+      tb.selectElement(new$[0]);
     }
     else {
       e$.replaceWith(new$);
@@ -1579,32 +1618,32 @@
     return this;
   }
 
-  jc.Template.prototype.element$ = function(itemprop,id) {
+  tb.Template.prototype.element$ = function(itemprop,id) {
     if (this.html === undefined) throw new Error('in order to define a template at least define .fields, .html or .element$()');
     if (id === undefined) {
-      jc.blockNumber++;
-      id = 'item'+jc.pad(jc.blockNumber,4);
+      tb.blockNumber++;
+      id = 'item'+tb.pad(tb.blockNumber,4);
     }
     var new$ = $(this.html).attr('id',id);
     if (itemprop) new$.attr('itemprop',itemprop);
     return new$;
   }
 
-  jc.Template.prototype.toString = function() {
+  tb.Template.prototype.toString = function() {
     return 'template '+this.name+' created ['+this.url()+']';
   }
 
-  jc.Template.prototype.span = function() {
+  tb.Template.prototype.span = function() {
     return 'template '+this.name+' created [<a href="'+this.url()+'">'+this.url()+'</a>]';
   }
 
-  jc.Template.prototype.find = function(criteria,fields) {
+  tb.Template.prototype.find = function(criteria,fields) {
     // return the data of a template collection as mongodb would do
    
-    return jc.getItems$(this.url()).getData(criteria,fields);
+    return tb.getItems$(this.url()).getData(criteria,fields);
   }
 
-  jc.Template.microdataToData = function(microdata) {
+  tb.Template.microdataToData = function(microdata) {
     // transforms the microdata structure where all properties are array into a structure
     // closer to mongoBD.
     // in order to do so:
@@ -1616,17 +1655,17 @@
   }
 
 
-  jc.Template.urlToName = function(url) {
+  tb.Template.urlToName = function(url) {
     if (url === undefined) return undefined;
     return url.match(/.*\/(.*)$/)[1];
   }
 
-  jc.Template.moveContainerContent = function(oldElement$,newElement$) {
+  tb.Template.moveContainerContent = function(oldElement$,newElement$) {
     // move into newElement$ all Container's content found in oldElements
     // both oldElement$ and newElement$ should be jquery with one single element to give predictable results
   }
 
-  jc.Template.setElement$Containers = function(element$,containers){
+  tb.Template.setElement$Containers = function(element$,containers){
     // move the content of the different containers stored in containers into the containers of element$
     // element$  a jQuery of 1 element that potentially has embedded containers
     // containers an object {containerName:jQueryOfContentOfContainer,....}
@@ -1640,12 +1679,12 @@
         }
       }
       else {
-        jc.Template.setElement$Containers(e$,containers);
+        tb.Template.setElement$Containers(e$,containers);
       }
     });
   }
 
-  jc.Template.getElement$Containers = function(element$,containers){
+  tb.Template.getElement$Containers = function(element$,containers){
     // returns a object {containerName:jqueryOfcontentOfThisContainer,....}
     // the containers parameter is normally undefined, but needed for the recursive search
     //    all containers found will be added to containers
@@ -1656,7 +1695,7 @@
         containers[containerName] = $(e).children();
       }
       else {
-        jc.Template.getElement$Containers($(e),containers);
+        tb.Template.getElement$Containers($(e),containers);
       }
     });
     return containers;
@@ -1664,11 +1703,11 @@
 
 
 
-  jc.updateTemplateChoice = function () {}; // dummy so far, will be trully defined later on when creating menu;
+  tb.updateTemplateChoice = function () {}; // dummy so far, will be trully defined later on when creating menu;
 
-  jc.template = function(newTemplate,itemprop) {
+  tb.template = function(newTemplate,itemprop) {
     // create a new template and register it
-    // it will inherit from jc.Template 
+    // it will inherit from tb.Template 
     // newTemplate is a simple object that must at least define
     // .name: a name like an id optionaly followed by #version
     // and must define one of the 3
@@ -1689,10 +1728,10 @@
     //    if fields is defined, standard html code will automatically be generated
     //    so do not define .fields if you want to define .html
     // .html: a string representing the html code of the template
-    // .element$: a function() returning a DOM Element; normally not defined and inherited form jc.Template
+    // .element$: a function() returning a DOM Element; normally not defined and inherited form tb.Template
 
     itemprop = itemprop || newTemplate.name;
-    var newT = new jc.Template(newTemplate.name);
+    var newT = new tb.Template(newTemplate.name);
     newT.html = newTemplate.html;
     if (newTemplate.fields) {
       var h = '<DIV class="ELEMENT" itemprop="'+itemprop+'" itemscope itemtype="'+newT.url()+'"><TABLE width="100%">';
@@ -1709,43 +1748,43 @@
     }
     if (newTemplate.element$) newT.element$ = newTemplate.element$;
     if (newTemplate.convertData)  newT.convertData  = newTemplate.convertData;
-    jc.templates[newT.name] = newT;
-    jc.updateTemplateChoice();
+    tb.templates[newT.name] = newT;
+    tb.updateTemplateChoice();
     var elementsToConvert$ = $('[itemtype="'+newT.url()+'"]');
     elementsToConvert$.each(function(idx,e){newT.convert(e,e.itemprop || 'items')});
     return newT;
   }
 
 
-  jc.template({
+  tb.template({
     name : 'code',
     element$: function() {
-      jc.blockNumber++;
-      return $('<PRE class="ELEMENT CODE EDITABLE" id='+jc.blockId('code')+'>');
+      tb.blockNumber++;
+      return $('<PRE class="ELEMENT CODE EDITABLE" id='+tb.blockId('code')+'>');
     },
-    convertData: function(data,element$) {element$.html('Object('+jc.toJSCode(data)+')')}
+    convertData: function(data,element$) {element$.html('Object('+tb.toJSCode(data)+')')}
   });
 
-  jc.template({
+  tb.template({
     name : 'richText',
     element$: function() {
-      jc.blockNumber++;
-      return $('<DIV  class="ELEMENT RICHTEXT EDITABLE" id='+jc.blockId('rich')+'>');
+      tb.blockNumber++;
+      return $('<DIV  class="ELEMENT RICHTEXT EDITABLE" id='+tb.blockId('rich')+'>');
     }
   });
 
-  jc.template({
+  tb.template({
     name : 'section',
     element$ : function() {
-      jc.blockNumber++;
-      var n$ = $('<DIV  class="ELEMENT SECTION" id='+jc.blockId('sect')+'></DIV>')
+      tb.blockNumber++;
+      var n$ = $('<DIV  class="ELEMENT SECTION" id='+tb.blockId('sect')+'></DIV>')
                .append('<H1 class="SECTIONTITLE EDITABLE"></H1>')
                .append('<DIV container="sectionContent"></DIV>');
       return n$;
     }
   });
 
-  jc.template({
+  tb.template({
     name : 'paste',
     element$: function() {
       return $('.CUT').detach().removeClass('CUT');
@@ -1756,41 +1795,41 @@
   // EDI ///////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
 
-  jc.richedit = {
+  tb.richedit = {
     exec:      function(command,value) {window.document.execCommand(command,false,value || null)},
-    bold:      function(){jc.richedit.exec('bold')},
-    italic:    function(){jc.richedit.exec('italic')},
-    underline: function(){jc.richedit.exec('underline')},
-    strike:    function(){jc.richedit.exec('strikeThrough')},
-    h1:        function(){jc.richedit.exec('formatBlock','<h1>')},
-    h2:        function(){jc.richedit.exec('formatBlock','<h2>')},
-    div:       function(){jc.richedit.exec('formatBlock','<div>')},
-    p:         function(){jc.richedit.exec('formatBlock','<p>')},
-    ol:        function(){jc.richedit.exec('insertOrderedList')},
-    ul:        function(){jc.richedit.exec('insertUnorderedList')},
-    pre:       function(){jc.richedit.exec('formatBlock','<pre>')}
+    bold:      function(){tb.richedit.exec('bold')},
+    italic:    function(){tb.richedit.exec('italic')},
+    underline: function(){tb.richedit.exec('underline')},
+    strike:    function(){tb.richedit.exec('strikeThrough')},
+    h1:        function(){tb.richedit.exec('formatBlock','<h1>')},
+    h2:        function(){tb.richedit.exec('formatBlock','<h2>')},
+    div:       function(){tb.richedit.exec('formatBlock','<div>')},
+    p:         function(){tb.richedit.exec('formatBlock','<p>')},
+    ol:        function(){tb.richedit.exec('insertOrderedList')},
+    ul:        function(){tb.richedit.exec('insertUnorderedList')},
+    pre:       function(){tb.richedit.exec('formatBlock','<pre>')}
   }
 
-  jc.findblockNumber = function() {
+  tb.findblockNumber = function() {
     $('.ELEMENT').each(function(i,e) {
       var n = Number(e.id.slice(4));
       if (!isNaN(n)) {
-        jc.blockNumber = Math.max(jc.blockNumber,n);
+        tb.blockNumber = Math.max(tb.blockNumber,n);
       }
     });
-    jc.blockNumber++;
+    tb.blockNumber++;
   }
 
-  jc.blockId = function(prefix) {
-    return prefix+jc.pad(jc.blockNumber,4);
+  tb.blockId = function(prefix) {
+    return prefix+tb.pad(tb.blockNumber,4);
   }
 
-  jc.removeErrors = function(html) {
+  tb.removeErrors = function(html) {
     return html.replace(/<SPAN class\=ERROR>(.+?)<\/SPAN>/g,"$1")
   }
                
 
-  jc.outputElement = function(element) {
+  tb.outputElement = function(element) {
     // return the output element associated with element if any
     // if applied on another element than id=codexxxx return undefined;
     if ((element == undefined) || (element.id.slice(0,4) !== 'code')) return;
@@ -1803,169 +1842,169 @@
     return out;
   }
 
-  jc.testElement = function(element) {
+  tb.testElement = function(element) {
     // returns the test element if any
     // if applied on another element than id=codexxxx return undefined;
     if ((element == undefined) || (element.id.slice(0,4) !== 'code')) return;
     return window.document.getElementById(element.id.replace(/code/,"test"));
   }
 
-  jc.showCode = function(event) {
+  tb.showCode = function(event) {
     var button = event.target || window.event.srcElement; //IE7 compatibility
     $('.CODE').toggleClass('HIDDEN',!button.checked);
     $('body').attr('showCode',button.checked);
   }
 
-  jc.showCut = function(event) {
+  tb.showCut = function(event) {
     var button = event.target || window.event.srcElement; //IE7 compatibility
     $('.CUT').toggleClass('HIDDEN',!button.checked);
     $('body').attr('showCut',button.checked);
   }
       
-  jc.showTest = function(event) {
+  tb.showTest = function(event) {
     var button = event.target || window.event.srcElement; //IE7 compatibility
     $('.TEST').toggleClass('HIDDEN',!button.checked);
     $('body').attr('showTest',button.checked);
   }
       
-  jc.showTrace = function(event) {
+  tb.showTrace = function(event) {
     var button = event.target || window.event.srcElement; //IE7 compatibility
     $('.TRACE').toggleClass('HIDDEN',!button.checked);
     $('body').attr('showTrace',button.checked);
   }
 
-  jc.setAutoRun = function(event) {
+  tb.setAutoRun = function(event) {
     var button = event.target || window.event.srcElement; //IE7 compatibility
-    jc.autoRun = button.checked;
-    $('body').attr('autoRun',jc.autoRun);
+    tb.autoRun = button.checked;
+    $('body').attr('autoRun',tb.autoRun);
   }
 
-  jc.print = function() {
-    jc.selectElement(undefined);
+  tb.print = function() {
+    tb.selectElement(undefined);
     window.print();
   }
      
-  jc.helpSearchChange = function(event) {
+  tb.helpSearchChange = function(event) {
     // event handler for the search box
-    jc.helpOutput$.html(jc.help.index.help$(event.currentTarget.value));
+    tb.helpOutput$.html(tb.help.index.help$(event.currentTarget.value));
   }
 
-  jc.updateTemplateChoice = function() {
-    var currentValue = jc.templateChoice$.val();
-    jc.templateChoice$.empty();
-    jc.currentContainer$ = $(jc.selectedElement).closest('[container]')  
-    var acceptedTemplates = jc.currentContainer$.attr('templates');
+  tb.updateTemplateChoice = function() {
+    var currentValue = tb.templateChoice$.val();
+    tb.templateChoice$.empty();
+    tb.currentContainer$ = $(tb.selectedElement).closest('[container]')  
+    var acceptedTemplates = tb.currentContainer$.attr('templates');
     if (acceptedTemplates) {
       acceptedTemplates = acceptedTemplates.split(' ');
     }
     else {
-      acceptedTemplates = jc.keys(jc.templates);
+      acceptedTemplates = tb.keys(tb.templates);
     }
     for (var i=0;i<acceptedTemplates.length;i++) {
-      var template = jc.templates[acceptedTemplates[i]];
-      if (template) jc.templateChoice$.append(
+      var template = tb.templates[acceptedTemplates[i]];
+      if (template) tb.templateChoice$.append(
         '<OPTION value="'+acceptedTemplates[i]+'">'+acceptedTemplates[i]+'</OPTION>'
       );
     }
-    if (jc.selectedElement &&
-        jc.selectedElement.itemtype) {
-      var name = jc.Template.urlToName(jc.selectedElement.itemtype);
+    if (tb.selectedElement &&
+        tb.selectedElement.itemtype) {
+      var name = tb.Template.urlToName(tb.selectedElement.itemtype);
       if (name && ($.inArray(name,acceptedTemplates)!=-1)) {
-        jc.templateChoice$.val(name);
+        tb.templateChoice$.val(name);
         return;
       }
     }
     if ($.inArray(currentValue,acceptedTemplates)!=-1) {
-      jc.templateChoice$.val(currentValue);
+      tb.templateChoice$.val(currentValue);
       return;
     }
-    jc.templateChoice$.val(acceptedTemplates[0]);
+    tb.templateChoice$.val(acceptedTemplates[0]);
   } 
 
-  jc.initToolBars = function() {
+  tb.initToolBars = function() {
     $('#menu').remove();
     var b$ = $('BODY');
 
-    jc.objectToolBar$ = $(
+    tb.objectToolBar$ = $(
       '<DIV id=objectToolBar></DIV>'
     );
     
-    jc.templateChoice$ = $('<SELECT>');
-    jc.updateTemplateChoice();
+    tb.templateChoice$ = $('<SELECT>');
+    tb.updateTemplateChoice();
 
-    jc.selectionToolBar$ = $('<DIV/>')
+    tb.selectionToolBar$ = $('<DIV/>')
       .append('<SPAN id=codeId>no selection</SPAN>')
-      .append('<BUTTON id="cutBtn" onclick=jc.cutBlock(jc.selectedElement);>cut</BUTTON>')
-      .append('<BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement,jc.currentContainer$.attr(\'container\'))">&#8593;</BUTTON>')
-      .append('<BUTTON onclick="jc.templates[jc.templateChoice$.val()].convert(jc.selectedElement,jc.currentContainer$.attr(\'container\'))">&#8596;</BUTTON>')
-      .append(jc.templateChoice$)
-      .append('<BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement,jc.currentContainer$.attr(\'container\'))">&#8595;</BUTTON>')
-      .append('<BUTTON id="showHtmlBtn" onclick=jc.showOutputHtml(this);>&#8594;html</BUTTON>')
-      .append('<BUTTON id="toTestBtn" onclick=jc.copyOutputToTest(this);>&#8594;test</BUTTON>')
-      .append(jc.objectToolBar$)
+      .append('<BUTTON id="cutBtn" onclick=tb.cutBlock(tb.selectedElement);>cut</BUTTON>')
+      .append('<BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertBefore(tb.selectedElement,tb.currentContainer$.attr(\'container\'))">&#8593;</BUTTON>')
+      .append('<BUTTON onclick="tb.templates[tb.templateChoice$.val()].convert(tb.selectedElement,tb.currentContainer$.attr(\'container\'))">&#8596;</BUTTON>')
+      .append(tb.templateChoice$)
+      .append('<BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertAfter(tb.selectedElement,tb.currentContainer$.attr(\'container\'))">&#8595;</BUTTON>')
+      .append('<BUTTON id="showHtmlBtn" onclick=tb.showOutputHtml(this);>&#8594;html</BUTTON>')
+      .append('<BUTTON id="toTestBtn" onclick=tb.copyOutputToTest(this);>&#8594;test</BUTTON>')
+      .append(tb.objectToolBar$)
       .hide();
     
-    jc.helpSearch$ = $('<INPUT/>').keyup(jc.helpSearchChange);
-    jc.helpOutput$ = $('<DIV  style="overflow:auto;max-height:400px;">please type your search above</DIV>');
-    jc.helpPanel$ = $('<DIV><SPAN style="color:red;cursor:pointer;" onclick="jc.helpPanel$.hide(300)">&nbsp;&#215;&nbsp;</SPAN></DIV>')
-                    .append(jc.helpSearch$)
-                    .append('<span style="color:#8dff60;cursor:pointer;" onclick="jc.help.index.back()">&#9668;</span>')
-                    .append(jc.helpOutput$)
+    tb.helpSearch$ = $('<INPUT/>').keyup(tb.helpSearchChange);
+    tb.helpOutput$ = $('<DIV  style="overflow:auto;max-height:400px;">please type your search above</DIV>');
+    tb.helpPanel$ = $('<DIV><SPAN style="color:red;cursor:pointer;" onclick="tb.helpPanel$.hide(300)">&nbsp;&#215;&nbsp;</SPAN></DIV>')
+                    .append(tb.helpSearch$)
+                    .append('<span style="color:#8dff60;cursor:pointer;" onclick="tb.help.index.back()">&#9668;</span>')
+                    .append(tb.helpOutput$)
                     //.hide();
 
-    jc.menu$ =  $(
+    tb.menu$ =  $(
     '<DIV id=menu class=TOOLBAR style="float:right;max-width:50%;">'+
       '<DIV>'+
-        '<BUTTON id=runUntilSelectedBtn onclick=jc.execUntilSelected(); style="color: #8dff60;">&#9658;|</BUTTON>'+
-        '<BUTTON id=runAllBtn onclick=jc.execAll(); style="color: #8dff60;">&#9658;&#9658;</BUTTON>'+
-        '<BUTTON id=stopAnimation onclick=jc.clearTimers(); style="color: red">&#9632;</BUTTON>'+
-        '<BUTTON id="clearOutputsBtn" onclick="jc.clearOutputs();">clear</BUTTON>'+
-        '<BUTTON id="saveBtn" onclick="jc.save();">save</BUTTON>'+
-        '<BUTTON onclick="jc.print();">print</BUTTON>'+
-        '<BUTTON onclick="jc.helpPanel$.toggle(100);">help</BUTTON>'+
-        '<INPUT onclick="jc.showCode(event)"'+(b$.attr('showCode')=="true"?' checked':'')+' type=checkbox>codes</INPUT>'+
-        '<INPUT onclick="jc.showCut(event)"'+(b$.attr('showCut')=="true"?' checked':'')+' type=checkbox>cuts</INPUT>'+
-        '<INPUT onclick="jc.showTest(event)"'+(b$.attr('showTest')=="true"?' checked':'')+' type=checkbox>tests</INPUT>'+
-        '<INPUT onclick="jc.showTrace(event)"'+(b$.attr('showTrace')=="true"?' checked':'')+' type=checkbox>traces</INPUT>'+
-        '<INPUT onclick="jc.setAutoRun(event)"'+(jc.autoRun?' checked':'')+' type=checkbox>auto run</INPUT>'+
+        '<BUTTON id=runUntilSelectedBtn onclick=tb.execUntilSelected(); style="color: #8dff60;">&#9658;|</BUTTON>'+
+        '<BUTTON id=runAllBtn onclick=tb.execAll(); style="color: #8dff60;">&#9658;&#9658;</BUTTON>'+
+        '<BUTTON id=stopAnimation onclick=tb.clearTimers(); style="color: red">&#9632;</BUTTON>'+
+        '<BUTTON id="clearOutputsBtn" onclick="tb.clearOutputs();">clear</BUTTON>'+
+        '<BUTTON id="saveBtn" onclick="tb.save();">save</BUTTON>'+
+        '<BUTTON onclick="tb.print();">print</BUTTON>'+
+        '<BUTTON onclick="tb.helpPanel$.toggle(100);">help</BUTTON>'+
+        '<INPUT onclick="tb.showCode(event)"'+(b$.attr('showCode')=="true"?' checked':'')+' type=checkbox>codes</INPUT>'+
+        '<INPUT onclick="tb.showCut(event)"'+(b$.attr('showCut')=="true"?' checked':'')+' type=checkbox>cuts</INPUT>'+
+        '<INPUT onclick="tb.showTest(event)"'+(b$.attr('showTest')=="true"?' checked':'')+' type=checkbox>tests</INPUT>'+
+        '<INPUT onclick="tb.showTrace(event)"'+(b$.attr('showTrace')=="true"?' checked':'')+' type=checkbox>traces</INPUT>'+
+        '<INPUT onclick="tb.setAutoRun(event)"'+(tb.autoRun?' checked':'')+' type=checkbox>auto run</INPUT>'+
       '</DIV>'+
     '</DIV>')
-    .append(jc.selectionToolBar$)
-    .append(jc.helpPanel$);
+    .append(tb.selectionToolBar$)
+    .append(tb.helpPanel$);
 
-    $('BODY').prepend(jc.menu$);
+    $('BODY').prepend(tb.menu$);
 
     // make all button the same size
     var h=0;
     var w=0;
-    jc.menu$.find('button').each(function(i,e){
+    tb.menu$.find('button').each(function(i,e){
       w=Math.max(w,e.offsetWidth);
       h=Math.max(h,e.offsetHeight);
     }).width(w).height(h);
 
     $('#richTextToolBar').remove(); // kill anything previouly in the saved document
-    jc.richTextToolBar$ =  $('<SPAN id=richTextToolBar class=TOOLBAR></SPAN>')
-      .append('<BUTTON onclick=jc.richedit.bold();><b>B</b></BUTTON>')
-      .append('<BUTTON onclick=jc.richedit.italic();><i>i</i></BUTTON>')
-      .append('<BUTTON onclick=jc.richedit.underline();><U>U</U></BUTTON>')
-      .append('<BUTTON onclick=jc.richedit.strike();><strike>S</strike></BUTTON>')
-      .append('<BUTTON onclick=jc.richedit.h1();><b>H1</b></BUTTON>')
-      .append('<BUTTON onclick=jc.richedit.h2();><b>H2</b></BUTTON>') 
-      .append('<BUTTON onclick=jc.richedit.div();>div</BUTTON>')
-      .append('<BUTTON onclick=jc.richedit.p();>&#182;</BUTTON>') 
-      .append('<BUTTON onclick=jc.richedit.ol();>#</BUTTON>')
-      .append('<BUTTON onclick=jc.richedit.ul();>&#8226;</BUTTON>')
-      .append('<BUTTON onclick=jc.richedit.pre();>{}</BUTTON>')
+    tb.richTextToolBar$ =  $('<SPAN id=richTextToolBar class=TOOLBAR></SPAN>')
+      .append('<BUTTON onclick=tb.richedit.bold();><b>B</b></BUTTON>')
+      .append('<BUTTON onclick=tb.richedit.italic();><i>i</i></BUTTON>')
+      .append('<BUTTON onclick=tb.richedit.underline();><U>U</U></BUTTON>')
+      .append('<BUTTON onclick=tb.richedit.strike();><strike>S</strike></BUTTON>')
+      .append('<BUTTON onclick=tb.richedit.h1();><b>H1</b></BUTTON>')
+      .append('<BUTTON onclick=tb.richedit.h2();><b>H2</b></BUTTON>') 
+      .append('<BUTTON onclick=tb.richedit.div();>div</BUTTON>')
+      .append('<BUTTON onclick=tb.richedit.p();>&#182;</BUTTON>') 
+      .append('<BUTTON onclick=tb.richedit.ol();>#</BUTTON>')
+      .append('<BUTTON onclick=tb.richedit.ul();>&#8226;</BUTTON>')
+      .append('<BUTTON onclick=tb.richedit.pre();>{}</BUTTON>')
     
   }
 
-  jc.setModified = function(state) {
-    jc.modified = state;
+  tb.setModified = function(state) {
+    tb.modified = state;
     $('#saveBtn').toggleClass('WARNING',state);
   }
 
-  jc.setUpToDate = function(state) {
-    if (state === jc.setUpToDate.state) return;
+  tb.setUpToDate = function(state) {
+    if (state === tb.setUpToDate.state) return;
     if (state) {
       $('#runAllBtn').removeClass('WARNING');
     }
@@ -1973,52 +2012,52 @@
       $('#runAllBtn').addClass('WARNING');
       $('*').removeClass('SUCCESS ERROR');
     }
-    jc.setUpToDate.state = state;
+    tb.setUpToDate.state = state;
   }
   
-  jc.clearOutputs = function() {
+  tb.clearOutputs = function() {
     $('.OUTPUT').remove();
   }
 
-  jc.save = function() {
+  tb.save = function() {
     // save the sheet under fileName or the current name if fileName is not specified
     var fileName = window.prompt('save this sheet in this file?',window.location.pathname);
     if (fileName == undefined) return;
     window.document.documentElement.APPLICATIONNAME = fileName;
-    jc.removeCutBlocks();
-    jc.selectElement(undefined);
+    tb.removeCutBlocks();
+    tb.selectElement(undefined);
     var fso = new ActiveXObject("Scripting.FileSystemObject");
     var file = fso.OpenTextFile(fileName,2,true);
-    var html = new jc.HTML('<!DOCTYPE html>\n'+window.document.documentElement.outerHTML)
+    var html = new tb.HTML('<!DOCTYPE html>\n'+window.document.documentElement.outerHTML)
     file.Write(html.removeJQueryAttr().toAscii());
     file.Close();
-    jc.setModified(false);
+    tb.setModified(false);
     window.alert('file saved');
   }
 
-  jc.writeResults = function() {
-    // write the jc.results as JSON in a file of the same name .jres
-    var resFileName = ''+jc.url.drive+jc.url.path+jc.url.fileName+'.jres';
-    jc.fso.writeFile(resFileName,JSON.stringify(jc.results));
+  tb.writeResults = function() {
+    // write the tb.results as JSON in a file of the same name .jres
+    var resFileName = ''+tb.url.drive+tb.url.path+tb.url.fileName+'.jres';
+    tb.fso.writeFile(resFileName,JSON.stringify(tb.results));
   }
 
 
 
-  jc.beforeUnload = function() {  //TODO avec hta, ne fonctionne pas bien
-    if (jc.modified) {
+  tb.beforeUnload = function() {  //TODO avec hta, ne fonctionne pas bien
+    if (tb.modified) {
       if (window.confirm('your file has been modified since last save\n;save it now?')) {
-        jc.save();
+        tb.save();
       }
     }
   }
 
-  jc.copyOutputToTest = function() {
-    if (jc.selectedElement == undefined) return;
+  tb.copyOutputToTest = function() {
+    if (tb.selectedElement == undefined) return;
 
-    var out = jc.outputElement(jc.selectedElement);
-    var test = jc.testElement(jc.selectedElement);
+    var out = tb.outputElement(tb.selectedElement);
+    var test = tb.testElement(tb.selectedElement);
     if (test == undefined) {
-      $(out).after($('<DIV id="'+jc.selectedElement.id.replace(/code/,"test")+'" class=TEST>'+out.innerHTML+'</DIV>'));
+      $(out).after($('<DIV id="'+tb.selectedElement.id.replace(/code/,"test")+'" class=TEST>'+out.innerHTML+'</DIV>'));
     }
     else if (!$(test).hasClass('SUCCESS')) {
       test.innerHTML = out.innerHTML;
@@ -2027,25 +2066,25 @@
     else {
       $(test).remove();
     }
-    jc.setModified(true);
+    tb.setModified(true);
   }
 
-  jc.cutBlock = function(element,cut) {
+  tb.cutBlock = function(element,cut) {
     cut = cut || !$(element).hasClass('CUT');
     $(element)
-    .add(jc.outputElement(element))
-    .add(jc.testElement(element))
+    .add(tb.outputElement(element))
+    .add(tb.testElement(element))
     .toggleClass('CUT',cut);
-    jc.setModified(true);
-    jc.setUpToDate(false);
+    tb.setModified(true);
+    tb.setUpToDate(false);
   }
 
-  jc.removeCutBlocks = function() {
+  tb.removeCutBlocks = function() {
     $('.CUT').remove();
   }
 
 
-  jc.editables$ = function(element) {
+  tb.editables$ = function(element) {
     // returns a JQuery of the tags that are editable in element (JQuery can be .length==0 if nothing is editable)
     var e$ = $(element);
     if (e$.hasClass('EDITABLE')) return e$;
@@ -2053,8 +2092,8 @@
   }
 
 
-  jc.selectElement = function(element) {
-    var e = jc.selectedElement;
+  tb.selectElement = function(element) {
+    var e = tb.selectedElement;
     if (e) { 
       if (element && (e === element)) { // if already selected nothing to do but give focus again
         e.focus();
@@ -2063,44 +2102,44 @@
       
       // remove the old selection
       $(e).removeClass('SELECTED');
-      jc.editables$(e)
+      tb.editables$(e)
         .attr('contentEditable',false)
-        .each(function(i,e){jc.reformatRichText(e)});
+        .each(function(i,e){tb.reformatRichText(e)});
     }
 
     // set the new selection
-    jc.selectedElement = element;
+    tb.selectedElement = element;
     if (element == undefined){
       $('#codeId').text('no selection');
-      jc.selectionToolBar$.hide();
+      tb.selectionToolBar$.hide();
       return;
     }
-    jc.menu$.show();
-    jc.selectionToolBar$.show(500);
-    $('#codeId').html(element.id+'<SPAN style="color:red;cursor:pointer;" onclick="jc.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
+    tb.menu$.show();
+    tb.selectionToolBar$.show(500);
+    $('#codeId').html(element.id+'<SPAN style="color:red;cursor:pointer;" onclick="tb.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
     $(element).addClass('SELECTED');
-    jc.updateTemplateChoice();
-    jc.editables$(element).attr('contentEditable',true);
+    tb.updateTemplateChoice();
+    tb.editables$(element).attr('contentEditable',true);
     element.focus();
   }
 
   // EDI eventHandlers ///////////////////////////////////////////////////////////////
 
-  jc.bodyKeyDown = function(event) {
+  tb.bodyKeyDown = function(event) {
     // special keys at EDI level
 /*
     switch (event.keyCode) {
       case 120: 
-        jc.templateChoice$.val('code');
+        tb.templateChoice$.val('code');
         break;
       case 121:
-        jc.templateChoice$.val('richText');
+        tb.templateChoice$.val('richText');
         break;
       case 122:
-        jc.templateChoice$.val('section');
+        tb.templateChoice$.val('section');
         break;
       case 123:
-        jc.templateChoice$.val('paste');
+        tb.templateChoice$.val('paste');
         break;
     }
 */
@@ -2108,48 +2147,48 @@
   }
 
 
-  jc.elementClick = function(event) {
+  tb.elementClick = function(event) {
     var element = event.currentTarget; // not target, since target can be an child element, not the div itself
     if ($(element).hasClass('EMBEDDED')) {
       return true; //EMBEDDED code is ruled by its container (richText / section...) so let the event bubble
     }
-    jc.selectElement(element);
+    tb.selectElement(element);
     return false;  // prevent bubbling
   }
 
-  jc.editableKeyDown = function(event) {
+  tb.editableKeyDown = function(event) {
     if ($.inArray(event.keyCode,[16,17,18,20,27,33,34,35,36,37,38,39,40,45,91,92,93]) != -1) return; // non modifying keys like shift..
-    jc.setModified(true);
-    jc.setUpToDate(false);
+    tb.setModified(true);
+    tb.setUpToDate(false);
     if ((event.keyCode==13) && event.ctrlKey) { 
-      jc.run(); 
+      tb.run(); 
     }
   }
 
-  jc.elementEditor = function(event) {
+  tb.elementEditor = function(event) {
     // generic editor event handler for click and keypress
-    // assumes that the DOM element that has a class=EDITOR also has an id="name of the corresponding JCalc element"
+    // assumes that the DOM element that has a class=EDITOR also has an id="name of the corresponding Tablord element"
     // this handler just dispatch the event at the right object eventHandler
     var element = event.currentTarget;
-    var jcObject = jc.vars[element.jcObject]
-    return jcObject.editorEvent(event);
+    var tbObject = tb.vars[element.tbObject]
+    return tbObject.editorEvent(event);
   }
   
 
   // formating / display / execution ////////////////////////////////////////////////////
 
 
-  jc.format = function(obj,options) {
+  tb.format = function(obj,options) {
     // format obj using by priority
     // 1) options.format
-    // 2) the jc.defaults.format
+    // 2) the tb.defaults.format
     // and according to the type
 
     if (options) {
-      var format = $.extend(true,{},jc.defaults.format,options.format);
+      var format = $.extend(true,{},tb.defaults.format,options.format);
     }
     else {
-      var format = jc.defaults.format;
+      var format = tb.defaults.format;
     }
     if (typeof obj === 'number') {
       return format.number(obj)
@@ -2184,33 +2223,33 @@
     if (obj.valueOf) {
       var val = obj.valueOf();   // typicall the case of v() where valueOf return whatever has been stored in the V object
       if (val !== obj) {         // if the valueOf is not itself
-        return jc.format(val,options);   // format the result of valueOf
+        return tb.format(val,options);   // format the result of valueOf
       }
     }
-    return jc.toHtml(obj.toString());
+    return tb.toHtml(obj.toString());
   }
 
-  jc.displayResult = function(result,output) {
+  tb.displayResult = function(result,output) {
     $(output.outputElement)
     .empty().removeClass('ERROR').addClass('SUCCESS')
     .append(((result !== undefined) && (result !== null) && (typeof result.node$ === 'function') && result.node$() )
-            || jc.format(result)
+            || tb.format(result)
            )
     .prepend(output.toString())
     .before(trace.span().toString()) // traces are not part of the result
   }
 
-  jc.execCode = function(element) {
+  tb.execCode = function(element) {
     var element$ = $(element);
     if (element$.hasClass('DELETED')) return;
 
     // if template, lauch exec method if any
     if (element.itemtype) {
-      var t = jc.templates[element.itemtype];
+      var t = tb.templates[element.itemtype];
       if (t && t.exec) {
         t.exec(element$);
       }
-      jc.output = undefined;  // so that any errors from the EDI will be reported in a dialog, not in the last outputElement.
+      tb.output = undefined;  // so that any errors from the EDI will be reported in a dialog, not in the last outputElement.
       return
     }
 
@@ -2219,30 +2258,30 @@
     var wrong$ = $('.WRONG',element);
     if (wrong$.length > 0) wrong$.replaceWith(function(i,c){return c});
 
-    var out  = jc.outputElement(element);
-    var test = jc.testElement(element)
-    jc.output = newOutput(element,out);
-    var res = jc.securedEval(jc.toString(element.innerHTML));
-    jc.displayResult(res,jc.output);
+    var out  = tb.outputElement(element);
+    var test = tb.testElement(element)
+    tb.output = newOutput(element,out);
+    var res = tb.securedEval(tb.toString(element.innerHTML));
+    tb.displayResult(res,tb.output);
     // test
     if (test != undefined) {
-      if (out && (jc.trimHtml(out.innerHTML) == jc.trimHtml(test.innerHTML))) {   //TODO rethink how to compare
+      if (out && (tb.trimHtml(out.innerHTML) == tb.trimHtml(test.innerHTML))) {   //TODO rethink how to compare
         $(test).removeClass('ERROR').addClass('SUCCESS');
       }
       else {
         $(test).removeClass('SUCCESS').addClass('ERROR');
       }
     }
-    jc.output = undefined;  // so that any errors from the EDI will be reported in a dialog, not in the last outputElement.
+    tb.output = undefined;  // so that any errors from the EDI will be reported in a dialog, not in the last outputElement.
   }
 
-  jc.execCodes = function(fromCodeId,toCodeId) {
+  tb.execCodes = function(fromCodeId,toCodeId) {
     // execute CODE element starting from fromCodeId and ending with toCodeId
     // it does not clean the environement first, since this function is intended to be used
     // by the user in order to execute some codes repeatidly
     // nor it will perform any finalization (but it will register output.finalize functions
     // that will be executed at the end of the sheet execution
-    // please note that it is POSSIBLE to run the code containing the jc.execCodes() allowing 
+    // please note that it is POSSIBLE to run the code containing the tb.execCodes() allowing 
     // some recursivity. Of course this can also result in an never ending loop if not used properly
 
     var include = false;
@@ -2251,12 +2290,12 @@
     toCodeId = toCodeId || code$.last().attr('id');
     code$.each(function(i,e) {
       if (e.id === fromCodeId) include=true;
-      if (include) jc.execCode(e);
+      if (include) tb.execCode(e);
       if (e.id === toCodeId) include = false;
     });
   }
 
-  jc.runHtaFile = function(fileName,noWait,parameters) {
+  tb.runHtaFile = function(fileName,noWait,parameters) {
     // run an other file
     // if noWait is false or undefined, just open the file and returns without waiting
     //           is true run the file with ?runonce. it is the file responsibility to behave in this manner
@@ -2275,6 +2314,9 @@
         params.push(encodeURIComponent(p)+'='+encodeURIComponent(parameters[p]));
       }
     }
+
+    
+    fileName = tb.absoluteFileName(fileName,tb.url.absolutePath);
     var resultFileName = fileName.replace(/\.hta/i,'.jres');
     if (params.length > 0) {
       var cmd = 'mshta.exe '+fileName+'?'+params.join('&');
@@ -2282,70 +2324,80 @@
     else {
       var cmd = fileName;
     }
-    var errCode = jc.shell.Run(cmd,1,runOnce);
+    var errCode = tb.shell.Run(cmd,1,runOnce);
     if (runOnce) {
-      var json = jc.fso.readFile(resultFileName);
-      var res = JSON.parse(json);
-      res.cmd = cmd;
-      res.errCode = errCode;
+      var res = {};
+      try {
+        var json = tb.fso.readFile(resultFileName);
+        res = JSON.parse(json);
+        res.cmd = cmd;
+        res.errCode = errCode;
+      }
+      catch (e) {
+        res.errCode = e.message;
+      }
       return res;
     }
   }
 
-  jc.runTests = function(/*files...*/) {
+  tb.runTests = function(/*files...*/) {
     // run every specified files as test files and return a table with all results
     var results = [];
     for (var i=0; i<arguments.length; i++) {
-      var res = jc.runHtaFile(arguments[i]);
-      results.push({file:arguments[i],errCode:res.errCode,nbPassed:res.testStatus.nbPassed,nbFailed:res.testStatus.nbFailed,dateTime:res.testStatus.dateTime});
+      var res = tb.runHtaFile(arguments[i]);
+      results.push({file:arguments[i],
+                    errCode:res.errCode,
+                    nbPassed:res.testStatus&&res.testStatus.nbPassed,
+                    nbFailed:res.testStatus&&res.testStatus.nbFailed,
+                    dateTime:res.testStatus&&res.testStatus.dateTime});
     }
     return table().addRows(results).colStyle(function(r,c,value){return (value !== 0)?{backgroundColor:'red'}:{}},'nbFailed');
   }
 
-  jc.animate = function (interval,fromCodeId,toCodeId,endCondition) {
+  tb.animate = function (interval,fromCodeId,toCodeId,endCondition) {
     // run every "interval" all codes between fromCodeId to toCodeId
     // if fromCodeId is undefined, the CODE element where this function is called will be used
-    fromCodeId = fromCodeId || jc.output.codeElement.id;
+    fromCodeId = fromCodeId || tb.output.codeElement.id;
     toCodeId = toCodeId || fromCodeId;
-    if (jc.inAnimation == false) {
-      jc.intervalTimers.push(window.setInterval(function() {
-        jc.inAnimation = true;
-        jc.execCodes(fromCodeId,toCodeId);
-        jc.inAnimation = false;
+    if (tb.inAnimation == false) {
+      tb.intervalTimers.push(window.setInterval(function() {
+        tb.inAnimation = true;
+        tb.execCodes(fromCodeId,toCodeId);
+        tb.inAnimation = false;
       }
       ,interval));
     }
     return new Date().toString();
   }
 
-  jc.clearTimers = function () {
-    for (var i = 0;i<jc.intervalTimers.length;i++) {
-      window.clearInterval(jc.intervalTimers[i]);
+  tb.clearTimers = function () {
+    for (var i = 0;i<tb.intervalTimers.length;i++) {
+      window.clearInterval(tb.intervalTimers[i]);
     };
-    jc.intervalTimers = [];
-    jc.inAnimation = false;
+    tb.intervalTimers = [];
+    tb.inAnimation = false;
   }
 
-  jc.finalize = function() {
-    for (var i=0;i<jc.finalizations.length;i++) {
-      var out = jc.finalizations[i];
-      jc.errorHandler.code = out.finalizationFunc.toString();
+  tb.finalize = function() {
+    for (var i=0;i<tb.finalizations.length;i++) {
+      var out = tb.finalizations[i];
+      tb.errorHandler.code = out.finalizationFunc.toString();
       out.finalizationFunc();
       out.finalizationFunc = undefined;  // so that displayResult will not show ... to be finalized...
-      jc.displayResult(out,out);
+      tb.displayResult(out,out);
     }
   }
 
-  jc.run = function() {
-    if (jc.autoRun) {
-      jc.execAll();
+  tb.run = function() {
+    if (tb.autoRun) {
+      tb.execAll();
     }
     else {
-      jc.execUntilSelected();
+      tb.execUntilSelected();
     }
   }
 
-  jc.updateContainers = function() {
+  tb.updateContainers = function() {
     // make sure that containers are never empty (= have a fake element)
     // and that no fake element remains if there is another element inside the container
     $('.ELEMENT.EMPTY:not(:only-child)').remove();
@@ -2353,45 +2405,45 @@
     c$.append('<DIV class="ELEMENT EMPTY" contentEditable=false>empty container: click here to add an element</DIV>');
   }
  
-  jc.execAll = function() {
+  tb.execAll = function() {
     $('.TRACE').remove();
     trace.off();
-    jc.clearTimers();
-    jc.finalizations = [];
-    jc.vars = {}; // run from fresh
-    jc.results = {};
-    jc.IElement.idNumber = 0;
-    jc.simulation = new Simulation('_simulation');
-    jc.tableOfContent.updateSections();
-    jc.editables$(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
-    $('.CODE').add('[itemtype]').each(function(i,e) {jc.execCode(e);});
-    jc.updateContainers();
-    jc.finalize();
-    jc.writeResults();
-    jc.setUpToDate(true);
+    tb.clearTimers();
+    tb.finalizations = [];
+    tb.vars = {}; // run from fresh
+    tb.results = {};
+    tb.IElement.idNumber = 0;
+    tb.simulation = new Simulation('_simulation');
+    tb.tableOfContent.updateSections();
+    tb.editables$(tb.selectedElement).each(function(i,e){tb.reformatRichText(e)});
+    $('.CODE').add('[itemtype]').each(function(i,e) {tb.execCode(e);});
+    tb.updateContainers();
+    tb.finalize();
+    tb.writeResults();
+    tb.setUpToDate(true);
   }
 
-  jc.execUntilSelected = function() {
+  tb.execUntilSelected = function() {
     $('.TRACE').remove();
     trace.off();
-    jc.clearTimers();
-    jc.finalizations = [];
-    jc.vars = {}; // run from fresh
-    jc.results = {};
-    jc.IElement.idNumber = 0;
-    jc.tableOfContent.updateSections();
-    jc.updateContainers();
-    jc.editables$(jc.selectedElement).each(function(i,e){jc.reformatRichText(e)});
+    tb.clearTimers();
+    tb.finalizations = [];
+    tb.vars = {}; // run from fresh
+    tb.results = {};
+    tb.IElement.idNumber = 0;
+    tb.tableOfContent.updateSections();
+    tb.updateContainers();
+    tb.editables$(tb.selectedElement).each(function(i,e){tb.reformatRichText(e)});
     $('*').removeClass('SUCCESS').removeClass('ERROR')
     var $codes = $('.CODE');
-    if ($(jc.selectedElement).hasClass('CODE')){
-      var lastI = $codes.index(jc.selectedElement);
+    if ($(tb.selectedElement).hasClass('CODE')){
+      var lastI = $codes.index(tb.selectedElement);
     }
     else {
-      var $last = $('.CODE',jc.selectedElement).last();
+      var $last = $('.CODE',tb.selectedElement).last();
       if ($last.length === 0) { // selected element is a section or rich text that has no internal CODE element
-        $codes.add(jc.selectedElement); // we add this element (even if not a code) just to know where to stop
-        var lastI = $codes.index(jc.selectedElement)-1;
+        $codes.add(tb.selectedElement); // we add this element (even if not a code) just to know where to stop
+        var lastI = $codes.index(tb.selectedElement)-1;
       }
       else {
         var lastI = $codes.index($last);
@@ -2399,41 +2451,41 @@
     }
     $('.CODE').each(function(i,e) {
       if (i>lastI) return false;
-      jc.execCode(e);
+      tb.execCode(e);
     });
     // no finalization since not all code is run, so some element will not exist
-    jc.setUpToDate(false);
+    tb.setUpToDate(false);
   }
 
-  jc.reformatRichText = function(element) {
+  tb.reformatRichText = function(element) {
     if ((element == undefined) || ($(element).hasClass('CODE'))) return;
     var mark = /\{\{[#]?(.*?)\}\}/;
     var h = element.innerHTML;
     var idx=-1;
     var change=false;
     while ((idx=h.search(mark))!=-1) {
-      jc.blockNumber++;
+      tb.blockNumber++;
       if (h.charAt(idx+2) == '#') {
-        h = h.replace(mark,'<SPAN class="CODE EMBEDDED" id='+ jc.blockId('code')+' style="DISPLAY: none;">jc.link("$1")</SPAN><SPAN class=OUTPUT contentEditable=false id='+ jc.blockId('out')+'>no output</SPAN>');
+        h = h.replace(mark,'<SPAN class="CODE EMBEDDED" id='+ tb.blockId('code')+' style="DISPLAY: none;">tb.link("$1")</SPAN><SPAN class=OUTPUT contentEditable=false id='+ tb.blockId('out')+'>no output</SPAN>');
       }
-      h = h.replace(mark,'<SPAN class="CODE EMBEDDED" id='+ jc.blockId('code')+' style="DISPLAY: none;">$1</SPAN><SPAN class=OUTPUT contentEditable=false id='+ jc.blockId('out')+'>no output</SPAN>');
+      h = h.replace(mark,'<SPAN class="CODE EMBEDDED" id='+ tb.blockId('code')+' style="DISPLAY: none;">$1</SPAN><SPAN class=OUTPUT contentEditable=false id='+ tb.blockId('out')+'>no output</SPAN>');
       change = true; 
     }
     if (change) {
-      jc.setUpToDate(false);
+      tb.setUpToDate(false);
     }
     element.innerHTML = h;
   }
 
-  jc.showOutputHtml = function(checkBox) {
-    if ($(jc.selectedElement).hasClass('CODE')) {
-      var out = jc.outputElement(jc.selectedElement) || {id:'no output',innerHTML:''};
-      var test = jc.testElement(jc.selectedElement) || {id:'no test',innerHTML:''};
+  tb.showOutputHtml = function(checkBox) {
+    if ($(tb.selectedElement).hasClass('CODE')) {
+      var out = tb.outputElement(tb.selectedElement) || {id:'no output',innerHTML:''};
+      var test = tb.testElement(tb.selectedElement) || {id:'no test',innerHTML:''};
       var diff = '';
       if (out && test) {
         var i = 0;
-        var hout  = jc.trimHtml(out.innerHTML)
-        var htest = jc.trimHtml(test.innerHTML)
+        var hout  = tb.trimHtml(out.innerHTML)
+        var htest = tb.trimHtml(test.innerHTML)
         while ((i<hout.length) && (i<htest.length) && (hout.charAt(i) === htest.charAt(i))) {
           i++;
         }
@@ -2446,19 +2498,19 @@
                    test.id+':\n'+test.innerHTML);
     }
     else {
-      window.alert(jc.selectedElement.outerHTML);
+      window.alert(tb.selectedElement.outerHTML);
     }
   }
 
 
   // upgrades from previous versions ////////////////////////////////////////////////////////////////////////////////
-    jc.upgradeModules = function() {
+    tb.upgradeModules = function() {
     // checks that this is the lastest modules and if not replaces what is needed
-    var modulesNeeded = ['jquery-1.5.1.min.js','jcalcEdi.js','units.js','jcalc.js','axe.js','stateMachine.js','sys.js','ocrRdy.js','finance.js'];
+    var modulesNeeded = ['jquery-1.5.1.min.js','tablordEdi.js','units.js','tablord.js','axe.js','simulation.js','sys.js','ocrRdy.js','finance.js'];
     var allModules = modulesNeeded.concat('jquery.js'); // including deprecated modules
     var modules = [];
-    var $script = $('SCRIPT').filter(function(){return $.inArray(jc.fileName(this.src),allModules)!=-1});
-    $script.each(function(i,e){modules.push(jc.fileName(e.src))});
+    var $script = $('SCRIPT').filter(function(){return $.inArray(tb.fileName(this.src),allModules)!=-1});
+    $script.each(function(i,e){modules.push(tb.fileName(e.src))});
     if (modules.toString() == modulesNeeded.toString()) return; // everything is just as expected
 
     // otherwise we have to upgrade
@@ -2468,7 +2520,7 @@
   }
 
     
-  jc.upgradeFramework = function() {
+  tb.upgradeFramework = function() {
     // upgrades the sheet framework from previous versions
     
     $('*').removeClass('OLD').removeClass('AUTOEXEC');// not in use anymore
@@ -2480,11 +2532,18 @@
     $('#bottomToolBar').remove();  // no longer in use since v0160
     $('.CODE').add('.RICHTEXT').add('.SECTION').addClass('ELEMENT'); // since v160 all ELEMENT are selectable
     $('.CODE:not(.EMBEDDED)').add('.RICHTEXT').add('.SECTIONTITLE').addClass('EDITABLE'); // since v160 EDITABLE tags will be set to contentEditable=true /false when the itself or its parent is selected
+    
     // since v0.0110 the menu is fixed in a #menu DIV and all sheet is contained in a #jcContent DIV
-    jc.content$ = $('#jcContent').removeAttr('style').attr('container','items');
+    var jc$ = $('#jcContent')
+    if (jc$.length == 1) {
+a('convert from jc to tb')
+      jc$.removeAttr('style').attr('container','items').attr('id','tbContent'); // since tablord0200 
+      $('.CODE').each(function(i,code){code.innerHTML = code.innerHTML.replace(/jc\./g,'tb.');});
+    }
+    tb.content$ = $('#tbContent');
     var b$ = $('BODY');
-    if (jc.content$.length == 0) {                                   
-      b$.wrapInner('<DIV id=jcContent container="items"/>');
+    if (tb.content$.length == 0) {                                   
+      b$.wrapInner('<DIV id=tbContent container="items"/>');
     }
     $('.CONTAINER').removeClass('.CONTAINER').attr('container','sectionContent');
     $('.SECTIONCONTAINER').removeClass('SECTIONCONTAINER').attr('container','sectionContent');
@@ -2505,17 +2564,17 @@
   $(window).load(function () {
     // upgrades ////////////////////////////////////////////////////
     try {
-      jc.upgradeModules();
-      jc.upgradeFramework();
+      tb.upgradeModules();
+      tb.upgradeFramework();
       if (window.document.compatMode != 'CSS1Compat') {
         window.alert('your document must have <!DOCTYPE html> as first line in order to run properly: please save and re-run it');
       }
       // prepare the sheet ///////////////////////////////////////////
-      jc.url = jc.urlComponents(window.document.location.href);
+      tb.url = tb.urlComponents(window.document.location.href);
       $('.SELECTED').removeClass('SELECTED');
-      $('.ELEMENT').live("click",jc.elementClick);
-      $('.EDITABLE').live("keydown",jc.editableKeyDown);
-      $('.EDITOR').live("change",jc.Editor.eventHandler).live("click",jc.Editor.eventHandler);
+      $('.ELEMENT').live("click",tb.elementClick);
+      $('.EDITABLE').live("keydown",tb.editableKeyDown);
+      $('.EDITOR').live("change",tb.Editor.eventHandler).live("click",tb.Editor.eventHandler);
       $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR');
       $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
 
@@ -2524,17 +2583,17 @@
       $('.LINK').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
 
 
-      jc.findblockNumber();
-      jc.initToolBars();
-      $(window).bind('beforeunload',jc.beforeUnload);
-      $('body').keydown(jc.bodyKeyDown);
-      jc.autoRun = $('body').attr('autoRun')!==false;
-      jc.help.update(jc,'jc.');
+      tb.findblockNumber();
+      tb.initToolBars();
+      $(window).bind('beforeunload',tb.beforeUnload);
+      $('body').keydown(tb.bodyKeyDown);
+      tb.autoRun = $('body').attr('autoRun')!==false;
+      tb.help.update(tb,'tb.');
     }
     catch (e) {
       window.alert(e.message);
     }
-    if (jc.autoRun) jc.execAll();
+    if (tb.autoRun) tb.execAll();
   });  
   
-  window.onerror = jc.errorHandler;
+  window.onerror = tb.errorHandler;

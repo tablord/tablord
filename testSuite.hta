@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<HTML sizset="0" sizcache="1" xmlns="http://www.w3.org/1999/xhtml" APPLICATIONNAME="D:\Documents\programmation\jcalc\jcalcV0\testSuite.hta" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD sizset="3" sizcache="3"><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SINGLEINSTANCE="no" SCROLL="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="jcalc.css" src="jcalc.css">
+<HTML sizset="0" sizcache="1" xmlns="http://www.w3.org/1999/xhtml" APPLICATIONNAME="D:\Documents\programmation\jcalc\tablord\testSuite.hta" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD sizset="3" sizcache="3"><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SINGLEINSTANCE="no" SCROLL="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="tablord.css" src="tablord.css">
 <SCRIPT src="jquery-1.5.1.min.js"></SCRIPT>
 
-<SCRIPT class=UPDATE src="jcalcEdi.js"></SCRIPT>
+<SCRIPT class=UPDATE src="tablordEdi.js"></SCRIPT>
 
 <SCRIPT src="units.js"></SCRIPT>
 
-<SCRIPT src="jcalc.js"></SCRIPT>
+<SCRIPT src="tablord.js"></SCRIPT>
 
 <SCRIPT src="axe.js"></SCRIPT>
 
-<SCRIPT src="stateMachine.js"></SCRIPT>
+<SCRIPT src="simulation.js"></SCRIPT>
 
 <SCRIPT src="BOM.js"></SCRIPT>
 
@@ -22,55 +22,34 @@
 </HEAD>
 <BODY sizset="0" sizcache="1"  designMode="on">
 <DIV id=menu class=TOOLBAR style="MAX-WIDTH: 50%; FLOAT: right">
-<DIV><BUTTON onclick=jc.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=jc.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=jc.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=jc.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=jc.save(); id=saveBtn style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=jc.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON><BUTTON onclick=jc.helpPanel$.toggle(100); style="HEIGHT: 23px; WIDTH: 43px">help</BUTTON><INPUT onclick=jc.showCode(event) type=checkbox>codes</INPUT><INPUT onclick=jc.showCut(event) type=checkbox>cuts</INPUT><INPUT onclick=jc.showTest(event) type=checkbox>tests</INPUT><INPUT onclick=jc.showTrace(event) type=checkbox>traces</INPUT><INPUT onclick=jc.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
-<DIV style="DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=jc.cutBlock(jc.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertBefore(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="jc.templates[jc.templateChoice$.val()].convert(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION></SELECT><BUTTON onclick="jc.templates[jc.templateChoice$.val()].insertAfter(jc.selectedElement,jc.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=jc.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=jc.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
+<DIV><BUTTON onclick=tb.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=tb.execAll(); id=runAllBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60" >&#9658;&#9658;</BUTTON><BUTTON onclick=tb.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=tb.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=tb.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=tb.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON><BUTTON onclick=tb.helpPanel$.toggle(100); style="HEIGHT: 23px; WIDTH: 43px">help</BUTTON><INPUT onclick=tb.showCode(event) type=checkbox>codes</INPUT><INPUT onclick=tb.showCut(event) type=checkbox>cuts</INPUT><INPUT onclick=tb.showTest(event) type=checkbox>tests</INPUT><INPUT onclick=tb.showTrace(event) type=checkbox>traces</INPUT><INPUT onclick=tb.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
+<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=tb.cutBlock(tb.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertBefore(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].convert(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION></SELECT><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertAfter(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=tb.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=tb.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
 <DIV id=objectToolBar></DIV></DIV>
-<DIV><SPAN onclick=jc.helpPanel$.hide(300) style="CURSOR: pointer; COLOR: red">&nbsp;×&nbsp;</SPAN><INPUT ><SPAN onclick=jc.help.index.back() style="CURSOR: pointer; COLOR: #8dff60">&#9668;</SPAN>
+<DIV><SPAN onclick=tb.helpPanel$.hide(300) style="CURSOR: pointer; COLOR: red">&nbsp;×&nbsp;</SPAN><INPUT ><SPAN onclick=tb.help.index.back() style="CURSOR: pointer; COLOR: #8dff60">&#9668;</SPAN>
 <DIV style="OVERFLOW: auto; MAX-HEIGHT: 400px">please type your search above</DIV></DIV></DIV>
-<DIV id=jcContent class=CONTAINER sizset="0" sizcache="1" container="sectionContent"><PRE id=code0002 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jc.runTests(<FONT style="BACKGROUND-COLOR: #f2f9a8"><FONT style="BACKGROUND-COLOR: #f2f9a8">'D:/Documents/programmation/jcalc/jcalcV0/jcalcEdi_test.hta',</FONT></FONT></P><FONT style="BACKGROUND-COLOR: #f2f9a8"><FONT style="BACKGROUND-COLOR: #f2f9a8"><P><FONT style="BACKGROUND-COLOR: #f2f9a8">            </FONT><FONT style="BACKGROUND-COLOR: #f2f9a8">'D:/</FONT><FONT style="BACKGROUND-COLOR: #f2f9a8">Documents/programmation/jcalc/jcalcV0/jcalc_test.hta',</FONT></P></FONT></FONT><FONT style="BACKGROUND-COLOR: #f2f9a8"><FONT style="BACKGROUND-COLOR: #f2f9a8"><P><FONT style="BACKGROUND-COLOR: #f2f9a8">            </FONT><FONT style="BACKGROUND-COLOR: #f2f9a8">'D:/</FONT><FONT style="BACKGROUND-COLOR: #f2f9a8">Documents/programmation/jcalc/jcalcV0/table_test_doc</FONT><FONT style="BACKGROUND-COLOR: #f2f9a8">.hta',</FONT></P><P>            </FONT><FONT style="BACKGROUND-COLOR: #f2f9a8">'D:/</FONT><FONT style="BACKGROUND-COLOR: #f2f9a8">Documents/programmation/jcalc/jcalcV0/axe_test.hta',</FONT></P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">            </FONT><FONT style="BACKGROUND-COLOR: #f2f9a8">'D:/</FONT><FONT style="BACKGROUND-COLOR: #f2f9a8">Documents/programmation/jcalc/jcalcV0/graph_test.hta',</FONT></P><P><FONT style="BACKGROUND-COLOR: #f2f9a8">            </FONT><FONT style="BACKGROUND-COLOR: #f2f9a8">'D:/</FONT><FONT style="BACKGROUND-COLOR: #f2f9a8">Documents/programmation/jcalc/jcalcV0/template_test.hta'</FONT>)</FONT></P></PRE>
-<DIV id=out0002 class="OUTPUT SUCCESS">
+<DIV id=tbContent class=CONTAINER sizset="0" sizcache="1" container="sectionContent"><PRE id=code0002 class="ELEMENT CODE EDITABLE" contentEditable=false><P>tb.runTests(</P><P><FONT style="BACKGROUND-COLOR: #f2f9a8"><FONT style="BACKGROUND-COLOR: #f2f9a8">'tablordEdi_test.hta',</FONT></FONT></P><FONT style="BACKGROUND-COLOR: #f2f9a8"><FONT style="BACKGROUND-COLOR: #f2f9a8"><P><FONT style="BACKGROUND-COLOR: #f2f9a8"></FONT><FONT style="BACKGROUND-COLOR: #f2f9a8">'tablord</FONT><FONT style="BACKGROUND-COLOR: #f2f9a8">_test.hta',</FONT></P></FONT></FONT><FONT style="BACKGROUND-COLOR: #f2f9a8"><FONT style="BACKGROUND-COLOR: #f2f9a8"><P><FONT style="BACKGROUND-COLOR: #f2f9a8"></FONT><FONT style="BACKGROUND-COLOR: #f2f9a8">'</FONT><FONT style="BACKGROUND-COLOR: #f2f9a8">table_test_doc</FONT><FONT style="BACKGROUND-COLOR: #f2f9a8">.hta',</FONT></P><P></FONT><FONT style="BACKGROUND-COLOR: #f2f9a8">'</FONT><FONT style="BACKGROUND-COLOR: #f2f9a8">axe_test.hta',</FONT></P><P><FONT style="BACKGROUND-COLOR: #f2f9a8"></FONT><FONT style="BACKGROUND-COLOR: #f2f9a8">'g</FONT><FONT style="BACKGROUND-COLOR: #f2f9a8">raph_test.hta',</FONT></P><P><FONT style="BACKGROUND-COLOR: #f2f9a8"></FONT><FONT style="BACKGROUND-COLOR: #f2f9a8">'</FONT><FONT style="BACKGROUND-COLOR: #f2f9a8">template_test.hta'</FONT>)</FONT></P></PRE>
+<DIV id=out0002 class=OUTPUT>
 <TABLE>
 <THEAD>
 <TR>
 <TH>file</TH>
-<TH>errCode</TH>
-<TH>nbPassed</TH>
-<TH>nbFailed</TH>
-<TH>dateTime</TH></TR></THEAD>
+<TH>errCode</TH></TR></THEAD>
 <TBODY>
 <TR>
-<TD style="TEXT-ALIGN: left">D:/Documents/programmation/jcalc/jcalcV0/jcalcEdi_test.hta</TD>
-<TD>0</TD>
-<TD>62</TD>
-<TD>0</TD>
-<TD style="TEXT-ALIGN: left">Sat,&nbsp;2&nbsp;Feb&nbsp;2019&nbsp;15:12:13&nbsp;UTC</TD></TR>
+<TD style="TEXT-ALIGN: left">file://./tablordEdi_test.hta</TD>
+<TD style="TEXT-ALIGN: left">readFile("file://./tablordEdi_test.jres")&nbsp;Error&nbsp;Nom&nbsp;ou&nbsp;numéro&nbsp;de&nbsp;fichier&nbsp;incorrect</TD></TR>
 <TR>
-<TD style="TEXT-ALIGN: left">D:/Documents/programmation/jcalc/jcalcV0/jcalc_test.hta</TD>
-<TD>0</TD>
-<TD>57</TD>
-<TD>0</TD>
-<TD style="TEXT-ALIGN: left">Sat,&nbsp;2&nbsp;Feb&nbsp;2019&nbsp;15:12:14&nbsp;UTC</TD></TR>
+<TD style="TEXT-ALIGN: left">tablord_test.hta</TD>
+<TD style="TEXT-ALIGN: left">readFile("tablord_test.jres")&nbsp;Error&nbsp;L'entrée&nbsp;dépasse&nbsp;la&nbsp;fin&nbsp;du&nbsp;fichier</TD></TR>
 <TR>
-<TD style="TEXT-ALIGN: left">D:/Documents/programmation/jcalc/jcalcV0/table_test_doc.hta</TD>
-<TD>0</TD>
-<TD>26</TD>
-<TD>0</TD>
-<TD style="TEXT-ALIGN: left">Sat,&nbsp;2&nbsp;Feb&nbsp;2019&nbsp;15:12:15&nbsp;UTC</TD></TR>
+<TD style="TEXT-ALIGN: left">table_test_doc.hta</TD>
+<TD style="TEXT-ALIGN: left">readFile("table_test_doc.jres")&nbsp;Error&nbsp;L'entrée&nbsp;dépasse&nbsp;la&nbsp;fin&nbsp;du&nbsp;fichier</TD></TR>
 <TR>
-<TD style="TEXT-ALIGN: left">D:/Documents/programmation/jcalc/jcalcV0/axe_test.hta</TD>
-<TD>0</TD>
-<TD>9</TD>
-<TD>0</TD>
-<TD style="TEXT-ALIGN: left">Sat,&nbsp;2&nbsp;Feb&nbsp;2019&nbsp;15:12:16&nbsp;UTC</TD></TR>
+<TD style="TEXT-ALIGN: left">axe_test.hta</TD>
+<TD style="TEXT-ALIGN: left">readFile("axe_test.jres")&nbsp;Error&nbsp;L'entrée&nbsp;dépasse&nbsp;la&nbsp;fin&nbsp;du&nbsp;fichier</TD></TR>
 <TR>
-<TD style="TEXT-ALIGN: left">D:/Documents/programmation/jcalc/jcalcV0/graph_test.hta</TD>
-<TD>0</TD>
-<TD>0</TD>
-<TD>0</TD>
-<TD style="TEXT-ALIGN: left">Sat,&nbsp;2&nbsp;Feb&nbsp;2019&nbsp;15:12:16&nbsp;UTC</TD></TR>
+<TD style="TEXT-ALIGN: left">graph_test.hta</TD>
+<TD style="TEXT-ALIGN: left">readFile("graph_test.jres")&nbsp;Error&nbsp;L'entrée&nbsp;dépasse&nbsp;la&nbsp;fin&nbsp;du&nbsp;fichier</TD></TR>
 <TR>
-<TD style="TEXT-ALIGN: left">D:/Documents/programmation/jcalc/jcalcV0/template_test.hta</TD>
-<TD>0</TD>
-<TD>6</TD>
-<TD>0</TD>
-<TD style="TEXT-ALIGN: left">Sat,&nbsp;2&nbsp;Feb&nbsp;2019&nbsp;15:12:17&nbsp;UTC</TD></TR></TBODY></TABLE></DIV></DIV></BODY></HTML>
+<TD style="TEXT-ALIGN: left">template_test.hta</TD>
+<TD style="TEXT-ALIGN: left">readFile("template_test.jres")&nbsp;Error&nbsp;L'entrée&nbsp;dépasse&nbsp;la&nbsp;fin&nbsp;du&nbsp;fichier</TD></TR></TBODY></TABLE></DIV></DIV></BODY></HTML>

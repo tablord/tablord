@@ -1,4 +1,4 @@
-jc.fso = {
+tb.fso = {
   findAll: function (selector,path,depth) {
   // find all files matching selector within path
   // - selector: either a windows selector using * and ? like *.txt
@@ -94,5 +94,5 @@ jc.fso = {
   }
 }
 
-jc.shell = new ActiveXObject("WScript.Shell");
+tb.shell = new ActiveXObject("WScript.Shell");
   
