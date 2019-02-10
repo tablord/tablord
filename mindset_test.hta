@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<HTML sizset="0" sizcache="1" xmlns="http://www.w3.org/1999/xhtml" APPLICATIONNAME="D:\Documents\programmation\tablord\tablord\mindset_test.hta" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SINGLEINSTANCE="yes" SCROLL="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="tablord.css" src="tablord.css">
+<SCRIPT src="jquery-1.5.1.min.js"></SCRIPT>
+
+<SCRIPT class=UPDATE src="tablordEdi.js"></SCRIPT>
+
+<SCRIPT src="units.js"></SCRIPT>
+
+<SCRIPT src="tablord.js"></SCRIPT>
+
+<SCRIPT src="axe.js"></SCRIPT>
+
+<SCRIPT src="simulation.js"></SCRIPT>
+
+<SCRIPT src="BOM.js"></SCRIPT>
+
+<SCRIPT src="sys.js"></SCRIPT>
+
+<SCRIPT src="ocrRdy.js"></SCRIPT>
+
+<SCRIPT src="finance.js"></SCRIPT>
+<SCRIPT src="diff.js"></SCRIPT>
+
+<SCRIPT src="mindset.js"></SCRIPT>
+</HEAD>
+<BODY sizset="0" sizcache="1"  designMode="on" autoRun="false" showCode="true" showCut="true" showTest="true" showTrace="true">
+<DIV id=menu class=TOOLBAR style="MAX-WIDTH: 50%; FLOAT: right">
+<DIV><BUTTON onclick=tb.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=tb.execAll(); id=runAllBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=tb.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=tb.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=tb.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=tb.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON><BUTTON onclick=tb.helpPanel$.toggle(100); style="HEIGHT: 23px; WIDTH: 43px">help</BUTTON><INPUT onclick=tb.showCode(event) CHECKED type=checkbox>codes</INPUT><INPUT onclick=tb.showCut(event) CHECKED type=checkbox>cuts</INPUT><INPUT onclick=tb.showTest(event) CHECKED type=checkbox>tests</INPUT><INPUT onclick=tb.showTrace(event) CHECKED type=checkbox>traces</INPUT><INPUT onclick=tb.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
+<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=tb.cutBlock(tb.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertBefore(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].convert(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION></SELECT><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertAfter(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=tb.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=tb.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
+<DIV id=objectToolBar></DIV></DIV>
+<DIV><SPAN onclick=tb.helpPanel$.hide(300) style="CURSOR: pointer; COLOR: red">&nbsp;×&nbsp;</SPAN><INPUT ><SPAN onclick=tb.help.index.back() style="CURSOR: pointer; COLOR: #8dff60">&#9668;</SPAN>
+<DIV style="OVERFLOW: auto; MAX-HEIGHT: 400px">please type your search above</DIV></DIV></DIV>
+<DIV id=tbContent sizset="0" sizcache="1" container="items"><PRE id=code0002 class="CODE ELEMENT EDITABLE" contentEditable=false><P>tb.vars.db = [</P><P>{message:'I am so happy to be here',category:'feeling'},</P><P>{message:'I hate to be here',category:'feeling'},</P><P>{message:'I doubt that God exists',category:'awerness'},</P><P>{message:'I feel so bad yet',category:'feeling'}</P><P>]</P></PRE>
+<DIV id=out0002 class=OUTPUT>coucou</DIV><PRE id=code0005 class="CODE ELEMENT EDITABLE" contentEditable=false><P>trace.on();</P><P>tb.scene('scene',{height:400})</P><P>.wordCloud('cloud',{top:0,bottom:0,left:0,right:0,border:"solid red 1px"},db,'message')</P><P>.end()</P></PRE>
+<DIV id=out0005 class=OUTPUT>
+<DIV class=SCENE style="HEIGHT: 400px">
+<DIV class=SCENECONTAINER>
+<DIV class=IELEMENT style="BORDER-TOP: red 1px solid; BORDER-RIGHT: red 1px solid; RIGHT: 0px; BORDER-BOTTOM: red 1px solid; LEFT: 0px; BORDER-LEFT: red 1px solid; TOP: 0px; BOTTOM: 0px">
+<DIV class="IELEMENT CLOUD WORD" style="CURSOR: pointer; LEFT: 305px; TOP: 357px" >I</DIV>
+<DIV class="IELEMENT CLOUD WORD" style="CURSOR: pointer; LEFT: 411px; TOP: 186px" >am</DIV>
+<DIV class="IELEMENT CLOUD WORD" style="CURSOR: pointer; LEFT: 444px; TOP: 217px" >so</DIV>
+<DIV class="IELEMENT CLOUD WORD" style="CURSOR: pointer; LEFT: 328px; TOP: 387px" >happy</DIV>
+<DIV class="IELEMENT CLOUD WORD" style="CURSOR: pointer; LEFT: 272px; TOP: 266px" >to</DIV>
+<DIV class="IELEMENT CLOUD WORD" style="CURSOR: pointer; LEFT: 469px; TOP: 343px" >be</DIV>
+<DIV class="IELEMENT CLOUD WORD" style="CURSOR: pointer; LEFT: 470px; TOP: 246px" >here</DIV>
+<DIV class="IELEMENT CLOUD WORD" style="CURSOR: pointer; LEFT: 339px; TOP: 324px" >feeling</DIV>
+<DIV class="IELEMENT CLOUD OBJECT" style="CURSOR: pointer; LEFT: 836px; TOP: 389px" >I am so happy to be here</DIV>
+<DIV class="IELEMENT CLOUD WORD" style="CURSOR: pointer; LEFT: 275px; TOP: 313px" >hate</DIV>
+<DIV class="IELEMENT CLOUD OBJECT" style="CURSOR: pointer; LEFT: 782px; TOP: 249px" >I hate to be here</DIV>
+<DIV class="IELEMENT CLOUD WORD" style="CURSOR: pointer; LEFT: 305px; TOP: 198px" >doubt</DIV>
+<DIV class="IELEMENT CLOUD WORD" style="CURSOR: pointer; LEFT: 304px; TOP: 243px" >that</DIV>
+<DIV class="IELEMENT CLOUD WORD" style="CURSOR: pointer; LEFT: 359px; TOP: 184px" >God</DIV>
+<DIV class="IELEMENT CLOUD WORD" style="CURSOR: pointer; LEFT: 422px; TOP: 376px" >exists</DIV>
+<DIV class="IELEMENT CLOUD WORD" style="CURSOR: pointer; LEFT: 394px; TOP: 305px" >awerness</DIV>
+<DIV class="IELEMENT CLOUD OBJECT" style="CURSOR: pointer; LEFT: 724px; TOP: 386px" >I doubt that God exists</DIV>
+<DIV class="IELEMENT CLOUD WORD" style="CURSOR: pointer; LEFT: 371px; TOP: 252px" >feel</DIV>
+<DIV class="IELEMENT CLOUD WORD" style="CURSOR: pointer; LEFT: 478px; TOP: 294px" >bad</DIV>
+<DIV class="IELEMENT CLOUD WORD" style="CURSOR: pointer; LEFT: 388px; TOP: 389px" >yet</DIV>
+<DIV class="IELEMENT CLOUD OBJECT" style="CURSOR: pointer; LEFT: 899px; TOP: 271px" >I feel so bad yet</DIV></DIV></DIV></DIV></DIV><PRE id=code0007 class="CODE ELEMENT EDITABLE INANIMATION" contentEditable=false><P>trace.on()</P><P>tb.animate(100);</P><P>scene.animate(100);</P><P><FONT style="BACKGROUND-COLOR: #f2f9a8"></FONT>&nbsp;</P></PRE>
+<DIV id=out0007 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV></DIV></BODY></HTML>

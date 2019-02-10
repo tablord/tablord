@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<HTML sizset="0" sizcache="1" xmlns="http://www.w3.org/1999/xhtml" APPLICATIONNAME="D:\Documents\programmation\tablord\tablord\demo_elevator3.hta" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="tablord vide" SINGLEINSTANCE="yes" SCROLL="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="tablord.css" src="tablord.css">
+<SCRIPT src="jquery-1.5.1.min.js"></SCRIPT>
+
+<SCRIPT class=UPDATE src="tablordEdi.js"></SCRIPT>
+
+<SCRIPT src="units.js"></SCRIPT>
+
+<SCRIPT src="tablord.js"></SCRIPT>
+
+<SCRIPT src="axe.js"></SCRIPT>
+
+<SCRIPT src="simulation.js"></SCRIPT>
+
+<SCRIPT src="BOM.js"></SCRIPT>
+
+<SCRIPT src="sys.js"></SCRIPT>
+
+<SCRIPT src="ocrRdy.js"></SCRIPT>
+
+<SCRIPT src="finance.js"></SCRIPT>
+
+<SCRIPT src="diff.js"></SCRIPT>
+</HEAD>
+<BODY sizset="0" sizcache="1"  showTrace="true" showTest="true" showCut="true" showCode="true" designMode="on">
+<DIV id=menu class=TOOLBAR style="MAX-WIDTH: 50%; FLOAT: right">
+<DIV><BUTTON onclick=tb.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=tb.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=tb.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=tb.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=tb.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=tb.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON><BUTTON onclick=tb.helpPanel$.toggle(100); style="HEIGHT: 23px; WIDTH: 43px">help</BUTTON><INPUT onclick=tb.showCode(event) CHECKED type=checkbox>codes</INPUT><INPUT onclick=tb.showCut(event) CHECKED type=checkbox>cuts</INPUT><INPUT onclick=tb.showTest(event) CHECKED type=checkbox>tests</INPUT><INPUT onclick=tb.showTrace(event) CHECKED type=checkbox>traces</INPUT><INPUT onclick=tb.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
+<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=tb.cutBlock(tb.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertBefore(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].convert(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION></SELECT><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertAfter(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=tb.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=tb.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px" >&#8594;test</BUTTON>
+<DIV id=objectToolBar></DIV></DIV>
+<DIV><SPAN onclick=tb.helpPanel$.hide(300) style="CURSOR: pointer; COLOR: red">&nbsp;×&nbsp;</SPAN><INPUT ><SPAN onclick=tb.help.index.back() style="CURSOR: pointer; COLOR: #8dff60">&#9668;</SPAN>
+<DIV style="OVERFLOW: auto; MAX-HEIGHT: 400px">please type your search above</DIV></DIV></DIV>
+<DIV id=tbContent sizset="0" sizcache="1" container="items">
+<DIV id=sect0002 class="SECTION ELEMENT" sizset="0" sizcache="1">
+<H1 class="SECTIONTITLE EDITABLE" contentEditable=false>1 Simulation of a small automatism</H1>
+<DIV sizset="0" sizcache="1" container="sectionContent">
+<DIV id=rich0003 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>This is the simulation of a small automatism: an elevator that moves up and down at constant speed</DIV><PRE id=code0006 class="CODE ELEMENT EDITABLE" contentEditable=false><P>axe('elevator',{p:0,a:1,t:0});</P><P>tb.vars.ELEVATORLOW = 0;</P><P>tb.vars.ELEVATORHIGH = 3;</P><P>tb.vars.MARGIN = 0.001;</P></PRE>
+<DIV id=out0006 class="OUTPUT SUCCESS">0.001</DIV><PRE id=code0004 class="CODE ELEMENT EDITABLE" contentEditable=false><P>tb.stateMachine('elevatorSm')</P><P>.state('moveDown').initial()</P><P>.entry("elevator.move({p:ELEVATORLOW,v1:-elevatorScene.v1});&nbsp;")</P><P>.transition('waitDown',"elevator.at().p&nbsp;&lt;=&nbsp;ELEVATORLOW+MARGIN")</P><P>.state('waitDown')</P><P>.run("elevatorScene.chbRez.checked(false)")</P><P>.transition('moveUp',"elevatorScene.chb1er")</P><P>.state('moveUp')</P><P>.entry("elevator.move({p:ELEVATORHIGH,v1:elevatorScene.v1});")</P><P>.transition('waitUp',"elevator.at().p&nbsp;&gt;=&nbsp;ELEVATORHIGH-MARGIN")</P><P>.state('waitUp')</P><P>.run("elevatorScene.chb1er.checked(false)")</P><P>.transition('moveDown',"wait(5)")</P><P>.transition('moveDown',"elevatorScene.chbRez")</P><P>.end()</P></PRE>
+<DIV id=out0004 class="OUTPUT SUCCESS">
+<DIV class=STATEMACHINE>elevatorSm
+<DIV class="SMSTATE SMCURRENTSTATE">moveDown<BR>entry: <SPAN class=CODEVIEW>elevator.move({p:ELEVATORLOW,v1:-elevatorScene.v1}); </SPAN>
+<DIV class=SMTRANSITION>elevator.at().p &lt;= ELEVATORLOW+MARGIN --&gt;waitDown</DIV></DIV>
+<DIV class=SMSTATE>waitDown<BR>run : <SPAN class=CODEVIEW>elevatorScene.chbRez.checked(false)</SPAN>
+<DIV class=SMTRANSITION>elevatorScene.chb1er --&gt;moveUp</DIV></DIV>
+<DIV class=SMSTATE>moveUp<BR>entry: <SPAN class=CODEVIEW>elevator.move({p:ELEVATORHIGH,v1:elevatorScene.v1});</SPAN>
+<DIV class=SMTRANSITION>elevator.at().p &gt;= ELEVATORHIGH-MARGIN --&gt;waitUp</DIV></DIV>
+<DIV class=SMSTATE>waitUp<BR>run : <SPAN class=CODEVIEW>elevatorScene.chb1er.checked(false)</SPAN>
+<DIV class=SMTRANSITION>wait(5) --&gt;moveDown</DIV>
+<DIV class=SMTRANSITION>elevatorScene.chbRez --&gt;moveDown</DIV></DIV></DIV></DIV><PRE id=code0010 class="CODE ELEMENT EDITABLE" contentEditable=false><P>tb.scene('elevatorScene',{height:400})</P><P>.checkBox('chb1er',{top:0,left:150}).checked(true)</P><P>.checkBox('chbRez',{top:300,left:150})</P><P>.div('cabin',{height:50,width:100,border:'solid red 5px'})</P><P>.div('statusBar',{top:360,left:200,width:400})</P><P>.value('v1',{top:360,width:200})</P><P>.end()</P><P>&nbsp;</P></PRE>
+<DIV id=out0010 class="OUTPUT SUCCESS">
+<DIV class=SCENE style="HEIGHT: 400px">
+<DIV class=SCENECONTAINER><SPAN class=IELEMENT style="LEFT: 150px; TOP: 0px"><INPUT type=checkbox value=on>chb1er</INPUT checked="false"></SPAN><SPAN class=IELEMENT style="LEFT: 150px; TOP: 300px"><INPUT type=checkbox value=on>chbRez</INPUT checked="false"></SPAN>
+<DIV class=IELEMENT style="BORDER-TOP: red 5px solid; HEIGHT: 50px; BORDER-RIGHT: red 5px solid; WIDTH: 100px; BORDER-BOTTOM: red 5px solid; BORDER-LEFT: red 5px solid; TOP: 300px">-0.00</DIV>
+<DIV class=IELEMENT style="WIDTH: 400px; LEFT: 200px; TOP: 360px">[Simulation "tb.simulation" time: 14.400]</DIV><SPAN class=IELEMENT style="WIDTH: 200px; TOP: 360px">v1<INPUT value=1></INPUT></SPAN></DIV></DIV></DIV><PRE id=code0008 class="CODE ELEMENT EDITABLE INANIMATION" contentEditable=false><P>trace.off();</P><P>tb.animate(100);</P><P>elevatorScene.v1.value(1);</P><P>tb.simulation.runSteps();</P><P>elevatorScene.cabin.top(300-elevator.at().p*100).html(elevator.at().p.toFixed(2));</P><P>elevatorScene.statusBar.html(tb.simulation.toString());</P><P>output.p(</P><P>elevatorSm,</P><P>elevator,</P><P>$('#code0008')</P><P>)</P><P>if&nbsp;((tb.simulation.time$s&nbsp;&gt;&nbsp;15)&nbsp;&amp;&amp;&nbsp;('runonce'&nbsp;in&nbsp;tb.url.arguments))&nbsp;tb.close();</P></PRE>
+<DIV id=out0008 class="OUTPUT SUCCESS">
+<P>
+<DIV class=STATEMACHINE>elevatorSm
+<DIV class=SMSTATE>moveDown<BR>entry: <SPAN class=CODEVIEW>elevator.move({p:ELEVATORLOW,v1:-elevatorScene.v1}); </SPAN>
+<DIV class=SMTRANSITION>elevator.at().p &lt;= ELEVATORLOW+MARGIN --&gt;waitDown</DIV></DIV>
+<DIV class="SMSTATE SMCURRENTSTATE">waitDown<BR>run : <SPAN class=CODEVIEW>elevatorScene.chbRez.checked(false)</SPAN>
+<DIV class=SMTRANSITION>elevatorScene.chb1er --&gt;moveUp</DIV></DIV>
+<DIV class=SMSTATE>moveUp<BR>entry: <SPAN class=CODEVIEW>elevator.move({p:ELEVATORHIGH,v1:elevatorScene.v1});</SPAN>
+<DIV class=SMTRANSITION>elevator.at().p &gt;= ELEVATORHIGH-MARGIN --&gt;waitUp</DIV></DIV>
+<DIV class=SMSTATE>waitUp<BR>run : <SPAN class=CODEVIEW>elevatorScene.chb1er.checked(false)</SPAN>
+<DIV class=SMTRANSITION>wait(5) --&gt;moveDown</DIV>
+<DIV class=SMTRANSITION>elevatorScene.chbRez --&gt;moveDown</DIV></DIV></DIV>
+<TABLE border=1>
+<THEAD>
+<TR>
+<TH>f</TH>
+<TH>t</TH>
+<TH>p</TH>
+<TH>v</TH>
+<TH>a</TH>
+<TH>j</TH>
+<TH>phase</TH></TR></THEAD>
+<TBODY>
+<TR>
+<TD>accelerate</TD>
+<TD>-Infinity</TD>
+<TD>0.000</TD>
+<TD>0.000</TD>
+<TD>0.000</TD>
+<TD>--</TD>
+<TD>init</TD></TR>
+<TR>
+<TD>accelerate</TD>
+<TD>0.100</TD>
+<TD>0.000</TD>
+<TD>0.000</TD>
+<TD>1.000</TD>
+<TD>--</TD>
+<TD>t1</TD></TR>
+<TR>
+<TD>accelerate</TD>
+<TD>1.000</TD>
+<TD>0.405</TD>
+<TD>0.900</TD>
+<TD>0.000</TD>
+<TD>--</TD>
+<TD>tc</TD></TR>
+<TR>
+<TD>accelerate</TD>
+<TD>3.433</TD>
+<TD>2.595</TD>
+<TD>0.900</TD>
+<TD>-1.000</TD>
+<TD>--</TD>
+<TD>t2</TD></TR>
+<TR>
+<TD>accelerate</TD>
+<TD>4.333</TD>
+<TD>3.000</TD>
+<TD>-0.000</TD>
+<TD>0.000</TD>
+<TD>--</TD>
+<TD>ts</TD></TR>
+<TR>
+<TD>accelerate</TD>
+<TD>9.400</TD>
+<TD>3.000</TD>
+<TD>-0.000</TD>
+<TD>-1.000</TD>
+<TD>--</TD>
+<TD>t1</TD></TR>
+<TR>
+<TD>accelerate</TD>
+<TD>10.400</TD>
+<TD>2.500</TD>
+<TD>-1.000</TD>
+<TD>0.000</TD>
+<TD>--</TD>
+<TD>tc</TD></TR>
+<TR>
+<TD>accelerate</TD>
+<TD>12.400</TD>
+<TD>0.500</TD>
+<TD>-1.000</TD>
+<TD>1.000</TD>
+<TD>--</TD>
+<TD>t2</TD></TR>
+<TR>
+<TD>accelerate</TD>
+<TD>13.400</TD>
+<TD>-0.000</TD>
+<TD>-0.000</TD>
+<TD>0.000</TD>
+<TD>--</TD>
+<TD>ts</TD></TR></TBODY></TABLE>JQuery of 1 elements<BR>
+<OL start=0><BR>
+<LI class=INSPECTHTML><WBR>&lt;PRE&nbsp;id=code0008&nbsp;class="CODE&nbsp;ELEMENT&nbsp;EDITABLE&nbsp;INANIMATION&nbsp;SELECTED"&nbsp;contentEditable=true&gt;<WBR>&lt;P&gt;trace.off();<WBR>&lt;/P&gt;<WBR>&lt;P&gt;tb.animate(100);<WBR>&lt;/P&gt;<WBR>&lt;P&gt;elevatorScene.v1.value(1);<WBR>&lt;/P&gt;<WBR>&lt;P&gt;tb.simulation.runSteps();<WBR>&lt;/P&gt;<WBR>&lt;P&gt;elevatorScene.cabin.top(300-elevator.at().p*100).html(elevator.at().p.toFixed(2));<WBR>&lt;/P&gt;<WBR>&lt;P&gt;elevatorScene.statusBar.html(tb.simulation.toString());<WBR>&lt;/P&gt;<WBR>&lt;P&gt;output.p(<WBR>&lt;/P&gt;<WBR>&lt;P&gt;elevatorSm,<WBR>&lt;/P&gt;<WBR>&lt;P&gt;elevator,<WBR>&lt;/P&gt;<WBR>&lt;P&gt;$('#code0008')<WBR>&lt;/P&gt;<WBR>&lt;P&gt;)<WBR>&lt;/P&gt;<WBR>&lt;P&gt;if&amp;nbsp;((tb.simulation.time$s&amp;nbsp;&amp;gt;&amp;nbsp;15)&amp;nbsp;&amp;amp;&amp;amp;&amp;nbsp;('runonce'&amp;nbsp;in&amp;nbsp;tb.url.arguments))&amp;nbsp;tb.close();<WBR>&lt;/P&gt;<WBR>&lt;/PRE&gt;<BR></LI></OL>
+<P></P></DIV><PRE id=code0012 class="ELEMENT CODE EDITABLE" contentEditable=false>$('#out0010')[0].scrollIntoView()</PRE>
+<DIV id=out0012 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV></DIV></DIV></DIV></BODY></HTML>

@@ -334,7 +334,7 @@
   $.fn.span = function() {
     var s = ['<ol start=0>'];
     for (var i=0; i < this.length; i++) {
-      s.push('<li class="INSPECTHTML">'+tb.toHtml(tb.trimHtml(tb.purgeJQueryAttr(this[i].outerHTML)))+'</li>');
+      s.push('<li class="INSPECTHTML">'+tb.toHtml(tb.trimHtml(tb.purgeJQueryAttr(this[i].outerHTML))));
     }
     s.push('</ol>');
     return new tb.HTML('JQuery of '+this.length+' elements<br>'+s.join('<br>'));
@@ -560,6 +560,17 @@
     });
     return this;
   }          
+
+  $.fn.filterFromToId = function(fromId,toId) {
+    // filter the query to keep only query Element that are between the fromId element and toId element
+    var inRange = false;
+    return this.filter(function() {
+      if (this.id === fromId) inRange=true;
+      if (this.id === toId) inRange=false;
+      return (this.id===toId) || inRange;
+    })
+  }
+
   tb.help.update($,'$.');
 
   tb.getItems$ = function(url) {
@@ -1957,7 +1968,7 @@
       '<DIV>'+
         '<BUTTON id=runUntilSelectedBtn onclick=tb.execUntilSelected(); style="color: #8dff60;">&#9658;|</BUTTON>'+
         '<BUTTON id=runAllBtn onclick=tb.execAll(); style="color: #8dff60;">&#9658;&#9658;</BUTTON>'+
-        '<BUTTON id=stopAnimation onclick=tb.clearTimers(); style="color: red">&#9632;</BUTTON>'+
+        '<BUTTON id=stopAnimation onclick=tb.clearTimers(); style="color: red" disabled=true>&#9632;</BUTTON>'+
         '<BUTTON id="clearOutputsBtn" onclick="tb.clearOutputs();">clear</BUTTON>'+
         '<BUTTON id="saveBtn" onclick="tb.save();">save</BUTTON>'+
         '<BUTTON onclick="tb.print();">print</BUTTON>'+
@@ -2041,6 +2052,12 @@
     tb.fso.writeFile(resFileName,JSON.stringify(tb.results));
   }
 
+  tb.close = function() {
+    // write the jres file and close the window
+    tb.updateResultsTestStatus();
+    tb.writeResults();
+    window.close();
+  }
 
 
   tb.beforeUnload = function() {  //TODO avec hta, ne fonctionne pas bien
@@ -2284,14 +2301,11 @@
     // please note that it is POSSIBLE to run the code containing the tb.execCodes() allowing 
     // some recursivity. Of course this can also result in an never ending loop if not used properly
 
-    var include = false;
     var code$ = $('.CODE');
     fromCodeId = fromCodeId || code$.first().attr('id');
     toCodeId = toCodeId || code$.last().attr('id');
-    code$.each(function(i,e) {
-      if (e.id === fromCodeId) include=true;
-      if (include) tb.execCode(e);
-      if (e.id === toCodeId) include = false;
+    code$.filterFromToId(fromCodeId,toCodeId).each(function(i,e) {
+      tb.execCode(e);
     });
   }
 
@@ -2360,6 +2374,8 @@
     fromCodeId = fromCodeId || tb.output.codeElement.id;
     toCodeId = toCodeId || fromCodeId;
     if (tb.inAnimation == false) {
+      $('#stopAnimation').attr('disabled',false);
+      $('.CODE').filterFromToId(fromCodeId,toCodeId).addClass('INANIMATION');
       tb.intervalTimers.push(window.setInterval(function() {
         tb.inAnimation = true;
         tb.execCodes(fromCodeId,toCodeId);
@@ -2376,6 +2392,8 @@
     };
     tb.intervalTimers = [];
     tb.inAnimation = false;
+    $('#stopAnimation').attr('disabled',true);
+    $('.INANIMATION').removeClass('INANIMATION');
   }
 
   tb.finalize = function() {
@@ -2413,7 +2431,7 @@
     tb.vars = {}; // run from fresh
     tb.results = {};
     tb.IElement.idNumber = 0;
-    tb.simulation = new Simulation('_simulation');
+    tb.simulation = new tb.Simulation('tb.simulation');
     tb.tableOfContent.updateSections();
     tb.editables$(tb.selectedElement).each(function(i,e){tb.reformatRichText(e)});
     $('.CODE').add('[itemtype]').each(function(i,e) {tb.execCode(e);});
@@ -2481,24 +2499,16 @@
     if ($(tb.selectedElement).hasClass('CODE')) {
       var out = tb.outputElement(tb.selectedElement) || {id:'no output',innerHTML:''};
       var test = tb.testElement(tb.selectedElement) || {id:'no test',innerHTML:''};
-      var diff = '';
-      if (out && test) {
-        var i = 0;
-        var hout  = tb.trimHtml(out.innerHTML)
-        var htest = tb.trimHtml(test.innerHTML)
-        while ((i<hout.length) && (i<htest.length) && (hout.charAt(i) === htest.charAt(i))) {
-          i++;
-        }
-        diff = 'first difference at position '+i+'\n'+
-               'out :'+hout.slice(i,i+20)+'\n'+
-               'test:'+htest.slice(i,i+20)+'\n\n';
-      }  
-      window.alert(diff+
-                   out.id+':\n'+out.innerHTML+'\n\n'+
-                   test.id+':\n'+test.innerHTML);
+      var hout  = tb.trimHtml(out.innerHTML)
+      var htest = tb.trimHtml(test.innerHTML)
+      diff = tb.diff(hout,htest).span().toString();
+      window.showModalDialog('dialog.htm',[
+        '<fieldset><legend>'+tb.selectedElement.id+'</legend>'+tb.toHtml(tb.selectedElement.outerHTML)+'</fieldset>'+
+        '<fieldset><legend>diff output vs test</legend>'+diff+'</fieldset>']);
     }
     else {
-      window.alert(tb.selectedElement.outerHTML);
+      window.showModalDialog('dialog.htm',[
+        '<fieldset><legend>'+tb.selectedElement.id+'</legend>'+tb.toHtml(tb.selectedElement.outerHTML)+'</fieldset>']);
     }
   }
 
@@ -2506,7 +2516,7 @@
   // upgrades from previous versions ////////////////////////////////////////////////////////////////////////////////
     tb.upgradeModules = function() {
     // checks that this is the lastest modules and if not replaces what is needed
-    var modulesNeeded = ['jquery-1.5.1.min.js','tablordEdi.js','units.js','tablord.js','axe.js','simulation.js','sys.js','ocrRdy.js','finance.js'];
+    var modulesNeeded = ['jquery-1.5.1.min.js','tablordEdi.js','units.js','tablord.js','axe.js','simulation.js','sys.js','ocrRdy.js','finance.js','diff.js'];
     var allModules = modulesNeeded.concat('jquery.js'); // including deprecated modules
     var modules = [];
     var $script = $('SCRIPT').filter(function(){return $.inArray(tb.fileName(this.src),allModules)!=-1});

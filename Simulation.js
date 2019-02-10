@@ -1,17 +1,18 @@
 // Simulation /////////////////////////////////////////////////////////////////////////
 // is the time keeper for the entire simulation
-// one instance (jc._simulation) is automatically created, which is ok for most purpose
+// one instance (tb.simulation) is automatically created, which is ok for most purpose
 ///////////////////////////////////////////////////////////////////////////////////////
 
-function Simulation(name) {
+tb.Simulation = function(name) {
   this.name = name;
   this.length = 0;
   this.step$s = 0.1;
   this.time$s = 0;
   this.timeDecimals = 3;
 }
+tb.Simulation.className = 'tb.Simulation';
 
-Simulation.prototype.runSteps = function(nbSteps) {
+tb.Simulation.prototype.runSteps = function(nbSteps) {
   nbSteps = nbSteps || 1;
   for (var s= 1; s <= nbSteps; s++) {
     for (var i=0; i< this.length; i++) {
@@ -22,7 +23,7 @@ Simulation.prototype.runSteps = function(nbSteps) {
   return this;
 }
 
-Simulation.prototype.runWhile = function(jcFunc) {
+tb.Simulation.prototype.runWhile = function(jcFunc) {
   var jcCond = f(jcFunc);
   while (jcCond()==true){ 
     this.runSteps();
@@ -30,18 +31,18 @@ Simulation.prototype.runWhile = function(jcFunc) {
   return this;
 }
 
-Simulation.prototype.time = function(time$s) {
+tb.Simulation.prototype.time = function(time$s) {
   this.time$s = time$s - this.step$s;
   return this;
 }
 
-Simulation.prototype.step = function(step$s) {
+tb.Simulation.prototype.step = function(step$s) {
   this.time$s += this.step$s - step$s;
   this.step$s = step$s;
   return this;
 }
 
-Simulation.prototype.toString = function(options) {
+tb.Simulation.prototype.toString = function(options) {
   options = options || {};
   return '[Simulation "'+this.name+'" time: '+this.time$s.toFixed(options.timeDecimals || this.timeDecimals)+']';
 }
@@ -49,7 +50,7 @@ Simulation.prototype.toString = function(options) {
 
 // StateMachine ///////////////////////////////////////////////////////////////
 
-function StateMachine(name,simulation) {
+tb.StateMachine = function(name,simulation) {
   this.name = name;
   this.simulation = simulation;
   this.length = 0;  //number of states
@@ -58,14 +59,15 @@ function StateMachine(name,simulation) {
   this.simulation[this.simulation.length++] = this;
   this.timeDecimals = this.simulation.timeDecimals;
 }
+tb.StateMachine.className = 'tb.StateMachine';
 
-StateMachine.prototype.state = function(name) {
-  var s = new State(name,this)
+tb.StateMachine.prototype.state = function(name) {
+  var s = new tb.State(name,this)
   this[name] = s;
   return this[this.length++] = s;
 }
 
-StateMachine.prototype.span = function(options) {
+tb.StateMachine.prototype.span = function(options) {
   options = options ||{};
   var h = '<DIV class=STATEMACHINE>'+this.name;
   for (var i=0; i<this.length; i++) {
@@ -81,9 +83,9 @@ StateMachine.prototype.span = function(options) {
   return h+'</DIV>';
 }
 
-StateMachine.prototype.view = StateMachine.prototype.span;
+tb.StateMachine.prototype.view = tb.StateMachine.prototype.span;
 
-StateMachine.prototype.runOnce = function(time) {
+tb.StateMachine.prototype.runOnce = function(time) {
   var where = 'runOnce';
   try {
     where='runOnce/runF';
@@ -116,61 +118,66 @@ StateMachine.prototype.runOnce = function(time) {
   return this;
 }
 
-StateMachine.prototype.toString = function() {
+tb.StateMachine.prototype.toString = function() {
   return '[StateMachine '+this.name+' of '+this.length+' states; currentState='+this.currentState.name+']';
 }
 
-function stateMachine(name,simulation) {
-  simulation = simulation || jc.simulation;
-  return jc.vars[name] = new StateMachine(name,simulation);
+tb.stateMachine = function(name,simulation) {
+  // creates a new stateMachine
+  // - name: the name of the stateMachine, the stateMachine will be stored in tb.vars[name]
+  // - simulation (optional, by default tb.simulation;
+  simulation = simulation || tb.simulation;
+  return tb.vars[name] = new tb.StateMachine(name,simulation);
 }
 
 
 // State //////////////////////////////////////////////////////////////////////
 
-function State(name,stateMachine) {
+tb.State = function(name,stateMachine) {
+  // a state of a StateMachine use stateMachine.state to create a new state
   this.name = name;
   this.stateMachine = stateMachine;
   this.length = 0; // number of transition
 }
+tb.State.className = 'tb.State';
 
-State.prototype.initial = function() {
+tb.State.prototype.initial = function() {
   this.stateMachine.currentState = this;
   return this;
 }
 
-State.prototype.entry = function(jcCode) {
+tb.State.prototype.entry = function(jcCode) {
   this.entryCode = jcCode;
   return this;
 }
 
-State.prototype.run = function(jcCode) {
+tb.State.prototype.run = function(jcCode) {
   this.runCode = jcCode;
   return this;
 }
 
-State.prototype.exit = function(jcCode) {
+tb.State.prototype.exit = function(jcCode) {
   this.exitCode = jcCode;
   return this;
 }
 
-State.prototype.transition = function(nextStateName,jcCond) {
-  this[this.length++] = new Transition(nextStateName,jcCond,this);
+tb.State.prototype.transition = function(nextStateName,jcCond) {
+  this[this.length++] = new tb.Transition(nextStateName,jcCond,this);
   return this;
 }
 
-State.prototype.wait = function(time) {
+tb.State.prototype.wait = function(time) {
   // return true if the we are in this state more than "time"
   return this.stateMachine.simulation.time$s >= this.entryTime$s + time;
 }
 
-State.prototype.state = function (name) {  //same as StateMachine.state, but to ease writing, is also a method of state
-  var s = new State(name,this.stateMachine);
+tb.State.prototype.state = function (name) {  //same as StateMachine.state, but to ease writing, is also a method of state
+  var s = new tb.State(name,this.stateMachine);
   this.stateMachine[name] = s;
   return this.stateMachine[this.stateMachine.length++] = s;
 }
 
-State.prototype.end = function () {
+tb.State.prototype.end = function () {
   // terminate the declaration of the state machine and compile the code
   // return the state machine so that it can easily be displayed
 
@@ -181,7 +188,7 @@ State.prototype.end = function () {
   return this.stateMachine;
 }
 
-State.prototype.compile = function() {
+tb.State.prototype.compile = function() {
   var where;
   try {
     if (this.entryCode) { 
@@ -205,7 +212,7 @@ State.prototype.compile = function() {
   }
 }
 
-State.prototype.span = function(){
+tb.State.prototype.span = function(){
   var h = '<DIV class="SMSTATE'+((this.stateMachine.currentState==this)?' SMCURRENTSTATE':'')+'">'+this.name+'<br>';
   if (this.entryCode) h+= 'entry: <SPAN class=CODEVIEW>'+this.entryCode+'</SPAN>';
   if (this.runCode)   h+= 'run  : <SPAN class=CODEVIEW>'+this.runCode+'</SPAN>';
@@ -219,17 +226,18 @@ State.prototype.span = function(){
 // Transition ///////////////////////////////////////////////////////////////
 
 
-function Transition(nextStateName,jcCondition,state) {
+tb.Transition = function(nextStateName,jcCondition,state) {
   this.state = state;
   this.nextStateName = nextStateName;
   this.cond = jcCondition;
 }
+tb.Transition.className = 'tb.Transition';
 
-Transition.prototype.span = function () {
+tb.Transition.prototype.span = function () {
   return '<DIV class=SMTRANSITION>'+this.cond+' -->'+this.nextStateName+'</DIV>';
 }
 
-Transition.prototype.compile = function() {
+tb.Transition.prototype.compile = function() {
   try {
     this.condF = f(this.cond);
     this.next = this.state.stateMachine[this.nextStateName];

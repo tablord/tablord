@@ -151,6 +151,10 @@ pre {
   margin: 0px;
 }
 
+.INANIMATION {
+  color: red;
+}
+
 .AUTOEDIT {
   color: red;
 }
