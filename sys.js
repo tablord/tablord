@@ -1,10 +1,16 @@
-tb.fso = {
-  findAll: function (selector,path,depth) {
+  tb.fso = function(){
+  // tb.fso is a collection of function using the ActiveX FileSystemObject in order to read/write text files
+
+  };
+
+  tb.fso.className = 'tb.fso';
+
+  tb.fso.findAll = function (selector,path,depth) {
   // find all files matching selector within path
   // - selector: either a windows selector using * and ? like *.txt
   //             or a regexp where a search returns != -1
-  // -path: the path where to search the files
-  // -depth: if you want to limit the depth of the search. 
+  // - path: the path where to search the files
+  // - depth: if you want to limit the depth of the search. 
   //         notably depth=0 will only search in path, not in its subFolders
   //         if not specified, will search at any depth
     var res = [];
@@ -31,8 +37,10 @@ tb.fso = {
 
     findRecursive(path,depth,res);
     return res;
-  },
-  findAllFolders: function (selector,path,depth) {
+  };
+
+
+  tb.fso.findAllFolders = function (selector,path,depth) {
   // find all folders matching selector within path
   // - selector: either a windows selector using * and ? like *.txt
   //             or a regexp where a search returns != -1
@@ -64,20 +72,22 @@ tb.fso = {
 
     findRecursive(path,depth,res);
     return res;
-  },
-  copy: function (source,target) {
+  };
+
+  tb.fso.copy = function (source,target) {
     var fso = new ActiveXObject("Scripting.FileSystemObject");
     fso.CopyFile(source,target);
-  },
+  };
 
-  writeFile: function (fileName,text,mode) {
+  tb.fso.writeFile = function (fileName,text,mode) {
     mode = mode || 2;
     var fso = new ActiveXObject("Scripting.FileSystemObject");
     var stream = fso.OpenTextFile(fileName,mode,true);
     stream.Write(text);
     stream.Close();
-  },
-  readFile: function(fileName) {
+  };
+ 
+  tb.fso.readFile = function(fileName) {
     try {
       var fso = new ActiveXObject("Scripting.FileSystemObject");
       var stream = fso.OpenTextFile(fileName,1,true);
@@ -92,7 +102,8 @@ tb.fso = {
     }
     return text;
   }
-}
 
-tb.shell = new ActiveXObject("WScript.Shell");
+  
+  tb.shell = new ActiveXObject("WScript.Shell");
+  tb.help.index.add('shell','tb.','an instance of WScript.Shell\n.run run a file');
   

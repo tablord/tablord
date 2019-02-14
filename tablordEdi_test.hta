@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<HTML sizset="1" sizcache="1" APPLICATIONNAME="D:\Documents\programmation\tablord\tablord\tablordEdi_test.hta" xmlns="http://www.w3.org/1999/xhtml" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SCROLL="yes" SINGLEINSTANCE="no"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="tablord.css" src="tablord.css">
+<HTML xmlns="http://www.w3.org/1999/xhtml" APPLICATIONNAME="D:\Documents\programmation\tablord\tablord\tablordEdi_test.hta" sizcache="1" sizset="1" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SINGLEINSTANCE="no" SCROLL="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="tablord.css" src="tablord.css">
 <SCRIPT src="jquery-1.5.1.min.js"></SCRIPT>
 
 <SCRIPT src="tablordEdi.js"></SCRIPT>
@@ -22,17 +22,17 @@
 
 <SCRIPT src="diff.js"></SCRIPT>
 </HEAD>
-<BODY sizset="1" sizcache="1"  autoRun="true" designMode="on" showCode="true" showCut="true" showTest="true" showTrace="true">
+<BODY sizcache="1" sizset="1"  showTrace="true" showTest="true" showCut="true" showCode="true" designMode="on" autoRun="true">
 <DIV id=menu class=TOOLBAR style="MAX-WIDTH: 50%; FLOAT: right">
-<DIV><BUTTON onclick=tb.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=tb.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60" >&#9658;&#9658;</BUTTON><BUTTON onclick=tb.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=tb.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=tb.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=tb.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON><BUTTON onclick=tb.helpPanel$.toggle(100); style="HEIGHT: 23px; WIDTH: 43px">help</BUTTON><INPUT onclick=tb.showCode(event) CHECKED type=checkbox>codes</INPUT><INPUT onclick=tb.showCut(event) CHECKED type=checkbox>cuts</INPUT><INPUT onclick=tb.showTest(event) CHECKED type=checkbox>tests</INPUT><INPUT onclick=tb.showTrace(event) CHECKED type=checkbox>traces</INPUT><INPUT onclick=tb.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
-<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=tb.cutBlock(tb.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertBefore(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].convert(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION></SELECT><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertAfter(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=tb.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px" >&#8594;html</BUTTON><BUTTON onclick=tb.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px" >&#8594;test</BUTTON>
+<DIV><BUTTON onclick=tb.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=tb.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=tb.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=tb.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=tb.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=tb.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON><BUTTON onclick=tb.helpPanel$.toggle(100); style="HEIGHT: 23px; WIDTH: 43px">help</BUTTON><INPUT onclick=tb.showCode(event) CHECKED type=checkbox>codes</INPUT><INPUT onclick=tb.showCut(event) CHECKED type=checkbox>cuts</INPUT><INPUT onclick=tb.showTest(event) CHECKED type=checkbox>tests</INPUT><INPUT onclick=tb.showTrace(event) CHECKED type=checkbox>traces</INPUT><INPUT onclick=tb.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
+<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=tb.cutBlock(tb.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertBefore(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].convert(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION></SELECT><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertAfter(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=tb.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=tb.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px" >&#8594;test</BUTTON>
 <DIV id=objectToolBar></DIV></DIV>
 <DIV><SPAN onclick=tb.helpPanel$.hide(300) style="CURSOR: pointer; COLOR: red">&nbsp;×&nbsp;</SPAN><INPUT ><SPAN onclick=tb.help.index.back() style="CURSOR: pointer; COLOR: #8dff60">&#9668;</SPAN>
 <DIV style="OVERFLOW: auto; MAX-HEIGHT: 400px">please type your search above</DIV></DIV></DIV>
-<DIV id=tbContent class=CONTAINER sizset="1" sizcache="1" container="sectionContent">
-<DIV id=sect0002 class="SECTION ELEMENT" sizset="1" sizcache="1">
-<H1 class="SECTIONTITLE EDITABLE" contentEditable=false>1 tests of JcalcEdi <SPAN id=code0015 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.testStatus()</SPAN><SPAN id=out0015 class="OUTPUT SUCCESS" contentEditable=false><SPAN class=ERROR>tests passed:61 failed:2</SPAN></SPAN>&nbsp;</H1>
-<DIV sizset="1" sizcache="1" container="sectionContent"><PRE id=code0096 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.tableOfContent</PRE>
+<DIV id=tbContent class=CONTAINER sizcache="1" sizset="1" container="sectionContent">
+<DIV id=sect0002 class="SECTION ELEMENT" sizcache="1" sizset="1">
+<H1 class="SECTIONTITLE EDITABLE" contentEditable=false>1 tests of JcalcEdi <SPAN id=code0015 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.testStatus()</SPAN><SPAN id=out0015 class="OUTPUT SUCCESS" contentEditable=false><SPAN class=ERROR>tests passed:60 failed:3</SPAN></SPAN>&nbsp;</H1>
+<DIV sizcache="1" sizset="1" container="sectionContent"><PRE id=code0096 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.tableOfContent</PRE>
 <DIV id=out0096 class="OUTPUT SUCCESS">
 <DIV class=INTERACTIVE>
 <DIV class=TOC0>1 <A href="file:///D:/Documents/programmation/tablord/tablord/tablordEdi_test.hta#sect0002">tests of JcalcEdi tests passed:61 failed:2&nbsp;</A></DIV>
@@ -65,19 +65,19 @@
 <DIV class=TOC1>1.7 <A href="file:///D:/Documents/programmation/tablord/tablord/tablordEdi_test.hta#sect0074">Interactive and animation</A></DIV>
 <DIV class=TOC1>1.8 <A href="file:///D:/Documents/programmation/tablord/tablord/tablordEdi_test.hta#sect0165">help system</A></DIV>
 <DIV class=TOC1>1.9 <A href="file:///D:/Documents/programmation/tablord/tablord/tablordEdi_test.hta#sect0166">test results</A></DIV></DIV></DIV>
-<DIV id=sect0017 class="SECTION ELEMENT" sizset="2" sizcache="1">
+<DIV id=sect0017 class="SECTION ELEMENT" sizcache="1" sizset="2">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1 Consistence of rendering results</H2>
-<DIV sizset="2" sizcache="1" container="sectionContent">
-<DIV id=sect0018 class="SECTION ELEMENT" sizset="2" sizcache="1">
+<DIV sizcache="1" sizset="2" container="sectionContent">
+<DIV id=sect0018 class="SECTION ELEMENT" sizcache="1" sizset="2">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.1 numbers</H3>
-<DIV sizset="2" sizcache="1" container="sectionContent"><PRE id=code0019 class="CODE ELEMENT EDITABLE" contentEditable=false>5</PRE>
+<DIV sizcache="1" sizset="2" container="sectionContent"><PRE id=code0019 class="CODE ELEMENT EDITABLE" contentEditable=false>5</PRE>
 <DIV id=out0019 class="OUTPUT SUCCESS">5</DIV>
 <DIV id=test0019 class="TEST SUCCESS">5</DIV><PRE id=code0020 class="CODE ELEMENT EDITABLE" contentEditable=false>v('toto',6)</PRE>
 <DIV id=out0020 class="OUTPUT SUCCESS">6</DIV>
 <DIV id=test0020 class="TEST SUCCESS">6</DIV></DIV></DIV>
-<DIV id=sect0022 class="SECTION ELEMENT" sizset="4" sizcache="1">
+<DIV id=sect0022 class="SECTION ELEMENT" sizcache="1" sizset="4">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.2 Dates</H3>
-<DIV sizset="4" sizcache="1" container="sectionContent"><PRE id=code0023 class="CODE ELEMENT EDITABLE" contentEditable=false>new Date('2018/8/30')</PRE>
+<DIV sizcache="1" sizset="4" container="sectionContent"><PRE id=code0023 class="CODE ELEMENT EDITABLE" contentEditable=false>new Date('2018/8/30')</PRE>
 <DIV id=out0023 class="OUTPUT SUCCESS">2018-08-30</DIV>
 <DIV id=test0023 class="TEST SUCCESS">2018-08-30</DIV><PRE id=code0024 class="CODE ELEMENT EDITABLE" contentEditable=false>v('startDate',new Date('2018/7/1'))</PRE>
 <DIV id=out0024 class="OUTPUT SUCCESS">2018-07-01</DIV>
@@ -86,21 +86,21 @@
 <DIV id=test0025 class="TEST SUCCESS">1530396000000</DIV><PRE id=code0026 class="CODE ELEMENT EDITABLE" contentEditable=false>startDate.toUTCString()</PRE>
 <DIV id=out0026 class="OUTPUT SUCCESS">Sat,&nbsp;30&nbsp;Jun&nbsp;2018&nbsp;22:00:00&nbsp;UTC</DIV>
 <DIV id=test0026 class="TEST SUCCESS">Sat,&nbsp;30&nbsp;Jun&nbsp;2018&nbsp;22:00:00&nbsp;UTC</DIV></DIV></DIV>
-<DIV id=sect0034 class="SECTION ELEMENT" sizset="8" sizcache="1">
+<DIV id=sect0034 class="SECTION ELEMENT" sizcache="1" sizset="8">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.3 Strings</H3>
-<DIV sizset="8" sizcache="1" container="sectionContent"><PRE id=code0035 class="CODE ELEMENT EDITABLE" contentEditable=false>"guns an' roses"</PRE>
+<DIV sizcache="1" sizset="8" container="sectionContent"><PRE id=code0035 class="CODE ELEMENT EDITABLE" contentEditable=false>"guns an' roses"</PRE>
 <DIV id=out0035 class="OUTPUT SUCCESS">guns&nbsp;an'&nbsp;roses</DIV><PRE id=code0036 class="CODE ELEMENT EDITABLE" contentEditable=false>"multi line\nstring\nshould display\non several lines\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and spaces should be preserved &lt;b&gt;and no tag should become a tag&lt;/b&gt;"</PRE>
 <DIV id=out0036 class="OUTPUT SUCCESS">multi&nbsp;line<BR>string<BR>should&nbsp;display<BR>on&nbsp;several&nbsp;lines<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;spaces&nbsp;should&nbsp;be&nbsp;preserved&nbsp;<WBR>&lt;b&gt;and&nbsp;no&nbsp;tag&nbsp;should&nbsp;become&nbsp;a&nbsp;tag<WBR>&lt;/b&gt;</DIV></DIV></DIV>
-<DIV id=sect0027 class="SECTION ELEMENT" sizset="10" sizcache="1">
+<DIV id=sect0027 class="SECTION ELEMENT" sizcache="1" sizset="10">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.4 Arrays</H3>
-<DIV sizset="10" sizcache="1" container="sectionContent"><PRE id=code0028 class="CODE ELEMENT EDITABLE" contentEditable=false>[1,2,3]</PRE>
+<DIV sizcache="1" sizset="10" container="sectionContent"><PRE id=code0028 class="CODE ELEMENT EDITABLE" contentEditable=false>[1,2,3]</PRE>
 <DIV id=out0028 class="OUTPUT SUCCESS">1,2,3</DIV>
 <DIV id=test0028 class="TEST SUCCESS">1,2,3</DIV><PRE id=code0032 class="CODE ELEMENT EDITABLE" contentEditable=false>v('array',[1,2,3])</PRE>
 <DIV id=out0032 class="OUTPUT SUCCESS">1,2,3</DIV>
 <DIV id=test0032 class="TEST SUCCESS">1,2,3</DIV></DIV></DIV>
-<DIV id=sect0029 class="SECTION ELEMENT" sizset="12" sizcache="1">
+<DIV id=sect0029 class="SECTION ELEMENT" sizcache="1" sizset="12">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.5 plain objects</H3>
-<DIV sizset="12" sizcache="1" container="sectionContent"><PRE id=code0030 class="CODE ELEMENT EDITABLE" contentEditable=false><P>v('o',{toto:1,tutu:2})</P><P>o</P></PRE>
+<DIV sizcache="1" sizset="12" container="sectionContent"><PRE id=code0030 class="CODE ELEMENT EDITABLE" contentEditable=false><P>v('o',{toto:1,tutu:2})</P><P>o</P></PRE>
 <DIV id=out0030 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
@@ -123,9 +123,9 @@
 <TR>
 <TH vAlign=top>tutu</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV>
-<DIV id=sect0039 class="SECTION ELEMENT" sizset="13" sizcache="1">
+<DIV id=sect0039 class="SECTION ELEMENT" sizcache="1" sizset="13">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.1.6 HTML</H3>
-<DIV sizset="13" sizcache="1" container="sectionContent"><PRE id=code0037 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.html('if you &lt;b style="color:red;"&gt;want&lt;/b&gt; to format a string as html')</PRE>
+<DIV sizcache="1" sizset="13" container="sectionContent"><PRE id=code0037 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.html('if you &lt;b style="color:red;"&gt;want&lt;/b&gt; to format a string as html')</PRE>
 <DIV id=out0037 class="OUTPUT SUCCESS">if you <B style="COLOR: red">want</B> to format a string as html</DIV><PRE id=code0040 class="CODE ELEMENT EDITABLE" contentEditable=false><P>// be carefull if an attribute values is calculated, use tb.htmlAttribute to make sure everything goes right</P><P>var myStupidAttributeValue = 'joe\'s "stupidness"';</P><P>tb.html('&lt;span class=USERERROR '+tb.htmlAttribute('stupid',myStupidAttributeValue)+'&gt;So "stupid"&lt;/SPAN&gt;');</P></PRE>
 <DIV id=out0040 class="OUTPUT SUCCESS"><SPAN class=USERERROR stupid="joe's&nbsp;&amp;quote;stupidness&amp;quote;">So "stupid"</SPAN></DIV>
 <DIV id=test0040 class="TEST SUCCESS"><SPAN class=USERERROR stupid="joe's&nbsp;&amp;quote;stupidness&amp;quote;">So "stupid"</SPAN></DIV>
@@ -137,11 +137,11 @@
 <DIV id=test0041 class="TEST SUCCESS">joe's&nbsp;&amp;quote;stupidness&amp;quote;</DIV><PRE id=code0054 class="CODE ELEMENT EDITABLE" contentEditable=false><P>$('#out0040').add('#test0040')</P></PRE>
 <DIV id=out0054 class="OUTPUT SUCCESS">JQuery of 2 elements<BR>
 <OL start=0><BR>
-<LI class=INSPECTHTML><WBR>&lt;DIV&nbsp;id=out0040&nbsp;class="OUTPUT&nbsp;SUCCESS"&gt;<WBR>&lt;SPAN&nbsp;class=USERERROR&nbsp;stupid="joe's&amp;nbsp;&amp;amp;quote;stupidness&amp;amp;quote;"&gt;So&nbsp;"stupid"<WBR>&lt;/SPAN&gt;<WBR>&lt;/DIV&gt;</LI><BR>
-<LI class=INSPECTHTML><WBR>&lt;DIV&nbsp;id=test0040&nbsp;class="TEST&nbsp;SUCCESS"&gt;<WBR>&lt;SPAN&nbsp;class=USERERROR&nbsp;stupid="joe's&amp;nbsp;&amp;amp;quote;stupidness&amp;amp;quote;"&gt;So&nbsp;"stupid"<WBR>&lt;/SPAN&gt;<WBR>&lt;/DIV&gt;</LI><BR></OL></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0048 class="SECTION ELEMENT" sizset="17" sizcache="1">
+<LI class=INSPECTHTML><WBR>&lt;DIV&nbsp;id=out0040&nbsp;class="OUTPUT&nbsp;SUCCESS"&gt;<WBR>&lt;SPAN&nbsp;class=USERERROR&nbsp;stupid="joe's&amp;nbsp;&amp;amp;quote;stupidness&amp;amp;quote;"&gt;So&nbsp;"stupid"<WBR>&lt;/SPAN&gt;<WBR>&lt;/DIV&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;DIV&nbsp;id=test0040&nbsp;class="TEST&nbsp;SUCCESS"&gt;<WBR>&lt;SPAN&nbsp;class=USERERROR&nbsp;stupid="joe's&amp;nbsp;&amp;amp;quote;stupidness&amp;amp;quote;"&gt;So&nbsp;"stupid"<WBR>&lt;/SPAN&gt;<WBR>&lt;/DIV&gt;<BR></LI></OL></DIV></DIV></DIV></DIV></DIV>
+<DIV id=sect0048 class="SECTION ELEMENT" sizcache="1" sizset="17">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.2 V</H2>
-<DIV sizset="17" sizcache="1" container="sectionContent"><PRE id=code0049 class="CODE ELEMENT EDITABLE" contentEditable=false>v('toto',3)</PRE>
+<DIV sizcache="1" sizset="17" container="sectionContent"><PRE id=code0049 class="CODE ELEMENT EDITABLE" contentEditable=false>v('toto',3)</PRE>
 <DIV id=out0049 class="OUTPUT SUCCESS">3</DIV>
 <DIV id=test0049 class="TEST SUCCESS">3</DIV><PRE id=code0050 class="CODE ELEMENT EDITABLE" contentEditable=false>toto.label</PRE>
 <DIV id=out0050 class="OUTPUT SUCCESS">toto</DIV>
@@ -181,9 +181,9 @@
 <DIV id=test0071 class="TEST SUCCESS"><VAR>totalLength</VAR> = <SPAN class=VALUE>1128</SPAN>&nbsp;<SPAN class=UNIT>mm</SPAN></DIV><PRE id=code0072 class="CODE ELEMENT EDITABLE" contentEditable=false>totalLength$mm.code()</PRE>
 <DIV id=out0072 class="OUTPUT SUCCESS">length$m*1000+128</DIV>
 <DIV id=test0072 class="TEST SUCCESS">length$m*1000+128</DIV></DIV></DIV>
-<DIV id=sect0003 class="SECTION ELEMENT" sizset="37" sizcache="1">
+<DIV id=sect0003 class="SECTION ELEMENT" sizcache="1" sizset="37">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.3 JSON</H2>
-<DIV sizset="37" sizcache="1" container="sectionContent"><PRE id=code0004 class="CODE ELEMENT EDITABLE" contentEditable=false>JSON.stringify('myString is "stupid"')</PRE>
+<DIV sizcache="1" sizset="37" container="sectionContent"><PRE id=code0004 class="CODE ELEMENT EDITABLE" contentEditable=false>JSON.stringify('myString is "stupid"')</PRE>
 <DIV id=out0004 class="OUTPUT SUCCESS">"myString&nbsp;is&nbsp;\"stupid\""</DIV>
 <DIV id=test0004 class="TEST SUCCESS">"myString&nbsp;is&nbsp;\"stupid\""</DIV><PRE id=code0005 class="CODE ELEMENT EDITABLE" contentEditable=false>JSON.stringify([1,2,3,4])</PRE>
 <DIV id=out0005 class="OUTPUT SUCCESS">[1,<BR>2,<BR>3,<BR>4]</DIV>
@@ -198,28 +198,28 @@
 <P>false</P>
 <P>{"one":1, "two":2}</P>
 <P>{"one":1, "two":2}</P></DIV></DIV></DIV>
-<DIV id=sect0172 class="ELEMENT SECTION" sizset="41" sizcache="1">
+<DIV id=sect0172 class="ELEMENT SECTION" sizcache="1" sizset="41">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.4 jQuery extensions</H2>
-<DIV sizset="41" sizcache="1" container="sectionContent"><PRE id=code0173 class="ELEMENT CODE EDITABLE" contentEditable=false>// this is the code0173</PRE>
+<DIV sizcache="1" sizset="41" container="sectionContent"><PRE id=code0173 class="ELEMENT CODE EDITABLE" contentEditable=false>// this is the code0173</PRE>
 <DIV id=out0173 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV><PRE id=code0174 class="ELEMENT CODE EDITABLE" contentEditable=false><P>// this is the code 0174</P></PRE>
 <DIV id=out0174 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV><PRE id=code0177 class="ELEMENT CODE EDITABLE" contentEditable=false>// this is the code 0177</PRE>
 <DIV id=out0177 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV><PRE id=code0175 class="ELEMENT CODE EDITABLE" contentEditable=false>$('.CODE').filterFromToId('code0173','code0177')</PRE>
 <DIV id=out0175 class="OUTPUT SUCCESS">JQuery of 3 elements<BR>
 <OL start=0><BR>
-<LI class=INSPECTHTML><WBR>&lt;PRE&nbsp;id=code0173&nbsp;class="ELEMENT&nbsp;CODE&nbsp;EDITABLE"&nbsp;contentEditable=false&gt;//&nbsp;this&nbsp;is&nbsp;the&nbsp;code0173<WBR>&lt;/PRE&gt;</LI><BR>
-<LI class=INSPECTHTML><WBR>&lt;PRE&nbsp;id=code0174&nbsp;class="ELEMENT&nbsp;CODE&nbsp;EDITABLE"&nbsp;contentEditable=false&gt;<WBR>&lt;P&gt;//&nbsp;this&nbsp;is&nbsp;the&nbsp;code&nbsp;0174<WBR>&lt;/P&gt;<WBR>&lt;/PRE&gt;</LI><BR>
-<LI class=INSPECTHTML><WBR>&lt;PRE&nbsp;id=code0177&nbsp;class="ELEMENT&nbsp;CODE&nbsp;EDITABLE"&nbsp;contentEditable=false&gt;//&nbsp;this&nbsp;is&nbsp;the&nbsp;code&nbsp;0177<WBR>&lt;/PRE&gt;</LI><BR></OL></DIV>
+<LI class=INSPECTHTML><WBR>&lt;PRE&nbsp;id=code0173&nbsp;class="ELEMENT&nbsp;CODE&nbsp;EDITABLE"&nbsp;contentEditable=false&gt;//&nbsp;this&nbsp;is&nbsp;the&nbsp;code0173<WBR>&lt;/PRE&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;PRE&nbsp;id=code0174&nbsp;class="ELEMENT&nbsp;CODE&nbsp;EDITABLE"&nbsp;contentEditable=false&gt;<WBR>&lt;P&gt;//&nbsp;this&nbsp;is&nbsp;the&nbsp;code&nbsp;0174<WBR>&lt;/P&gt;<WBR>&lt;/PRE&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;PRE&nbsp;id=code0177&nbsp;class="ELEMENT&nbsp;CODE&nbsp;EDITABLE"&nbsp;contentEditable=false&gt;//&nbsp;this&nbsp;is&nbsp;the&nbsp;code&nbsp;0177<WBR>&lt;/PRE&gt;<BR></LI></OL></DIV>
 <DIV id=test0175 class="TEST SUCCESS">JQuery of 3 elements<BR>
 <OL start=0><BR>
-<LI class=INSPECTHTML><WBR>&lt;PRE&nbsp;id=code0173&nbsp;class="ELEMENT&nbsp;CODE&nbsp;EDITABLE"&nbsp;contentEditable=false&gt;//&nbsp;this&nbsp;is&nbsp;the&nbsp;code0173<WBR>&lt;/PRE&gt;</LI><BR>
-<LI class=INSPECTHTML><WBR>&lt;PRE&nbsp;id=code0174&nbsp;class="ELEMENT&nbsp;CODE&nbsp;EDITABLE"&nbsp;contentEditable=false&gt;<WBR>&lt;P&gt;//&nbsp;this&nbsp;is&nbsp;the&nbsp;code&nbsp;0174<WBR>&lt;/P&gt;<WBR>&lt;/PRE&gt;</LI><BR>
-<LI class=INSPECTHTML><WBR>&lt;PRE&nbsp;id=code0177&nbsp;class="ELEMENT&nbsp;CODE&nbsp;EDITABLE"&nbsp;contentEditable=false&gt;//&nbsp;this&nbsp;is&nbsp;the&nbsp;code&nbsp;0177<WBR>&lt;/PRE&gt;</LI><BR></OL></DIV></DIV></DIV>
-<DIV id=sect0009 class="SECTION ELEMENT" sizset="45" sizcache="1">
+<LI class=INSPECTHTML><WBR>&lt;PRE&nbsp;id=code0173&nbsp;class="ELEMENT&nbsp;CODE&nbsp;EDITABLE"&nbsp;contentEditable=false&gt;//&nbsp;this&nbsp;is&nbsp;the&nbsp;code0173<WBR>&lt;/PRE&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;PRE&nbsp;id=code0174&nbsp;class="ELEMENT&nbsp;CODE&nbsp;EDITABLE"&nbsp;contentEditable=false&gt;<WBR>&lt;P&gt;//&nbsp;this&nbsp;is&nbsp;the&nbsp;code&nbsp;0174<WBR>&lt;/P&gt;<WBR>&lt;/PRE&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;PRE&nbsp;id=code0177&nbsp;class="ELEMENT&nbsp;CODE&nbsp;EDITABLE"&nbsp;contentEditable=false&gt;//&nbsp;this&nbsp;is&nbsp;the&nbsp;code&nbsp;0177<WBR>&lt;/PRE&gt;<BR></LI></OL></DIV></DIV></DIV>
+<DIV id=sect0009 class="SECTION ELEMENT" sizcache="1" sizset="45">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.5 jc helpers</H2>
-<DIV sizset="45" sizcache="1" container="sectionContent">
-<DIV id=sect0007 class="SECTION ELEMENT" sizset="45" sizcache="1">
+<DIV sizcache="1" sizset="45" container="sectionContent">
+<DIV id=sect0007 class="SECTION ELEMENT" sizcache="1" sizset="45">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.5.1 jc.inspect</H3>
-<DIV sizset="45" sizcache="1" container="sectionContent"><PRE id=code0129 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.inspect(123)</PRE>
+<DIV sizcache="1" sizset="45" container="sectionContent"><PRE id=code0129 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.inspect(123)</PRE>
 <DIV id=out0129 class="OUTPUT SUCCESS">123</DIV>
 <DIV id=test0129 class="TEST SUCCESS">123</DIV><PRE id=code0130 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.inspect('toto')</PRE>
 <DIV id=out0130 class="OUTPUT SUCCESS"><SPAN class=INSPECT>"toto"</SPAN></DIV>
@@ -264,9 +264,9 @@
 <DIV id=test0142 class="TEST SUCCESS">null</DIV><PRE id=code0135 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.inspect({one:1,two:2}).toString()</PRE>
 <DIV id=out0135 class="OUTPUT SUCCESS">{}&nbsp;<BR>one:&nbsp;&nbsp;1<BR>two:&nbsp;&nbsp;2<BR></DIV>
 <DIV id=test0135 class="TEST SUCCESS">{}&nbsp;<BR>one:&nbsp;&nbsp;1<BR>two:&nbsp;&nbsp;2<BR></DIV></DIV></DIV>
-<DIV id=sect0099 class="SECTION ELEMENT" sizset="57" sizcache="1">
+<DIV id=sect0099 class="SECTION ELEMENT" sizcache="1" sizset="57">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.5.2 jc.heir</H3>
-<DIV sizset="57" sizcache="1" container="sectionContent"><PRE id=code0100 class="CODE ELEMENT EDITABLE" contentEditable=false><P>tb.vars.parent = {firstName:'Ma',name:'Dalton'}</P><P>tb.vars.child1 = tb.heir(parent);</P><P>child1.firstName='Avrel';</P><P>tb.inspect(child1)</P><P>&nbsp;</P></PRE>
+<DIV sizcache="1" sizset="57" container="sectionContent"><PRE id=code0100 class="CODE ELEMENT EDITABLE" contentEditable=false><P>tb.vars.parent = {firstName:'Ma',name:'Dalton'}</P><P>tb.vars.child1 = tb.heir(parent);</P><P>child1.firstName='Avrel';</P><P>tb.inspect(child1)</P><P>&nbsp;</P></PRE>
 <DIV id=out0100 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>[object Object] </LEGEND>
@@ -279,9 +279,9 @@
 <TH vAlign=top>name</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>Dalton</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0107 class="CODE ELEMENT EDITABLE" contentEditable=false><P>&nbsp;</P></PRE>
 <DIV id=out0107 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV></DIV></DIV>
-<DIV id=sect0102 class="SECTION ELEMENT" sizset="59" sizcache="1">
+<DIV id=sect0102 class="SECTION ELEMENT" sizcache="1" sizset="59">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.5.3 jc.makeInheritFrom</H3>
-<DIV sizset="59" sizcache="1" container="sectionContent"><PRE id=code0105 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.inspect(Function.constructor)</PRE>
+<DIV sizcache="1" sizset="59" container="sectionContent"><PRE id=code0105 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.inspect(Function.constructor)</PRE>
 <DIV id=out0105 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>function Function() </LEGEND>
@@ -328,28 +328,28 @@
 <DIV id=out0120 class="OUTPUT SUCCESS">[object&nbsp;Object]</DIV><PRE id=code0122 class="CODE ELEMENT EDITABLE" contentEditable=false></PRE>
 <DIV id=out0122 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV><PRE id=code0121 class="CODE ELEMENT EDITABLE" contentEditable=false>child instanceof Ancestor</PRE>
 <DIV id=out0121 class="OUTPUT SUCCESS">true</DIV></DIV></DIV>
-<DIV id=sect0081 class="SECTION ELEMENT" sizset="74" sizcache="1">
+<DIV id=sect0081 class="SECTION ELEMENT" sizcache="1" sizset="74">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.5.4 jc.constructorName</H3>
-<DIV sizset="74" sizcache="1" container="sectionContent"><PRE id=code0082 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.constructorName('toto')</PRE>
+<DIV sizcache="1" sizset="74" container="sectionContent"><PRE id=code0082 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.constructorName('toto')</PRE>
 <DIV id=out0082 class="OUTPUT SUCCESS">false</DIV>
 <DIV id=test0082 class="TEST SUCCESS">false</DIV><PRE id=code0085 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.constructorName('aToto')</PRE>
 <DIV id=out0085 class="OUTPUT SUCCESS">false</DIV>
 <DIV id=test0085 class="TEST SUCCESS">false</DIV><PRE id=code0083 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.constructorName('Toto')</PRE>
 <DIV id=out0083 class="OUTPUT SUCCESS">true</DIV>
 <DIV id=test0083 class="TEST SUCCESS">true</DIV></DIV></DIV>
-<DIV id=sect0097 class="SECTION ELEMENT" sizset="77" sizcache="1">
+<DIV id=sect0097 class="SECTION ELEMENT" sizcache="1" sizset="77">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.5.5 jc.keys</H3>
-<DIV sizset="77" sizcache="1" container="sectionContent"><PRE id=code0010 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.keys({one:1,two:2})</PRE>
+<DIV sizcache="1" sizset="77" container="sectionContent"><PRE id=code0010 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.keys({one:1,two:2})</PRE>
 <DIV id=out0010 class="OUTPUT SUCCESS">one,two</DIV>
 <DIV id=test0010 class="TEST SUCCESS">one,two</DIV></DIV></DIV>
-<DIV id=sect0098 class="SECTION ELEMENT" sizset="78" sizcache="1">
+<DIV id=sect0098 class="SECTION ELEMENT" sizcache="1" sizset="78">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.5.6 jc.pad</H3>
-<DIV sizset="78" sizcache="1" container="sectionContent"><PRE id=code0012 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.pad(15,5)</PRE>
+<DIV sizcache="1" sizset="78" container="sectionContent"><PRE id=code0012 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.pad(15,5)</PRE>
 <DIV id=out0012 class="OUTPUT SUCCESS">00015</DIV>
 <DIV id=test0012 class="TEST SUCCESS">00015</DIV></DIV></DIV>
-<DIV id=sect0151 class="ELEMENT SECTION" sizset="79" sizcache="1">
+<DIV id=sect0151 class="ELEMENT SECTION" sizcache="1" sizset="79">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.5.7 jc.urlComponents</H3>
-<DIV class=CONTAINER sizset="79" sizcache="1" container="sectionContent"><PRE id=code0152 class="ELEMENT CODE EDITABLE" contentEditable=false><P>tb.inspect(tb.urlComponents('http://user:password@www.monserveur.com:8080/path/subpath/filename.ext#tag?searchstring&amp;toto=2&amp;tutu=bidule'),2)</P></PRE>
+<DIV class=CONTAINER sizcache="1" sizset="79" container="sectionContent"><PRE id=code0152 class="ELEMENT CODE EDITABLE" contentEditable=false><P>tb.inspect(tb.urlComponents('http://user:password@www.monserveur.com:8080/path/subpath/filename.ext#tag?searchstring&amp;toto=2&amp;tutu=bidule'),2)</P></PRE>
 <DIV id=out0152 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
@@ -602,79 +602,101 @@
 <FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
 <TBODY></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV>
-<DIV id=sect0169 class="ELEMENT SECTION" sizset="82" sizcache="1">
+<DIV id=sect0169 class="ELEMENT SECTION" sizcache="1" sizset="82">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.5.8 jc.fileName</H3>
-<DIV sizset="82" sizcache="1" container="sectionContent"><PRE id=code0170 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.fileName('d:\\path\\path\\fileName.ext')</PRE>
+<DIV sizcache="1" sizset="82" container="sectionContent"><PRE id=code0170 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.fileName('d:\\path\\path\\fileName.ext')</PRE>
 <DIV id=out0170 class="OUTPUT SUCCESS">fileName.ext</DIV>
 <DIV id=test0170 class="TEST SUCCESS">fileName.ext</DIV></DIV></DIV>
-<DIV id=sect0096 class="SECTION ELEMENT" sizset="83" sizcache="1">
+<DIV id=sect0096 class="SECTION ELEMENT" sizcache="1" sizset="83">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.5.9 Helpers for functions</H3>
-<DIV sizset="83" sizcache="1" container="sectionContent"><PRE id=code0091 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.signature(tb.Scene)</PRE>
+<DIV sizcache="1" sizset="83" container="sectionContent"><PRE id=code0091 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.signature(tb.Scene)</PRE>
 <DIV id=out0091 class="OUTPUT SUCCESS">function&nbsp;Scene(name,css,html)</DIV>
 <DIV id=test0091 class="TEST SUCCESS">function&nbsp;Scene(name,css,html)</DIV><PRE id=code0092 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.functionName(tb.Scene)</PRE>
 <DIV id=out0092 class="OUTPUT SUCCESS">Scene</DIV>
 <DIV id=test0092 class="TEST SUCCESS">Scene</DIV><PRE id=code0094 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.functionName(tb.functionName)</PRE>
 <DIV id=out0094 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">empty string</SPAN></DIV>
 <DIV id=test0094 class="TEST SUCCESS"><SPAN style="COLOR: red">empty string</SPAN></DIV><PRE id=code0079 class="CODE ELEMENT EDITABLE" contentEditable=false><P>// if the function is a constructor (= has a name that Starts with an Uppercase)</P><P>// the methods of that class are also displayed</P><P>tb.help(tb.Inspector)</P></PRE>
-<DIV id=out0079 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function Inspector(obj,depth,name)</B><BR>constructor for tb.Inspector objects<BR>&nbsp;Inspector&nbsp;object&nbsp;are&nbsp;made&nbsp;to&nbsp;have&nbsp;both&nbsp;.toString&nbsp;and&nbsp;.span&nbsp;methods<BR>&nbsp;so&nbsp;they&nbsp;can&nbsp;be&nbsp;displayed&nbsp;either&nbsp;in&nbsp;an&nbsp;html&nbsp;or&nbsp;plain&nbsp;text&nbsp;context<BR>&nbsp;-&nbsp;depth&nbsp;(default&nbsp;1)&nbsp;give&nbsp;at&nbsp;what&nbsp;depth&nbsp;object&nbsp;properties&nbsp;are&nbsp;also&nbsp;inspected<BR>&nbsp;-&nbsp;name&nbsp;(optional)&nbsp;gives&nbsp;a&nbsp;name&nbsp;to&nbsp;be&nbsp;shown&nbsp;in&nbsp;the&nbsp;display
+<DIV id=out0079 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function Inspector(obj,depth,name)</B><BR>constructor for tb.Inspector objects<BR>Inspector object are made to have both .toString and .span methods 
+<P><BR>so they can be displayed either in an html or plain text context 
+<P><BR>
+<DT>depth
+<DD>(default 1) give at what depth object properties are also inspected 
+<P><BR></P>
+<DT>name
+<DD>(optional) gives a name to be shown in the display 
+<P></P>
 <FIELDSET><LEGEND>methods</LEGEND>
 <TABLE>
 <TBODY>
 <TR>
 <TH vAlign=top>legend</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>&nbsp;returns&nbsp;the&nbsp;legend&nbsp;for&nbsp;a&nbsp;given&nbsp;object</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>returns the legend for a given object 
+<P></SPAN></P></TD></TR>
 <TR>
 <TH vAlign=top>toString</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function ()</B><BR>&nbsp;display&nbsp;the&nbsp;object&nbsp;hold&nbsp;by&nbsp;the&nbsp;inspector&nbsp;as&nbsp;a&nbsp;string</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function ()</B><BR>display the object hold by the inspector as a string 
+<P></SPAN></P></TD></TR>
 <TR>
 <TH vAlign=top>span</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function (depth)</B><BR></SPAN></TD></TR></TBODY></TABLE></FIELDSET>
 <FIELDSET><LEGEND>static methods</LEGEND>
 <TABLE>
-<TBODY></TBODY></TABLE></FIELDSET></SPAN></DIV>
-<DIV id=test0079 class="TEST SUCCESS"><SPAN class=HELP><B>function Inspector(obj,depth,name)</B><BR>constructor for tb.Inspector objects<BR>&nbsp;Inspector&nbsp;object&nbsp;are&nbsp;made&nbsp;to&nbsp;have&nbsp;both&nbsp;.toString&nbsp;and&nbsp;.span&nbsp;methods<BR>&nbsp;so&nbsp;they&nbsp;can&nbsp;be&nbsp;displayed&nbsp;either&nbsp;in&nbsp;an&nbsp;html&nbsp;or&nbsp;plain&nbsp;text&nbsp;context<BR>&nbsp;-&nbsp;depth&nbsp;(default&nbsp;1)&nbsp;give&nbsp;at&nbsp;what&nbsp;depth&nbsp;object&nbsp;properties&nbsp;are&nbsp;also&nbsp;inspected<BR>&nbsp;-&nbsp;name&nbsp;(optional)&nbsp;gives&nbsp;a&nbsp;name&nbsp;to&nbsp;be&nbsp;shown&nbsp;in&nbsp;the&nbsp;display 
+<TBODY></TBODY></TABLE></FIELDSET></SPAN></DD></DIV>
+<DIV id=test0079 class="TEST SUCCESS"><SPAN class=HELP><B>function Inspector(obj,depth,name)</B><BR>constructor for tb.Inspector objects<BR>Inspector object are made to have both .toString and .span methods 
+<P><BR>so they can be displayed either in an html or plain text context 
+<P><BR>
+<DT>depth 
+<DD>(default 1) give at what depth object properties are also inspected 
+<P><BR></P>
+<DT>name 
+<DD>(optional) gives a name to be shown in the display 
+<P></P>
 <FIELDSET><LEGEND>methods</LEGEND>
 <TABLE>
 <TBODY>
 <TR>
 <TH vAlign=top>legend</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>&nbsp;returns&nbsp;the&nbsp;legend&nbsp;for&nbsp;a&nbsp;given&nbsp;object</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>returns the legend for a given object 
+<P></SPAN></P></TD></TR>
 <TR>
 <TH vAlign=top>toString</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function ()</B><BR>&nbsp;display&nbsp;the&nbsp;object&nbsp;hold&nbsp;by&nbsp;the&nbsp;inspector&nbsp;as&nbsp;a&nbsp;string</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function ()</B><BR>display the object hold by the inspector as a string 
+<P></SPAN></P></TD></TR>
 <TR>
 <TH vAlign=top>span</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function (depth)</B><BR></SPAN></TD></TR></TBODY></TABLE></FIELDSET> 
 <FIELDSET><LEGEND>static methods</LEGEND>
 <TABLE>
-<TBODY></TBODY></TABLE></FIELDSET></SPAN></DIV><PRE id=code0087 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.help(tb.Inspector.prototype.legend)</PRE>
-<DIV id=out0087 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function()</B><BR>&nbsp;returns&nbsp;the&nbsp;legend&nbsp;for&nbsp;a&nbsp;given&nbsp;object</SPAN></DIV>
-<DIV id=test0087 class="TEST SUCCESS"><SPAN class=HELP><B>function()</B><BR>&nbsp;returns&nbsp;the&nbsp;legend&nbsp;for&nbsp;a&nbsp;given&nbsp;object</SPAN></DIV></DIV></DIV>
-<DIV id=sect0144 class="ELEMENT SECTION" sizset="88" sizcache="1">
+<TBODY></TBODY></TABLE></FIELDSET></SPAN></DD></DIV><PRE id=code0087 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.help(tb.Inspector.prototype.legend)</PRE>
+<DIV id=out0087 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function()</B><BR>returns the legend for a given object 
+<P></SPAN></P></DIV>
+<DIV id=test0087 class="TEST SUCCESS"><SPAN class=HELP><B>function()</B><BR>returns the legend for a given object 
+<P></SPAN></P></DIV></DIV></DIV>
+<DIV id=sect0144 class="ELEMENT SECTION" sizcache="1" sizset="88">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.5.10 helpers to write code</H3>
-<DIV class=CONTAINER sizset="88" sizcache="1" container="sectionContent"><PRE id=code0145 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.isJSid('Toto_123$')</PRE>
+<DIV class=CONTAINER sizcache="1" sizset="88" container="sectionContent"><PRE id=code0145 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.isJSid('Toto_123$')</PRE>
 <DIV id=out0145 class="OUTPUT SUCCESS">true</DIV><PRE id=code0146 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.isJSid('toto%')</PRE>
 <DIV id=out0146 class="OUTPUT SUCCESS">false</DIV><PRE id=code0148 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.toJSCode('{toto:3,tutu:"three",titi:[1,2,3,{tyty:4}]}')</PRE>
 <DIV id=out0148 class="OUTPUT SUCCESS">'{toto:3,tutu:"three",titi:[1,2,3,{tyty:4}]}'</DIV><PRE id=code0149 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.toJSCode('{toto:3,tutu:"three",titi:[1,2,3,{tyty:4}]}','"')</PRE>
 <DIV id=out0149 class="OUTPUT SUCCESS">"{toto:3,tutu:\"three\",titi:[1,2,3,{tyty:4}]}"</DIV></DIV></DIV>
-<DIV id=sect0159 class="ELEMENT SECTION" sizset="92" sizcache="1">
+<DIV id=sect0159 class="ELEMENT SECTION" sizcache="1" sizset="92">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.5.11 helper to match object and find objects in arrays</H3>
-<DIV sizset="92" sizcache="1" container="sectionContent"><PRE id=code0160 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.objMatchCriteria({toto:1,tutu:0},{toto:1})</PRE>
+<DIV sizcache="1" sizset="92" container="sectionContent"><PRE id=code0160 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.objMatchCriteria({toto:1,tutu:0},{toto:1})</PRE>
 <DIV id=out0160 class="OUTPUT SUCCESS">true</DIV><PRE id=code0161 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.objMatchCriteria({toto:1,tutu:0},{toto:4})</PRE>
 <DIV id=out0161 class="OUTPUT SUCCESS">false</DIV><PRE id=code0162 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.findInArrayOfObject({toto:2},[{toto:1},{toto:2,tutu:2},{toto:3}])</PRE>
 <DIV id=out0162 class="OUTPUT SUCCESS">1</DIV><PRE id=code0163 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.findInArrayOfObject({toto:5},[{toto:1},{toto:2,tutu:2},{toto:3}])</PRE>
 <DIV id=out0163 class="OUTPUT SUCCESS">-1</DIV></DIV></DIV>
-<DIV id=sect0099 class="SECTION ELEMENT" sizset="96" sizcache="1">
+<DIV id=sect0099 class="SECTION ELEMENT" sizcache="1" sizset="96">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.5.12 helpers for html</H3>
-<DIV sizset="96" sizcache="1" container="sectionContent">
-<DIV id=sect0100 class="SECTION ELEMENT" sizset="96" sizcache="1">
+<DIV sizcache="1" sizset="96" container="sectionContent">
+<DIV id=sect0100 class="SECTION ELEMENT" sizcache="1" sizset="96">
 <H4 class="SECTIONTITLE EDITABLE" contentEditable=false>1.5.12.1 jc.toString</H4>
-<DIV sizset="96" sizcache="1" container="sectionContent"><PRE id=code0013 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.toString('&lt;pre&gt;one paragraph&lt;P&gt;one &lt;b&gt;line&lt;/b&gt; break&lt;BR&gt;3&amp;lt;5 8&amp;gt;5 guns &amp;amp; roses&lt;/pre&gt;');</PRE>
+<DIV sizcache="1" sizset="96" container="sectionContent"><PRE id=code0013 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.toString('&lt;pre&gt;one paragraph&lt;P&gt;one &lt;b&gt;line&lt;/b&gt; break&lt;BR&gt;3&amp;lt;5 8&amp;gt;5 guns &amp;amp; roses&lt;/pre&gt;');</PRE>
 <DIV id=out0013 class="OUTPUT SUCCESS">one&nbsp;paragraph<BR><BR>one&nbsp;line&nbsp;break<BR>3<WBR>&lt;5&nbsp;8&gt;5&nbsp;guns&nbsp;&amp;&nbsp;roses</DIV>
 <DIV id=test0013 class="TEST SUCCESS">one&nbsp;paragraph<BR><BR>one&nbsp;line&nbsp;break<BR>3<WBR>&lt;5&nbsp;8&gt;5&nbsp;guns&nbsp;&amp;&nbsp;roses</DIV></DIV></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0043 class="SECTION ELEMENT" sizset="97" sizcache="1">
+<DIV id=sect0043 class="SECTION ELEMENT" sizcache="1" sizset="97">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.6 trace</H2>
-<DIV sizset="97" sizcache="1" container="sectionContent"><PRE id=code0046 class="CODE ELEMENT EDITABLE" contentEditable=false><P>trace.on();</P><P>for (var i = 0;i&lt;=5;i++) {</P><P>trace(i,'string ');</P><P>}</P><P>trace.messages // normally never use like this,</P><P>// just a convinient way to test traces since traces are NOT part of the result</P></PRE>
+<DIV sizcache="1" sizset="97" container="sectionContent"><PRE id=code0046 class="CODE ELEMENT EDITABLE" contentEditable=false><P>trace.on();</P><P>for (var i = 0;i&lt;=5;i++) {</P><P>trace(i,'string ');</P><P>}</P><P>trace.messages // normally never use like this,</P><P>// just a convinient way to test traces since traces are NOT part of the result</P></PRE>
 <DIV class=TRACE>6 traces:
 <TABLE class=DEBUG>
 <TBODY>
@@ -692,19 +714,19 @@
 <TD class=TRACE>5<SPAN class=INSPECT>"string&nbsp;"</SPAN></TD></TR></TBODY></TABLE></DIV>
 <DIV id=out0046 class="OUTPUT SUCCESS">0<SPAN class=INSPECT>"string&nbsp;"</SPAN>,1<SPAN class=INSPECT>"string&nbsp;"</SPAN>,2<SPAN class=INSPECT>"string&nbsp;"</SPAN>,3<SPAN class=INSPECT>"string&nbsp;"</SPAN>,4<SPAN class=INSPECT>"string&nbsp;"</SPAN>,5<SPAN class=INSPECT>"string&nbsp;"</SPAN></DIV>
 <DIV id=test0046 class="TEST SUCCESS">0<SPAN class=INSPECT>"string&nbsp;"</SPAN>,1<SPAN class=INSPECT>"string&nbsp;"</SPAN>,2<SPAN class=INSPECT>"string&nbsp;"</SPAN>,3<SPAN class=INSPECT>"string&nbsp;"</SPAN>,4<SPAN class=INSPECT>"string&nbsp;"</SPAN>,5<SPAN class=INSPECT>"string&nbsp;"</SPAN></DIV></DIV></DIV>
-<DIV id=sect0074 class="SECTION ELEMENT" sizset="98" sizcache="1">
+<DIV id=sect0074 class="SECTION ELEMENT" sizcache="1" sizset="98">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.7 Interactive and animation</H2>
-<DIV sizset="98" sizcache="1" container="sectionContent"><PRE id=code0075 class="CODE ELEMENT EDITABLE" contentEditable=false><P>trace.on()</P><P>tb.scene('scene1',{height:400,width:600,border:'solid black 2px'})</P><P>.div('square',{width:50,height:50,border:'solid red 5px',top:100,left:150})</P><P>.div('follower1',{width:50,height:50,top:10,border:'solid purple 5px'}).addForces({square:tb.spring(10,1)})</P><P>.div('follower2',{width:50,height:50,border:'solid blue 5px'}).addForces({square:tb.spring(10,2)})</P><P>.div('alone',{left:100,top:100,width:50,height:50,border:'solid yellow 5px'})</P><P>.end()</P><P>&nbsp;</P></PRE>
+<DIV sizcache="1" sizset="98" container="sectionContent"><PRE id=code0075 class="CODE ELEMENT EDITABLE" contentEditable=false><P>trace.on()</P><P>tb.scene('scene1',{height:400,width:600,border:'solid black 2px'})</P><P>.div('square',{width:50,height:50,border:'solid red 5px',top:100,left:150})</P><P>.div('follower1',{width:50,height:50,top:10,border:'solid purple 5px'}).addForces({square:tb.spring(10,1)})</P><P>.div('follower2',{width:50,height:50,border:'solid blue 5px'}).addForces({square:tb.spring(10,2)})</P><P>.div('alone',{left:100,top:100,width:50,height:50,border:'solid yellow 5px'})</P><P>.end()</P><P>&nbsp;</P></PRE>
 <DIV id=out0075 class="OUTPUT SUCCESS">
 <DIV class=SCENE style="BORDER-TOP: black 2px solid; HEIGHT: 400px; BORDER-RIGHT: black 2px solid; WIDTH: 600px; BORDER-BOTTOM: black 2px solid; BORDER-LEFT: black 2px solid">
 <DIV class=SCENECONTAINER>
-<DIV class=IELEMENT style="BORDER-TOP: red 5px solid; HEIGHT: 50px; BORDER-RIGHT: red 5px solid; WIDTH: 50px; BORDER-BOTTOM: red 5px solid; LEFT: 214px; BORDER-LEFT: red 5px solid; TOP: 77px"></DIV>
-<DIV class=IELEMENT style="BORDER-TOP: purple 5px solid; HEIGHT: 50px; BORDER-RIGHT: purple 5px solid; WIDTH: 50px; BORDER-BOTTOM: purple 5px solid; LEFT: 214px; BORDER-LEFT: purple 5px solid; TOP: 76px"></DIV>
-<DIV class=IELEMENT style="BORDER-TOP: blue 5px solid; HEIGHT: 50px; BORDER-RIGHT: blue 5px solid; WIDTH: 50px; BORDER-BOTTOM: blue 5px solid; LEFT: 220px; BORDER-LEFT: blue 5px solid; TOP: 82px"></DIV>
+<DIV class=IELEMENT style="BORDER-TOP: red 5px solid; HEIGHT: 50px; BORDER-RIGHT: red 5px solid; WIDTH: 50px; BORDER-BOTTOM: red 5px solid; LEFT: 192px; BORDER-LEFT: red 5px solid; TOP: 125px"></DIV>
+<DIV class=IELEMENT style="BORDER-TOP: purple 5px solid; HEIGHT: 50px; BORDER-RIGHT: purple 5px solid; WIDTH: 50px; BORDER-BOTTOM: purple 5px solid; LEFT: 189px; BORDER-LEFT: purple 5px solid; TOP: 148px"></DIV>
+<DIV class=IELEMENT style="BORDER-TOP: blue 5px solid; HEIGHT: 50px; BORDER-RIGHT: blue 5px solid; WIDTH: 50px; BORDER-BOTTOM: blue 5px solid; LEFT: 193px; BORDER-LEFT: blue 5px solid; TOP: 143px"></DIV>
 <DIV class=IELEMENT style="BORDER-TOP: yellow 5px solid; HEIGHT: 50px; BORDER-RIGHT: yellow 5px solid; WIDTH: 50px; BORDER-BOTTOM: yellow 5px solid; LEFT: 100px; BORDER-LEFT: yellow 5px solid; TOP: 100px"></DIV></DIV></DIV></DIV><PRE id=code0124 class="CODE ELEMENT EDITABLE" contentEditable=false>scene1.square.$</PRE>
 <DIV id=out0124 class="OUTPUT SUCCESS">JQuery of 1 elements<BR>
 <OL start=0><BR>
-<LI class=INSPECTHTML><WBR>&lt;DIV&nbsp;class=IELEMENT&nbsp;style="BORDER-TOP:&nbsp;red&nbsp;5px&nbsp;solid;&nbsp;HEIGHT:&nbsp;50px;&nbsp;BORDER-RIGHT:&nbsp;red&nbsp;5px&nbsp;solid;&nbsp;WIDTH:&nbsp;50px;&nbsp;BORDER-BOTTOM:&nbsp;red&nbsp;5px&nbsp;solid;&nbsp;LEFT:&nbsp;150px;&nbsp;BORDER-LEFT:&nbsp;red&nbsp;5px&nbsp;solid;&nbsp;TOP:&nbsp;100px"&gt;<WBR>&lt;/DIV&gt;</LI><BR></OL></DIV><PRE id=code0126 class="CODE ELEMENT EDITABLE" contentEditable=false>scene1.follower1.$.position()</PRE>
+<LI class=INSPECTHTML><WBR>&lt;DIV&nbsp;class=IELEMENT&nbsp;style="BORDER-TOP:&nbsp;red&nbsp;5px&nbsp;solid;&nbsp;HEIGHT:&nbsp;50px;&nbsp;BORDER-RIGHT:&nbsp;red&nbsp;5px&nbsp;solid;&nbsp;WIDTH:&nbsp;50px;&nbsp;BORDER-BOTTOM:&nbsp;red&nbsp;5px&nbsp;solid;&nbsp;LEFT:&nbsp;150px;&nbsp;BORDER-LEFT:&nbsp;red&nbsp;5px&nbsp;solid;&nbsp;TOP:&nbsp;100px"&gt;<WBR>&lt;/DIV&gt;<BR></LI></OL></DIV><PRE id=code0126 class="CODE ELEMENT EDITABLE" contentEditable=false>scene1.follower1.$.position()</PRE>
 <DIV id=out0126 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
@@ -723,13 +745,13 @@
 <TBODY>
 <TR>
 <TH vAlign=top>top</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>77</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>125</TD></TR>
 <TR>
 <TH vAlign=top>left</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>214</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV>
-<DIV id=sect0165 class="ELEMENT SECTION" sizset="102" sizcache="1">
+<TD style="TEXT-ALIGN: left" vAlign=top>192</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV>
+<DIV id=sect0165 class="ELEMENT SECTION" sizcache="1" sizset="102">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.8 help system</H2>
-<DIV sizset="102" sizcache="1" container="sectionContent"><PRE id=code0167 class="ELEMENT CODE EDITABLE" contentEditable=false><P>tb.inspect(tb.help.index.undocumentedClasses(),3)</P></PRE>
+<DIV sizcache="1" sizset="102" container="sectionContent"><PRE id=code0167 class="ELEMENT CODE EDITABLE" contentEditable=false><P>tb.inspect(tb.help.index.undocumentedClasses(),3)</P></PRE>
 <DIV id=out0167 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>[] </LEGEND>
@@ -766,24 +788,8 @@
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"$."</SPAN></TD></TR>
 <TR>
 <TH vAlign=top>func</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(a)</B><BR></SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
-<TR>
-<TH vAlign=top>2</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>
-<DIV class=INSPECT>
-<FIELDSET><LEGEND>{} </LEGEND>
-<TABLE>
-<TBODY>
-<TR>
-<TH vAlign=top>prop</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"Diff"</SPAN></TD></TR>
-<TR>
-<TH vAlign=top>path</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"tb."</SPAN></TD></TR>
-<TR>
-<TH vAlign=top>func</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function (t1,t2)</B><BR></SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
-<DIV id=test0167 class="TEST ERROR">
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(a)</B><BR></SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
+<DIV id=test0167 class="TEST SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>[] </LEGEND>
 <TABLE>
@@ -820,9 +826,9 @@
 <TR>
 <TH vAlign=top>func</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(a)</B><BR></SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV>
-<DIV id=sect0166 class="ELEMENT SECTION" sizset="103" sizcache="1">
+<DIV id=sect0166 class="ELEMENT SECTION" sizcache="1" sizset="103">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.9 test results</H2>
-<DIV sizset="103" sizcache="1" container="sectionContent"><PRE id=code0155 class="ELEMENT CODE EDITABLE" contentEditable=false><P>tb.updateResultsTestStatus();</P><P>tb.inspect(tb.results,2);</P><P>if ('runonce' in tb.url.arguments) tb.close();</P></PRE>
+<DIV sizcache="1" sizset="103" container="sectionContent"><PRE id=code0155 class="ELEMENT CODE EDITABLE" contentEditable=false><P>tb.updateResultsTestStatus();</P><P>tb.inspect(tb.results,2);</P><P>if ('runonce' in tb.url.arguments) tb.close();</P></PRE>
 <DIV id=out0155 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
@@ -837,10 +843,10 @@
 <TBODY>
 <TR>
 <TH vAlign=top>nbPassed</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>61</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>60</TD></TR>
 <TR>
 <TH vAlign=top>nbFailed</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>2</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR>
 <TR>
 <TH vAlign=top>dateTime</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>Sun&nbsp;Feb&nbsp;10&nbsp;13:07:51&nbsp;UTC+0100&nbsp;2019</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV></DIV></DIV></DIV></BODY></HTML>
+<TD style="TEXT-ALIGN: left" vAlign=top>Wed&nbsp;Feb&nbsp;13&nbsp;12:05:06&nbsp;UTC+0100&nbsp;2019</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV></DIV></DIV></DIV></BODY></HTML>

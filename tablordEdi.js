@@ -104,7 +104,8 @@
   tb.HelpIndex.className = 'tb.HelpIndex';
 
   tb.HelpIndex.prototype.update = function (object,path) {
-    // update the index 
+    // update the index by adding all methods of object and all static methods of object
+    // using path as base path. path must include the . 
 
     for (var prop in object) {
       if (typeof object[prop] == 'function') {
@@ -118,14 +119,19 @@
     return this;
   }
 
+  tb.HelpIndex.prototype.add = function(prop,path,markDown) {
+    // adds a new entry in the help index with a markDown description
+    this.index.push({prop:prop,path:path,desc:markDown});
+  }
+
   tb.HelpIndex.prototype.find = function(name) {
-    // return all entry corresponding to name: name can be partial
+    // return all entry corresponding to `name`: name can be partial
     // if name is a full path (ie. tb.help) the result is an exact match
     // if not (ie no . notation) any entry having name inside is valid 
     var res = [];
     var m = name.match(/^(.+\.)(.*)$/i);
     
-    if (m) {
+    if (m) { // fully specified search ==> only one result
       var path = m[1];
       var prop = m[2];
       for (var i=0;i<this.index.length;i++) {
@@ -135,7 +141,7 @@
         }
       }
     }
-    else {
+    else { // free search
       var regExp = new RegExp('^(.*)('+name+')(.*)$','i');
       for (var i=0;i<this.index.length;i++) {
         if (this.index[i].prop.search(regExp)!==-1) res.push(this.index[i]);
@@ -145,7 +151,7 @@
   }
 
   tb.HelpIndex.prototype.show =function(name) {
-    // show in the help Panel the help on name
+    // show in the help Panel the help on `name`
     this.history[++this.historyPos] = tb.helpSearch$.val();
     this.history.length = this.historyPos+1;
     tb.helpSearch$.val(name);
@@ -162,13 +168,24 @@
   }
 
   tb.HelpIndex.prototype.help$ = function(name) {
-    // return the html in order to display the result of the search of name
+    // return the jquery in order to display the result of the search of `name`
     var regExp = new RegExp('^(.*)('+name+')(.*)$','i');
     var res = this.find(name);
-    var n$ = $('<table>');
-    for (var i = 0; i<res.length; i++) {
-      var path = res[i].path.replace(/^(.*\.[A-Z]\w*)\./,'<span class=HELPLINK onclick="tb.help.index.show(\'$1\');">$1</span>.');
-      n$.append($('<TR><TD valign="top" class=LEFT>'+path+res[i].prop.replace(regExp,'$1<b>$2</b>$3')+'</TD><TD class=LEFT>'+tb.help(res[i].func)+'</TD></TR>'));
+    var n$ = $('<table style="margin-right:30px">');  //TODO: remove this magic number that reserves the space for the scroll bar (check with HTML5)
+    try {
+      var l = res.length;
+      if (l>30) {
+        l = 30;
+        n$.append('<tr><td class="WARNING LEFT" colspan=2>'+res.length+' results: only '+l+' first results displayed</td></tr>');
+      }
+      for (var i = 0; i<l; i++) {
+        var path = res[i].path.replace(/^(.*\.[A-Z]\w*)\./,'<span class=HELPLINK onclick="tb.help.index.show(\'$1\');">$1</span>.');
+        var desc = res[i].func?tb.help(res[i].func):tb.help.markDownToHtml(res[i].desc);
+        n$.append($('<TR><TD valign="top" class=LEFT>'+path+res[i].prop.replace(regExp,'$1<b>$2</b>$3')+'</TD><TD class=LEFT>'+desc+'</TD></TR>'));
+      }
+    }
+    catch (e) {
+      n$ = $('<div class=ERROR>'+e.message+'res.length='+res.length+' l='+l+'</div>');
     }
     return n$;
   }
@@ -180,7 +197,7 @@
     var res = [];
     for (var i = 0;i<this.index.length; i++) {
       if (tb.constructorName(this.index[i].prop)){
-        if (this.index[i].func.className !== (this.index[i].path+this.index[i].prop)) {
+        if (this.index[i].func && (this.index[i].func.className !== (this.index[i].path+this.index[i].prop))) {
           res.push(this.index[i]);
         }
       }
@@ -188,12 +205,14 @@
     return res;
   }
 
+
+
   tb.helps = {'tb.credits':tb.credits};
 
   tb.help = function(func) {
   // returns the signature of the function and the first comment in a pretty html 
-  //         followed by the content of the .help() static method of func if any
-  // - func: the function to be inspected
+  //         followed by the content of the .[[help]]() static method of func if any
+  // `func`: the function to be inspected
 
     if (func == undefined) {
       var h = '';
@@ -210,7 +229,7 @@
     for (var i=1; i<source.length; i++) {
       var comment = source[i].match(/^\s*\/\/(.*)$/);
       if (comment && (comment.length ==2)) {
-        comments.push(tb.toHtml(comment[1]));
+        comments.push(comment[1]);
       }
       else break;
     }
@@ -230,10 +249,38 @@
       }
       methods += '</table></fieldset>';
     };
-    return new tb.HTML('<SPAN class=HELP><b>'+signature+'</b><br/>'+comments.join('<br/>')+(func.help?func.help():'')+methods+'</SPAN>');
+    return new tb.HTML('<SPAN class=HELP><b>'+signature+'</b><br/>'+tb.help.markDownToHtml(comments.join('\n'))+(func.help?func.help():'')+methods+'</SPAN>');
+  }
+
+  // Markdown //// simplified version: TODO replace with better implementation
+  tb.help.markDownToHtml = function(markDown) {
+    // convert markDown to HTML with link for the help
+    // any line starting with .xxxx or - xxxx will be considered as a definition 
+    // .property describes the property
+    // - parameter describes the parameter
+    return markDown
+    .replace(/^\s+(\.\S+)/gm,'<dt>$1<dd>')
+    .replace(/^\s+- +(\S+)/gm,'<dt>$1<dd>')
+    .replace(/-{4,}/g,'<hr>')
+    .replace(/\s\*\*(\S.*)\*\*\s/g,'<em>$1</em>')
+    .replace(/\s\*(\S.*)\*\s/g,'<strong>$1</strong>')
+    .replace(/`(.+?)`/g,'<code>$1</code>')
+    .replace(/\[\[(.+?)\]\]/g,'<span class=HELPLINK onclick="tb.help.index.show(\'$1\');">$1</span>')
+    .replace(/^\s*$/gm,'<p>').replace(/\s+/g,' ')
   }
 
   tb.help.index = new tb.HelpIndex();
+ 
+  tb.help.add = function(prop,path,markDown) {
+    // add a topic to the help index
+    tb.help.index.add(prop,path,markDown);
+  }
+
+  tb.help.add('How to document functions','',
+    'comments that are directly following the function declaration are considered as the public documentation'+
+    'of the function, using some kind of markDown syntax\n\n'+
+    'the text is taken just after the //\n'+
+    'if the line starts with .xxxxxx');
 
   tb.help.update = function(object,path) {
     // update the help index with all functions of object that will be recorded under path
@@ -299,6 +346,8 @@
 
     return {width:d.body.clientWidth, height:d.body.clientHeight};
   }
+
+
 
   // some new Date methods
 
