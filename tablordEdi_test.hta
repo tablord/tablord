@@ -25,7 +25,7 @@
 <BODY sizcache="1" sizset="1"  showTrace="true" showTest="true" showCut="true" showCode="true" designMode="on" autoRun="true">
 <DIV id=menu class=TOOLBAR style="MAX-WIDTH: 50%; FLOAT: right">
 <DIV><BUTTON onclick=tb.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=tb.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=tb.clearTimers(); id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=tb.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=tb.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=tb.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON><BUTTON onclick=tb.helpPanel$.toggle(100); style="HEIGHT: 23px; WIDTH: 43px">help</BUTTON><INPUT onclick=tb.showCode(event) CHECKED type=checkbox>codes</INPUT><INPUT onclick=tb.showCut(event) CHECKED type=checkbox>cuts</INPUT><INPUT onclick=tb.showTest(event) CHECKED type=checkbox>tests</INPUT><INPUT onclick=tb.showTrace(event) CHECKED type=checkbox>traces</INPUT><INPUT onclick=tb.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
-<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=tb.cutBlock(tb.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertBefore(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].convert(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION></SELECT><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertAfter(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=tb.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=tb.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px" >&#8594;test</BUTTON>
+<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=tb.cutBlock(tb.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertBefore(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].convert(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION></SELECT><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertAfter(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=tb.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px" >&#8594;html</BUTTON><BUTTON onclick=tb.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px" >&#8594;test</BUTTON>
 <DIV id=objectToolBar></DIV></DIV>
 <DIV><SPAN onclick=tb.helpPanel$.hide(300) style="CURSOR: pointer; COLOR: red">&nbsp;×&nbsp;</SPAN><INPUT ><SPAN onclick=tb.help.index.back() style="CURSOR: pointer; COLOR: #8dff60">&#9668;</SPAN>
 <DIV style="OVERFLOW: auto; MAX-HEIGHT: 400px">please type your search above</DIV></DIV></DIV>
@@ -35,7 +35,7 @@
 <DIV sizcache="1" sizset="1" container="sectionContent"><PRE id=code0096 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.tableOfContent</PRE>
 <DIV id=out0096 class="OUTPUT SUCCESS">
 <DIV class=INTERACTIVE>
-<DIV class=TOC0>1 <A href="file:///D:/Documents/programmation/tablord/tablord/tablordEdi_test.hta#sect0002">tests of JcalcEdi tests passed:61 failed:2&nbsp;</A></DIV>
+<DIV class=TOC0>1 <A href="file:///D:/Documents/programmation/tablord/tablord/tablordEdi_test.hta#sect0002">tests of JcalcEdi tests passed:60 failed:3&nbsp;</A></DIV>
 <DIV class=TOC1>1.1 <A href="file:///D:/Documents/programmation/tablord/tablord/tablordEdi_test.hta#sect0017">Consistence of rendering results</A></DIV>
 <DIV class=TOC2>1.1.1 <A href="file:///D:/Documents/programmation/tablord/tablord/tablordEdi_test.hta#sect0018">numbers</A></DIV>
 <DIV class=TOC2>1.1.2 <A href="file:///D:/Documents/programmation/tablord/tablord/tablordEdi_test.hta#sect0022">Dates</A></DIV>
@@ -616,62 +616,52 @@
 <DIV id=test0092 class="TEST SUCCESS">Scene</DIV><PRE id=code0094 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.functionName(tb.functionName)</PRE>
 <DIV id=out0094 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">empty string</SPAN></DIV>
 <DIV id=test0094 class="TEST SUCCESS"><SPAN style="COLOR: red">empty string</SPAN></DIV><PRE id=code0079 class="CODE ELEMENT EDITABLE" contentEditable=false><P>// if the function is a constructor (= has a name that Starts with an Uppercase)</P><P>// the methods of that class are also displayed</P><P>tb.help(tb.Inspector)</P></PRE>
-<DIV id=out0079 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function Inspector(obj,depth,name)</B><BR>constructor for tb.Inspector objects<BR>Inspector object are made to have both .toString and .span methods 
-<P><BR>so they can be displayed either in an html or plain text context 
-<P><BR>
-<DT>depth
-<DD>(default 1) give at what depth object properties are also inspected 
-<P><BR></P>
-<DT>name
-<DD>(optional) gives a name to be shown in the display 
-<P></P>
+<DIV id=out0079 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function Inspector(obj,depth,name)</B><BR>constructor for tb.Inspector objects<BR><BR>Inspector object are made to have both .toString and .span methods <BR>so they can be displayed either in an html or plain text context <BR>
+<DT><SPAN class=PARAMETER>obj</SPAN>
+<DD>the object to be inspected <BR>
+<DT><SPAN class=PARAMETER>depth</SPAN>
+<DD>(default 1) give at what <SPAN class=PARAMETER>depth</SPAN> object properties are also inspected <BR>
+<DT><SPAN class=PARAMETER>name</SPAN>
+<DD>(optional) gives a <SPAN class=PARAMETER>name</SPAN> to be shown in the display <BR>
 <FIELDSET><LEGEND>methods</LEGEND>
 <TABLE>
 <TBODY>
 <TR>
 <TH vAlign=top>legend</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>returns the legend for a given object 
-<P></SPAN></P></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>returns the legend for a given object <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>toString</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function ()</B><BR>display the object hold by the inspector as a string 
-<P></SPAN></P></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function ()</B><BR>display the object hold by the inspector as a string <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>span</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function (depth)</B><BR></SPAN></TD></TR></TBODY></TABLE></FIELDSET>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function (depth)</B><BR>return a HTML object to display the content of the inspector <BR><SPAN class=PARAMETER>depth</SPAN> specify at what <SPAN class=PARAMETER>depth</SPAN> an object property is also inspected <BR></SPAN></TD></TR></TBODY></TABLE></FIELDSET>
 <FIELDSET><LEGEND>static methods</LEGEND>
 <TABLE>
 <TBODY></TBODY></TABLE></FIELDSET></SPAN></DD></DIV>
-<DIV id=test0079 class="TEST SUCCESS"><SPAN class=HELP><B>function Inspector(obj,depth,name)</B><BR>constructor for tb.Inspector objects<BR>Inspector object are made to have both .toString and .span methods 
-<P><BR>so they can be displayed either in an html or plain text context 
-<P><BR>
-<DT>depth 
-<DD>(default 1) give at what depth object properties are also inspected 
-<P><BR></P>
-<DT>name 
-<DD>(optional) gives a name to be shown in the display 
-<P></P>
+<DIV id=test0079 class="TEST SUCCESS"><SPAN class=HELP><B>function Inspector(obj,depth,name)</B><BR>constructor for tb.Inspector objects<BR><BR>Inspector object are made to have both .toString and .span methods <BR>so they can be displayed either in an html or plain text context <BR>
+<DT><SPAN class=PARAMETER>obj</SPAN> 
+<DD>the object to be inspected <BR>
+<DT><SPAN class=PARAMETER>depth</SPAN> 
+<DD>(default 1) give at what <SPAN class=PARAMETER>depth</SPAN> object properties are also inspected <BR>
+<DT><SPAN class=PARAMETER>name</SPAN> 
+<DD>(optional) gives a <SPAN class=PARAMETER>name</SPAN> to be shown in the display <BR>
 <FIELDSET><LEGEND>methods</LEGEND>
 <TABLE>
 <TBODY>
 <TR>
 <TH vAlign=top>legend</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>returns the legend for a given object 
-<P></SPAN></P></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>returns the legend for a given object <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>toString</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function ()</B><BR>display the object hold by the inspector as a string 
-<P></SPAN></P></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function ()</B><BR>display the object hold by the inspector as a string <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>span</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function (depth)</B><BR></SPAN></TD></TR></TBODY></TABLE></FIELDSET> 
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function (depth)</B><BR>return a HTML object to display the content of the inspector <BR><SPAN class=PARAMETER>depth</SPAN> specify at what <SPAN class=PARAMETER>depth</SPAN> an object property is also inspected <BR></SPAN></TD></TR></TBODY></TABLE></FIELDSET> 
 <FIELDSET><LEGEND>static methods</LEGEND>
 <TABLE>
 <TBODY></TBODY></TABLE></FIELDSET></SPAN></DD></DIV><PRE id=code0087 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.help(tb.Inspector.prototype.legend)</PRE>
-<DIV id=out0087 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function()</B><BR>returns the legend for a given object 
-<P></SPAN></P></DIV>
-<DIV id=test0087 class="TEST SUCCESS"><SPAN class=HELP><B>function()</B><BR>returns the legend for a given object 
-<P></SPAN></P></DIV></DIV></DIV>
+<DIV id=out0087 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function()</B><BR>returns the legend for a given object <BR></SPAN></DIV>
+<DIV id=test0087 class="TEST SUCCESS"><SPAN class=HELP><B>function()</B><BR>returns the legend for a given object <BR></SPAN></DIV></DIV></DIV>
 <DIV id=sect0144 class="ELEMENT SECTION" sizcache="1" sizset="88">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>1.5.10 helpers to write code</H3>
 <DIV class=CONTAINER sizcache="1" sizset="88" container="sectionContent"><PRE id=code0145 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.isJSid('Toto_123$')</PRE>
@@ -720,9 +710,9 @@
 <DIV id=out0075 class="OUTPUT SUCCESS">
 <DIV class=SCENE style="BORDER-TOP: black 2px solid; HEIGHT: 400px; BORDER-RIGHT: black 2px solid; WIDTH: 600px; BORDER-BOTTOM: black 2px solid; BORDER-LEFT: black 2px solid">
 <DIV class=SCENECONTAINER>
-<DIV class=IELEMENT style="BORDER-TOP: red 5px solid; HEIGHT: 50px; BORDER-RIGHT: red 5px solid; WIDTH: 50px; BORDER-BOTTOM: red 5px solid; LEFT: 192px; BORDER-LEFT: red 5px solid; TOP: 125px"></DIV>
-<DIV class=IELEMENT style="BORDER-TOP: purple 5px solid; HEIGHT: 50px; BORDER-RIGHT: purple 5px solid; WIDTH: 50px; BORDER-BOTTOM: purple 5px solid; LEFT: 189px; BORDER-LEFT: purple 5px solid; TOP: 148px"></DIV>
-<DIV class=IELEMENT style="BORDER-TOP: blue 5px solid; HEIGHT: 50px; BORDER-RIGHT: blue 5px solid; WIDTH: 50px; BORDER-BOTTOM: blue 5px solid; LEFT: 193px; BORDER-LEFT: blue 5px solid; TOP: 143px"></DIV>
+<DIV class=IELEMENT style="BORDER-TOP: red 5px solid; HEIGHT: 50px; BORDER-RIGHT: red 5px solid; WIDTH: 50px; BORDER-BOTTOM: red 5px solid; LEFT: 103px; BORDER-LEFT: red 5px solid; TOP: 88px"></DIV>
+<DIV class=IELEMENT style="BORDER-TOP: purple 5px solid; HEIGHT: 50px; BORDER-RIGHT: purple 5px solid; WIDTH: 50px; BORDER-BOTTOM: purple 5px solid; LEFT: 117px; BORDER-LEFT: purple 5px solid; TOP: 80px"></DIV>
+<DIV class=IELEMENT style="BORDER-TOP: blue 5px solid; HEIGHT: 50px; BORDER-RIGHT: blue 5px solid; WIDTH: 50px; BORDER-BOTTOM: blue 5px solid; LEFT: 112px; BORDER-LEFT: blue 5px solid; TOP: 78px"></DIV>
 <DIV class=IELEMENT style="BORDER-TOP: yellow 5px solid; HEIGHT: 50px; BORDER-RIGHT: yellow 5px solid; WIDTH: 50px; BORDER-BOTTOM: yellow 5px solid; LEFT: 100px; BORDER-LEFT: yellow 5px solid; TOP: 100px"></DIV></DIV></DIV></DIV><PRE id=code0124 class="CODE ELEMENT EDITABLE" contentEditable=false>scene1.square.$</PRE>
 <DIV id=out0124 class="OUTPUT SUCCESS">JQuery of 1 elements<BR>
 <OL start=0><BR>
@@ -738,6 +728,85 @@
 <TR>
 <TH vAlign=top>left</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0076 class="CODE ELEMENT EDITABLE INANIMATION" contentEditable=false><P>scene1.square.p.x =(tb.limit(scene1.square.p.x+ Math.random()*10-5,0,400));</P><P>scene1.square.p.y =(tb.limit(scene1.square.p.y+ Math.random()*10-5,0,400));</P><P>scene1.animate(100);</P><P>tb.animate(100);</P><P>scene1.square.$.position()</P></PRE>
+<DIV class=TRACE>8 traces:
+<TABLE class=DEBUG>
+<TBODY>
+<TR>
+<TD class=TRACE><SPAN class=INSPECT>"execute"</SPAN>00</TD></TR>
+<TR>
+<TD class=TRACE><SPAN class=INSPECT>"markIdentical&nbsp;start&nbsp;@"</SPAN>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>i1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR>
+<TR>
+<TH vAlign=top>line</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><WBR>&lt;SPAN&nbsp;class=HELP&gt;<WBR>&lt;B&gt;function()<WBR>&lt;/B&gt;<WBR>&lt;BR&gt;returns&nbsp;the&nbsp;legend&nbsp;for&nbsp;a&nbsp;given&nbsp;object&nbsp;<WBR>&lt;BR&gt;<WBR>&lt;/SPAN&gt;</TD></TR></TBODY></TABLE></FIELDSET></DIV>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>i2</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR>
+<TR>
+<TH vAlign=top>line</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><WBR>&lt;SPAN&nbsp;class=HELP&gt;<WBR>&lt;B&gt;function()<WBR>&lt;/B&gt;<WBR>&lt;BR&gt;returns&nbsp;the&nbsp;legend&nbsp;for&nbsp;a&nbsp;given&nbsp;object&nbsp;<WBR>&lt;/SPAN&gt;</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TD class=TRACE><SPAN class=INSPECT>"...found&nbsp;diff"</SPAN>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>i1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR>
+<TR>
+<TH vAlign=top>line</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><WBR>&lt;SPAN&nbsp;class=HELP&gt;<WBR>&lt;B&gt;function()<WBR>&lt;/B&gt;<WBR>&lt;BR&gt;returns&nbsp;the&nbsp;legend&nbsp;for&nbsp;a&nbsp;given&nbsp;object&nbsp;<WBR>&lt;BR&gt;<WBR>&lt;/SPAN&gt;</TD></TR></TBODY></TABLE></FIELDSET></DIV>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>i2</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR>
+<TR>
+<TH vAlign=top>line</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><WBR>&lt;SPAN&nbsp;class=HELP&gt;<WBR>&lt;B&gt;function()<WBR>&lt;/B&gt;<WBR>&lt;BR&gt;returns&nbsp;the&nbsp;legend&nbsp;for&nbsp;a&nbsp;given&nbsp;object&nbsp;<WBR>&lt;/SPAN&gt;</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TD class=TRACE><SPAN class=INSPECT>"resynchronize"</SPAN>00</TD></TR>
+<TR>
+<TD class=TRACE><SPAN class=INSPECT>"resynchronize;&nbsp;before&nbsp;search"</SPAN>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>i1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR>
+<TR>
+<TH vAlign=top>line</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><WBR>&lt;SPAN&nbsp;class=HELP&gt;<WBR>&lt;B&gt;function()<WBR>&lt;/B&gt;<WBR>&lt;BR&gt;returns&nbsp;the&nbsp;legend&nbsp;for&nbsp;a&nbsp;given&nbsp;object&nbsp;<WBR>&lt;BR&gt;<WBR>&lt;/SPAN&gt;</TD></TR></TBODY></TABLE></FIELDSET></DIV>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>i2</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR>
+<TR>
+<TH vAlign=top>line</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top><WBR>&lt;SPAN&nbsp;class=HELP&gt;<WBR>&lt;B&gt;function()<WBR>&lt;/B&gt;<WBR>&lt;BR&gt;returns&nbsp;the&nbsp;legend&nbsp;for&nbsp;a&nbsp;given&nbsp;object&nbsp;<WBR>&lt;/SPAN&gt;</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
+<TD class=TRACE><SPAN class=INSPECT>"&nbsp;&nbsp;after&nbsp;search&nbsp;s1=-1&nbsp;s2=-1"</SPAN></TD></TR>
+<TR>
+<TD class=TRACE><SPAN class=INSPECT>"&nbsp;&nbsp;no&nbsp;match"</SPAN></TD></TR>
+<TR>
+<TD class=TRACE><SPAN class=INSPECT>"....markDiff(0,1,0,1)"</SPAN></TD></TR></TBODY></TABLE></DIV>
 <DIV id=out0076 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
@@ -745,10 +814,10 @@
 <TBODY>
 <TR>
 <TH vAlign=top>top</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>125</TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top>88</TD></TR>
 <TR>
 <TH vAlign=top>left</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>192</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV>
+<TD style="TEXT-ALIGN: left" vAlign=top>103</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV>
 <DIV id=sect0165 class="ELEMENT SECTION" sizcache="1" sizset="102">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>1.8 help system</H2>
 <DIV sizcache="1" sizset="102" container="sectionContent"><PRE id=code0167 class="ELEMENT CODE EDITABLE" contentEditable=false><P>tb.inspect(tb.help.index.undocumentedClasses(),3)</P></PRE>
@@ -849,4 +918,4 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>3</TD></TR>
 <TR>
 <TH vAlign=top>dateTime</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>Wed&nbsp;Feb&nbsp;13&nbsp;12:05:06&nbsp;UTC+0100&nbsp;2019</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV></DIV></DIV></DIV></BODY></HTML>
+<TD style="TEXT-ALIGN: left" vAlign=top>Wed&nbsp;Feb&nbsp;20&nbsp;22:13:17&nbsp;UTC+0100&nbsp;2019</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV></DIV></DIV></DIV></BODY></HTML>

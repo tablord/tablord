@@ -261,6 +261,11 @@ pre {
   font-size: 11px;
 }
 
+.PARAMETER {
+  color:purple;
+  font-weight:bold;
+}
+
 .INSPECTHTML {
   padding: 0px;
   margin: 0px;

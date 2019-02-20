@@ -62,6 +62,7 @@
             },
 
             errorHandler:function(message,url,line) {
+              // the default handler called by JavaScript giving the message, the url of the page or script and the faulty line
               var out  = tb.output.outputElement;
               if (out) {
                 if (url) {
@@ -119,9 +120,13 @@
     return this;
   }
 
-  tb.HelpIndex.prototype.add = function(prop,path,markDown) {
+  tb.HelpIndex.prototype.add = function(prop,path,markDownLines) {
     // adds a new entry in the help index with a markDown description
-    this.index.push({prop:prop,path:path,desc:markDown});
+    // - prop: the name of the property
+    // - path: the context of this property
+    // - markDownLines: an array of lines in markDown
+
+    this.index.push({prop:prop,path:path,desc:markDownLines});
   }
 
   tb.HelpIndex.prototype.find = function(name) {
@@ -178,14 +183,15 @@
         l = 30;
         n$.append('<tr><td class="WARNING LEFT" colspan=2>'+res.length+' results: only '+l+' first results displayed</td></tr>');
       }
+
       for (var i = 0; i<l; i++) {
-        var path = res[i].path.replace(/^(.*\.[A-Z]\w*)\./,'<span class=HELPLINK onclick="tb.help.index.show(\'$1\');">$1</span>.');
+        var path = res[i].path.replace(/^(.*\.[\$A-Z][\w\$]*)\./,'<span class=HELPLINK onclick="tb.help.index.show(\'$1\');">$1</span>.');
         var desc = res[i].func?tb.help(res[i].func):tb.help.markDownToHtml(res[i].desc);
         n$.append($('<TR><TD valign="top" class=LEFT>'+path+res[i].prop.replace(regExp,'$1<b>$2</b>$3')+'</TD><TD class=LEFT>'+desc+'</TD></TR>'));
       }
     }
     catch (e) {
-      n$ = $('<div class=ERROR>'+e.message+'res.length='+res.length+' l='+l+'</div>');
+      n$ = $('<div class=ERROR>'+e.message+' res.length='+res.length+' l='+l+'</div>'+tb.inspect(res[i]));
     }
     return n$;
   }
@@ -206,13 +212,26 @@
   }
 
 
+  tb.HelpIndex.prototype.badlyDocumentedFunctions = function() {
+    // return a list of index entries of function that are badly documented
+    // for maintenance only
+    var res = '<table>';
+    var problems;
+    for (var i = 0;i<this.index.length; i++) {
+      if (this.index[i].func && (problems = tb.help.docQualityProblems(this.index[i].func))) {
+        res += '<tr><th>'+this.index[i].path+this.index[i].prop+'</th><td class=LEFT>'+problems+'</td></tr>';
+      }
+    }
+    return tb.html(res+'</table>');
+  }
+
 
   tb.helps = {'tb.credits':tb.credits};
 
   tb.help = function(func) {
   // returns the signature of the function and the first comment in a pretty html 
   //         followed by the content of the .[[help]]() static method of func if any
-  // `func`: the function to be inspected
+  // func: the function to be inspected
 
     if (func == undefined) {
       var h = '';
@@ -224,7 +243,16 @@
     var source = func.toString().split('\n');
     var comments = []
     var signature = tb.signature(func);
-    if(func.className) comments.push('constructor for '+func.className+' objects');
+    var parameters = signature.replace(/(\/\*.*?\*\/)/g,'')   // remove comments /*...*/
+                              .replace(/\s+/,'')              // remove any spaces
+                              .replace(/^.*\((.*)\).*$/,'$1') // keep only what is between ()
+    if (parameters === '') parameters = undefined
+    else                   parameters = parameters.split(',');
+
+    if (func.className){
+      comments.push('constructor for '+func.className+' objects')
+      comments.push('');
+    }
 
     for (var i=1; i<source.length; i++) {
       var comment = source[i].match(/^\s*\/\/(.*)$/);
@@ -249,25 +277,73 @@
       }
       methods += '</table></fieldset>';
     };
-    return new tb.HTML('<SPAN class=HELP><b>'+signature+'</b><br/>'+tb.help.markDownToHtml(comments.join('\n'))+(func.help?func.help():'')+methods+'</SPAN>');
+    return new tb.HTML('<SPAN class=HELP><b>'+signature+'</b><br/>'+tb.help.markDownToHtml(comments,parameters)+(func.help?func.help():'')+methods+'</SPAN>');
   }
 
   // Markdown //// simplified version: TODO replace with better implementation
-  tb.help.markDownToHtml = function(markDown) {
+  tb.help.markDownToHtml = function(markDownLines,parameters) {
     // convert markDown to HTML with link for the help
+    // - markDownLines: an array of comments in markDown
+    // - parameters: an array of parameters that will be marked as parameters in the text
     // any line starting with .xxxx or - xxxx will be considered as a definition 
     // .property describes the property
     // - parameter describes the parameter
-    return markDown
-    .replace(/^\s+(\.\S+)/gm,'<dt>$1<dd>')
-    .replace(/^\s+- +(\S+)/gm,'<dt>$1<dd>')
-    .replace(/-{4,}/g,'<hr>')
-    .replace(/\s\*\*(\S.*)\*\*\s/g,'<em>$1</em>')
-    .replace(/\s\*(\S.*)\*\s/g,'<strong>$1</strong>')
-    .replace(/`(.+?)`/g,'<code>$1</code>')
-    .replace(/\[\[(.+?)\]\]/g,'<span class=HELPLINK onclick="tb.help.index.show(\'$1\');">$1</span>')
-    .replace(/^\s*$/gm,'<p>').replace(/\s+/g,' ')
+    var h = '';
+    if (parameters && (parameters.length > 0)) {
+      var parameterRegExp = new RegExp('(\\W)('+parameters.join('|')+')(\\W)','g');
+    }
+    else {
+      var parameterRegExp = /יטאצ very improbable string that never match/g;
+    }
+    for (var i = 0; i<markDownLines.length; i++) {
+      h += markDownLines[i]
+      .replace(/^\s+(\.\S+)/,'<dt>$1<dd>')
+      .replace(/^\s+- +(\S+)/,'<dt>$1<dd>')
+      .replace(/-{4,}/g,'<hr>')
+      .replace(/\s\*\*(\S.*)\*\*\s/g,'<em>$1</em>')
+      .replace(/\s\*(\S.*)\*\s/g,'<strong>$1</strong>')
+      .replace(/`(.+?)`/g,'<code>$1</code>')
+      .replace(/\[\[(.+?)\]\]/g,'<span class=HELPLINK onclick="tb.help.index.show(\'$1\');">$1</span>')
+      .replace(parameterRegExp,'$1<span class=PARAMETER>$2</span>$3')
+      +'<br>';
+    }
+    return h;
   }
+
+  tb.help.docQualityProblems = function(func) {
+    // list all non quality criteria of a function documentation
+    // returns null if everything is ok
+    //         or an HTML object listing all problems found
+    // - func: the function to check
+    var problems = new tb.HTML();
+
+    var source = func.toString().split('\n');
+    var comments = []
+    var signature = tb.signature(func);
+    var parameters = signature.replace(/(\/\*.*?\*\/)/g,'').replace(/^.*\((.*)\).*$/,'$1').split(',');
+
+    for (var i=1; i<source.length; i++) {
+      var comment = source[i].match(/^\s*\/\/(.*)$/);
+      if (comment && (comment.length ==2)) {
+        comments.push(comment[1]);
+      }
+      else break;
+    }
+    if (comments.length === 0) {
+      problems.li('no documentation comment');
+      return problems;
+    }
+
+    comment = comments.join(' ');
+    
+    for (var i in parameters) {
+      if (comment.search(parameters[i]) === -1) problems.li('parameter '+parameters[i]+' is not described');
+    }
+
+    if (problems.toString() === '') return null;
+    return problems;
+  }
+
 
   tb.help.index = new tb.HelpIndex();
  
@@ -276,11 +352,16 @@
     tb.help.index.add(prop,path,markDown);
   }
 
-  tb.help.add('How to document functions','',
-    'comments that are directly following the function declaration are considered as the public documentation'+
-    'of the function, using some kind of markDown syntax\n\n'+
-    'the text is taken just after the //\n'+
-    'if the line starts with .xxxxxx');
+  tb.help.add('How to document functions','',[
+    'comments that are directly following the function declaration are considered as the public documentation '+
+    'of the function, using some kind of markDown syntax',
+    '',
+    'the text is taken just after the // of the comment line and is transformed in the following manner',
+    '',
+    'parameters are automatically search in text and marked as <span class=PARAMETERS>parameter</span> ',
+    'if the line starts with .xxxxxx or - yyyyyyy it is considered as a description of a method / parameter',
+    'text between two [ and two] is linked to the equivalent topic like this [[tb.help]]',
+    'text between grave accent (ascii 96) `code` ']);
 
   tb.help.update = function(object,path) {
     // update the help index with all functions of object that will be recorded under path
@@ -289,9 +370,10 @@
 
   // classical formating functions ////////////////////////////////////////////
   
-  tb.Format = function() {}
+  tb.Format = function() {
     // this class is compatible with the format property of options object used in tb.format(value,options)
     // but it has methods that helps to build this object
+  }
   tb.Format.className='tb.Format';
 
   tb.Format.prototype.fixed = function(decimals) {
@@ -324,6 +406,7 @@
   $.extend(tb,tb.Format.prototype); // make those methods directly availlable to tb
     
   tb.getScrollOffsets = function(w) {
+    // return the scroll offset for the window w. if w is not specified, window is used
     w = w||window;
     if(w.pageXOffset != null) return {left:w.pageXOffset, top:w.pageYOffset};
 
@@ -337,6 +420,7 @@
   }
 
   tb.getViewPortSize = function(w){
+    // return {width,height} of the window w. if w is undefined, window is used
     w = w||window;
     if (w.innerWidth != null) return {width:w.innerWidth,Height:w.innerHeight};
   
@@ -690,6 +774,7 @@
   // color functions //////////////////////////////////////////////////
 
   tb.hue = function(h) {
+    // return {r:,g:,b:} for a given h hue
     h = h % 360;
     if (h<0) h+=360;
 
@@ -702,7 +787,7 @@
   }
 
   tb.hsl = function(h,s,l) {
-    // return a string 'rgb(...)' 
+    // return a string 'rgb(...)' for h:hue s:saturation l:luminosity
     var color = tb.hue(h); //TODO integrate s,l
     return 'rgb('+color.r+','+color.g+','+color.b+')';
   } 
@@ -715,10 +800,14 @@
     var test = JSON == undefined; // in ECMA3 JSON doesn't exist and will make this statement crash
   }
   catch (e) {
-    JSON = function(){};
+    JSON = function(){
+      // a replacement JSON class if JSON is missing
+    };
     JSON.className='JSON';
 
     JSON.stringify = function(obj){
+      // return a JSON string of obj
+
       if (typeof obj == 'number') {
         return obj.toString();
       }
@@ -748,6 +837,8 @@
     };
 
     JSON.parse = function(json){
+      // parse json string and return a simple object corresponding to the json
+
       return (new Function('return '+json))();  //as jQuery does
     }
     
@@ -761,8 +852,8 @@
   var geval = eval;
 
   tb.securedEval = function(code) {
-  // NRT0001
-  // a bit more secured: since IE<9 executes localy, it was possible do destroy local variable by defining functions or var
+  // execute code
+  // a bit more secured than eval: since IE<9 executes localy, it was possible do destroy local variable by defining functions or var
   // with this trick, one can still create global variables by just assigning (eg: tb.vars='toto' destroys the global variable tb.vars)
   // to be checked what could be done to improve
     code.replace(/^\s*\{(.*)\}\s*$/,'({$1})');  // if the code is just a litteral object {..} add brakets in order to deal with the with(tb.vars){ } statement
@@ -834,6 +925,7 @@
     return trace
   };
   trace.span = function () {
+    // return an html object displaying the traces
     if (trace.messages.length > 0){
       var h = '<DIV class=TRACE>'+trace.messages.length+' traces:<table class=DEBUG><tr><td class=TRACE>'+trace.messages.join('</td></tr><tr><td class=TRACE>')+'</td></tr></table></DIV>';
       trace.messages = [];
@@ -850,6 +942,7 @@
   tb.Inspector = function Inspector(obj,depth,name) {
     // Inspector object are made to have both .toString and .span methods
     // so they can be displayed either in an html or plain text context
+    // - obj the object to be inspected
     // - depth (default 1) give at what depth object properties are also inspected
     // - name (optional) gives a name to be shown in the display
     this.obj = obj;
@@ -876,9 +969,12 @@
     else if (this.obj === undefined) {
       l = 'undefined';
     }
-    else {
+    else if (this.obj.toString) {
       l = this.obj.toString();
     } 
+    else {
+      l = 'special object';
+    }
     return l;
   }
 
@@ -918,6 +1014,8 @@
   }
 
   tb.Inspector.prototype.span = function (depth){
+    // return a HTML object to display the content of the inspector
+    // depth specify at what depth an object property is also inspected
     depth = depth || this.depth;
     if (this.obj === undefined) {
       return '<SPAN class="INSPECT META">undefined</SPAN>';
@@ -1036,6 +1134,8 @@
   }
 
   tb.objMatchCriteria = function(obj,criteria) {
+    // return true if obj is matching criteria
+    // - criteria: an object specifying the values of some properties {prop1:value1,....}
     criteria = criteria || {};
     for (var k in criteria) {
       if (obj[k] !== criteria[k]) return false;
@@ -1054,6 +1154,7 @@
   }
 
   tb.pad = function(integer,numberOfDigits){
+    // return a string representing the integer, by filling with 0 in order to return a constant numberOfDigits
     return ('00000000000000000'+integer).slice(-numberOfDigits);
   }
 
@@ -1148,12 +1249,12 @@
   }
 
   tb.dist2 = function(p1,p2) {
-  // return dist^2 between 2 points {x,y}
+    // return dist^2 between 2 points p1 and p2 {x,y}
     return Math.pow(p1.x-p2.x,2)+Math.pow(p1.y-p2.y,2);
   }
 
   tb.dist = function(p1,p2) {
-  // return the distance between 2 points {x,y}
+    // return the distance between 2 points p1 and p2 {x,y}
     return Math.sqrt(tb.dist2(p1,p2));
   }
 
@@ -1161,7 +1262,7 @@
 
 
   tb.purgeJQueryAttr = function(html) {
-    // supress all jqueryxxx="yy" attributes, since they are meaningless for the user and also compromise the testability
+    // supress all jqueryxxx="yy" attributes in html, since they are meaningless for the user and also compromise the testability
     // since they depend on the context
 
     var reg = /(.*?)(<.+?>)/g;
@@ -1175,7 +1276,7 @@
   }
 
   tb.toString = function(html) {
-    // transform the content (from innerHTML) to a string as if this content is a text editor
+    // transform the html content (from innerHTML) to a string as if this content is a text editor
     // removes any tags other than <BR> and <P>
     var res = html
               .replace(/<BR>/g,'\n')
@@ -1189,7 +1290,7 @@
   }
 
   tb.toHtml = function(code) {
-    // transform htmlCode in such a manner that the code can be visualised in a <pre>...
+    // transform code in such a manner that the code can be visualised in a <pre>...
     return String(code)
              .replace(/&/g,"&amp;")
              .replace(/>/g,"&gt;")
@@ -1200,7 +1301,7 @@
   }
 
   tb.isJSid = function (id) {
-    // return true id id is a javaScript id 
+    // return true if id is a javaScript id 
     return id.match(/^[\w$]+\w*$/) !== null;
   }
 
@@ -1247,24 +1348,26 @@
   }
 
   tb.htmlAttribute = function(attr,value) {
-    // write an attribute according to its type
+    // return a string as found in html tag for the attribute attr assigning a value 
     var h = ' '+attr+'='+(typeof value == 'number'?value:'"'+tb.toHtml(value).replace(/"/g,'&quote;')+'"');
     return h;
   }
 
   tb.codeExample = function(example) {
+    // return an html object with example wrapped in span class=CODEEXAMPLE
     return tb.html('<span class=CODEEXAMPLE>'+example+'</span>');
   }
 
   tb.trimHtml = function(html) {
-  // suppress all unsignificant blanks and non visible char
-    return html.replace(/[ \t\r\n]+/g,' ').replace(/> /g,'>').replace(/ </g,'<');
+  // suppress all unsignificant blanks of html and non visible char but keeps \n
+    return html.replace(/[ \t\r]+/g,' ').replace(/> /g,'>').replace(/ </g,'<');
   }
 
   tb.textContent = function(html) {
-  // return the text like textcontent that doesn't exist in IE7
+  // return the text of html like textcontent that doesn't exist in IE7
   // first remove all tags having HIDDEN in class and then keeps the text only
   // TODO******** not ok for nested tags !!!! ********************************
+  // PREFER [[$.text]]
     return html.replace(/\<.*?style\="DISPLAY\: none".*?\<\/.*?\>/g,'').replace(/\<.*?\>/g,'');
   }
 
@@ -1387,6 +1490,7 @@
   tb.Editor.className = 'tb.Editor';
  
   tb.Editor.prototype.createToolBar = function() {
+    // create a tool bar for the [[tb.Editor]]
     this.toolBar$ = $('<SPAN/>')
       .append('<input type="radio" name="type" value="string" onclick="tb.editor.force(\'string\');">String</input>')
       .append('<input type="radio" name="type" value="number" onclick="tb.editor.force(\'number\')">Number</input>')
@@ -1397,12 +1501,14 @@
 
 
   tb.Editor.prototype.funcCodeClick = function() {
+    // click event handler of the code INPUT of the toolbar of the [[tb.Editor]]
     this.force('function');
     $('[value=function]',this.toolBar$).attr('checked',true);
     this.funcCode$.focus();
   }
 
   tb.Editor.prototype.funcCodeChange = function() {
+    // change event handler of the code INPUT of the toolbar of the [[tb.Editor]]
     this.value = f(this.funcCode$.val());
     this.type = 'function';
     this.tbObject.setEditableValue(this);
@@ -1460,6 +1566,8 @@
   }
 
   tb.Editor.prototype.force = function(type) {
+    // force the [[tb.Editor]] to a given type
+    // type can be undefined, function, number or string
     if (type == this.type) return;
 
     var editor$ = $(this.currentEditor);
@@ -1498,6 +1606,7 @@
 
 
   tb.Editor.prototype.setCurrentEditor = function(editor) {
+    // set an editor as the current Editor
     this.currentEditor = editor;
     if (editor) {
       this.tbObject = tb.vars[editor.tbObject];
@@ -1612,7 +1721,8 @@
     // Template objects are generators of DOM ELEMENT 
     // there is one single instance for any number of DOM instances
     // for example Template('code') is the Template object of all CODE Elements
-    // normally users create template through the `tb.template function
+    // normally users create template through the [[tb.template]] function
+    // - name: set the name field of the Template
     this.name = name;
   };
 
@@ -1621,10 +1731,12 @@
   tb.Template.urlBase = 'http://tablord.com/templates/';
 
   tb.Template.prototype.url = function(){
+    // return the url base on the template name
     return tb.Template.urlBase + this.name;
   }
 
   tb.Template.prototype.insertBefore = function(element,itemprop) {
+    // insert this Template before element as an itemprop
     var newElement$ = this.element$(itemprop);
     newElement$.insertBefore(element);
     tb.selectElement(newElement$[0]);
@@ -1633,6 +1745,7 @@
   }
 
   tb.Template.prototype.insertAfter  = function(element,itemprop) {
+    // insert this Template after element as an itemprop
     var element$ = $(element);
     if (element$.hasClass('CODE')) {
       if (element$.next().hasClass('OUTPUT')) element$=element$.next();
@@ -1646,7 +1759,7 @@
   }
 
   tb.Template.prototype.convert = function(element,itemprop) {
-    // convert element to template(name)
+    // convert element to template(name) as itemprop
 
     var e$ = $(element);
     var data = $.extend(true,e$.data('itemData') || {},e$.getMicrodata());
@@ -1679,6 +1792,7 @@
   }
 
   tb.Template.prototype.element$ = function(itemprop,id) {
+    // return a jQuery containing a new instance of this Template as itemprop and setting its id
     if (this.html === undefined) throw new Error('in order to define a template at least define .fields, .html or .element$()');
     if (id === undefined) {
       tb.blockNumber++;
@@ -1690,15 +1804,17 @@
   }
 
   tb.Template.prototype.toString = function() {
+    // return a string for a template
     return 'template '+this.name+' created ['+this.url()+']';
   }
 
   tb.Template.prototype.span = function() {
-    return 'template '+this.name+' created [<a href="'+this.url()+'">'+this.url()+'</a>]';
+    // return an html object representing the this Template
+    return tb.html('template '+this.name+' created [<a href="'+this.url()+'">'+this.url()+'</a>]');
   }
 
   tb.Template.prototype.find = function(criteria,fields) {
-    // return the data of a template collection as mongodb would do
+    // return the data of a template collection as mongodb would do using criteria and returning only the specified fields
    
     return tb.getItems$(this.url()).getData(criteria,fields);
   }
@@ -1716,12 +1832,14 @@
 
 
   tb.Template.urlToName = function(url) {
+    // return the name from the url
     if (url === undefined) return undefined;
     return url.match(/.*\/(.*)$/)[1];
   }
 
   tb.Template.moveContainerContent = function(oldElement$,newElement$) {
-    // move into newElement$ all Container's content found in oldElements
+    // NOT YET IMPLEMENTED
+    // move into newElement$ all Container's content found in oldElements$
     // both oldElement$ and newElement$ should be jquery with one single element to give predictable results
   }
 
@@ -1768,17 +1886,19 @@
   tb.template = function(newTemplate,itemprop) {
     // create a new template and register it
     // it will inherit from tb.Template 
-    // newTemplate is a simple object that must at least define
+    // - newTemplate: is a simple object that must at least define
     // .name: a name like an id optionaly followed by #version
+    //
     // and must define one of the 3
     // .fields: {field1:{options},field2:{options}....}
     //          field1 is the name of the field if field name ends with [] the field is an array of values
+    //
     //          options is an object
     //          types
     //          - number:{}                     the field is a number
     //          - string:{}                     the field is a string:  default if nothing is specified
-    //          - function:function(data){...}  the field is calculated (=> readonly) and the html is the result of this function
-    //          - select:{choice1:val1,choice2:val2...) the field is a <SELECT>
+    //          - func:function(data){...}  the field is calculated (=> readonly) and the html is the result of this function
+    //          - select:{choice1:val1,choice2:val2...) the field is a SELECT
     //          - container:"template1 template2" 
     //                 a container that accepts the specified template names and how the itemprop . if "", accepts anything
     //
@@ -1945,7 +2065,7 @@
   }
      
   tb.helpSearchChange = function(event) {
-    // event handler for the search box
+    // event handler for the help search box
     tb.helpOutput$.html(tb.help.index.help$(event.currentTarget.value));
   }
 
@@ -2292,7 +2412,10 @@
         return tb.format(val,options);   // format the result of valueOf
       }
     }
-    return tb.toHtml(obj.toString());
+    if (obj.toString) {
+      return tb.toHtml(obj.toString());
+    }
+    return 'special object';
   }
 
   tb.displayResult = function(result,output) {
@@ -2548,12 +2671,13 @@
     if ($(tb.selectedElement).hasClass('CODE')) {
       var out = tb.outputElement(tb.selectedElement) || {id:'no output',innerHTML:''};
       var test = tb.testElement(tb.selectedElement) || {id:'no test',innerHTML:''};
-      var hout  = tb.trimHtml(out.innerHTML)
-      var htest = tb.trimHtml(test.innerHTML)
+      var hout  = out.innerHTML;
+      var htest = test.innerHTML;
       diff = tb.diff(hout,htest).span().toString();
       window.showModalDialog('dialog.htm',[
-        '<fieldset><legend>'+tb.selectedElement.id+'</legend>'+tb.toHtml(tb.selectedElement.outerHTML)+'</fieldset>'+
-        '<fieldset><legend>diff output vs test</legend>'+diff+'</fieldset>']);
+        '<fieldset><legend>'+tb.selectedElement.id+'</div></legend><div  class=CODEEXAMPLE>'+tb.toHtml(tb.selectedElement.outerHTML)+'</fieldset>'+
+        '<fieldset><legend>diff <span class="DIFF DEL">output</span> vs <span class="DIFF ADD">test</legend>'+diff+'</fieldset>'],
+        "dialogwidth="+tb.content$.css('width'));
     }
     else {
       window.showModalDialog('dialog.htm',[
