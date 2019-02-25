@@ -363,6 +363,36 @@
     'text between two [ and two] is linked to the equivalent topic like this [[tb.help]]',
     'text between grave accent (ascii 96) `code` ']);
 
+  tb.help.add('ELEMENT','DOM class=',['an ELEMENT is a DOM element of the document that can be [[SELECTED]].',
+                                      'an ELEMENT can also be [[CODE]], [[RICHTEXT]] or [[SECTION]].',
+                                      'for other templates:',
+                                      '[[itemtype]] specifies the template,',
+                                      '[[itemprop]] comes from the [[container]] attribute of the parent container or is "items"',
+                                      '[[itemscope]] is also set to be complient with microData (cf [[getMicroData]])']);
+  tb.help.add('SELECTED','DOM class=',['an SELECTED [[ELEMENT]] is the DOM element of the document that is currently SELECTED']);
+  tb.help.add('CODE','DOM class=',['a CODE [[ELEMENT]] is a DOM element of the document that contains JavaScript CODE. It can also have the [[EMBEDDED]]']);
+  tb.help.add('EMBEDDED','DOM class=',['a EMBEDDED [[CODE]] [[ELEMENT]] is a DOM element of the document that contains JavaScript CODE but inside another ELEMENT (usually [[RICHTEXT]]).',
+                                       'EMBEDDED CODE are hidden unless the parent ELEMENT is edited, so only the OUPUT is visible.']);
+  tb.help.add('CODE','DOM class=',['a CODE [[ELEMENT]] is a DOM element of the document that contains JavaScript CODE. It can also have the [[EMBEDDED]]']);
+  tb.help.add('RICHTEXT','DOM class=',['a RICHTEXT [[ELEMENT]] is a DOM element of the document that contains HTML that can be freely edited.',
+                                       'It can also include [[EMBEDDED]] [[CODE]] [[ELEMENT]]' ]);
+  tb.help.add('SECTION','DOM class=',['a SECTION [[ELEMENT]] is a DOM element of the document that contains a title and a [[container]].',
+                                       'It helps to structure the document, is automatically numbered and [[tb.tableOfContent]] is updated automatically' ]);
+  
+  tb.help.add('CODE','DOM class=',['a CODE [[ELEMENT]] is a DOM element of the document that contains JavaScript CODE. It can also have the [[EMBEDDED]]']);
+
+  tb.help.add('container','DOM attribute ',['a DOM element that has the attribute container="name" is a container that accepts other [[ELEMENT]]'+
+                                            ' as content. normally such an element also has the [[templates]] attribute',
+                                            ' if the name ends with [], it means that this container can accept multiple [[ELEMENTS]]']);
+  tb.help.add('templates','DOM attribute ',['a DOM element that has the attribute templates="template1 template2..." is an element that must '+
+                                            ' also have the [[container]] attribute, so it can accept one or many of the specified templates as content.',
+                                            ' if this attribute is missing all templates are accepted']);
+  
+  tb.help.add('itemtype','DOM attribute ',['a DOM [[ELEMENT]] that has itemtype attribute is a template ',
+                                           'it also has the [[itemscope]] attribute also have the [[container]] attribute, so it can accept one or many of the specified templates as content.',
+                                            ' if this attribute is missing all templates are accepted']);
+  
+
   tb.help.update = function(object,path) {
     // update the help index with all functions of object that will be recorded under path
     tb.help.index.update(object,path);
@@ -604,7 +634,7 @@
 
   $.fn.getData = function(criteria,fields) {
     // return data object for the jQuery, very similarly as a mongoDB .find
-    // the object is NOT compatible with microdata, but much easier to use
+    // the object is NOT compatible with microdata (cf [[getMicroData]]), but much easier to use
     // even if not as flexible as microdata
     // it assumes that propertie's name that are arrays end with []
     // and all other properties have 0 or 1 value
@@ -640,6 +670,7 @@
     // and is the responsibility of the caller to know what to do
     // the parameter result is only intended for recusivity purpose and should be undefined
     // in addition to the microdata specifications, the structure also set "id" if id is defined at the itemscope element
+    // see also [[getData]] for simple usage
     var result = result || {};
     this.each(function(i,e){
       var e$ = $(e);
@@ -705,6 +736,7 @@
   }
 
   tb.help.update($,'$.');
+  tb.help.update($.fn,'$.prototype.');
 
   tb.getItems$ = function(url) {
     // returns a jQuery of all itemscope in the document having the itemtype=url
@@ -1698,13 +1730,40 @@
     
   tb.link = function(text,url) {
     // if no url is given, text is used as a search into table of content to find the section
+    // url can be either a full url or an id of an [[ELEMENT]]
     // TODO: futur version will accept http url
     url = url || text;
+    var e$ = $('#'+url);
+    if (e$.length==1) {
+      return new tb.HTML('<a class=LINK href="#'+url+'">'+text+'</a>');
+    }
     var entry = tb.tableOfContent.find(url);
     if (entry) {
       return new tb.HTML('<a class=LINK href="#'+entry.sectionId+'">'+text+'</a>');
     }
     return new tb.HTML('<span class=INVALIDLINK title="#'+url+' is not found in the table of content">'+text+'</span>');
+  }
+
+  tb.sideBox = function(text,id) {
+    // return an html object that has a clickable text that will open if clicked a copy of the element id
+    var e$ = $('#'+id);
+    if (e$.length == 1) {
+      return tb.html('<span class=SIDEBOXTEXT data-showId="#'+id+'">'+text+'</span>');
+    }
+    return new tb.HTML('<span class=INVALIDLINK title="#'+id+' is not found">'+text+'</span>');
+  }
+
+  tb.openCloseSideBox = function(event) {
+    // 
+    var sideBoxTextElement = event.target;
+    var sideBox$ = $('.SIDEBOX',sideBoxTextElement)
+    var open = sideBox$.length === 0;
+    sideBox$.remove();
+    if (open) {
+      var id = $(sideBoxTextElement).attr('data-showId');
+      $('<DIV class=SIDEBOX>').html($(id).html()).appendTo(sideBoxTextElement);
+    }
+    event.stopPropagation(); // prevent bubbling of the event
   }
 
   tb.level = function(element) {
@@ -1841,12 +1900,13 @@
     // NOT YET IMPLEMENTED
     // move into newElement$ all Container's content found in oldElements$
     // both oldElement$ and newElement$ should be jquery with one single element to give predictable results
+
   }
 
   tb.Template.setElement$Containers = function(element$,containers){
     // move the content of the different containers stored in containers into the containers of element$
-    // element$  a jQuery of 1 element that potentially has embedded containers
-    // containers an object {containerName:jQueryOfContentOfContainer,....}
+    // - element$  a jQuery of 1 element that potentially has embedded containers
+    // - containers an object {containerName:jQueryOfContentOfContainer,....}
     element$.children().each(function(i,e) {
       var containerName = e.container;
       var e$ = $(e);
@@ -1863,7 +1923,7 @@
   }
 
   tb.Template.getElement$Containers = function(element$,containers){
-    // returns a object {containerName:jqueryOfcontentOfThisContainer,....}
+    // returns a object {containerName:jqueryOfcontentOfThisContainer,....} with all containers of element$
     // the containers parameter is normally undefined, but needed for the recursive search
     //    all containers found will be added to containers
     containers = containers || {};
@@ -1881,7 +1941,10 @@
 
 
 
-  tb.updateTemplateChoice = function () {}; // dummy so far, will be trully defined later on when creating menu;
+  tb.updateTemplateChoice = function () {
+   // dummy so far, will be trully defined later on when creating menu;
+
+  };
 
   tb.template = function(newTemplate,itemprop) {
     // create a new template and register it
@@ -1991,6 +2054,7 @@
   }
 
   tb.findblockNumber = function() {
+    // search the next block number in an existing document
     $('.ELEMENT').each(function(i,e) {
       var n = Number(e.id.slice(4));
       if (!isNaN(n)) {
@@ -2001,13 +2065,16 @@
   }
 
   tb.blockId = function(prefix) {
+    // return the block id using prefix which must be a 4 characters prefix
     return prefix+tb.pad(tb.blockNumber,4);
   }
 
+/*TODO: remove
   tb.removeErrors = function(html) {
     return html.replace(/<SPAN class\=ERROR>(.+?)<\/SPAN>/g,"$1")
   }
-               
+   
+*/            
 
   tb.outputElement = function(element) {
     // return the output element associated with element if any
@@ -2030,36 +2097,42 @@
   }
 
   tb.showCode = function(event) {
+    // click event handler for the show Code checkbox
     var button = event.target || window.event.srcElement; //IE7 compatibility
     $('.CODE').toggleClass('HIDDEN',!button.checked);
     $('body').attr('showCode',button.checked);
   }
 
   tb.showCut = function(event) {
+    // click event handler for the show cut checkbox
     var button = event.target || window.event.srcElement; //IE7 compatibility
     $('.CUT').toggleClass('HIDDEN',!button.checked);
     $('body').attr('showCut',button.checked);
   }
       
   tb.showTest = function(event) {
+    // click event handler for the show test checkbox
     var button = event.target || window.event.srcElement; //IE7 compatibility
     $('.TEST').toggleClass('HIDDEN',!button.checked);
     $('body').attr('showTest',button.checked);
   }
       
   tb.showTrace = function(event) {
+    // click event handler for the show trace checkbox
     var button = event.target || window.event.srcElement; //IE7 compatibility
     $('.TRACE').toggleClass('HIDDEN',!button.checked);
     $('body').attr('showTrace',button.checked);
   }
 
   tb.setAutoRun = function(event) {
+    // click event handler for the auto run checkbox
     var button = event.target || window.event.srcElement; //IE7 compatibility
     tb.autoRun = button.checked;
     $('body').attr('autoRun',tb.autoRun);
   }
 
   tb.print = function() {
+    // click event handler for the print button
     tb.selectElement(undefined);
     window.print();
   }
@@ -2070,6 +2143,7 @@
   }
 
   tb.updateTemplateChoice = function() {
+    // update the template selection box according to the context i.e. the acceptedTemplate of the current container
     var currentValue = tb.templateChoice$.val();
     tb.templateChoice$.empty();
     tb.currentContainer$ = $(tb.selectedElement).closest('[container]')  
@@ -2102,6 +2176,7 @@
   } 
 
   tb.initToolBars = function() {
+    // creates the tools bars
     $('#menu').remove();
     var b$ = $('BODY');
 
@@ -2179,11 +2254,13 @@
   }
 
   tb.setModified = function(state) {
+    // set the modified state and modify the save button accordingly
     tb.modified = state;
     $('#saveBtn').toggleClass('WARNING',state);
   }
 
   tb.setUpToDate = function(state) {
+    // set if the sheet is up to date or not (has to be re-run)
     if (state === tb.setUpToDate.state) return;
     if (state) {
       $('#runAllBtn').removeClass('WARNING');
@@ -2196,6 +2273,7 @@
   }
   
   tb.clearOutputs = function() {
+    // remove all outputs
     $('.OUTPUT').remove();
   }
 
@@ -2230,6 +2308,7 @@
 
 
   tb.beforeUnload = function() {  //TODO avec hta, ne fonctionne pas bien
+    // event handler before closing check if a save is needed and desired
     if (tb.modified) {
       if (window.confirm('your file has been modified since last save\n;save it now?')) {
         tb.save();
@@ -2238,12 +2317,14 @@
   }
 
   tb.copyOutputToTest = function() {
+    // set the current element's output as the test element if no test element existed or if it failed
+    // if a SUCCESS test existed, remove the test
     if (tb.selectedElement == undefined) return;
 
     var out = tb.outputElement(tb.selectedElement);
     var test = tb.testElement(tb.selectedElement);
     if (test == undefined) {
-      $(out).after($('<DIV id="'+tb.selectedElement.id.replace(/code/,"test")+'" class=TEST>'+out.innerHTML+'</DIV>'));
+      $(out).after($('<DIV id="'+tb.selectedElement.id.replace(/code/,"test")+'" class="TEST SUCCESS">'+out.innerHTML+'</DIV>'));
     }
     else if (!$(test).hasClass('SUCCESS')) {
       test.innerHTML = out.innerHTML;
@@ -2256,6 +2337,9 @@
   }
 
   tb.cutBlock = function(element,cut) {
+    // cut or "uncut" element
+    // if cut is true or false, set the cut state
+    // if cut is undefined, toggle the cut state
     cut = cut || !$(element).hasClass('CUT');
     $(element)
     .add(tb.outputElement(element))
@@ -2266,6 +2350,7 @@
   }
 
   tb.removeCutBlocks = function() {
+    // remove all CUT elements
     $('.CUT').remove();
   }
 
@@ -2279,6 +2364,7 @@
 
 
   tb.selectElement = function(element) {
+    // select element as tb.selectedElement and update the EDI accordingly
     var e = tb.selectedElement;
     if (e) { 
       if (element && (e === element)) { // if already selected nothing to do but give focus again
@@ -2334,6 +2420,7 @@
 
 
   tb.elementClick = function(event) {
+    // event handler for click on an ELEMENT
     var element = event.currentTarget; // not target, since target can be an child element, not the div itself
     if ($(element).hasClass('EMBEDDED')) {
       return true; //EMBEDDED code is ruled by its container (richText / section...) so let the event bubble
@@ -2343,6 +2430,8 @@
   }
 
   tb.editableKeyDown = function(event) {
+    // keyDown event handler for EDITABLE ELEMENT in order to see if the ELEMENT is modified and so the sheet
+    // also treat ctrl-enter as a run key
     if ($.inArray(event.keyCode,[16,17,18,20,27,33,34,35,36,37,38,39,40,45,91,92,93]) != -1) return; // non modifying keys like shift..
     tb.setModified(true);
     tb.setUpToDate(false);
@@ -2419,6 +2508,7 @@
   }
 
   tb.displayResult = function(result,output) {
+    // display result in output (that must be a tb.Output object
     $(output.outputElement)
     .empty().removeClass('ERROR').addClass('SUCCESS')
     .append(((result !== undefined) && (result !== null) && (typeof result.node$ === 'function') && result.node$() )
@@ -2429,8 +2519,10 @@
   }
 
   tb.execCode = function(element) {
+    // execute the code of element
+    // skip all CUT element
     var element$ = $(element);
-    if (element$.hasClass('DELETED')) return;
+    if (element$.hasClass('CUT')) return;
 
     // if template, lauch exec method if any
     if (element.itemtype) {
@@ -2559,6 +2651,7 @@
   }
 
   tb.clearTimers = function () {
+    // clear all existing intervalTimers used by [[tb.animate]]
     for (var i = 0;i<tb.intervalTimers.length;i++) {
       window.clearInterval(tb.intervalTimers[i]);
     };
@@ -2569,6 +2662,7 @@
   }
 
   tb.finalize = function() {
+    // execute all finalization code
     for (var i=0;i<tb.finalizations.length;i++) {
       var out = tb.finalizations[i];
       tb.errorHandler.code = out.finalizationFunc.toString();
@@ -2579,6 +2673,7 @@
   }
 
   tb.run = function() {
+    // run either all CODE ELEMENT or the CODE ELEMENT from the first to the SelectedElement
     if (tb.autoRun) {
       tb.execAll();
     }
@@ -2588,7 +2683,7 @@
   }
 
   tb.updateContainers = function() {
-    // make sure that containers are never empty (= have a fake element)
+    // make sure that containers are never empty (= have a fake [[EMPTY]] [[ELEMENT]])
     // and that no fake element remains if there is another element inside the container
     $('.ELEMENT.EMPTY:not(:only-child)').remove();
     var c$ = $('[container]:empty');
@@ -2596,6 +2691,8 @@
   }
  
   tb.execAll = function() {
+    // execute all [[CODE]] [[ELEMENT]]
+    // reset the environement before so that no side effect
     $('.TRACE').remove();
     trace.off();
     tb.clearTimers();
@@ -2604,6 +2701,7 @@
     tb.results = {};
     tb.IElement.idNumber = 0;
     tb.simulation = new tb.Simulation('tb.simulation');
+    $('.SIDEBOX').remove();
     tb.tableOfContent.updateSections();
     tb.editables$(tb.selectedElement).each(function(i,e){tb.reformatRichText(e)});
     $('.CODE').add('[itemtype]').each(function(i,e) {tb.execCode(e);});
@@ -2614,6 +2712,8 @@
   }
 
   tb.execUntilSelected = function() {
+    // execute all [[CODE]] [[ELEMENT]] until the selected Element
+    // reset the environement before so that no side effect
     $('.TRACE').remove();
     trace.off();
     tb.clearTimers();
@@ -2648,6 +2748,7 @@
   }
 
   tb.reformatRichText = function(element) {
+    // reformat a [[RICHTEXT]] [[ELEMENT]] in order to find potential [[EMBEDDED]] [[CODE]]
     if ((element == undefined) || ($(element).hasClass('CODE'))) return;
     var mark = /\{\{[#]?(.*?)\}\}/;
     var h = element.innerHTML;
@@ -2656,9 +2757,11 @@
     while ((idx=h.search(mark))!=-1) {
       tb.blockNumber++;
       if (h.charAt(idx+2) == '#') {
-        h = h.replace(mark,'<SPAN class="CODE EMBEDDED" id='+ tb.blockId('code')+' style="DISPLAY: none;">tb.link("$1")</SPAN><SPAN class=OUTPUT contentEditable=false id='+ tb.blockId('out')+'>no output</SPAN>');
+        h = h.replace(mark,'<SPAN class="CODE EMBEDDED" id='+ tb.blockId('code')+' style="DISPLAY: none;">tb.link("$1")</SPAN>');
       }
-      h = h.replace(mark,'<SPAN class="CODE EMBEDDED" id='+ tb.blockId('code')+' style="DISPLAY: none;">$1</SPAN><SPAN class=OUTPUT contentEditable=false id='+ tb.blockId('out')+'>no output</SPAN>');
+      else {
+        h = h.replace(mark,'<SPAN class="CODE EMBEDDED" id='+ tb.blockId('code')+' style="DISPLAY: none;">$1</SPAN>');
+      }
       change = true; 
     }
     if (change) {
@@ -2681,7 +2784,8 @@
     }
     else {
       window.showModalDialog('dialog.htm',[
-        '<fieldset><legend>'+tb.selectedElement.id+'</legend>'+tb.toHtml(tb.selectedElement.outerHTML)+'</fieldset>']);
+        '<fieldset><legend>'+tb.selectedElement.id+'</legend>'+tb.toHtml(tb.selectedElement.outerHTML)+'</fieldset>'],
+        "dialogwidth="+tb.content$.css('width'));
     }
   }
 
@@ -2764,6 +2868,7 @@ a('convert from jc to tb')
       $('.SCENE').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
       $('.INTERACTIVE').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
       $('.LINK').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
+      $('.SIDEBOXTEXT').live("click",tb.openCloseSideBox); // open or close sideBox and cancel bubbling of click to let the user control clicks
 
 
       tb.findblockNumber();
