@@ -24,13 +24,11 @@
 </HEAD>
 <BODY sizset="0" sizcache="1"  designMode="on" showCode="true" showCut="true" showTest="true" showTrace="true">
 <DIV id=menu class=TOOLBAR style="MAX-WIDTH: 50%; FLOAT: right">
-<DIV><BUTTON onclick=tb.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=tb.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60" >&#9658;&#9658;</BUTTON><BUTTON onclick=tb.clearTimers(); disabled id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=tb.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=tb.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=tb.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON><BUTTON onclick=tb.helpPanel$.toggle(100); style="HEIGHT: 23px; WIDTH: 43px" >help</BUTTON><INPUT onclick=tb.showCode(event) CHECKED type=checkbox>codes</INPUT><INPUT onclick=tb.showCut(event) CHECKED type=checkbox>cuts</INPUT><INPUT onclick=tb.showTest(event) CHECKED type=checkbox>tests</INPUT><INPUT onclick=tb.showTrace(event) CHECKED type=checkbox>traces</INPUT><INPUT onclick=tb.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
-<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=tb.cutBlock(tb.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertBefore(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].convert(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT ><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION><OPTION value=person>person</OPTION></SELECT><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertAfter(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px" >&#8595;</BUTTON><BUTTON onclick=tb.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=tb.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
+<DIV><BUTTON onclick=tb.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=tb.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60" >&#9658;&#9658;</BUTTON><BUTTON onclick=tb.clearTimers(); disabled id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=tb.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=tb.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=tb.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON><BUTTON onclick=tb.helpPanel$.toggle(100); style="HEIGHT: 23px; WIDTH: 43px">help</BUTTON><INPUT onclick=tb.showCode(event) CHECKED type=checkbox>codes</INPUT><INPUT onclick=tb.showCut(event) CHECKED type=checkbox>cuts</INPUT><INPUT onclick=tb.showTest(event) CHECKED type=checkbox>tests</INPUT><INPUT onclick=tb.showTrace(event) CHECKED type=checkbox>traces</INPUT><INPUT onclick=tb.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
+<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=tb.cutBlock(tb.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertBefore(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].convert(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION><OPTION value=person>person</OPTION></SELECT><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertAfter(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=tb.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=tb.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
 <DIV id=objectToolBar></DIV></DIV>
-<DIV style="POSITION: ; ZOOM: 1; FILTER:   ; DISPLAY: block" ><SPAN onclick=tb.helpPanel$.hide(300) style="CURSOR: pointer; COLOR: red">&nbsp;×&nbsp;</SPAN><INPUT ><SPAN onclick=tb.help.index.back() style="CURSOR: pointer; COLOR: #8dff60">&#9668;</SPAN>
-<DIV style="OVERFLOW: auto; MAX-HEIGHT: 400px">
-<TABLE>
-<DIV></DIV></TABLE></DIV></DIV></DIV>
+<DIV><SPAN onclick=tb.helpPanel$.hide(300) style="CURSOR: pointer; COLOR: red">&nbsp;×&nbsp;</SPAN><INPUT ><SPAN onclick=tb.help.index.back() style="CURSOR: pointer; COLOR: #8dff60">&#9668;</SPAN>
+<DIV style="OVERFLOW: auto; MAX-HEIGHT: 400px">please type your search above</DIV></DIV></DIV>
 <DIV id=tbContent class=CONTAINER sizset="0" sizcache="1" container="sectionContent"><PRE id=code0170 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.credits</PRE>
 <DIV id=out0170 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
@@ -55,44 +53,44 @@
 <DIV class="ELEMENT EMPTY" contentEditable=false>empty container: click here to add an element</DIV></DIV></DIV><PRE id=code0002 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.tableOfContent</PRE>
 <DIV id=out0002 class="OUTPUT SUCCESS">
 <DIV class=INTERACTIVE>
-<DIV class=TOC0>1 <A href="#sect0003">table of content</A></DIV>
-<DIV class=TOC0>2 <A href="#sect0004">Introduction</A></DIV>
-<DIV class=TOC1>2.1 <A href="#sect0006">What is Tablord?</A></DIV>
-<DIV class=TOC1>2.2 <A href="#sect0007">Fundamentals of Tablord</A></DIV>
-<DIV class=TOC1>2.3 <A href="#sect0005">What is not Tablord</A></DIV>
-<DIV class=TOC1>2.4 <A href="#sect0015">Basic block of Tablord</A></DIV>
-<DIV class=TOC2>2.4.1 <A href="#sect0018">Section</A></DIV>
-<DIV class=TOC2>2.4.2 <A href="#sect0020">Rich Text</A></DIV>
-<DIV class=TOC3>2.4.2.1 <A href="#sect0045">code reformating {{&nbsp;}}</A></DIV>
-<DIV class=TOC2>2.4.3 <A href="#sect0022">code</A></DIV>
-<DIV class=TOC1>2.5 <A href="#sect0229">Template block</A></DIV>
-<DIV class=TOC2>2.5.1 <A href="#sect0233">jc.template</A></DIV>
-<DIV class=TOC3>2.5.1.1 <A href="#sect0241">tb.getItems$(url)&nbsp; and&nbsp; $.getData()</A></DIV>
-<DIV class=TOC3>2.5.1.2 <A href="#sect0247">$.getMicrodata()</A></DIV>
-<DIV class=TOC1>2.6 <A href="#sect0069">Code Execution </A></DIV>
-<DIV class=TOC2>2.6.1 <A href="#sect0213">Run Until Selected button or ctrl-Enter</A></DIV>
-<DIV class=TOC2>2.6.2 <A href="#sect0215">Run All and auto run</A></DIV>
-<DIV class=TOC0>3 <A href="#sect0070">the Tablordlibrary</A></DIV>
-<DIV class=TOC1>3.1 <A href="#sect0076">Variable declaration</A></DIV>
-<DIV class=TOC2>3.1.1 <A href="#sect0107">Naming conventions</A></DIV>
-<DIV class=TOC2>3.1.2 <A href="#sect0085">Unit support</A></DIV>
-<DIV class=TOC1>3.2 <A href="#sect0173">view the result</A></DIV>
-<DIV class=TOC2>3.2.1 <A href="#sect0186">jc.inspect</A></DIV>
-<DIV class=TOC2>3.2.2 <A href="#sect0202">jc.help</A></DIV>
-<DIV class=TOC1>3.3 <A href="#sect0143">General methods</A></DIV>
-<DIV class=TOC2>3.3.1 <A href="#sect0145">toString</A></DIV>
-<DIV class=TOC2>3.3.2 <A href="#sect0152">valueOf</A></DIV>
-<DIV class=TOC2>3.3.3 <A href="#sect0148">span</A></DIV>
-<DIV class=TOC2>3.3.4 <A href="#sect0150">view</A></DIV>
-<DIV class=TOC2>3.3.5 <A href="#sect0154">method chaining</A></DIV>
-<DIV class=TOC1>3.4 <A href="#sect0095">Table</A></DIV>
-<DIV class=TOC2>3.4.1 <A href="#sect0119">span</A></DIV>
-<DIV class=TOC2>3.4.2 <A href="#sect0126">sort</A></DIV>
-<DIV class=TOC2>3.4.3 <A href="#sect0136">addRows</A></DIV>
-<DIV class=TOC2>3.4.4 <A href="#sect0225">edit</A></DIV>
-<DIV class=TOC1>3.5 <A href="#sect0209">output</A></DIV>
-<DIV class=TOC1>3.6 <A href="#sect0158">function delaration</A></DIV>
-<DIV class=TOC0>4 <A href="#sect0047">known issue:</A></DIV></DIV></DIV>
+<DIV class=TOC0>1 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0003">table of content</A></DIV>
+<DIV class=TOC0>2 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0004">Introduction</A></DIV>
+<DIV class=TOC1>2.1 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0006">What is Tablord?</A></DIV>
+<DIV class=TOC1>2.2 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0007">Fundamentals of Tablord</A></DIV>
+<DIV class=TOC1>2.3 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0005">What is not Tablord</A></DIV>
+<DIV class=TOC1>2.4 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0015">Basic block of Tablord</A></DIV>
+<DIV class=TOC2>2.4.1 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0018">Section</A></DIV>
+<DIV class=TOC2>2.4.2 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0020">Rich Text</A></DIV>
+<DIV class=TOC3>2.4.2.1 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0045">code reformating {{&nbsp;}}</A></DIV>
+<DIV class=TOC2>2.4.3 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0022">code</A></DIV>
+<DIV class=TOC1>2.5 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0229">Template block</A></DIV>
+<DIV class=TOC2>2.5.1 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0233">jc.template</A></DIV>
+<DIV class=TOC3>2.5.1.1 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0241">tb.getItems$(url)&nbsp; and&nbsp; $.getData()</A></DIV>
+<DIV class=TOC3>2.5.1.2 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0247">$.getMicrodata()</A></DIV>
+<DIV class=TOC1>2.6 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0069">Code Execution </A></DIV>
+<DIV class=TOC2>2.6.1 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0213">Run Until Selected button or ctrl-Enter</A></DIV>
+<DIV class=TOC2>2.6.2 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0215">Run All and auto run</A></DIV>
+<DIV class=TOC0>3 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0070">the Tablordlibrary</A></DIV>
+<DIV class=TOC1>3.1 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0076">Variable declaration</A></DIV>
+<DIV class=TOC2>3.1.1 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0107">Naming conventions</A></DIV>
+<DIV class=TOC2>3.1.2 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0085">Unit support</A></DIV>
+<DIV class=TOC1>3.2 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0173">view the result</A></DIV>
+<DIV class=TOC2>3.2.1 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0186">jc.inspect</A></DIV>
+<DIV class=TOC2>3.2.2 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0202">jc.help</A></DIV>
+<DIV class=TOC1>3.3 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0143">General methods</A></DIV>
+<DIV class=TOC2>3.3.1 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0145">toString</A></DIV>
+<DIV class=TOC2>3.3.2 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0152">valueOf</A></DIV>
+<DIV class=TOC2>3.3.3 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0148">span</A></DIV>
+<DIV class=TOC2>3.3.4 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0150">view</A></DIV>
+<DIV class=TOC2>3.3.5 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0154">method chaining</A></DIV>
+<DIV class=TOC1>3.4 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0095">Table</A></DIV>
+<DIV class=TOC2>3.4.1 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0119">span</A></DIV>
+<DIV class=TOC2>3.4.2 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0126">sort</A></DIV>
+<DIV class=TOC2>3.4.3 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0136">addRows</A></DIV>
+<DIV class=TOC2>3.4.4 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0225">edit</A></DIV>
+<DIV class=TOC1>3.5 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0209">output</A></DIV>
+<DIV class=TOC1>3.6 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0158">function delaration</A></DIV>
+<DIV class=TOC0>4 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0047">known issue:</A></DIV></DIV></DIV>
 <DIV id=sect0004 class="SECTION ELEMENT" sizset="3" sizcache="1">
 <H1 class="SECTIONTITLE EDITABLE" contentEditable=false>2 Introduction</H1>
 <DIV sizset="3" sizcache="1" container="sectionContent">
@@ -147,13 +145,15 @@
 <DIV id=sect0045 class="SECTION ELEMENT" sizset="13" sizcache="1">
 <H4 class="SECTIONTITLE EDITABLE" contentEditable=false>2.4.2.1 code reformating <SPAN id=code0054 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">'\{\{ \}\}'</SPAN><SPAN id=out0054 class="OUTPUT SUCCESS">{{&nbsp;}}</SPAN></H4>
 <DIV sizset="13" sizcache="1" container="sectionContent">
-<DIV id=rich0046 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="13" sizcache="1">Inside Rich Text, code can be inserted by using the <SPAN id=code0026 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">'\{\{...\}\}'</SPAN><SPAN id=out0026 class="OUTPUT SUCCESS">{{...}}</SPAN>&nbsp;syntaxe. for example, writing <SPAN id=code0028 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">'\{\{3+5\}\}'</SPAN><SPAN id=out0028 class="OUTPUT SUCCESS">{{3+5}}</SPAN>will transform into a code block having <STRONG><EM>3+5</EM></STRONG>&nbsp;as code and an output block like this <SPAN id=code0029 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">3+5</SPAN><SPAN id=out0029 class="OUTPUT SUCCESS">8</SPAN>&nbsp;(&lt;-- just click here to edit and understand how this works) 
+<DIV id=rich0046 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="13" sizcache="1">Inside Rich Text, code can be&nbsp;inserted&nbsp;by using the <SPAN id=code0272 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">'\{\{...\}\}'</SPAN><SPAN id=out0272 class="OUTPUT SUCCESS" sizset="14" sizcache="1">{{...}}</SPAN>&nbsp;syntaxe. for example, writing <SPAN id=code0309 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">'\{\{3+5\}\}'</SPAN><SPAN id=out0309 class="OUTPUT SUCCESS" sizset="16" sizcache="1">{{3+5}}</SPAN>&nbsp;will transform into a code block having <STRONG><EM>3+5</EM></STRONG>&nbsp;as code and an output block like this <SPAN id=code0029 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">3+5</SPAN><SPAN id=out0029 class="OUTPUT SUCCESS">8</SPAN>&nbsp;(&lt;-- just click here to edit and understand how this works) 
 <P>&nbsp;</P>
 <P sizset="16" sizcache="1">when you click on a rich text block, one will see all <SPAN id=code0044 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.link('code')</SPAN><SPAN id=out0044 class="OUTPUT SUCCESS"><A class=LINK href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0022">code</A></SPAN> 
-<P></P></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0022 class="SECTION ELEMENT" sizset="17" sizcache="1">
+<P>There are 2 short cuts</P>
+<P sizset="17" sizcache="1"><SPAN id=code0284 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">'\{\{#...\}\}'</SPAN><SPAN id=out0284 class="OUTPUT SUCCESS" sizset="20" sizcache="1">{{#...}}</SPAN>&nbsp; is transformed into a <STRONG>tb.link('...')</STRONG></P>
+<P sizset="18" sizcache="1"><SPAN id=code0310 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">'\{\{##...\}\}'</SPAN><SPAN id=out0310 class="OUTPUT SUCCESS" sizset="22" sizcache="1">{{##...}}</SPAN> is transformed into a tb.elementBox('...')</P>when you run the sheet or change of selected elements, the edited element will be transformed so that <SPAN id=code0317 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">'\{\{..code..\}\}'</SPAN><SPAN id=out0317 class="OUTPUT SUCCESS">{{..code..}}</SPAN> is transformed in a EMBEEDED CODE element</DIV></DIV></DIV></DIV></DIV>
+<DIV id=sect0022 class="SECTION ELEMENT" sizset="19" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>2.4.3 code</H3>
-<DIV sizset="17" sizcache="1" container="sectionContent">
+<DIV sizset="19" sizcache="1" container="sectionContent">
 <DIV id=rich0063 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>A code section is very similar to the one that is created within Rich Text but consist of one block in itself</P>
 <P>usually, this is intended for either a bunch of variable declaration, calculation and other, while within Rich Text this is more "showing the result of some already calculated variables".</P>
@@ -161,15 +161,37 @@
 <P>code is followed by an output division and has an optional test element below a complete example</P></DIV><PRE id=code0064 class="CODE ELEMENT EDITABLE" contentEditable=false>10+12</PRE>
 <DIV id=out0064 class="OUTPUT SUCCESS">22</DIV>
 <DIV id=test0064 class="TEST SUCCESS">22</DIV>
-<DIV id=rich0065 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="18" sizcache="1">The <SPAN id=code0068 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.html('&lt;span class=CODEEXAMPLE&gt;code&lt;/span&gt;')</SPAN><SPAN id=out0068 class="OUTPUT SUCCESS"><SPAN class=CODEEXAMPLE>code</SPAN></SPAN>is followed by an <SPAN id=code0073 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.html('&lt;span class="OUTPUTEXAMPLE SUCCESS"&gt;output&lt;/span&gt;')</SPAN><SPAN id=out0073 class="OUTPUT SUCCESS"><SPAN class="OUTPUTEXAMPLE SUCCESS">output</SPAN></SPAN>and followed by an optionnal&nbsp;<SPAN id=code0066 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.html('&lt;span class=TESTEXAMPLE&gt;testElement&lt;/span&gt;')</SPAN><SPAN id=out0066 class="OUTPUT SUCCESS"><SPAN class=TESTEXAMPLE>testElement</SPAN></SPAN></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0229 class="ELEMENT SECTION" sizset="21" sizcache="1">
+<DIV id=rich0065 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="20" sizcache="1">The <SPAN id=code0068 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.html('&lt;span class=CODEEXAMPLE&gt;code&lt;/span&gt;')</SPAN><SPAN id=out0068 class="OUTPUT SUCCESS"><SPAN class=CODEEXAMPLE>code</SPAN></SPAN>is followed by an <SPAN id=code0073 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.html('&lt;span class="OUTPUTEXAMPLE SUCCESS"&gt;output&lt;/span&gt;')</SPAN><SPAN id=out0073 class="OUTPUT SUCCESS"><SPAN class="OUTPUTEXAMPLE SUCCESS">output</SPAN></SPAN>and followed by an optionnal&nbsp;<SPAN id=code0066 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.html('&lt;span class=TESTEXAMPLE&gt;testElement&lt;/span&gt;')</SPAN><SPAN id=out0066 class="OUTPUT SUCCESS"><SPAN class=TESTEXAMPLE>testElement</SPAN></SPAN></DIV></DIV></DIV></DIV></DIV>
+<DIV id=sect0229 class="ELEMENT SECTION" sizset="23" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>2.5 Template block</H2>
-<DIV class=CONTAINER sizset="21" sizcache="1" container="sectionContent">
+<DIV class=CONTAINER sizset="23" sizcache="1" container="sectionContent">
 <DIV id=rich0234 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>In addition to the basic blocks, the user can define Template block and use them. Technically speaking, code, richText and section blocks also are templates, but they are defined in the EDI.</DIV>
-<DIV id=sect0233 class="ELEMENT SECTION" sizset="21" sizcache="1">
+<DIV id=sect0233 class="ELEMENT SECTION" sizset="23" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>2.5.1 jc.template</H3>
-<DIV class=CONTAINER sizset="21" sizcache="1" container="sectionContent"><PRE id=code0235 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.help(tb.template)</PRE>
-<DIV id=out0235 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function(newTemplate,itemprop)</B><BR>&nbsp;create&nbsp;a&nbsp;new&nbsp;template&nbsp;and&nbsp;register&nbsp;it<BR>&nbsp;it&nbsp;will&nbsp;inherit&nbsp;from&nbsp;tb.Template&nbsp;<BR>&nbsp;newTemplate&nbsp;is&nbsp;a&nbsp;simple&nbsp;object&nbsp;that&nbsp;must&nbsp;at&nbsp;least&nbsp;define<BR>&nbsp;.name:&nbsp;a&nbsp;name&nbsp;like&nbsp;an&nbsp;id&nbsp;optionaly&nbsp;followed&nbsp;by&nbsp;#version<BR>&nbsp;and&nbsp;must&nbsp;define&nbsp;one&nbsp;of&nbsp;the&nbsp;3<BR>&nbsp;.fields:&nbsp;{field1:{options},field2:{options}....}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;field1&nbsp;is&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;field&nbsp;if&nbsp;field&nbsp;name&nbsp;ends&nbsp;with&nbsp;[]&nbsp;the&nbsp;field&nbsp;is&nbsp;an&nbsp;array&nbsp;of&nbsp;values<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;options&nbsp;is&nbsp;an&nbsp;object<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;types<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;number:{}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;field&nbsp;is&nbsp;a&nbsp;number<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;string:{}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;field&nbsp;is&nbsp;a&nbsp;string:&nbsp;&nbsp;default&nbsp;if&nbsp;nothing&nbsp;is&nbsp;specified<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;function:function(data){...}&nbsp;&nbsp;the&nbsp;field&nbsp;is&nbsp;calculated&nbsp;(=&gt;&nbsp;readonly)&nbsp;and&nbsp;the&nbsp;html&nbsp;is&nbsp;the&nbsp;result&nbsp;of&nbsp;this&nbsp;function<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;select:{choice1:val1,choice2:val2...)&nbsp;the&nbsp;field&nbsp;is&nbsp;a&nbsp;<WBR>&lt;SELECT&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;container:"template1&nbsp;template2"&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;container&nbsp;that&nbsp;accepts&nbsp;the&nbsp;specified&nbsp;template&nbsp;names&nbsp;and&nbsp;how&nbsp;the&nbsp;itemprop&nbsp;.&nbsp;if&nbsp;"",&nbsp;accepts&nbsp;anything<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;formating<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;label:&nbsp;specifies&nbsp;the&nbsp;label&nbsp;in&nbsp;front&nbsp;of&nbsp;the&nbsp;field.&nbsp;by&nbsp;default&nbsp;fieldName<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;fields&nbsp;is&nbsp;defined,&nbsp;standard&nbsp;html&nbsp;code&nbsp;will&nbsp;automatically&nbsp;be&nbsp;generated<BR>&nbsp;&nbsp;&nbsp;&nbsp;so&nbsp;do&nbsp;not&nbsp;define&nbsp;.fields&nbsp;if&nbsp;you&nbsp;want&nbsp;to&nbsp;define&nbsp;.html<BR>&nbsp;.html:&nbsp;a&nbsp;string&nbsp;representing&nbsp;the&nbsp;html&nbsp;code&nbsp;of&nbsp;the&nbsp;template<BR>&nbsp;.element$:&nbsp;a&nbsp;function()&nbsp;returning&nbsp;a&nbsp;DOM&nbsp;Element;&nbsp;normally&nbsp;not&nbsp;defined&nbsp;and&nbsp;inherited&nbsp;form&nbsp;tb.Template</SPAN></DIV><PRE id=code0236 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.template({name:'person',fields:{firstName:{},middleName:{},lastName:{}}})</PRE>
+<DIV class=CONTAINER sizset="23" sizcache="1" container="sectionContent"><PRE id=code0235 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.help(tb.template)</PRE>
+<DIV id=out0235 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function(newTemplate,itemprop)</B><BR>create a new template and register it <BR>it will inherit from tb.Template <BR>
+<DT><SPAN class=PARAMETER>newTemplate</SPAN>:
+<DD>is a simple object that must at least define <BR>
+<DT>.name:
+<DD>a name like an id optionaly followed by #version <BR><BR>and must define one of the 3 <BR>
+<DT>.fields:
+<DD>{field1:{options},field2:{options}....} <BR>field1 is the name of the field if field name ends with [] the field is an array of values <BR><BR>options is an object <BR>types <BR>
+<DT>number:{}
+<DD>the field is a number <BR>
+<DT>string:{}
+<DD>the field is a string: default if nothing is specified <BR>
+<DT>func:function(data){...}
+<DD>the field is calculated (=&gt; readonly) and the html is the result of this function <BR>
+<DT>select:{choice1:val1,choice2:val2...)
+<DD>the field is a SELECT <BR>
+<DT>container:"template1
+<DD>template2" <BR>a container that accepts the specified template names and how the <SPAN class=PARAMETER>itemprop</SPAN> . if "", accepts anything <BR><BR>formating <BR>
+<DT>label:
+<DD>specifies the label in front of the field. by default fieldName <BR><BR>if fields is defined, standard html code will automatically be generated <BR>so do not define .fields if you want to define .html <BR>
+<DT>.html:
+<DD>a string representing the html code of the template <BR>
+<DT>.element$:
+<DD>a function() returning a DOM Element; normally not defined and inherited form tb.Template <BR></SPAN></DD></DIV><PRE id=code0236 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.template({name:'person',fields:{firstName:{},middleName:{},lastName:{}}})</PRE>
 <DIV id=out0236 class="OUTPUT SUCCESS">template person created [<A href="http://tablord.com/templates/person">http://tablord.com/templates/person</A>]</DIV><PRE id=code0238 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.templates</PRE>
 <DIV id=out0238 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
@@ -224,9 +246,9 @@
 <TH>lastName</TH>
 <TD class=LEFT width="90%">
 <DIV class="FIELD EDITABLE" contentEditable=false itemprop="lastName">Smith</DIV></TD></TR></TBODY></TABLE></DIV>
-<DIV id=sect0241 class="ELEMENT SECTION" sizset="24" sizcache="1">
+<DIV id=sect0241 class="ELEMENT SECTION" sizset="26" sizcache="1">
 <H4 class="SECTIONTITLE EDITABLE" contentEditable=false>2.5.1.1 tb.getItems$(url)&nbsp; and&nbsp; $.getData()</H4>
-<DIV class=CONTAINER sizset="24" sizcache="1" container="sectionContent">
+<DIV class=CONTAINER sizset="26" sizcache="1" container="sectionContent">
 <DIV id=rich0242 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>In order to get the data of templates, one can use the <STRONG>tb.getItems$()</STRONG> function that return a jquery with all element that are an item of the type specified by the url&nbsp;followed by the&nbsp;extension of jQuery <STRONG>.getData()</STRONG> that return an array of objects, which is handy to create tables. Please note that the search of template is done on the <STRONG>entire</STRONG> document as it is at the time of the code execution. Normally this is not an issue since template are mostly used as a way to enter manually structured data, but it can become of concern if some template block are created programmatically within the document.</DIV><PRE id=code0240 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.inspect(tb.getItems$('http://tablord.com/templates/person.html').getData(),10)</PRE>
 <DIV id=out0240 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
@@ -281,9 +303,9 @@
 <TD style="TEXT-ALIGN: left">Don</TD>
 <TD style="TEXT-ALIGN: left">H</TD>
 <TD style="TEXT-ALIGN: left">Smith</TD></TR></TBODY></TABLE></DIV></DIV></DIV>
-<DIV id=sect0247 class="ELEMENT SECTION">
+<DIV id=sect0247 class="ELEMENT SECTION" sizset="28" sizcache="1">
 <H4 class="SECTIONTITLE EDITABLE" contentEditable=false>2.5.1.2 $.getMicrodata()</H4>
-<DIV container="sectionContent">
+<DIV sizset="28" sizcache="1" container="sectionContent">
 <DIV id=rich0248 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>for a more general purpose use but also more complex use, you can use the <STRONG>.getMicrodata()</STRONG> extension method of jQuery. the result is complient with the microdata API.</DIV><PRE id=code0249 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.inspect(tb.getItems$('http://tablord.com/templates/person.html').getMicrodata(),10)</PRE>
 <DIV id=out0249 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
@@ -397,32 +419,32 @@
 <TR>
 <TH vAlign=top>0</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"Smith"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0069 class="SECTION ELEMENT" sizset="26" sizcache="1">
+<DIV id=sect0069 class="SECTION ELEMENT" sizset="29" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>2.6 Code Execution </H2>
-<DIV sizset="26" sizcache="1" container="sectionContent">
-<DIV id=sect0213 class="SECTION ELEMENT" sizset="26" sizcache="1">
+<DIV sizset="29" sizcache="1" container="sectionContent">
+<DIV id=sect0213 class="SECTION ELEMENT" sizset="29" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>2.6.1 Run Until Selected button or ctrl-Enter</H3>
-<DIV sizset="26" sizcache="1" container="sectionContent">
-<DIV id=rich0219 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="26" sizcache="1">
-<P sizset="26" sizcache="1">While editing an element, you can either click on the "run until selected" <SPAN id=code0216 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.html($('#runUntilSelectedBtn')[0].outerHTML)</SPAN><SPAN id=out0216 class="OUTPUT SUCCESS"><BUTTON onclick=tb.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON></SPAN></P>or press ctrl-Enter. Both will run all code element until (and including) the currently selected Element. 
+<DIV sizset="29" sizcache="1" container="sectionContent">
+<DIV id=rich0219 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="29" sizcache="1">
+<P sizset="29" sizcache="1">While editing an element, you can either click on the "run until selected" <SPAN id=code0216 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.html($('#runUntilSelectedBtn')[0].outerHTML)</SPAN><SPAN id=out0216 class="OUTPUT SUCCESS"><BUTTON onclick=tb.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON></SPAN></P>or press ctrl-Enter. Both will run all code element until (and including) the currently selected Element. 
 <P></P>
 <P>Please note that every run is done in a new fresh environnement, so every previously declared variable through v, table... are deleted before execution.</P></DIV></DIV></DIV>
-<DIV id=sect0215 class="SECTION ELEMENT" sizset="27" sizcache="1">
+<DIV id=sect0215 class="SECTION ELEMENT" sizset="30" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>2.6.2 Run All and auto run</H3>
-<DIV sizset="27" sizcache="1" container="sectionContent">
-<DIV id=rich0217 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="27" sizcache="1">
+<DIV sizset="30" sizcache="1" container="sectionContent">
+<DIV id=rich0217 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="30" sizcache="1">
 <P>if the sheet is marked with auto run (by default) it will be executed fully on the openning of the sheet.</P>
-<P sizset="27" sizcache="1">you can reexecute everything by pressing the run all button <SPAN id=code0218 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.html($('#runAllBtn')[0].outerHTML)</SPAN><SPAN id=out0218 class="OUTPUT SUCCESS"><BUTTON onclick=tb.execAll(); id=runAllBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60" >&#9658;&#9658;</BUTTON></SPAN></P>. In both cases, the execution start by creating a fresh new variables environnement 
+<P sizset="30" sizcache="1">you can reexecute everything by pressing the run all button <SPAN id=code0218 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.html($('#runAllBtn')[0].outerHTML)</SPAN><SPAN id=out0218 class="OUTPUT SUCCESS"><BUTTON onclick=tb.execAll(); id=runAllBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60" >&#9658;&#9658;</BUTTON></SPAN></P>. In both cases, the execution start by creating a fresh new variables environnement 
 <P></P></DIV></DIV></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0070 class="SECTION ELEMENT" sizset="29" sizcache="1">
+<DIV id=sect0070 class="SECTION ELEMENT" sizset="32" sizcache="1">
 <H1 class="SECTIONTITLE EDITABLE" contentEditable=false>3 the <SPAN id=code0072 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0072 class="OUTPUT SUCCESS">Tablord</SPAN>library</H1>
-<DIV sizset="29" sizcache="1" container="sectionContent">
+<DIV sizset="32" sizcache="1" container="sectionContent">
 <DIV id=rich0071 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false></DIV>
-<DIV id=sect0076 class="SECTION ELEMENT" sizset="29" sizcache="1">
+<DIV id=sect0076 class="SECTION ELEMENT" sizset="32" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>3.1 Variable declaration</H2>
-<DIV sizset="29" sizcache="1" container="sectionContent">
-<DIV id=rich0077 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="29" sizcache="1">
-<P sizset="29" sizcache="1">the most uncommon part of <SPAN id=code0079 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0079 class="OUTPUT SUCCESS">Tablord</SPAN></P>for already knowlegable JavaScript users is how to declare variables. 
+<DIV sizset="32" sizcache="1" container="sectionContent">
+<DIV id=rich0077 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="32" sizcache="1">
+<P sizset="32" sizcache="1">the most uncommon part of <SPAN id=code0079 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0079 class="OUTPUT SUCCESS">Tablord</SPAN></P>for already knowlegable JavaScript users is how to declare variables. 
 <P></P>
 <P>As all calculation will occure in the client, technically speaking, all should impact the JavaScript environnement, which is very impractical. if you would declare a variable "window" nothing would be reachable anymore since "window" is <STRONG>the</STRONG> root of many things in browser JavaScript.</P>
 <P>&nbsp;</P>
@@ -462,31 +484,31 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>string</TD></TR>
 <TR>
 <TH vAlign=top>setName</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(name)</B><BR>&nbsp;for&nbsp;internal&nbsp;use&nbsp;only<BR>&nbsp;changes&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;variable&nbsp;and&nbsp;also<BR>&nbsp;updates&nbsp;.label&nbsp;and&nbsp;.unit</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(name)</B><BR>for internal use only <BR>changes the <SPAN class=PARAMETER>name</SPAN> of the variable and also <BR>updates .label and .unit <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>setValue</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(value)</B><BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>valueOf</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function ()</B><BR>&nbsp;return&nbsp;the&nbsp;value&nbsp;of&nbsp;the&nbsp;variable<BR>&nbsp;if&nbsp;the&nbsp;variable&nbsp;is&nbsp;in&nbsp;fact&nbsp;a&nbsp;function,&nbsp;executes&nbsp;the&nbsp;function&nbsp;and&nbsp;return&nbsp;its&nbsp;value</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function ()</B><BR>return the value of the variable <BR>if the variable is in fact a function, executes the function and return its value <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>toJSON</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function ()</B><BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>code</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>&nbsp;return&nbsp;the&nbsp;code&nbsp;of&nbsp;the&nbsp;embedded&nbsp;function&nbsp;if&nbsp;such&nbsp;a&nbsp;function&nbsp;exists<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;undefined&nbsp;if&nbsp;not&nbsp;a&nbsp;function</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>return the code of the embedded function if such a function exists <BR>or undefined if not a function <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>to</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(unit)</B><BR>&nbsp;return&nbsp;the&nbsp;value&nbsp;converted&nbsp;to&nbsp;unit</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(unit)</B><BR>return the value converted to <SPAN class=PARAMETER>unit</SPAN> <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>toString</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>&nbsp;return&nbsp;the&nbsp;summary&nbsp;of&nbsp;the&nbsp;variable</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>return the summary of the variable <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>view</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(options)</B><BR>&nbsp;returns&nbsp;an&nbsp;HTML&nbsp;object&nbsp;with&nbsp;VariableName&nbsp;=&nbsp;value</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(options)</B><BR>returns an HTML object with VariableName = value <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>edit</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>&nbsp;returns&nbsp;an&nbsp;HTML&nbsp;object&nbsp;with&nbsp;the&nbsp;necessary&nbsp;controls&nbsp;to&nbsp;edit&nbsp;the&nbsp;variable</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>returns an HTML object with the necessary controls to edit the variable <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>getEditableValue</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(editor)</B><BR></SPAN></TD></TR>
@@ -495,12 +517,12 @@
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(editor)</B><BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>updateCode</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>&nbsp;generate&nbsp;the&nbsp;code&nbsp;that&nbsp;represents&nbsp;the&nbsp;element&nbsp;as&nbsp;edited<BR>&nbsp;can&nbsp;be&nbsp;used&nbsp;to&nbsp;replace&nbsp;the&nbsp;existing&nbsp;code&nbsp;</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>generate the code that represents the element as edited <BR>can be used to replace the existing code <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>isV</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>true</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
-<DIV id=rich0099 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="34" sizcache="1">
-<P sizset="34" sizcache="1">more will be detailled in <SPAN id=code0100 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.link("tb.inspect")</SPAN><SPAN id=out0100 class="OUTPUT SUCCESS"><SPAN title="#tb.inspect is not found in the table of content" class=INVALIDLINK>tb.inspect</SPAN></SPAN></P>but for now just take it as a good way to inspect anything and a way to get help on an object 
+<DIV id=rich0099 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="37" sizcache="1">
+<P sizset="37" sizcache="1">more will be detailled in <SPAN id=code0100 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.link("tb.inspect")</SPAN><SPAN id=out0100 class="OUTPUT SUCCESS"><SPAN title="#tb.inspect is not found in the table of content" class=INVALIDLINK>tb.inspect</SPAN></SPAN></P>but for now just take it as a good way to inspect anything and a way to get help on an object 
 <P></P>
 <P>&nbsp;</P>
 <P>you can inspect anything, so you can also&nbsp;just type <STRONG>jc.vars</STRONG> to have a look of&nbsp;all declared variables.</P></DIV><PRE id=code0105 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.vars</PRE>
@@ -529,23 +551,23 @@
 <TR>
 <TH vAlign=top>myJavaScriptVariable2</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;JQuery]&nbsp;length:1</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
-<DIV id=sect0107 class="SECTION ELEMENT" sizset="37" sizcache="1">
+<DIV id=sect0107 class="SECTION ELEMENT" sizset="40" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.1.1 Naming conventions</H3>
-<DIV sizset="37" sizcache="1" container="sectionContent">
-<DIV id=rich0108 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="37" sizcache="1">
-<P sizset="37" sizcache="1">In <SPAN id=code0109 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0109 class="OUTPUT SUCCESS">Tablord</SPAN></P>one should avoid starting a variable name by _ since those are reserved for the library usage (like _simulation). 
+<DIV sizset="40" sizcache="1" container="sectionContent">
+<DIV id=rich0108 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="40" sizcache="1">
+<P sizset="40" sizcache="1">In <SPAN id=code0109 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0109 class="OUTPUT SUCCESS">Tablord</SPAN></P>one should avoid starting a variable name by _ since those are reserved for the library usage (like _simulation). 
 <P></P>
-<P sizset="38" sizcache="1">If you do so, you will be sure that this name space is for you and no upgrade of <SPAN id=code0110 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0110 class="OUTPUT SUCCESS">Tablord</SPAN></P>will interfear in your variables. 
+<P sizset="41" sizcache="1">If you do so, you will be sure that this name space is for you and no upgrade of <SPAN id=code0110 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0110 class="OUTPUT SUCCESS">Tablord</SPAN></P>will interfear in your variables. 
 <P></P>
 <P>For the rest, it's up to you, but common good practice for JavaScript is to camelCase every word but the first and avoid underscore.</P>
 <P>&nbsp;</P>
 <P>the library follows those common conventions:</P>
 <P>a function stating with a CapitalCase is a constructor (~ a Class)</P></DIV></DIV></DIV>
-<DIV id=sect0085 class="SECTION ELEMENT" sizset="39" sizcache="1">
+<DIV id=sect0085 class="SECTION ELEMENT" sizset="42" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.1.2 Unit support</H3>
-<DIV sizset="39" sizcache="1" container="sectionContent">
-<DIV id=rich0086 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="39" sizcache="1">
-<P sizset="39" sizcache="1">One on the very common programming mistake is to missmatch units, adding for example $ and &#8364; and of course having strange results. Unfortunally no modern language supports properly units (which is a shame). JavaScript is no exception :-( . So, even if this is far from perfect, some provision have been given in <SPAN id=code0088 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0088 class="OUTPUT SUCCESS">Tablord</SPAN></P>while remaining pure JavaScript. 
+<DIV sizset="42" sizcache="1" container="sectionContent">
+<DIV id=rich0086 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="42" sizcache="1">
+<P sizset="42" sizcache="1">One on the very common programming mistake is to missmatch units, adding for example $ and &#8364; and of course having strange results. Unfortunally no modern language supports properly units (which is a shame). JavaScript is no exception :-( . So, even if this is far from perfect, some provision have been given in <SPAN id=code0088 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0088 class="OUTPUT SUCCESS">Tablord</SPAN></P>while remaining pure JavaScript. 
 <P></P>
 <P>&nbsp;</P>
 <P>By convention the unit is located in the variable name after a <STRONG>$</STRONG> sign</P></DIV><PRE id=code0087 class="CODE ELEMENT EDITABLE" contentEditable=false>v('currentPrice$USD',1234).view()</PRE>
@@ -553,21 +575,21 @@
 <DIV id=out0089 class="OUTPUT SUCCESS">1234</DIV><PRE id=code0090 class="CODE ELEMENT EDITABLE" contentEditable=false>currentPrice$USD.unit</PRE>
 <DIV id=out0090 class="OUTPUT SUCCESS">USD</DIV><PRE id=code0091 class="CODE ELEMENT EDITABLE" contentEditable=false>currentPrice$USD.label</PRE>
 <DIV id=out0091 class="OUTPUT SUCCESS">currentPrice</DIV>
-<DIV id=rich0092 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="44" sizcache="1">
-<P sizset="44" sizcache="1">In the future some capability of unit convertion will be given. nothing prevents you to write code like <SPAN id=code0093 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.codeExample('currentPrice$USD-margin$EUR')</SPAN><SPAN id=out0093 class="OUTPUT SUCCESS"><SPAN class=CODEEXAMPLE>currentPrice$USD-margin$EUR</SPAN></SPAN> 
+<DIV id=rich0092 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="47" sizcache="1">
+<P sizset="47" sizcache="1">In the future some capability of unit convertion will be given. nothing prevents you to write code like <SPAN id=code0093 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.codeExample('currentPrice$USD-margin$EUR')</SPAN><SPAN id=out0093 class="OUTPUT SUCCESS"><SPAN class=CODEEXAMPLE>currentPrice$USD-margin$EUR</SPAN></SPAN> 
 <P></P>but at least this notation makes you a little bit more aware of the problem.</DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0173 class="SECTION ELEMENT" sizset="45" sizcache="1">
+<DIV id=sect0173 class="SECTION ELEMENT" sizset="48" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>3.2 view the result</H2>
-<DIV sizset="45" sizcache="1" container="sectionContent">
+<DIV sizset="48" sizcache="1" container="sectionContent">
 <DIV id=rich0174 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>The simpliest method to view a result is just to execute a code that ends with some results like in a JavaScript console</P></DIV><PRE id=code0175 class="CODE ELEMENT EDITABLE" contentEditable=false>2+3</PRE>
 <DIV id=out0175 class="OUTPUT SUCCESS">5</DIV>
-<DIV id=rich0176 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="46" sizcache="1">in <SPAN id=code0178 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0178 class="OUTPUT SUCCESS">Tablord</SPAN>, when a piece of code returns a result, it will first look if this is a simple type and display it in a human format</DIV><PRE id=code0177 class="CODE ELEMENT EDITABLE" contentEditable=false>undefined</PRE>
+<DIV id=rich0176 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="49" sizcache="1">in <SPAN id=code0178 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0178 class="OUTPUT SUCCESS">Tablord</SPAN>, when a piece of code returns a result, it will first look if this is a simple type and display it in a human format</DIV><PRE id=code0177 class="CODE ELEMENT EDITABLE" contentEditable=false>undefined</PRE>
 <DIV id=out0177 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV><PRE id=code0179 class="CODE ELEMENT EDITABLE" contentEditable=false>''</PRE>
 <DIV id=out0179 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">empty string</SPAN></DIV>
 <DIV id=rich0182 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>note that this is close to the toString(), so an array will show like a list.</DIV><PRE id=code0180 class="CODE ELEMENT EDITABLE" contentEditable=false>[1,2,3]</PRE>
 <DIV id=out0180 class="OUTPUT SUCCESS">1,2,3</DIV>
-<DIV id=rich0183 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="50" sizcache="1">then if this is an object, it will try to use the <STRONG>span()</STRONG> method to get an decent html representation of the object. This works well on the <SPAN id=code0184 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0184 class="OUTPUT SUCCESS">Tablord</SPAN>library that consitently implement this method</DIV><PRE id=code0185 class="CODE ELEMENT EDITABLE" contentEditable=false><P>table('aTable')</P><P>.add({id:'zero',col1:1,col2:2,col3:3})</P><P>.add({id:'one' ,col1:10,col2:20,col3:30})</P><P>.add({id:'two' ,col1:100,col2:200,col3:300})</P></PRE>
+<DIV id=rich0183 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="53" sizcache="1">then if this is an object, it will try to use the <STRONG>span()</STRONG> method to get an decent html representation of the object. This works well on the <SPAN id=code0184 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0184 class="OUTPUT SUCCESS">Tablord</SPAN>library that consitently implement this method</DIV><PRE id=code0185 class="CODE ELEMENT EDITABLE" contentEditable=false><P>table('aTable')</P><P>.add({id:'zero',col1:1,col2:2,col3:3})</P><P>.add({id:'one' ,col1:10,col2:20,col3:30})</P><P>.add({id:'two' ,col1:100,col2:200,col3:300})</P></PRE>
 <DIV id=out0185 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
@@ -593,9 +615,9 @@
 <TD>200</TD>
 <TD>300</TD></TR></TBODY></TABLE></DIV><PRE id=code0197 class="CODE ELEMENT EDITABLE" contentEditable=false><P>function sum(a,b) {return a+b};</P><P>sum</P></PRE>
 <DIV id=out0197 class="OUTPUT SUCCESS"></DIV>
-<DIV id=sect0186 class="SECTION ELEMENT" sizset="53" sizcache="1">
+<DIV id=sect0186 class="SECTION ELEMENT" sizset="56" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.2.1 jc.inspect</H3>
-<DIV sizset="53" sizcache="1" container="sectionContent">
+<DIV sizset="56" sizcache="1" container="sectionContent">
 <DIV id=rich0187 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>sometime you need to be close to the technical result, and the native format is to ambigous. this is specially the case with array that looks very much like a string, specially if empty</P>
 <P><STRONG>jc.inspect</STRONG> give you a better technical representation</P>
@@ -694,25 +716,25 @@
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>eachCol</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(func)</B><BR>&nbsp;func&nbsp;must&nbsp;be&nbsp;function(colname,colObject)</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(func)</B><BR><SPAN class=PARAMETER>func</SPAN> must be function(colname,colObject) <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>reduce</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(reduceF,criteria,initialValue)</B><BR>&nbsp;apply&nbsp;a&nbsp;reduce&nbsp;function&nbsp;on&nbsp;a&nbsp;column<BR>&nbsp;criteria&nbsp;is&nbsp;an&nbsp;optional&nbsp;f(jcFunc)&nbsp;that&nbsp;process&nbsp;only&nbsp;row&nbsp;that&nbsp;return&nbsp;true</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(reduceF,criteria,initialValue)</B><BR>apply a reduce function on a column <BR><SPAN class=PARAMETER>criteria</SPAN> is an optional f(jcFunc) that process only row that return true <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>sum</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;sum&nbsp;of&nbsp;the&nbsp;row</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>return the sum of the row <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>min</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;min&nbsp;of&nbsp;the&nbsp;row</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>return the min of the row <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>max</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;min&nbsp;of&nbsp;the&nbsp;row</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>return the min of the row <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>average</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;average&nbsp;of&nbsp;the&nbsp;row</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>return the average of the row <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>rms</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;root&nbsp;mean&nbsp;square&nbsp;of&nbsp;the&nbsp;row</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>return the root mean square of the row <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>toJSON</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR></SPAN></TD></TR>
@@ -755,25 +777,25 @@
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>eachCol</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(func)</B><BR>&nbsp;func&nbsp;must&nbsp;be&nbsp;function(colname,colObject)</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(func)</B><BR><SPAN class=PARAMETER>func</SPAN> must be function(colname,colObject) <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>reduce</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(reduceF,criteria,initialValue)</B><BR>&nbsp;apply&nbsp;a&nbsp;reduce&nbsp;function&nbsp;on&nbsp;a&nbsp;column<BR>&nbsp;criteria&nbsp;is&nbsp;an&nbsp;optional&nbsp;f(jcFunc)&nbsp;that&nbsp;process&nbsp;only&nbsp;row&nbsp;that&nbsp;return&nbsp;true</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(reduceF,criteria,initialValue)</B><BR>apply a reduce function on a column <BR><SPAN class=PARAMETER>criteria</SPAN> is an optional f(jcFunc) that process only row that return true <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>sum</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;sum&nbsp;of&nbsp;the&nbsp;row</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>return the sum of the row <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>min</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;min&nbsp;of&nbsp;the&nbsp;row</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>return the min of the row <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>max</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;min&nbsp;of&nbsp;the&nbsp;row</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>return the min of the row <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>average</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;average&nbsp;of&nbsp;the&nbsp;row</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>return the average of the row <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>rms</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;root&nbsp;mean&nbsp;square&nbsp;of&nbsp;the&nbsp;row</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>return the root mean square of the row <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>toJSON</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR></SPAN></TD></TR>
@@ -816,25 +838,25 @@
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>eachCol</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(func)</B><BR>&nbsp;func&nbsp;must&nbsp;be&nbsp;function(colname,colObject)</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(func)</B><BR><SPAN class=PARAMETER>func</SPAN> must be function(colname,colObject) <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>reduce</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(reduceF,criteria,initialValue)</B><BR>&nbsp;apply&nbsp;a&nbsp;reduce&nbsp;function&nbsp;on&nbsp;a&nbsp;column<BR>&nbsp;criteria&nbsp;is&nbsp;an&nbsp;optional&nbsp;f(jcFunc)&nbsp;that&nbsp;process&nbsp;only&nbsp;row&nbsp;that&nbsp;return&nbsp;true</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(reduceF,criteria,initialValue)</B><BR>apply a reduce function on a column <BR><SPAN class=PARAMETER>criteria</SPAN> is an optional f(jcFunc) that process only row that return true <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>sum</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;sum&nbsp;of&nbsp;the&nbsp;row</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>return the sum of the row <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>min</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;min&nbsp;of&nbsp;the&nbsp;row</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>return the min of the row <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>max</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;min&nbsp;of&nbsp;the&nbsp;row</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>return the min of the row <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>average</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;average&nbsp;of&nbsp;the&nbsp;row</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>return the average of the row <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>rms</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;root&nbsp;mean&nbsp;square&nbsp;of&nbsp;the&nbsp;row</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>return the root mean square of the row <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>toJSON</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR></SPAN></TD></TR>
@@ -906,31 +928,31 @@
 <TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;Object]</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
 <TR>
 <TH vAlign=top>set</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(value /*,path*/)</B><BR>&nbsp;set&nbsp;the&nbsp;value&nbsp;of&nbsp;the&nbsp;property&nbsp;of&nbsp;this.path1.path2...&nbsp;and&nbsp;creates,&nbsp;if&nbsp;needed&nbsp;the&nbsp;intermediate&nbsp;objects</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(value /*,path*/)</B><BR>set the <SPAN class=PARAMETER>value</SPAN> of the property of this.path1.path2... and creates, if needed the intermediate objects <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>get</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(/*path*/)</B><BR>&nbsp;applied&nbsp;as&nbsp;a&nbsp;method&nbsp;(either&nbsp;declare&nbsp;MyClass.prototype.get&nbsp;=&nbsp;tb.get&nbsp;or&nbsp;tb.get.call(obj,path)<BR>&nbsp;returns&nbsp;this.path1.path2.path3&nbsp;or&nbsp;undefined&nbsp;if&nbsp;at&nbsp;any&nbsp;stage&nbsp;it&nbsp;becomes&nbsp;undefined<BR>&nbsp;and&nbsp;search&nbsp;also&nbsp;in&nbsp;this.parent&nbsp;is&nbsp;case&nbsp;of&nbsp;undefined&nbsp;property<BR>&nbsp;enables&nbsp;a&nbsp;cascad&nbsp;search&nbsp;of&nbsp;a&nbsp;property</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(/*path*/)</B><BR>applied as a method (either declare MyClass.prototype.get = tb.get or tb.get.call(obj,path) <BR>returns this.path1.path2.path3 or undefined if at any stage it becomes undefined <BR>and search also in this.parent is case of undefined property <BR>enables a cascad search of a property <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>rename</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(name)</B><BR>&nbsp;if&nbsp;name&nbsp;is&nbsp;undefined&nbsp;return&nbsp;the&nbsp;name<BR>&nbsp;otherwise&nbsp;set&nbsp;a&nbsp;new&nbsp;name&nbsp;and&nbsp;return&nbsp;this</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(name)</B><BR>if <SPAN class=PARAMETER>name</SPAN> is undefined return the <SPAN class=PARAMETER>name</SPAN> <BR>otherwise set a new <SPAN class=PARAMETER>name</SPAN> and return this <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>registerPk</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(row)</B><BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>primaryKey</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(pkCol)</B><BR>&nbsp;set&nbsp;the&nbsp;primary&nbsp;key&nbsp;colName</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(pkCol)</B><BR>set the primary key colName <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>defCol</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(name, defValue, style)</B><BR>&nbsp;set&nbsp;the&nbsp;column&nbsp;attribute<BR>&nbsp;<BR>&nbsp;defValue&nbsp;is&nbsp;the&nbsp;value&nbsp;that&nbsp;is&nbsp;used&nbsp;when&nbsp;a&nbsp;new&nbsp;Row&nbsp;is&nbsp;added&nbsp;and&nbsp;that&nbsp;column&nbsp;is&nbsp;not&nbsp;defined<BR>&nbsp;it&nbsp;can&nbsp;be&nbsp;a&nbsp;JavaScript&nbsp;value&nbsp;(number,&nbsp;object..&nbsp;or&nbsp;an&nbsp;f(jcFunc)<BR>&nbsp;the&nbsp;style&nbsp;if&nbsp;set&nbsp;will&nbsp;call&nbsp;colStyle</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(name, defValue, style)</B><BR>set the column attribute <BR><BR><SPAN class=PARAMETER>defValue</SPAN> is the value that is used when a new Row is added and that column is not defined <BR>it can be a JavaScript value (number, object.. or an f(jcFunc) <BR>the style if set will call colStyle <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>updateCols</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(withRow)</B><BR>&nbsp;updates&nbsp;the&nbsp;cols&nbsp;description&nbsp;with&nbsp;the&nbsp;fields&nbsp;found&nbsp;in&nbsp;withRow<BR>&nbsp;normally&nbsp;for&nbsp;internal&nbsp;use&nbsp;only<BR>&nbsp;return&nbsp;the&nbsp;table&nbsp;for&nbsp;command&nbsp;chaining</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(withRow)</B><BR>updates the cols description with the fields found in <SPAN class=PARAMETER>withRow</SPAN> <BR>normally for internal use only <BR>return the table for command chaining <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>colOrder</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(order)</B><BR>&nbsp;if&nbsp;order&nbsp;=&nbsp;array&nbsp;of&nbsp;colName:&nbsp;set&nbsp;a&nbsp;new&nbsp;order<BR>&nbsp;if&nbsp;order&nbsp;==&nbsp;undefined&nbsp;return&nbsp;the&nbsp;current&nbsp;order</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(order)</B><BR>if <SPAN class=PARAMETER>order</SPAN> = array of colName: set a new <SPAN class=PARAMETER>order</SPAN> <BR>if <SPAN class=PARAMETER>order</SPAN> == undefined return the current <SPAN class=PARAMETER>order</SPAN> <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>show</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(columns,visible)</B><BR>&nbsp;show&nbsp;all&nbsp;columns&nbsp;specified&nbsp;in&nbsp;the&nbsp;columns&nbsp;array<BR>&nbsp;if&nbsp;visible&nbsp;=&nbsp;true&nbsp;or&nbsp;undefined,&nbsp;&nbsp;ensure&nbsp;this&nbsp;columns&nbsp;are&nbsp;visible&nbsp;if&nbsp;it&nbsp;exist<BR>&nbsp;if&nbsp;visible&nbsp;=&nbsp;false,&nbsp;ensure&nbsp;this&nbsp;columns&nbsp;are&nbsp;hidden<BR>&nbsp;if&nbsp;visible&nbsp;=&nbsp;null,&nbsp;&nbsp;reset&nbsp;to&nbsp;the&nbsp;default&nbsp;(specialy&nbsp;for&nbsp;View)</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(columns,visible)</B><BR>show all <SPAN class=PARAMETER>columns</SPAN> specified in the <SPAN class=PARAMETER>columns</SPAN> array <BR>if <SPAN class=PARAMETER>visible</SPAN> = true or undefined, ensure this <SPAN class=PARAMETER>columns</SPAN> are <SPAN class=PARAMETER>visible</SPAN> if it exist <BR>if <SPAN class=PARAMETER>visible</SPAN> = false, ensure this <SPAN class=PARAMETER>columns</SPAN> are hidden <BR>if <SPAN class=PARAMETER>visible</SPAN> = null, reset to the default (specialy for View) <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>hide</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(columns)</B><BR></SPAN></TD></TR>
@@ -939,88 +961,97 @@
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(columns)</B><BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>add</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(row)</B><BR>&nbsp;add&nbsp;a&nbsp;row<BR>&nbsp;row&nbsp;can&nbsp;be&nbsp;either&nbsp;a&nbsp;simple&nbsp;object&nbsp;or&nbsp;a&nbsp;Row&nbsp;object<BR>&nbsp;return&nbsp;the&nbsp;table&nbsp;for&nbsp;method&nbsp;chaining</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(row)</B><BR>add a <SPAN class=PARAMETER>row</SPAN> <BR><SPAN class=PARAMETER>row</SPAN> can be either a simple object or a Row object <BR>return the table for method chaining <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>addRows</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(rows)</B><BR>&nbsp;add&nbsp;multiple&nbsp;rows<BR>&nbsp;rows&nbsp;must&nbsp;be&nbsp;an&nbsp;array&nbsp;or&nbsp;array-like&nbsp;of&nbsp;objects<BR>&nbsp;columns&nbsp;are&nbsp;ajusted&nbsp;automatically</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(rows)</B><BR>add multiple <SPAN class=PARAMETER>rows</SPAN> <BR><SPAN class=PARAMETER>rows</SPAN> must be an array or array-like of objects <BR>columns are ajusted automatically <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>update</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(cols,keepOnlyValue)</B><BR>&nbsp;cols&nbsp;is&nbsp;an&nbsp;object&nbsp;{colName:value,....}<BR>&nbsp;value&nbsp;can&nbsp;be&nbsp;a&nbsp;simple&nbsp;value&nbsp;like&nbsp;a&nbsp;number&nbsp;or&nbsp;a&nbsp;string,&nbsp;<BR>&nbsp;but&nbsp;can&nbsp;also&nbsp;be&nbsp;a&nbsp;jcFunc&nbsp;produced&nbsp;by&nbsp;f(jcFunc)<BR>&nbsp;that&nbsp;will&nbsp;either&nbsp;be&nbsp;stored&nbsp;in&nbsp;the&nbsp;table&nbsp;<BR>&nbsp;or&nbsp;be&nbsp;used&nbsp;during&nbsp;the&nbsp;update&nbsp;to&nbsp;calculate&nbsp;the&nbsp;static&nbsp;value&nbsp;of&nbsp;the&nbsp;cell<BR>&nbsp;if&nbsp;keepOnlyValue&nbsp;==&nbsp;true</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(cols,keepOnlyValue)</B><BR><SPAN class=PARAMETER>cols</SPAN> is an object {colName:value,....} <BR>value can be a simple value like a number or a string, <BR>but can also be a jcFunc produced by f(jcFunc) <BR>that will either be stored in the table <BR>or be used during the update to calculate the static value of the cell <BR>if <SPAN class=PARAMETER>keepOnlyValue</SPAN> == true <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>forEachRow</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(func)</B><BR>&nbsp;execute&nbsp;func&nbsp;for&nbsp;each&nbsp;row&nbsp;of&nbsp;the&nbsp;table<BR>&nbsp;func&nbsp;must&nbsp;be&nbsp;function(i,row)&nbsp;in&nbsp;which&nbsp;this&nbsp;represents&nbsp;the&nbsp;Row&nbsp;object<BR>&nbsp;return&nbsp;the&nbsp;table&nbsp;for&nbsp;command&nbsp;chaining</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(func)</B><BR>execute <SPAN class=PARAMETER>func</SPAN> for each row of the table <BR><SPAN class=PARAMETER>func</SPAN> must be function(i,row) in which this represents the Row object <BR>return the table for command chaining <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>cell</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(row,col)</B><BR>&nbsp;return&nbsp;the&nbsp;content&nbsp;of&nbsp;the&nbsp;cell:&nbsp;if&nbsp;the&nbsp;cell&nbsp;is&nbsp;a&nbsp;function:&nbsp;return&nbsp;the&nbsp;function</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(row,col)</B><BR>return the content of the cell: if the cell is a function: return the function <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>val</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(row,col)</B><BR>&nbsp;return&nbsp;the&nbsp;VALUE&nbsp;of&nbsp;the&nbsp;cell:&nbsp;if&nbsp;a&nbsp;function,&nbsp;this&nbsp;function&nbsp;is&nbsp;calculated&nbsp;first</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(row,col)</B><BR>return the VALUE of the cell: if a function, this function is calculated first <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>reduce</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,reduceF,criteria,initialValue)</B><BR>&nbsp;apply&nbsp;a&nbsp;reduce&nbsp;function&nbsp;on&nbsp;a&nbsp;column<BR>&nbsp;criteria&nbsp;is&nbsp;an&nbsp;optional&nbsp;f(jcFunc)&nbsp;that&nbsp;process&nbsp;only&nbsp;row&nbsp;that&nbsp;return&nbsp;true</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,reduceF,criteria,initialValue)</B><BR>apply a reduce function on a column <BR><SPAN class=PARAMETER>criteria</SPAN> is an optional f(jcFunc) that process only row that return true <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>sum</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;sum&nbsp;of&nbsp;the&nbsp;column&nbsp;</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>return the sum of the column <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>min</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;min&nbsp;of&nbsp;the&nbsp;column&nbsp;</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>return the min of the column <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>max</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;min&nbsp;of&nbsp;the&nbsp;column</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>return the min of the column <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>average</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;average&nbsp;of&nbsp;the&nbsp;column</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>return the average of the column <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>rms</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;root&nbsp;mean&nbsp;square&nbsp;of&nbsp;the&nbsp;column</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>return the root mean square of the column <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>setCell</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(row,col,value)</B><BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>lookup</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;data&nbsp;of&nbsp;the&nbsp;first&nbsp;row&nbsp;matching&nbsp;the&nbsp;criteria</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>return the data of the first row matching the <SPAN class=PARAMETER>criteria</SPAN> <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>tableStyle</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(style)</B><BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>colStyle</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(style,colName)</B><BR>&nbsp;set&nbsp;the&nbsp;style&nbsp;for&nbsp;a&nbsp;column<BR>&nbsp;style&nbsp;can&nbsp;be&nbsp;either&nbsp;an&nbsp;object&nbsp;of&nbsp;$.css()&nbsp;parameters<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;a&nbsp;function(data,col,value)&nbsp;where&nbsp;this&nbsp;represents&nbsp;the&nbsp;row&nbsp;object&nbsp;which&nbsp;is&nbsp;compatible&nbsp;with&nbsp;f("jcFunc")<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;which&nbsp;return&nbsp;an&nbsp;object&nbsp;of&nbsp;css&nbsp;parameters</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(style,colName)</B><BR>set the <SPAN class=PARAMETER>style</SPAN> for a column <BR><SPAN class=PARAMETER>style</SPAN> can be either an object of $.css() parameters <BR>or a function(data,col,value) where this represents the row object which is compatible with f("jcFunc") <BR>and which return an object of css parameters <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>rowStyle</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(style,rowNumber)</B><BR>&nbsp;set&nbsp;the&nbsp;style&nbsp;for&nbsp;a&nbsp;row</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(style,rowNumber)</B><BR>set the <SPAN class=PARAMETER>style</SPAN> for a row <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>style</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(newStyle,rowNumber,colName)</B><BR>&nbsp;.style(newStyle)&nbsp;&nbsp;will&nbsp;set&nbsp;the&nbsp;default&nbsp;newStyle&nbsp;for&nbsp;the&nbsp;complete&nbsp;table<BR>&nbsp;.style(newStyle,rowNumber)&nbsp;will&nbsp;set&nbsp;the&nbsp;default&nbsp;style&nbsp;for&nbsp;a&nbsp;given&nbsp;row<BR>&nbsp;.style(newStyle,undefined,colName)&nbsp;will&nbsp;set&nbsp;the&nbsp;default&nbsp;style&nbsp;for&nbsp;a&nbsp;column<BR>&nbsp;.style(newStyle,rowNumber,colName)&nbsp;will&nbsp;set&nbsp;the&nbsp;style&nbsp;for&nbsp;a&nbsp;given&nbsp;cell<BR>&nbsp;newStyle&nbsp;can&nbsp;either&nbsp;be&nbsp;an&nbsp;object&nbsp;{cssAttr=val,...}&nbsp;or&nbsp;a&nbsp;function(table,rowNumber,colName)</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(newStyle,rowNumber,colName)</B><BR>
+<DT>.style(<SPAN class=PARAMETER>newStyle</SPAN>)
+<DD>will set the default <SPAN class=PARAMETER>newStyle</SPAN> for the complete table <BR>
+<DT>.style(<SPAN class=PARAMETER>newStyle</SPAN>,rowNumber)
+<DD>will set the default style for a given row <BR>
+<DT>.style(<SPAN class=PARAMETER>newStyle</SPAN>,undefined,<SPAN class=PARAMETER>colName</SPAN>)
+<DD>will set the default style for a column <BR>
+<DT>.style(<SPAN class=PARAMETER>newStyle</SPAN>,rowNumber,<SPAN class=PARAMETER>colName</SPAN>)
+<DD>will set the style for a given cell <BR><SPAN class=PARAMETER>newStyle</SPAN> can either be an object {cssAttr=val,...} or a function(table,<SPAN class=PARAMETER>rowNumber</SPAN>,colName) <BR></SPAN></DD></TD></TR>
 <TR>
 <TH vAlign=top>compoundStyle</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(row,colName,value)</B><BR>&nbsp;calculate&nbsp;the&nbsp;compound&nbsp;style&nbsp;for&nbsp;a&nbsp;given&nbsp;cell</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(row,colName,value)</B><BR>calculate the compound style for a given cell <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>sort</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(cols)</B><BR>&nbsp;sort&nbsp;the&nbsp;table&nbsp;according&nbsp;to&nbsp;the&nbsp;"cols"&nbsp;criteria<BR>&nbsp;cols&nbsp;is&nbsp;an&nbsp;object&nbsp;of&nbsp;the&nbsp;form:<BR>&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;col1:&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;1&nbsp;means&nbsp;ascending&nbsp;&nbsp;alphabetic&nbsp;or&nbsp;numeric&nbsp;order<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col2:-1&nbsp;&nbsp;&nbsp;&nbsp;//-1&nbsp;means&nbsp;descending&nbsp;alphabetic&nbsp;or&nbsp;numeric&nbsp;order<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col3:&nbsp;function(a,b)&nbsp;{...&nbsp;//&nbsp;any&nbsp;function&nbsp;that&nbsp;compare&nbsp;a&nbsp;and&nbsp;b&nbsp;and&nbsp;returns&nbsp;&gt;0&nbsp;if&nbsp;a&gt;b,&nbsp;<WBR>&lt;0&nbsp;if&nbsp;a<WBR>&lt;b,&nbsp;0&nbsp;if&nbsp;a==b<BR>&nbsp;return&nbsp;the&nbsp;table&nbsp;for&nbsp;command&nbsp;chaining</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(cols)</B><BR>sort the table according to the "<SPAN class=PARAMETER>cols</SPAN>" criteria <BR><SPAN class=PARAMETER>cols</SPAN> is an object of the form: <BR>{ col1: 1 // 1 means ascending alphabetic or numeric order <BR>col2:-1 //-1 means descending alphabetic or numeric order <BR>col3: function(a,b) {... // any function that compare a and b and returns &gt;0 if a&gt;b, &lt;0 if a<B, 0 if a="=b" <br> return the table for command chaining <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>find</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>&nbsp;return&nbsp;a&nbsp;new&nbsp;view&nbsp;of&nbsp;this&nbsp;table&nbsp;that&nbsp;has&nbsp;only&nbsp;the&nbsp;rows&nbsp;that&nbsp;match&nbsp;the&nbsp;criteria<BR>&nbsp;the&nbsp;rows&nbsp;of&nbsp;this&nbsp;view&nbsp;ARE&nbsp;THE&nbsp;ORIGINAL&nbsp;ROWS<BR>&nbsp;any&nbsp;function&nbsp;in&nbsp;a&nbsp;cell&nbsp;still&nbsp;refer&nbsp;to&nbsp;the&nbsp;original&nbsp;table.</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>return a new view of this table that has only the rows that match the <SPAN class=PARAMETER>criteria</SPAN> <BR>the rows of this view ARE THE ORIGINAL ROWS <BR>any function in a cell still refer to the original table. <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>findFirst</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>&nbsp;mongoDB&nbsp;find()&nbsp;as&nbsp;if&nbsp;the&nbsp;table&nbsp;was&nbsp;a&nbsp;small&nbsp;mongoDB<BR>&nbsp;return&nbsp;the&nbsp;first&nbsp;Row&nbsp;of&nbsp;this&nbsp;table&nbsp;that&nbsp;match&nbsp;the&nbsp;criteria</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>mongoDB find() as if the table was a small mongoDB <BR>return the first Row of this table that match the <SPAN class=PARAMETER>criteria</SPAN> <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>toString</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>&nbsp;return&nbsp;a&nbsp;string&nbsp;summarizing&nbsp;the&nbsp;table</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>return a string summarizing the table <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>toJSON</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>node$</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>&nbsp;display&nbsp;the&nbsp;table&nbsp;without&nbsp;its&nbsp;name</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>display the table without its name <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>span</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>&nbsp;deprecated:&nbsp;only&nbsp;for&nbsp;backward&nbsp;compatibility:&nbsp;use&nbsp;node$&nbsp;instead</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>deprecated: only for backward compatibility: use node$ instead <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>view</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>display&nbsp;the&nbsp;table,&nbsp;including&nbsp;its&nbsp;name&nbsp;in&nbsp;a&nbsp;<WBR>&lt;div&gt;</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>display the table, including its name in a 
+<DIV><BR></SPAN></DIV></TD></TR>
 <TR>
 <TH vAlign=top>edit</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(options)</B><BR>&nbsp;edit&nbsp;is&nbsp;similar&nbsp;to&nbsp;span,&nbsp;but&nbsp;gernerates&nbsp;HTML&nbsp;code&nbsp;in&nbsp;order&nbsp;to&nbsp;edit&nbsp;the&nbsp;object&nbsp;interactively<BR>&nbsp;it&nbsp;will&nbsp;also&nbsp;set&nbsp;the&nbsp;code&nbsp;to&nbsp;AUTOEDIT&nbsp;class&nbsp;which&nbsp;means&nbsp;that&nbsp;it&nbsp;should&nbsp;no&nbsp;longer&nbsp;be&nbsp;modified&nbsp;by&nbsp;the&nbsp;user&nbsp;since&nbsp;it&nbsp;will<BR>&nbsp;be&nbsp;generated&nbsp;by&nbsp;the&nbsp;edition&nbsp;mecanism.</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(options)</B><BR>edit is similar to span, but gernerates HTML code in order to edit the object interactively <BR>it will also set the code to AUTOEDIT class which means that it should no longer be modified by the user since it will <BR>be generated by the edition mecanism. <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>getEditableValue</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(editor)</B><BR></SPAN></TD></TR>
@@ -1029,13 +1060,13 @@
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(editor)</B><BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>updateCode</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>&nbsp;generate&nbsp;the&nbsp;code&nbsp;that&nbsp;represents&nbsp;the&nbsp;element&nbsp;as&nbsp;edited<BR>&nbsp;can&nbsp;be&nbsp;used&nbsp;to&nbsp;replace&nbsp;the&nbsp;existing&nbsp;code&nbsp;</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV>
-<DIV id=sect0202 class="SECTION ELEMENT" sizset="61" sizcache="1">
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>generate the code that represents the element as edited <BR>can be used to replace the existing code <BR></SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV>
+<DIV id=sect0202 class="SECTION ELEMENT" sizset="64" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.2.2 jc.help</H3>
-<DIV sizset="61" sizcache="1" container="sectionContent">
+<DIV sizset="64" sizcache="1" container="sectionContent">
 <DIV id=rich0203 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>jc.help show the essential of a function</DIV><PRE id=code0204 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.help(v)</PRE>
-<DIV id=out0204 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function v(name,value)</B><BR>&nbsp;v(name)&nbsp;returns&nbsp;the&nbsp;variable&nbsp;name:&nbsp;rarely&nbsp;used&nbsp;since&nbsp;name&nbsp;alone&nbsp;will&nbsp;represent&nbsp;the&nbsp;same&nbsp;as&nbsp;well&nbsp;as&nbsp;tb.vars[name]<BR>&nbsp;v(name,value)&nbsp;creates&nbsp;a&nbsp;new&nbsp;variable&nbsp;if&nbsp;it&nbsp;does&nbsp;not&nbsp;already&nbsp;exists&nbsp;and&nbsp;sets&nbsp;a&nbsp;new&nbsp;value</SPAN></DIV>
-<DIV id=rich0206 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="62" sizcache="1">without parameters, jc.help show the help of <SPAN id=code0207 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0207 class="OUTPUT SUCCESS">Tablord</SPAN></DIV><PRE id=code0205 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.help()</PRE>
+<DIV id=out0204 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function v(name,value)</B><BR>v(<SPAN class=PARAMETER>name</SPAN>) returns the variable <SPAN class=PARAMETER>name</SPAN>: rarely used since <SPAN class=PARAMETER>name</SPAN> alone will represent the same as well as tb.vars[<SPAN class=PARAMETER>name</SPAN>] <BR>v(<SPAN class=PARAMETER>name</SPAN>,value) creates a new variable if it does not already exists and sets a new <SPAN class=PARAMETER>value</SPAN> <BR></SPAN></DIV>
+<DIV id=rich0206 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="65" sizcache="1">without parameters, jc.help show the help of <SPAN id=code0207 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0207 class="OUTPUT SUCCESS">Tablord</SPAN></DIV><PRE id=code0205 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.help()</PRE>
 <DIV id=out0205 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
@@ -1066,37 +1097,43 @@
 <TBODY>
 <TR>
 <TH vAlign=top>inspect</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(obj,depth,name)</B><BR>&nbsp;return&nbsp;an&nbsp;Inspector&nbsp;object&nbsp;so&nbsp;obj&nbsp;can&nbsp;be&nbsp;displayed&nbsp;either&nbsp;in&nbsp;an&nbsp;html&nbsp;or&nbsp;plain&nbsp;text&nbsp;context<BR>&nbsp;-&nbsp;depth&nbsp;(default&nbsp;1)&nbsp;give&nbsp;at&nbsp;what&nbsp;depth&nbsp;object&nbsp;properties&nbsp;are&nbsp;also&nbsp;inspected<BR>&nbsp;-&nbsp;name&nbsp;(optional)&nbsp;gives&nbsp;a&nbsp;name&nbsp;to&nbsp;be&nbsp;shown&nbsp;in&nbsp;the&nbsp;display</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(obj,depth,name)</B><BR>return an Inspector object so <SPAN class=PARAMETER>obj</SPAN> can be displayed either in an html or plain text context <BR>
+<DT><SPAN class=PARAMETER>depth</SPAN>
+<DD>(default 1) give at what <SPAN class=PARAMETER>depth</SPAN> object properties are also inspected <BR>
+<DT><SPAN class=PARAMETER>name</SPAN>
+<DD>(optional) gives a <SPAN class=PARAMETER>name</SPAN> to be shown in the display <BR></SPAN></DD></TD></TR>
 <TR>
 <TH vAlign=top>keys</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(obj)</B><BR>&nbsp;returns&nbsp;an&nbsp;Array&nbsp;with&nbsp;all&nbsp;keys&nbsp;(=non&nbsp;inherited&nbsp;properties)&nbsp;of&nbsp;an&nbsp;object<BR>&nbsp;replacement&nbsp;for&nbsp;ECMA5&nbsp;</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(obj)</B><BR>returns an Array with all keys (=non inherited properties) of an object <BR>replacement for ECMA5 <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>copy</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(obj)</B><BR>&nbsp;makes&nbsp;a&nbsp;copy&nbsp;of&nbsp;obj&nbsp;this&nbsp;version&nbsp;only&nbsp;copies&nbsp;the&nbsp;first&nbsp;level<BR>&nbsp;does&nbsp;not&nbsp;copy&nbsp;any&nbsp;inheritance&nbsp;(result&nbsp;is&nbsp;an&nbsp;Object&nbsp;instance)</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(obj)</B><BR>makes a copy of <SPAN class=PARAMETER>obj</SPAN> this version only copies the first level <BR>does not copy any inheritance (result is an Object instance) <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>pad</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(integer,numberOfDigits)</B><BR></SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(integer,numberOfDigits)</B><BR>return a string representing the <SPAN class=PARAMETER>integer</SPAN>, by filling with 0 in order to return a constant <SPAN class=PARAMETER>numberOfDigits</SPAN> <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>inherit</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">undefined</SPAN></TD></TR>
 <TR>
 <TH vAlign=top>toString</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(html)</B><BR>&nbsp;transform&nbsp;the&nbsp;content&nbsp;(from&nbsp;innerHTML)&nbsp;to&nbsp;a&nbsp;string&nbsp;as&nbsp;if&nbsp;this&nbsp;content&nbsp;is&nbsp;a&nbsp;text&nbsp;editor<BR>&nbsp;removes&nbsp;any&nbsp;tags&nbsp;other&nbsp;than&nbsp;<WBR>&lt;BR&gt;&nbsp;and&nbsp;<WBR>&lt;P&gt;</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(html)</B><BR>transform the <SPAN class=PARAMETER>html</SPAN> content (from innerHTML) to a string as if this content is a text editor <BR>removes any tags other than <BR>and 
+<P><BR></SPAN></P></TD></TR>
 <TR>
 <TH vAlign=top>toHtml</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(code)</B><BR>&nbsp;transform&nbsp;htmlCode&nbsp;in&nbsp;such&nbsp;a&nbsp;manner&nbsp;that&nbsp;the&nbsp;code&nbsp;can&nbsp;be&nbsp;visualised&nbsp;in&nbsp;a&nbsp;<WBR>&lt;pre&gt;...</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(code)</B><BR>transform <SPAN class=PARAMETER>code</SPAN> in such a manner that the <SPAN class=PARAMETER>code</SPAN> can be visualised in a <PRE>...
+<BR></SPAN></PRE></TD></TR>
 <TR>
 <TH vAlign=top>codeExample</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(example)</B><BR></SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(example)</B><BR>return an html object with <SPAN class=PARAMETER>example</SPAN> wrapped in span class=CODEEXAMPLE <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>findInArrayOfObject</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria,a)</B><BR>&nbsp;find&nbsp;the&nbsp;first&nbsp;object&nbsp;in&nbsp;the&nbsp;array&nbsp;(or&nbsp;array&nbsp;like)&nbsp;of&nbsp;object&nbsp;a&nbsp;that&nbsp;has&nbsp;all&nbsp;criteria&nbsp;true<BR>&nbsp;example&nbsp;tb.findInArrayOfObject({toto:5},[{toto:1,tutu:5},{toto:5}])<BR>&nbsp;will&nbsp;return&nbsp;1</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria,a)</B><BR>find the first object in the array (or array like) of object <SPAN class=PARAMETER>a</SPAN> that has all <SPAN class=PARAMETER>criteria</SPAN> true <BR>example tb.findInArrayOfObject({toto:5},[{toto:1,tutu:5},{toto:5}]) <BR>will return 1 <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>help</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(func)</B><BR>&nbsp;returns&nbsp;the&nbsp;signature&nbsp;of&nbsp;the&nbsp;function&nbsp;and&nbsp;the&nbsp;first&nbsp;comment&nbsp;in&nbsp;a&nbsp;pretty&nbsp;html&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;followed&nbsp;by&nbsp;the&nbsp;content&nbsp;of&nbsp;the&nbsp;.help()&nbsp;static&nbsp;method&nbsp;of&nbsp;func&nbsp;if&nbsp;any<BR>&nbsp;-&nbsp;func:&nbsp;the&nbsp;function&nbsp;to&nbsp;be&nbsp;inspected</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(func)</B><BR>returns the signature of the function and the first comment in a pretty html <BR>followed by the content of the .<SPAN onclick="tb.help.index.show('help');" class=HELPLINK>help</SPAN>() static method of <SPAN class=PARAMETER>func</SPAN> if any <BR><SPAN class=PARAMETER>func</SPAN>: the function to be inspected <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>testStatus</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>&nbsp;set&nbsp;a&nbsp;finalize&nbsp;function&nbsp;that&nbsp;will&nbsp;write&nbsp;to&nbsp;the&nbsp;current&nbsp;output&nbsp;the&nbsp;number&nbsp;of&nbsp;test&nbsp;Failure<BR>&nbsp;in&nbsp;the&nbsp;section&nbsp;that&nbsp;includes&nbsp;the&nbsp;code&nbsp;that&nbsp;executes&nbsp;this&nbsp;function<BR>&nbsp;mostly&nbsp;used&nbsp;in&nbsp;a&nbsp;small&nbsp;code&nbsp;inside&nbsp;the&nbsp;title&nbsp;of&nbsp;a&nbsp;section&nbsp;to&nbsp;summerize&nbsp;the&nbsp;tests&nbsp;below</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>set a finalize function that will write to the current output the number of test Failure <BR>in the section that includes the code that executes this function <BR>mostly used in a small code inside the title of a section to summerize the tests below <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>link</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class="INSPECT META">undefined</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV>
@@ -1106,14 +1143,14 @@
 <TBODY>
 <TR>
 <TH vAlign=top>converts</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(value,from,to)</B><BR>&nbsp;convert&nbsp;the&nbsp;value&nbsp;from&nbsp;unit&nbsp;"from"&nbsp;to&nbsp;"to"<BR>&nbsp;an&nbsp;error&nbsp;is&nbsp;thrown&nbsp;if&nbsp;the&nbsp;2&nbsp;units&nbsp;are&nbsp;not&nbsp;from&nbsp;the&nbsp;same&nbsp;type</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(value,from,to)</B><BR>convert the <SPAN class=PARAMETER>value</SPAN> from unit "<SPAN class=PARAMETER>from</SPAN>" <SPAN class=PARAMETER>to</SPAN> "<SPAN class=PARAMETER>to</SPAN>" <BR>an error is thrown if the 2 units are not <SPAN class=PARAMETER>from</SPAN> the same type <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>symbole</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(unit)</B><BR>&nbsp;returns&nbsp;the&nbsp;"pretty"&nbsp;symbole&nbsp;for&nbsp;unit&nbsp;or&nbsp;unit&nbsp;itself&nbsp;if&nbsp;none&nbsp;if&nbsp;found</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0143 class="SECTION ELEMENT" sizset="64" sizcache="1">
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(unit)</B><BR>returns the "pretty" symbole for <SPAN class=PARAMETER>unit</SPAN> or <SPAN class=PARAMETER>unit</SPAN> itself if none if found <BR></SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV></DIV></DIV>
+<DIV id=sect0143 class="SECTION ELEMENT" sizset="67" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>3.3 General methods</H2>
-<DIV sizset="64" sizcache="1" container="sectionContent">
-<DIV id=rich0144 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="64" sizcache="1">in the <SPAN id=code0146 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0146 class="OUTPUT SUCCESS">Tablord</SPAN>there are some methods that all object implements</DIV>
+<DIV sizset="67" sizcache="1" container="sectionContent">
+<DIV id=rich0144 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="67" sizcache="1">in the <SPAN id=code0146 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0146 class="OUTPUT SUCCESS">Tablord</SPAN>there are some methods that all object implements</DIV>
 <DIV id=sect0145 class="SECTION ELEMENT">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.3.1 toString</H3>
 <DIV container="sectionContent">
@@ -1133,16 +1170,16 @@
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.3.4 view</H3>
 <DIV container="sectionContent">
 <DIV id=rich0151 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>similar to span and also returns an HTML object, but displayed in a &lt;DIV&gt; and displaying more informations like the instance name or other usefull information</DIV></DIV></DIV>
-<DIV id=sect0154 class="SECTION ELEMENT" sizset="65" sizcache="1">
+<DIV id=sect0154 class="SECTION ELEMENT" sizset="68" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.3.5 method chaining</H3>
-<DIV sizset="65" sizcache="1" container="sectionContent">
-<DIV id=rich0155 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="65" sizcache="1">
+<DIV sizset="68" sizcache="1" container="sectionContent">
+<DIV id=rich0155 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="68" sizcache="1">
 <P>most methods returns the calling object excepted when the method clearly specifies another result. so method chaining is easy like</P>
-<P sizset="65" sizcache="1"><SPAN id=code0156 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.codeExample("table('myTable').add({some row}).addRows([...]).sort()")</SPAN><SPAN id=out0156 class="OUTPUT SUCCESS"><SPAN class=CODEEXAMPLE>table('myTable').add({some row}).addRows([...]).sort()</SPAN></SPAN> 
+<P sizset="68" sizcache="1"><SPAN id=code0156 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.codeExample("table('myTable').add({some row}).addRows([...]).sort()")</SPAN><SPAN id=out0156 class="OUTPUT SUCCESS"><SPAN class=CODEEXAMPLE>table('myTable').add({some row}).addRows([...]).sort()</SPAN></SPAN> 
 <P></P></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0095 class="SECTION ELEMENT" sizset="66" sizcache="1">
+<DIV id=sect0095 class="SECTION ELEMENT" sizset="69" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>3.4 Table</H2>
-<DIV sizset="66" sizcache="1" container="sectionContent"><PRE id=code0101 class="CODE ELEMENT EDITABLE" contentEditable=false><P>table('myTable')</P><P>.add({_id:'zero',col1:1,col2:2,col3:3})</P><P>.add({_id:'one' ,col1:10,col2:20,col3:30})</P><P>.add({_id:'two' ,col1:100,col2:200,col3:300})</P></PRE>
+<DIV sizset="69" sizcache="1" container="sectionContent"><PRE id=code0101 class="CODE ELEMENT EDITABLE" contentEditable=false><P>table('myTable')</P><P>.add({_id:'zero',col1:1,col2:2,col3:3})</P><P>.add({_id:'one' ,col1:10,col2:20,col3:30})</P><P>.add({_id:'two' ,col1:100,col2:200,col3:300})</P></PRE>
 <DIV id=out0101 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
@@ -1224,11 +1261,11 @@
 <DIV id=out0116 class="OUTPUT SUCCESS">300</DIV><PRE id=code0220 class="CODE ELEMENT EDITABLE" contentEditable=false><P>// exactly the same as above:</P><P>myTable[2]._.col3</P></PRE>
 <DIV id=out0220 class="OUTPUT SUCCESS">300</DIV><PRE id=code0221 class="CODE ELEMENT EDITABLE" contentEditable=false><P>// or another method</P><P>myTable.cell(2,'col3')</P></PRE>
 <DIV id=out0221 class="OUTPUT SUCCESS">300</DIV>
-<DIV id=sect0119 class="SECTION ELEMENT" sizset="73" sizcache="1">
+<DIV id=sect0119 class="SECTION ELEMENT" sizset="76" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.4.1 span</H3>
-<DIV sizset="73" sizcache="1" container="sectionContent">
-<DIV id=rich0120 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="73" sizcache="1">
-<P sizset="73" sizcache="1"><SPAN id=code0121 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.help(myTable.span)</SPAN><SPAN id=out0121 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function()</B><BR>&nbsp;deprecated:&nbsp;only&nbsp;for&nbsp;backward&nbsp;compatibility:&nbsp;use&nbsp;node$&nbsp;instead</SPAN></SPAN> 
+<DIV sizset="76" sizcache="1" container="sectionContent">
+<DIV id=rich0120 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="76" sizcache="1">
+<P sizset="76" sizcache="1"><SPAN id=code0121 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.help(myTable.span)</SPAN><SPAN id=out0121 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function()</B><BR>deprecated: only for backward compatibility: use node$ instead <BR></SPAN></SPAN>
 <P></P></DIV><PRE id=code0123 class="CODE ELEMENT EDITABLE" contentEditable=false><P>myTable.span({cols:{_id:1,col1:1}});</P></PRE>
 <DIV id=out0123 class="OUTPUT SUCCESS">
 <TABLE>
@@ -1279,10 +1316,10 @@
 <TD>200</TD>
 <TD>300</TD></TR></TBODY></TABLE></DIV></DIV></DIV>
 <DIV id=rich0118 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false></DIV>
-<DIV id=sect0126 class="SECTION ELEMENT" sizset="76" sizcache="1">
+<DIV id=sect0126 class="SECTION ELEMENT" sizset="79" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.4.2 sort</H3>
-<DIV sizset="76" sizcache="1" container="sectionContent">
-<DIV id=rich0127 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="76" sizcache="1"><SPAN id=code0128 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.help(myTable.sort)</SPAN><SPAN id=out0128 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function(cols)</B><BR>&nbsp;sort&nbsp;the&nbsp;table&nbsp;according&nbsp;to&nbsp;the&nbsp;"cols"&nbsp;criteria<BR>&nbsp;cols&nbsp;is&nbsp;an&nbsp;object&nbsp;of&nbsp;the&nbsp;form:<BR>&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;col1:&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;1&nbsp;means&nbsp;ascending&nbsp;&nbsp;alphabetic&nbsp;or&nbsp;numeric&nbsp;order<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col2:-1&nbsp;&nbsp;&nbsp;&nbsp;//-1&nbsp;means&nbsp;descending&nbsp;alphabetic&nbsp;or&nbsp;numeric&nbsp;order<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col3:&nbsp;function(a,b)&nbsp;{...&nbsp;//&nbsp;any&nbsp;function&nbsp;that&nbsp;compare&nbsp;a&nbsp;and&nbsp;b&nbsp;and&nbsp;returns&nbsp;&gt;0&nbsp;if&nbsp;a&gt;b,&nbsp;<WBR>&lt;0&nbsp;if&nbsp;a<WBR>&lt;b,&nbsp;0&nbsp;if&nbsp;a==b<BR>&nbsp;return&nbsp;the&nbsp;table&nbsp;for&nbsp;command&nbsp;chaining</SPAN></SPAN></DIV><PRE id=code0129 class="CODE ELEMENT EDITABLE" contentEditable=false>myTable.sort({_id:1})</PRE>
+<DIV sizset="79" sizcache="1" container="sectionContent">
+<DIV id=rich0127 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="79" sizcache="1"><SPAN id=code0128 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.help(myTable.sort)</SPAN><SPAN id=out0128 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function(cols)</B><BR>sort the table according to the "<SPAN class=PARAMETER>cols</SPAN>" criteria <BR><SPAN class=PARAMETER>cols</SPAN> is an object of the form: <BR>{ col1: 1 // 1 means ascending alphabetic or numeric order <BR>col2:-1 //-1 means descending alphabetic or numeric order <BR>col3: function(a,b) {... // any function that compare a and b and returns &gt;0 if a&gt;b, &lt;0 if a<B, 0 if a="=b" <br> return the table for command chaining <BR></SPAN></SPAN></DIV><PRE id=code0129 class="CODE ELEMENT EDITABLE" contentEditable=false>myTable.sort({_id:1})</PRE>
 <DIV id=out0129 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
@@ -1373,10 +1410,10 @@
 <TD>10</TD>
 <TD>20</TD>
 <TD>30</TD></TR></TBODY></TABLE></DIV></DIV></DIV></DIV>
-<DIV id=sect0136 class="SECTION ELEMENT" sizset="81" sizcache="1">
+<DIV id=sect0136 class="SECTION ELEMENT" sizset="84" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.4.3 addRows</H3>
-<DIV sizset="81" sizcache="1" container="sectionContent"><PRE id=code0137 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.help(tb.Table.prototype.addRows)</PRE>
-<DIV id=out0137 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function(rows)</B><BR>&nbsp;add&nbsp;multiple&nbsp;rows<BR>&nbsp;rows&nbsp;must&nbsp;be&nbsp;an&nbsp;array&nbsp;or&nbsp;array-like&nbsp;of&nbsp;objects<BR>&nbsp;columns&nbsp;are&nbsp;ajusted&nbsp;automatically</SPAN></DIV><PRE id=code0138 class="CODE ELEMENT EDITABLE" contentEditable=false><P>myTable.addRows([</P><P>{_id:'four',col1:1000,col4:4000},</P><P>{_id:'five',col1:10000,col4:40000}]);</P></PRE>
+<DIV sizset="84" sizcache="1" container="sectionContent"><PRE id=code0137 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.help(tb.Table.prototype.addRows)</PRE>
+<DIV id=out0137 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function(rows)</B><BR>add multiple <SPAN class=PARAMETER>rows</SPAN> <BR><SPAN class=PARAMETER>rows</SPAN> must be an array or array-like of objects <BR>columns are ajusted automatically <BR></SPAN></DIV><PRE id=code0138 class="CODE ELEMENT EDITABLE" contentEditable=false><P>myTable.addRows([</P><P>{_id:'four',col1:1000,col4:4000},</P><P>{_id:'five',col1:10000,col4:40000}]);</P></PRE>
 <DIV id=out0138 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
@@ -1417,9 +1454,9 @@
 <TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD>40000</TD></TR></TBODY></TABLE></DIV></DIV></DIV>
-<DIV id=sect0225 class="SECTION ELEMENT" sizset="83" sizcache="1">
+<DIV id=sect0225 class="SECTION ELEMENT" sizset="86" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.4.4 edit</H3>
-<DIV sizset="83" sizcache="1" container="sectionContent"><PRE id=code0227 class="CODE AUTOEDIT ELEMENT EDITABLE" contentEditable=false jcObject="newTable">table("newTable")<BR>.add({"toto":127,"tutu":1452,"somme":f("toto+tutu")})<BR>.add({"toto":133,"tutu":145,"somme":f("toto+tutu")})<BR>.edit()</PRE>
+<DIV sizset="86" sizcache="1" container="sectionContent"><PRE id=code0227 class="CODE AUTOEDIT ELEMENT EDITABLE" contentEditable=false jcObject="newTable">table("newTable")<BR>.add({"toto":127,"tutu":1452,"somme":f("toto+tutu")})<BR>.add({"toto":133,"tutu":145,"somme":f("toto+tutu")})<BR>.edit()</PRE>
 <DIV id=out0227 class="OUTPUT SUCCESS">
 <DIV><VAR>newTable</VAR>
 <TABLE>
@@ -1448,31 +1485,31 @@
 <TBODY>
 <TR>
 <TH vAlign=top>set</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(value /*,path*/)</B><BR>&nbsp;set&nbsp;the&nbsp;value&nbsp;of&nbsp;the&nbsp;property&nbsp;of&nbsp;this.path1.path2...&nbsp;and&nbsp;creates,&nbsp;if&nbsp;needed&nbsp;the&nbsp;intermediate&nbsp;objects</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(value /*,path*/)</B><BR>set the <SPAN class=PARAMETER>value</SPAN> of the property of this.path1.path2... and creates, if needed the intermediate objects <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>get</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(/*path*/)</B><BR>&nbsp;applied&nbsp;as&nbsp;a&nbsp;method&nbsp;(either&nbsp;declare&nbsp;MyClass.prototype.get&nbsp;=&nbsp;tb.get&nbsp;or&nbsp;tb.get.call(obj,path)<BR>&nbsp;returns&nbsp;this.path1.path2.path3&nbsp;or&nbsp;undefined&nbsp;if&nbsp;at&nbsp;any&nbsp;stage&nbsp;it&nbsp;becomes&nbsp;undefined<BR>&nbsp;and&nbsp;search&nbsp;also&nbsp;in&nbsp;this.parent&nbsp;is&nbsp;case&nbsp;of&nbsp;undefined&nbsp;property<BR>&nbsp;enables&nbsp;a&nbsp;cascad&nbsp;search&nbsp;of&nbsp;a&nbsp;property</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(/*path*/)</B><BR>applied as a method (either declare MyClass.prototype.get = tb.get or tb.get.call(obj,path) <BR>returns this.path1.path2.path3 or undefined if at any stage it becomes undefined <BR>and search also in this.parent is case of undefined property <BR>enables a cascad search of a property <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>rename</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(name)</B><BR>&nbsp;if&nbsp;name&nbsp;is&nbsp;undefined&nbsp;return&nbsp;the&nbsp;name<BR>&nbsp;otherwise&nbsp;set&nbsp;a&nbsp;new&nbsp;name&nbsp;and&nbsp;return&nbsp;this</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(name)</B><BR>if <SPAN class=PARAMETER>name</SPAN> is undefined return the <SPAN class=PARAMETER>name</SPAN> <BR>otherwise set a new <SPAN class=PARAMETER>name</SPAN> and return this <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>registerPk</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(row)</B><BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>primaryKey</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(pkCol)</B><BR>&nbsp;set&nbsp;the&nbsp;primary&nbsp;key&nbsp;colName</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(pkCol)</B><BR>set the primary key colName <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>defCol</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(name, defValue, style)</B><BR>&nbsp;set&nbsp;the&nbsp;column&nbsp;attribute<BR>&nbsp;<BR>&nbsp;defValue&nbsp;is&nbsp;the&nbsp;value&nbsp;that&nbsp;is&nbsp;used&nbsp;when&nbsp;a&nbsp;new&nbsp;Row&nbsp;is&nbsp;added&nbsp;and&nbsp;that&nbsp;column&nbsp;is&nbsp;not&nbsp;defined<BR>&nbsp;it&nbsp;can&nbsp;be&nbsp;a&nbsp;JavaScript&nbsp;value&nbsp;(number,&nbsp;object..&nbsp;or&nbsp;an&nbsp;f(jcFunc)<BR>&nbsp;the&nbsp;style&nbsp;if&nbsp;set&nbsp;will&nbsp;call&nbsp;colStyle</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(name, defValue, style)</B><BR>set the column attribute <BR><BR><SPAN class=PARAMETER>defValue</SPAN> is the value that is used when a new Row is added and that column is not defined <BR>it can be a JavaScript value (number, object.. or an f(jcFunc) <BR>the style if set will call colStyle <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>updateCols</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(withRow)</B><BR>&nbsp;updates&nbsp;the&nbsp;cols&nbsp;description&nbsp;with&nbsp;the&nbsp;fields&nbsp;found&nbsp;in&nbsp;withRow<BR>&nbsp;normally&nbsp;for&nbsp;internal&nbsp;use&nbsp;only<BR>&nbsp;return&nbsp;the&nbsp;table&nbsp;for&nbsp;command&nbsp;chaining</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(withRow)</B><BR>updates the cols description with the fields found in <SPAN class=PARAMETER>withRow</SPAN> <BR>normally for internal use only <BR>return the table for command chaining <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>colOrder</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(order)</B><BR>&nbsp;if&nbsp;order&nbsp;=&nbsp;array&nbsp;of&nbsp;colName:&nbsp;set&nbsp;a&nbsp;new&nbsp;order<BR>&nbsp;if&nbsp;order&nbsp;==&nbsp;undefined&nbsp;return&nbsp;the&nbsp;current&nbsp;order</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(order)</B><BR>if <SPAN class=PARAMETER>order</SPAN> = array of colName: set a new <SPAN class=PARAMETER>order</SPAN> <BR>if <SPAN class=PARAMETER>order</SPAN> == undefined return the current <SPAN class=PARAMETER>order</SPAN> <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>show</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(columns,visible)</B><BR>&nbsp;show&nbsp;all&nbsp;columns&nbsp;specified&nbsp;in&nbsp;the&nbsp;columns&nbsp;array<BR>&nbsp;if&nbsp;visible&nbsp;=&nbsp;true&nbsp;or&nbsp;undefined,&nbsp;&nbsp;ensure&nbsp;this&nbsp;columns&nbsp;are&nbsp;visible&nbsp;if&nbsp;it&nbsp;exist<BR>&nbsp;if&nbsp;visible&nbsp;=&nbsp;false,&nbsp;ensure&nbsp;this&nbsp;columns&nbsp;are&nbsp;hidden<BR>&nbsp;if&nbsp;visible&nbsp;=&nbsp;null,&nbsp;&nbsp;reset&nbsp;to&nbsp;the&nbsp;default&nbsp;(specialy&nbsp;for&nbsp;View)</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(columns,visible)</B><BR>show all <SPAN class=PARAMETER>columns</SPAN> specified in the <SPAN class=PARAMETER>columns</SPAN> array <BR>if <SPAN class=PARAMETER>visible</SPAN> = true or undefined, ensure this <SPAN class=PARAMETER>columns</SPAN> are <SPAN class=PARAMETER>visible</SPAN> if it exist <BR>if <SPAN class=PARAMETER>visible</SPAN> = false, ensure this <SPAN class=PARAMETER>columns</SPAN> are hidden <BR>if <SPAN class=PARAMETER>visible</SPAN> = null, reset to the default (specialy for View) <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>hide</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(columns)</B><BR></SPAN></TD></TR>
@@ -1481,88 +1518,97 @@
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(columns)</B><BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>add</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(row)</B><BR>&nbsp;add&nbsp;a&nbsp;row<BR>&nbsp;row&nbsp;can&nbsp;be&nbsp;either&nbsp;a&nbsp;simple&nbsp;object&nbsp;or&nbsp;a&nbsp;Row&nbsp;object<BR>&nbsp;return&nbsp;the&nbsp;table&nbsp;for&nbsp;method&nbsp;chaining</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(row)</B><BR>add a <SPAN class=PARAMETER>row</SPAN> <BR><SPAN class=PARAMETER>row</SPAN> can be either a simple object or a Row object <BR>return the table for method chaining <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>addRows</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(rows)</B><BR>&nbsp;add&nbsp;multiple&nbsp;rows<BR>&nbsp;rows&nbsp;must&nbsp;be&nbsp;an&nbsp;array&nbsp;or&nbsp;array-like&nbsp;of&nbsp;objects<BR>&nbsp;columns&nbsp;are&nbsp;ajusted&nbsp;automatically</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(rows)</B><BR>add multiple <SPAN class=PARAMETER>rows</SPAN> <BR><SPAN class=PARAMETER>rows</SPAN> must be an array or array-like of objects <BR>columns are ajusted automatically <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>update</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(cols,keepOnlyValue)</B><BR>&nbsp;cols&nbsp;is&nbsp;an&nbsp;object&nbsp;{colName:value,....}<BR>&nbsp;value&nbsp;can&nbsp;be&nbsp;a&nbsp;simple&nbsp;value&nbsp;like&nbsp;a&nbsp;number&nbsp;or&nbsp;a&nbsp;string,&nbsp;<BR>&nbsp;but&nbsp;can&nbsp;also&nbsp;be&nbsp;a&nbsp;jcFunc&nbsp;produced&nbsp;by&nbsp;f(jcFunc)<BR>&nbsp;that&nbsp;will&nbsp;either&nbsp;be&nbsp;stored&nbsp;in&nbsp;the&nbsp;table&nbsp;<BR>&nbsp;or&nbsp;be&nbsp;used&nbsp;during&nbsp;the&nbsp;update&nbsp;to&nbsp;calculate&nbsp;the&nbsp;static&nbsp;value&nbsp;of&nbsp;the&nbsp;cell<BR>&nbsp;if&nbsp;keepOnlyValue&nbsp;==&nbsp;true</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(cols,keepOnlyValue)</B><BR><SPAN class=PARAMETER>cols</SPAN> is an object {colName:value,....} <BR>value can be a simple value like a number or a string, <BR>but can also be a jcFunc produced by f(jcFunc) <BR>that will either be stored in the table <BR>or be used during the update to calculate the static value of the cell <BR>if <SPAN class=PARAMETER>keepOnlyValue</SPAN> == true <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>forEachRow</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(func)</B><BR>&nbsp;execute&nbsp;func&nbsp;for&nbsp;each&nbsp;row&nbsp;of&nbsp;the&nbsp;table<BR>&nbsp;func&nbsp;must&nbsp;be&nbsp;function(i,row)&nbsp;in&nbsp;which&nbsp;this&nbsp;represents&nbsp;the&nbsp;Row&nbsp;object<BR>&nbsp;return&nbsp;the&nbsp;table&nbsp;for&nbsp;command&nbsp;chaining</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(func)</B><BR>execute <SPAN class=PARAMETER>func</SPAN> for each row of the table <BR><SPAN class=PARAMETER>func</SPAN> must be function(i,row) in which this represents the Row object <BR>return the table for command chaining <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>cell</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(row,col)</B><BR>&nbsp;return&nbsp;the&nbsp;content&nbsp;of&nbsp;the&nbsp;cell:&nbsp;if&nbsp;the&nbsp;cell&nbsp;is&nbsp;a&nbsp;function:&nbsp;return&nbsp;the&nbsp;function</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(row,col)</B><BR>return the content of the cell: if the cell is a function: return the function <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>val</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(row,col)</B><BR>&nbsp;return&nbsp;the&nbsp;VALUE&nbsp;of&nbsp;the&nbsp;cell:&nbsp;if&nbsp;a&nbsp;function,&nbsp;this&nbsp;function&nbsp;is&nbsp;calculated&nbsp;first</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(row,col)</B><BR>return the VALUE of the cell: if a function, this function is calculated first <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>reduce</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,reduceF,criteria,initialValue)</B><BR>&nbsp;apply&nbsp;a&nbsp;reduce&nbsp;function&nbsp;on&nbsp;a&nbsp;column<BR>&nbsp;criteria&nbsp;is&nbsp;an&nbsp;optional&nbsp;f(jcFunc)&nbsp;that&nbsp;process&nbsp;only&nbsp;row&nbsp;that&nbsp;return&nbsp;true</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,reduceF,criteria,initialValue)</B><BR>apply a reduce function on a column <BR><SPAN class=PARAMETER>criteria</SPAN> is an optional f(jcFunc) that process only row that return true <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>sum</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;sum&nbsp;of&nbsp;the&nbsp;column&nbsp;</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>return the sum of the column <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>min</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;min&nbsp;of&nbsp;the&nbsp;column&nbsp;</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>return the min of the column <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>max</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;min&nbsp;of&nbsp;the&nbsp;column</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>return the min of the column <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>average</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;average&nbsp;of&nbsp;the&nbsp;column</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>return the average of the column <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>rms</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;root&nbsp;mean&nbsp;square&nbsp;of&nbsp;the&nbsp;column</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(colName,criteria)</B><BR>return the root mean square of the column <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>setCell</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(row,col,value)</B><BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>lookup</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>&nbsp;return&nbsp;the&nbsp;data&nbsp;of&nbsp;the&nbsp;first&nbsp;row&nbsp;matching&nbsp;the&nbsp;criteria</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>return the data of the first row matching the <SPAN class=PARAMETER>criteria</SPAN> <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>tableStyle</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(style)</B><BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>colStyle</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(style,colName)</B><BR>&nbsp;set&nbsp;the&nbsp;style&nbsp;for&nbsp;a&nbsp;column<BR>&nbsp;style&nbsp;can&nbsp;be&nbsp;either&nbsp;an&nbsp;object&nbsp;of&nbsp;$.css()&nbsp;parameters<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;a&nbsp;function(data,col,value)&nbsp;where&nbsp;this&nbsp;represents&nbsp;the&nbsp;row&nbsp;object&nbsp;which&nbsp;is&nbsp;compatible&nbsp;with&nbsp;f("jcFunc")<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;which&nbsp;return&nbsp;an&nbsp;object&nbsp;of&nbsp;css&nbsp;parameters</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(style,colName)</B><BR>set the <SPAN class=PARAMETER>style</SPAN> for a column <BR><SPAN class=PARAMETER>style</SPAN> can be either an object of $.css() parameters <BR>or a function(data,col,value) where this represents the row object which is compatible with f("jcFunc") <BR>and which return an object of css parameters <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>rowStyle</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(style,rowNumber)</B><BR>&nbsp;set&nbsp;the&nbsp;style&nbsp;for&nbsp;a&nbsp;row</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(style,rowNumber)</B><BR>set the <SPAN class=PARAMETER>style</SPAN> for a row <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>style</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(newStyle,rowNumber,colName)</B><BR>&nbsp;.style(newStyle)&nbsp;&nbsp;will&nbsp;set&nbsp;the&nbsp;default&nbsp;newStyle&nbsp;for&nbsp;the&nbsp;complete&nbsp;table<BR>&nbsp;.style(newStyle,rowNumber)&nbsp;will&nbsp;set&nbsp;the&nbsp;default&nbsp;style&nbsp;for&nbsp;a&nbsp;given&nbsp;row<BR>&nbsp;.style(newStyle,undefined,colName)&nbsp;will&nbsp;set&nbsp;the&nbsp;default&nbsp;style&nbsp;for&nbsp;a&nbsp;column<BR>&nbsp;.style(newStyle,rowNumber,colName)&nbsp;will&nbsp;set&nbsp;the&nbsp;style&nbsp;for&nbsp;a&nbsp;given&nbsp;cell<BR>&nbsp;newStyle&nbsp;can&nbsp;either&nbsp;be&nbsp;an&nbsp;object&nbsp;{cssAttr=val,...}&nbsp;or&nbsp;a&nbsp;function(table,rowNumber,colName)</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(newStyle,rowNumber,colName)</B><BR>
+<DT>.style(<SPAN class=PARAMETER>newStyle</SPAN>)
+<DD>will set the default <SPAN class=PARAMETER>newStyle</SPAN> for the complete table <BR>
+<DT>.style(<SPAN class=PARAMETER>newStyle</SPAN>,rowNumber)
+<DD>will set the default style for a given row <BR>
+<DT>.style(<SPAN class=PARAMETER>newStyle</SPAN>,undefined,<SPAN class=PARAMETER>colName</SPAN>)
+<DD>will set the default style for a column <BR>
+<DT>.style(<SPAN class=PARAMETER>newStyle</SPAN>,rowNumber,<SPAN class=PARAMETER>colName</SPAN>)
+<DD>will set the style for a given cell <BR><SPAN class=PARAMETER>newStyle</SPAN> can either be an object {cssAttr=val,...} or a function(table,<SPAN class=PARAMETER>rowNumber</SPAN>,colName) <BR></SPAN></DD></TD></TR>
 <TR>
 <TH vAlign=top>compoundStyle</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(row,colName,value)</B><BR>&nbsp;calculate&nbsp;the&nbsp;compound&nbsp;style&nbsp;for&nbsp;a&nbsp;given&nbsp;cell</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(row,colName,value)</B><BR>calculate the compound style for a given cell <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>sort</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(cols)</B><BR>&nbsp;sort&nbsp;the&nbsp;table&nbsp;according&nbsp;to&nbsp;the&nbsp;"cols"&nbsp;criteria<BR>&nbsp;cols&nbsp;is&nbsp;an&nbsp;object&nbsp;of&nbsp;the&nbsp;form:<BR>&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;col1:&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;1&nbsp;means&nbsp;ascending&nbsp;&nbsp;alphabetic&nbsp;or&nbsp;numeric&nbsp;order<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col2:-1&nbsp;&nbsp;&nbsp;&nbsp;//-1&nbsp;means&nbsp;descending&nbsp;alphabetic&nbsp;or&nbsp;numeric&nbsp;order<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col3:&nbsp;function(a,b)&nbsp;{...&nbsp;//&nbsp;any&nbsp;function&nbsp;that&nbsp;compare&nbsp;a&nbsp;and&nbsp;b&nbsp;and&nbsp;returns&nbsp;&gt;0&nbsp;if&nbsp;a&gt;b,&nbsp;<WBR>&lt;0&nbsp;if&nbsp;a<WBR>&lt;b,&nbsp;0&nbsp;if&nbsp;a==b<BR>&nbsp;return&nbsp;the&nbsp;table&nbsp;for&nbsp;command&nbsp;chaining</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(cols)</B><BR>sort the table according to the "<SPAN class=PARAMETER>cols</SPAN>" criteria <BR><SPAN class=PARAMETER>cols</SPAN> is an object of the form: <BR>{ col1: 1 // 1 means ascending alphabetic or numeric order <BR>col2:-1 //-1 means descending alphabetic or numeric order <BR>col3: function(a,b) {... // any function that compare a and b and returns &gt;0 if a&gt;b, &lt;0 if a<B, 0 if a="=b" <br> return the table for command chaining <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>find</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>&nbsp;return&nbsp;a&nbsp;new&nbsp;view&nbsp;of&nbsp;this&nbsp;table&nbsp;that&nbsp;has&nbsp;only&nbsp;the&nbsp;rows&nbsp;that&nbsp;match&nbsp;the&nbsp;criteria<BR>&nbsp;the&nbsp;rows&nbsp;of&nbsp;this&nbsp;view&nbsp;ARE&nbsp;THE&nbsp;ORIGINAL&nbsp;ROWS<BR>&nbsp;any&nbsp;function&nbsp;in&nbsp;a&nbsp;cell&nbsp;still&nbsp;refer&nbsp;to&nbsp;the&nbsp;original&nbsp;table.</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>return a new view of this table that has only the rows that match the <SPAN class=PARAMETER>criteria</SPAN> <BR>the rows of this view ARE THE ORIGINAL ROWS <BR>any function in a cell still refer to the original table. <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>findFirst</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>&nbsp;mongoDB&nbsp;find()&nbsp;as&nbsp;if&nbsp;the&nbsp;table&nbsp;was&nbsp;a&nbsp;small&nbsp;mongoDB<BR>&nbsp;return&nbsp;the&nbsp;first&nbsp;Row&nbsp;of&nbsp;this&nbsp;table&nbsp;that&nbsp;match&nbsp;the&nbsp;criteria</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(criteria)</B><BR>mongoDB find() as if the table was a small mongoDB <BR>return the first Row of this table that match the <SPAN class=PARAMETER>criteria</SPAN> <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>toString</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>&nbsp;return&nbsp;a&nbsp;string&nbsp;summarizing&nbsp;the&nbsp;table</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>return a string summarizing the table <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>toJSON</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>node$</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>&nbsp;display&nbsp;the&nbsp;table&nbsp;without&nbsp;its&nbsp;name</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>display the table without its name <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>span</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>&nbsp;deprecated:&nbsp;only&nbsp;for&nbsp;backward&nbsp;compatibility:&nbsp;use&nbsp;node$&nbsp;instead</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>deprecated: only for backward compatibility: use node$ instead <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>view</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>display&nbsp;the&nbsp;table,&nbsp;including&nbsp;its&nbsp;name&nbsp;in&nbsp;a&nbsp;<WBR>&lt;div&gt;</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>display the table, including its name in a 
+<DIV><BR></SPAN></DIV></TD></TR>
 <TR>
 <TH vAlign=top>edit</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(options)</B><BR>&nbsp;edit&nbsp;is&nbsp;similar&nbsp;to&nbsp;span,&nbsp;but&nbsp;gernerates&nbsp;HTML&nbsp;code&nbsp;in&nbsp;order&nbsp;to&nbsp;edit&nbsp;the&nbsp;object&nbsp;interactively<BR>&nbsp;it&nbsp;will&nbsp;also&nbsp;set&nbsp;the&nbsp;code&nbsp;to&nbsp;AUTOEDIT&nbsp;class&nbsp;which&nbsp;means&nbsp;that&nbsp;it&nbsp;should&nbsp;no&nbsp;longer&nbsp;be&nbsp;modified&nbsp;by&nbsp;the&nbsp;user&nbsp;since&nbsp;it&nbsp;will<BR>&nbsp;be&nbsp;generated&nbsp;by&nbsp;the&nbsp;edition&nbsp;mecanism.</SPAN></TD></TR>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(options)</B><BR>edit is similar to span, but gernerates HTML code in order to edit the object interactively <BR>it will also set the code to AUTOEDIT class which means that it should no longer be modified by the user since it will <BR>be generated by the edition mecanism. <BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>getEditableValue</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(editor)</B><BR></SPAN></TD></TR>
@@ -1571,11 +1617,11 @@
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(editor)</B><BR></SPAN></TD></TR>
 <TR>
 <TH vAlign=top>updateCode</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>&nbsp;generate&nbsp;the&nbsp;code&nbsp;that&nbsp;represents&nbsp;the&nbsp;element&nbsp;as&nbsp;edited<BR>&nbsp;can&nbsp;be&nbsp;used&nbsp;to&nbsp;replace&nbsp;the&nbsp;existing&nbsp;code&nbsp;</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0117 class="CODE ELEMENT EDITABLE" contentEditable=false></PRE>
+<TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>generate the code that represents the element as edited <BR>can be used to replace the existing code <BR></SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0117 class="CODE ELEMENT EDITABLE" contentEditable=false></PRE>
 <DIV id=out0117 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV></DIV></DIV>
-<DIV id=sect0209 class="SECTION ELEMENT" sizset="86" sizcache="1">
+<DIV id=sect0209 class="SECTION ELEMENT" sizset="89" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>3.5 output</H2>
-<DIV sizset="86" sizcache="1" container="sectionContent">
+<DIV sizset="89" sizcache="1" container="sectionContent">
 <DIV id=rich0210 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>so far all output where just the result of the last statment displayed by the EDI in a proper format. Sometimes you want to better control the output of your code Element.</P>
 <P>For every code Element an output object is created. this output object is an HTML object with 2 extra properties: codeElement and outputElement that points to the code DOM Element and the output DOM Element.</P>
@@ -1592,13 +1638,13 @@
 <P>the square of 7 is 49</P>
 <P>the square of 8 is 64</P>
 <P>the square of 9 is 81</P></DIV></DIV></DIV>
-<DIV id=sect0158 class="SECTION ELEMENT" sizset="87" sizcache="1">
+<DIV id=sect0158 class="SECTION ELEMENT" sizset="90" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>3.6 function delaration</H2>
-<DIV sizset="87" sizcache="1" container="sectionContent">
-<DIV id=rich0159 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="87" sizcache="1">
+<DIV sizset="90" sizcache="1" container="sectionContent">
+<DIV id=rich0159 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="90" sizcache="1">
 <P>such a spreadsheet would be of no use if we can not make calculation.</P>
 <P>&nbsp;</P>
-<P sizset="87" sizcache="1">As we already have declared <SPAN id=code0161 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">currentPrice$USD.view()</SPAN><SPAN id=out0161 class="OUTPUT SUCCESS"><VAR>currentPrice</VAR> = <SPAN class=VALUE>1234</SPAN>&nbsp;<SPAN class=UNIT>USD</SPAN></SPAN></P>we can now define the following <SPAN id=code0162 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">v('costOfGood$USD',1000).view()</SPAN><SPAN id=out0162 class="OUTPUT SUCCESS"><VAR>costOfGood</VAR> = <SPAN class=VALUE>1000</SPAN>&nbsp;<SPAN class=UNIT>USD</SPAN></SPAN> 
+<P sizset="90" sizcache="1">As we already have declared <SPAN id=code0161 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">currentPrice$USD.view()</SPAN><SPAN id=out0161 class="OUTPUT SUCCESS"><VAR>currentPrice</VAR> = <SPAN class=VALUE>1234</SPAN>&nbsp;<SPAN class=UNIT>USD</SPAN></SPAN></P>we can now define the following <SPAN id=code0162 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">v('costOfGood$USD',1000).view()</SPAN><SPAN id=out0162 class="OUTPUT SUCCESS"><VAR>costOfGood</VAR> = <SPAN class=VALUE>1000</SPAN>&nbsp;<SPAN class=UNIT>USD</SPAN></SPAN> 
 <P></P>so now we can calculate the margin as a formula</DIV><PRE id=code0160 class="CODE ELEMENT EDITABLE" contentEditable=false>v('margin$USD',f('currentPrice$USD-costOfGood$USD')).view()</PRE>
 <DIV id=out0160 class="OUTPUT SUCCESS"><VAR>margin</VAR> = <SPAN class=VALUE>234</SPAN>&nbsp;<SPAN class=UNIT>USD</SPAN></DIV>
 <DIV id=rich0163 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>

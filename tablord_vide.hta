@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<HTML APPLICATIONNAME="D:\Documents\programmation\tablord\tablord\tablord_vide.hta" xmlns="http://www.w3.org/1999/xhtml" sizcache="1" sizset="0" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD sizcache="3" sizset="3"><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SCROLL="yes" SINGLEINSTANCE="no"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="tablord.css" src="tablord.css">
+<HTML sizset="0" sizcache="1" xmlns="http://www.w3.org/1999/xhtml" APPLICATIONNAME="D:\Documents\programmation\tablord\tablord\tablord_vide.hta" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD sizset="3" sizcache="3"><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SINGLEINSTANCE="no" SCROLL="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="tablord.css" src="tablord.css">
 <SCRIPT src="jquery-1.5.1.min.js"></SCRIPT>
 
 <SCRIPT class=UPDATE src="tablordEdi.js"></SCRIPT>
@@ -21,34 +21,96 @@
 <SCRIPT src="finance.js"></SCRIPT>
 
 <SCRIPT src="diff.js"></SCRIPT>
+
+<SCRIPT src="jquery-ui-1.8.13.custom.min.js"></SCRIPT>
 </HEAD>
-<BODY sizcache="1" sizset="0"  designMode="on">
+<BODY sizset="0" sizcache="1"  designMode="on">
 <DIV id=menu class=TOOLBAR style="MAX-WIDTH: 50%; FLOAT: right">
-<DIV><BUTTON onclick=tb.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=tb.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60" >&#9658;&#9658;</BUTTON><BUTTON onclick=tb.clearTimers(); disabled id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=tb.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=tb.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=tb.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON><BUTTON onclick=tb.helpPanel$.toggle(100); style="HEIGHT: 23px; WIDTH: 43px">help</BUTTON><INPUT onclick=tb.showCode(event) type=checkbox>codes</INPUT><INPUT onclick=tb.showCut(event) type=checkbox>cuts</INPUT><INPUT onclick=tb.showTest(event) type=checkbox>tests</INPUT><INPUT onclick=tb.showTrace(event) type=checkbox>traces</INPUT><INPUT onclick=tb.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
+<DIV><BUTTON onclick=tb.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=tb.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=tb.clearTimers(); disabled id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=tb.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=tb.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=tb.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON><BUTTON onclick=tb.helpPanel$.toggle(100); style="HEIGHT: 23px; WIDTH: 43px">help</BUTTON><INPUT onclick=tb.showCode(event) type=checkbox>codes</INPUT><INPUT onclick=tb.showCut(event) type=checkbox>cuts</INPUT><INPUT onclick=tb.showTest(event) type=checkbox>tests</INPUT><INPUT onclick=tb.showTrace(event) type=checkbox>traces</INPUT><INPUT onclick=tb.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
 <DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=tb.cutBlock(tb.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertBefore(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].convert(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION></SELECT><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertAfter(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=tb.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=tb.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
 <DIV id=objectToolBar></DIV></DIV>
 <DIV><SPAN onclick=tb.helpPanel$.hide(300) style="CURSOR: pointer; COLOR: red">&nbsp;×&nbsp;</SPAN><INPUT ><SPAN onclick=tb.help.index.back() style="CURSOR: pointer; COLOR: #8dff60">&#9668;</SPAN>
 <DIV style="OVERFLOW: auto; MAX-HEIGHT: 400px">please type your search above</DIV></DIV></DIV>
-<DIV id=tbContent class=CONTAINER sizcache="1" sizset="0" container="sectionContent">
-<DIV id=sect0015 class="ELEMENT SECTION" sizcache="1" sizset="0">
+<DIV id=tbContent class=CONTAINER sizset="0" sizcache="1" container="sectionContent">
+<DIV id=sect0015 class="ELEMENT SECTION" sizset="0" sizcache="1">
 <H1 class="SECTIONTITLE EDITABLE" contentEditable=false>1 section one</H1>
-<DIV sizcache="1" sizset="0" container="sectionContent">
-<DIV id=rich0016 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false sizcache="1" sizset="0">
-<P sizcache="1" sizset="0"><SPAN id=code0017 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.link('section one')</SPAN><SPAN id=out0017 class="OUTPUT SUCCESS" contentEditable=false><A class=LINK href="file:///D:/Documents/programmation/tablord/tablord/tablord_vide.hta#sect0015">section one</A></SPAN>&nbsp;ceci est un rich text</P></DIV></DIV></DIV><PRE id=code0013 class="ELEMENT CODE EDITABLE" contentEditable=false><P>output</P><P>.<FONT style="BACKGROUND-COLOR: #ff4d4d">html</FONT>('&lt;div&gt;ceci&nbsp;est&nbsp;un&nbsp;chapitre&nbsp;normal&nbsp;sad&nbsp;fgs&nbsp;df&nbsp;gs&nbsp;dfg&nbsp;sd&nbsp;fg&nbsp;sdf&nbsp;gs&nbsp;df&nbsp;gs&nbsp;df&nbsp;g&nbsp;sd&nbsp;fgs&nbsp;dfg&nbsp;s&nbsp;dfg&nbsp;sdfg&nbsp;&lt;span class=WARNING&gt;MOT A DEFINIR&lt;div&nbsp;style="float:RIGHT;width:50%;border:&nbsp;1px solid&nbsp;black;background=#E0E0E0;padding:5px;"&gt;petit&nbsp;encarté&lt;/div&gt;&lt;/span&gt; sd&nbsp;f&nbsp;gs&nbsp;dfg&nbsp;sd&nbsp;f&nbsp;gs&nbsp;df&nbsp;g&nbsp;sdfgsd&nbsp;fgs&nbsp;dfg&nbsp;sdf&nbsp;gsdfgsdfgsdf&nbsp;gs&nbsp;df&nbsp;gs&nbsp;dfgsd&nbsp;fg&nbsp;sd&nbsp;fg&nbsp;sdf&nbsp;g&nbsp;sdf&nbsp;g&nbsp;sdf&nbsp;gs&nbsp;dfgs&nbsp;dfgs&nbsp;dfg&nbsp;s&nbsp;dfg&nbsp;s&nbsp;dfg&nbsp;sd&nbsp;fg&nbsp;sdf&nbsp;g23 452 345 23 45 234 5 234 5 234 5 23 45 23 45 23 45 23 45 23 45 23 4 52 34523 45 23 45 23 45 23 4523 5 23 45 23 5 2 3f 234 34r 4 rg23434 5t3 4g4g4 4g5 34 5g345g 345 34 5g 345 g3 45g345g&nbsp;sd&lt;/div&gt;')</P></PRE>
-<DIV id=out0013 class="OUTPUT SUCCESS">
-<DIV>ceci est un chapitre normal sad fgs df gs dfg sd fg sdf gs df gs df g sd fgs dfg s dfg sdfg <SPAN class=WARNING>MOT A DEFINIR
-<DIV style="BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; WIDTH: 50%; BACKGROUND: #e0e0e0; BORDER-BOTTOM: black 1px solid; FLOAT: right; PADDING-BOTTOM: 5px; PADDING-TOP: 5px; PADDING-LEFT: 5px; BORDER-LEFT: black 1px solid; PADDING-RIGHT: 5px">petit encarté</DIV></SPAN>sd f gs dfg sd f gs df g sdfgsd fgs dfg sdf gsdfgsdfgsdf gs df gs dfgsd fg sd fg sdf g sdf g sdf gs dfgs dfgs dfg s dfg s dfg sd fg sdf g23 452 345 23 45 234 5 234 5 234 5 23 45 23 45 23 45 23 45 23 45 23 4 52 34523 45 23 45 23 45 23 4523 5 23 45 23 5 2 3f 234 34r 4 rg23434 5t3 4g4g4 4g5 34 5g345g 345 34 5g 345 g3 45g345g sd</DIV></DIV><PRE id=code0004 class="ELEMENT CODE EDITABLE" contentEditable=false><P>tb.sideBox('rich','rich0019')</P></PRE>
-<DIV id=out0004 class="OUTPUT SUCCESS"><SPAN class=SIDEBOXTEXT data-showId="#rich0019">rich</SPAN></DIV>
-<DIV id=rich0019 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false sizcache="1" sizset="3">
+<DIV sizset="0" sizcache="1" container="sectionContent">
+<DIV id=rich0016 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false sizset="0" sizcache="1">
+<P sizset="0" sizcache="1"><SPAN id=code0017 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.link('section one')</SPAN><SPAN id=out0017 class="OUTPUT SUCCESS" contentEditable=false><A class=LINK href="file:///D:/Documents/programmation/tablord/tablord/tablord_vide.hta#sect0015">section one</A></SPAN>&nbsp;ceci est un rich text</P></DIV></DIV></DIV><PRE id=code0004 class="ELEMENT CODE EDITABLE" contentEditable=false><P>tb.elementBox('rich','rich0019')</P></PRE>
+<DIV id=out0004 class="OUTPUT SUCCESS"><SPAN class=BOXLINK data-showId="#rich0019">rich</SPAN></DIV><PRE id=code0042 class="ELEMENT CODE EDITABLE" contentEditable=false><P>'je mange de la choucroute'.replace(/\b\w+\b/g, function(word){</P><P> return word.substring(0,1).toUpperCase()+word.substring(1);</P><P>});</P></PRE>
+<DIV id=out0042 class="OUTPUT SUCCESS">Je&nbsp;Mange&nbsp;De&nbsp;La&nbsp;Choucroute</DIV>
+<DIV id=rich0019 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false sizset="3" sizcache="1">
 <P>ceci est riche</P>
-<P sizcache="1" sizset="3">&nbsp;er tze rt z rtz er tz ert z ert z ert ze rt ze rt ze rtz er tz er t ze rt ze rt ze rt ze rt ze rt z ert ze rt ze rt z ert ze rtz er tze rtz ertzer tze rt ze rtz e rtz e rtz ertz ertz er tz er tz er tz er tz er tz e rt ze rt z e rt ze rt z er tz er tz ertztextea asd fa sdff <SPAN id=code0025 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.sideBox('coucou','rich0022')</SPAN><SPAN id=out0025 class="OUTPUT SUCCESS" contentEditable=false><SPAN class=SIDEBOXTEXT data-showId="#rich0022">coucou</SPAN></SPAN> asdf a sdfdfgsdfgsfdgsdfgsdfgsdfgsdfgsdfgsdf a sdf <SPAN id=code0027 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.sideBox('coucou','sect0015')</SPAN><SPAN id=out0027 class="OUTPUT SUCCESS"><SPAN class=SIDEBOXTEXT data-showId="#sect0015">coucou</SPAN></SPAN> sdfa sdfasd f&nbsp; f as df a sd f as df&nbsp; asd f as df a sd f a sdf&nbsp; asd f asdf&nbsp; asd fasd f asd f asd f asd f asd f asd f asd f as df a sd f as df a sdf a sd fa sd f asd f as df as df&nbsp; asd f asdfa sdf a sd f as df a sd f as df asdf as df as d f as df a sd f as df as df a sd </P>
+<P sizset="3" sizcache="1">uuuuuu<B>OOOOOO</B>uuuuuu<B>OOOOOO</B>uuuuuu<B>%%%%%</B><B>%%%%%</B><B>%%%%%</B><B>%%%%%</B><B>%%%%%</B><B>%%%%%</B><B>%%%%%</B>%%%%%%%%%%?????<SPAN id=code0025 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.elementBox('coucou','rich0022')</SPAN><SPAN id=out0025 class="OUTPUT SUCCESS"><SPAN class=BOXLINK data-showId="#rich0022">coucou</SPAN></SPAN> **ASD**f a sdfdfgsdfgsfdgsdfgsdfgsdfgsdfgsdfgsdf a sdf <SPAN id=code0027 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.elementBox('coucou','sect0015')</SPAN><SPAN id=out0027 class="OUTPUT SUCCESS"><SPAN class=BOXLINK data-showId="#sect0015">coucou</SPAN></SPAN> sdfa sdf**ASD** f&nbsp; f as df a sd f as df&nbsp; **ASD** f as df a sd f a sdf&nbsp; **ASD** f **ASD**f&nbsp; **ASD** f**ASD** f **ASD** f **ASD** f **ASD** f **ASD** f **ASD** f **ASD** f as df a sd f as df a sdf a sd fa sd f **ASD** f as df as df&nbsp; **ASD** f **ASD**fa sdf a sd f as df a sd f as df **ASD**f as&nbsp;<B>COUCOU</B> df as d f as df a sd f as df as df a sd <B>COUCOU</B></P>
 <P></P>
 <P></P>
 <P></P>
 <P>sydfsdfsdfgsdfgsdfg</P></DIV>
-<DIV id=rich0022 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>
+<DIV id=rich0022 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false sizset="5" sizcache="1">
 <P>ceci est la définition de coucou&nbsp; asd f ghjfghjfghjfghjfghjfghjfghjfghjfghjfghasd f asd f asdfasdf asdfasdfa sd as df as df as df as df as df as d fas df a sdf a sdf</P>
-<P>asdf as df a sd f asd f</P>
+<P sizset="5" sizcache="1">voir aussi <SPAN id=code0030 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.elementBox('truc','rich0029')</SPAN><SPAN id=out0030 class="OUTPUT SUCCESS"><SPAN class=BOXLINK data-showId="#rich0029">truc</SPAN></SPAN></P>
 <P>&nbsp;</P>
 <P>&nbsp;</P>
-<P>asdf asd f asd f asd f as df a sd f asd f a sdf a sdf a sdf&nbsp; asd f asdfs adf as df</P></DIV></DIV></BODY></HTML>
+<P sizset="6" sizcache="1">asdf asd f asd f asd f as df a sd f <SPAN id=code0032 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.link("section one")</SPAN><SPAN id=out0032 class="OUTPUT SUCCESS"><A class=LINK href="file:///D:/Documents/programmation/tablord/tablord/tablord_vide.hta#sect0015">section one</A></SPAN>asd f a sdf <SPAN id=code0036 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.elementBox("section one")</SPAN><SPAN id=out0036 class="OUTPUT SUCCESS"><SPAN class=BOXLINK data-showId="#sect0015">section one</SPAN></SPAN> a sdf&nbsp; asd f asdfs adf as df</P></DIV>
+<DIV id=rich0029 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>truc: ce mot remplace un peu n'importe quoi dans le langage courant.</DIV><PRE id=code0037 class="ELEMENT CODE EDITABLE" contentEditable=false><P>$('#rich0019').replaceText(/coucou/g,"&lt;b&gt;COUCOU&lt;/b&gt;",function(e){</P><P>if ($(e).hasClass('OUTPUT')) return false;</P><P>if ($(e).hasClass('CODE'))   return false;</P><P>return true;</P><P>&nbsp;</P><P>})[0].nodeType</P></PRE>
+<DIV id=out0037 class="OUTPUT SUCCESS">1</DIV><PRE id=code0039 class="ELEMENT CODE EDITABLE" contentEditable=false><P>tb.html('&lt;div style="border-top:3px dashed blue;page-break-before:no"&gt;&lt;/div&gt;');</P></PRE>
+<DIV id=out0039 class="OUTPUT SUCCESS">
+<DIV style="BORDER-TOP: blue 3px dashed"></DIV></DIV><PRE id=code0040 class="ELEMENT CODE EDITABLE" contentEditable=false><P>tb.vars.jq=$('#rich0019').contents()</P></PRE>
+<DIV id=out0040 class="OUTPUT SUCCESS">JQuery of 6 elements<BR>
+<OL start=0><BR>
+<LI class=INSPECTHTML><WBR>&lt;P&gt;ceci&nbsp;est&nbsp;riche<WBR>&lt;/P&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;P&nbsp;sizset="3"&nbsp;sizcache="1"&gt;uuuuuu<WBR>&lt;B&gt;OOOOOO<WBR>&lt;/B&gt;uuuuuu<WBR>&lt;B&gt;OOOOOO<WBR>&lt;/B&gt;uuuuuu<WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;%%%%%%%%%%?????<WBR>&lt;SPAN&nbsp;id=code0025&nbsp;class="CODE&nbsp;EMBEDDED&nbsp;ELEMENT"&nbsp;style="DISPLAY:&nbsp;none"&gt;tb.elementBox('coucou','rich0022')<WBR>&lt;/SPAN&gt;<WBR>&lt;SPAN&nbsp;id=out0025&nbsp;class="OUTPUT&nbsp;SUCCESS"&gt;<WBR>&lt;SPAN&nbsp;class=BOXLINK&nbsp;data-showId="#rich0022"&gt;coucou<WBR>&lt;/SPAN&gt;<WBR>&lt;/SPAN&gt;**ASD**f&nbsp;a&nbsp;sdfdfgsdfgsfdgsdfgsdfgsdfgsdfgsdfgsdf&nbsp;a&nbsp;sdf<WBR>&lt;SPAN&nbsp;id=code0027&nbsp;class="CODE&nbsp;EMBEDDED&nbsp;ELEMENT"&nbsp;style="DISPLAY:&nbsp;none"&gt;tb.elementBox('coucou','sect0015')<WBR>&lt;/SPAN&gt;<WBR>&lt;SPAN&nbsp;id=out0027&nbsp;class="OUTPUT&nbsp;SUCCESS"&gt;<WBR>&lt;SPAN&nbsp;class=BOXLINK&nbsp;data-showId="#sect0015"&gt;coucou<WBR>&lt;/SPAN&gt;<WBR>&lt;/SPAN&gt;sdfa&nbsp;sdf**ASD**&nbsp;f&amp;nbsp;&nbsp;f&nbsp;as&nbsp;df&nbsp;a&nbsp;sd&nbsp;f&nbsp;as&nbsp;df&amp;nbsp;&nbsp;**ASD**&nbsp;f&nbsp;as&nbsp;df&nbsp;a&nbsp;sd&nbsp;f&nbsp;a&nbsp;sdf&amp;nbsp;&nbsp;**ASD**&nbsp;f&nbsp;**ASD**f&amp;nbsp;&nbsp;**ASD**&nbsp;f**ASD**&nbsp;f&nbsp;**ASD**&nbsp;f&nbsp;**ASD**&nbsp;f&nbsp;**ASD**&nbsp;f&nbsp;**ASD**&nbsp;f&nbsp;**ASD**&nbsp;f&nbsp;**ASD**&nbsp;f&nbsp;as&nbsp;df&nbsp;a&nbsp;sd&nbsp;f&nbsp;as&nbsp;df&nbsp;a&nbsp;sdf&nbsp;a&nbsp;sd&nbsp;fa&nbsp;sd&nbsp;f&nbsp;**ASD**&nbsp;f&nbsp;as&nbsp;df&nbsp;as&nbsp;df&amp;nbsp;&nbsp;**ASD**&nbsp;f&nbsp;**ASD**fa&nbsp;sdf&nbsp;a&nbsp;sd&nbsp;f&nbsp;as&nbsp;df&nbsp;a&nbsp;sd&nbsp;f&nbsp;as&nbsp;df&nbsp;**ASD**f&nbsp;as&amp;nbsp;<WBR>&lt;B&gt;COUCOU<WBR>&lt;/B&gt;df&nbsp;as&nbsp;d&nbsp;f&nbsp;as&nbsp;df&nbsp;a&nbsp;sd&nbsp;f&nbsp;as&nbsp;df&nbsp;as&nbsp;df&nbsp;a&nbsp;sd<WBR>&lt;B&gt;COUCOU<WBR>&lt;/B&gt;<WBR>&lt;/P&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;P&gt;<WBR>&lt;/P&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;P&gt;<WBR>&lt;/P&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;P&gt;<WBR>&lt;/P&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;P&gt;sydfsdfsdfgsdfgsdfg<WBR>&lt;/P&gt;<BR></LI></OL></DIV><PRE id=code0044 class="ELEMENT CODE EDITABLE" contentEditable=false>$(jq[1]).contents()</PRE>
+<DIV id=out0044 class="OUTPUT SUCCESS">JQuery of 22 elements<BR>
+<OL start=0><BR>
+<LI class=INSPECTHTML>textNode: "uuuuuu"<BR>
+<LI class=INSPECTHTML><WBR>&lt;B&gt;OOOOOO<WBR>&lt;/B&gt;<BR>
+<LI class=INSPECTHTML>textNode: "uuuuuu"<BR>
+<LI class=INSPECTHTML><WBR>&lt;B&gt;OOOOOO<WBR>&lt;/B&gt;<BR>
+<LI class=INSPECTHTML>textNode: "uuuuuu"<BR>
+<LI class=INSPECTHTML><WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<BR>
+<LI class=INSPECTHTML>textNode: "%%%%%%%%%%?????"<BR>
+<LI class=INSPECTHTML><WBR>&lt;SPAN&nbsp;id=code0025&nbsp;class="CODE&nbsp;EMBEDDED&nbsp;ELEMENT"&nbsp;style="DISPLAY:&nbsp;none"&gt;tb.elementBox('coucou','rich0022')<WBR>&lt;/SPAN&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;SPAN&nbsp;id=out0025&nbsp;class="OUTPUT&nbsp;SUCCESS"&gt;<WBR>&lt;SPAN&nbsp;class=BOXLINK&nbsp;data-showId="#rich0022"&gt;coucou<WBR>&lt;/SPAN&gt;<WBR>&lt;/SPAN&gt;<BR>
+<LI class=INSPECTHTML>textNode: " **ASD**f a sdfdfgsdfgsfdgsdfgsdfgsdfgsdfgsdfgsdf a sdf "<BR>
+<LI class=INSPECTHTML><WBR>&lt;SPAN&nbsp;id=code0027&nbsp;class="CODE&nbsp;EMBEDDED&nbsp;ELEMENT"&nbsp;style="DISPLAY:&nbsp;none"&gt;tb.elementBox('coucou','sect0015')<WBR>&lt;/SPAN&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;SPAN&nbsp;id=out0027&nbsp;class="OUTPUT&nbsp;SUCCESS"&gt;<WBR>&lt;SPAN&nbsp;class=BOXLINK&nbsp;data-showId="#sect0015"&gt;coucou<WBR>&lt;/SPAN&gt;<WBR>&lt;/SPAN&gt;<BR>
+<LI class=INSPECTHTML>textNode: " sdfa sdf**ASD** f&nbsp; f as df a sd f as df&nbsp; **ASD** f as df a sd f a sdf&nbsp; **ASD** f **ASD**f&nbsp; **ASD** f**ASD** f **ASD** f **ASD** f **ASD** f **ASD** f **ASD** f **ASD** f as df a sd f as df a sdf a sd fa sd f **ASD** f as df as df&nbsp; **ASD** f **ASD**fa sdf a sd f as df a sd f as df **ASD**f as&nbsp;"<BR>
+<LI class=INSPECTHTML><WBR>&lt;B&gt;COUCOU<WBR>&lt;/B&gt;<BR>
+<LI class=INSPECTHTML>textNode: " df as d f as df a sd f as df as df a sd "<BR>
+<LI class=INSPECTHTML><WBR>&lt;B&gt;COUCOU<WBR>&lt;/B&gt;<BR></LI></OL></DIV><PRE id=code0046 class="ELEMENT CODE EDITABLE" contentEditable=false><P>jq[1].normalize()</P><P>jq.contents()</P></PRE>
+<DIV id=out0046 class="OUTPUT SUCCESS">JQuery of 24 elements<BR>
+<OL start=0><BR>
+<LI class=INSPECTHTML>textNode: "ceci est riche"<BR>
+<LI class=INSPECTHTML>textNode: "uuuuuu"<BR>
+<LI class=INSPECTHTML><WBR>&lt;B&gt;OOOOOO<WBR>&lt;/B&gt;<BR>
+<LI class=INSPECTHTML>textNode: "uuuuuu"<BR>
+<LI class=INSPECTHTML><WBR>&lt;B&gt;OOOOOO<WBR>&lt;/B&gt;<BR>
+<LI class=INSPECTHTML>textNode: "uuuuuu"<BR>
+<LI class=INSPECTHTML><WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<BR>
+<LI class=INSPECTHTML>textNode: "%%%%%%%%%%?????"<BR>
+<LI class=INSPECTHTML><WBR>&lt;SPAN&nbsp;id=code0025&nbsp;class="CODE&nbsp;EMBEDDED&nbsp;ELEMENT"&nbsp;style="DISPLAY:&nbsp;none"&gt;tb.elementBox('coucou','rich0022')<WBR>&lt;/SPAN&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;SPAN&nbsp;id=out0025&nbsp;class="OUTPUT&nbsp;SUCCESS"&gt;<WBR>&lt;SPAN&nbsp;class=BOXLINK&nbsp;data-showId="#rich0022"&gt;coucou<WBR>&lt;/SPAN&gt;<WBR>&lt;/SPAN&gt;<BR>
+<LI class=INSPECTHTML>textNode: " **ASD**f a sdfdfgsdfgsfdgsdfgsdfgsdfgsdfgsdfgsdf a sdf "<BR>
+<LI class=INSPECTHTML><WBR>&lt;SPAN&nbsp;id=code0027&nbsp;class="CODE&nbsp;EMBEDDED&nbsp;ELEMENT"&nbsp;style="DISPLAY:&nbsp;none"&gt;tb.elementBox('coucou','sect0015')<WBR>&lt;/SPAN&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;SPAN&nbsp;id=out0027&nbsp;class="OUTPUT&nbsp;SUCCESS"&gt;<WBR>&lt;SPAN&nbsp;class=BOXLINK&nbsp;data-showId="#sect0015"&gt;coucou<WBR>&lt;/SPAN&gt;<WBR>&lt;/SPAN&gt;<BR>
+<LI class=INSPECTHTML>textNode: " sdfa sdf**ASD** f&nbsp; f as df a sd f as df&nbsp; **ASD** f as df a sd f a sdf&nbsp; **ASD** f **ASD**f&nbsp; **ASD** f**ASD** f **ASD** f **ASD** f **ASD** f **ASD** f **ASD** f **ASD** f as df a sd f as df a sdf a sd fa sd f **ASD** f as df as df&nbsp; **ASD** f **ASD**fa sdf a sd f as df a sd f as df **ASD**f as&nbsp;"<BR>
+<LI class=INSPECTHTML><WBR>&lt;B&gt;COUCOU<WBR>&lt;/B&gt;<BR>
+<LI class=INSPECTHTML>textNode: " df as d f as df a sd f as df as df a sd "<BR>
+<LI class=INSPECTHTML><WBR>&lt;B&gt;COUCOU<WBR>&lt;/B&gt;<BR>
+<LI class=INSPECTHTML>textNode: "sydfsdfsdfgsdfgsdfg"<BR></LI></OL></DIV></DIV></BODY></HTML>

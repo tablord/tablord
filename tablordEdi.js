@@ -376,8 +376,11 @@
   tb.help.add('CODE','DOM class=',['a CODE [[ELEMENT]] is a DOM element of the document that contains JavaScript CODE. It can also have the [[EMBEDDED]]']);
   tb.help.add('RICHTEXT','DOM class=',['a RICHTEXT [[ELEMENT]] is a DOM element of the document that contains HTML that can be freely edited.',
                                        'It can also include [[EMBEDDED]] [[CODE]] [[ELEMENT]]' ]);
-  tb.help.add('SECTION','DOM class=',['a SECTION [[ELEMENT]] is a DOM element of the document that contains a title and a [[container]].',
+  tb.help.add('SECTION','DOM class=',['a SECTION [[ELEMENT]] is a DOM element of the document that contains a [[SECTIONTITLE]] and a [[container]].',
                                        'It helps to structure the document, is automatically numbered and [[tb.tableOfContent]] is updated automatically' ]);
+  tb.help.add('SECTIONTITLE','DOM class=',['a SECTIONTITLE is the DOM element of the title of a [[SECTION]].',
+                                       'It will be automatically numbered and [[tb.tableOfContent]] is updated automatically',
+                                       'title can be used in {{#title}} or {{##title}} instead of id']);
   
   tb.help.add('CODE','DOM class=',['a CODE [[ELEMENT]] is a DOM element of the document that contains JavaScript CODE. It can also have the [[EMBEDDED]]']);
 
@@ -392,6 +395,10 @@
                                            'it also has the [[itemscope]] attribute also have the [[container]] attribute, so it can accept one or many of the specified templates as content.',
                                             ' if this attribute is missing all templates are accepted']);
   
+  tb.help.add('{{  }} reformat','reformat ',['in a [[RICHTEXT]] [[ELEMENT]] you can type {{code}} in order to place an [[EMBEDDED]] [[CODE]] ',
+                                           'there are some shortcuts:',
+                                           '{{#title or id or url}} creates a link to a given title or id or url by creating EMBEDDED CODE [[tb.link]]("title or id")',
+                                           '{{##title or id}} creates a box with the content of title or id by creating EMBEDDED CODE [[tb.elementBox]]("title or id")']);
 
   tb.help.update = function(object,path) {
     // update the help index with all functions of object that will be recorded under path
@@ -497,7 +504,17 @@
   $.fn.span = function() {
     var s = ['<ol start=0>'];
     for (var i=0; i < this.length; i++) {
-      s.push('<li class="INSPECTHTML">'+tb.toHtml(tb.trimHtml(tb.purgeJQueryAttr(this[i].outerHTML))));
+      switch (this[i].nodeType) {
+        case 1:
+          s.push('<li class="INSPECTHTML">'+tb.toHtml(tb.trimHtml(tb.purgeJQueryAttr(this[i].outerHTML))));
+          break;
+        case 3:
+          s.push('<li class="INSPECTHTML">textNode: "'+this[i].nodeValue+'"');
+          break;
+        default:
+          s.push('<li class="INSPECTHTML">node type '+this.nodeType)
+          break;
+      }
     }
     s.push('</ol>');
     return new tb.HTML('JQuery of '+this.length+' elements<br>'+s.join('<br>'));
@@ -734,6 +751,39 @@
       return (this.id===toId) || inRange;
     })
   }
+
+  $.fn.replaceText = function(regExp,replacement,accept){
+    // like string.replace(regExp,replacement), but only acts on text of the elements of the jQuery (not on the TAG ot the attributes)
+    // - accept: function(element) that return true if the text nodes of this element will be replaced
+    //                                         undefined if the text nodes of this element will be untouched, but the children will be examined
+    //                                         false if the element has to be completely skipped
+    //
+    // any text node that is part of this will be replaced (if the jquery was made with .contents()) (this is used internally in recusive search)
+    accept = accept || function(){return true};
+
+    for (var i = 0; i<this.length; i++) {
+      switch (this[i].nodeType) {
+        case 3:
+          $(this[i]).replaceWith(this[i].nodeValue.replace(regExp,replacement));
+          break;
+        case 1:
+          switch (accept(this[i])) {
+            case true:
+              $(this[i]).contents().replaceText(regExp,replacement,accept)
+              break;
+            case false:
+              continue;
+            case undefined:
+              $(this[i]).children().replaceText(regExp,replacement,accept);
+              break;
+          }
+          break;
+      }
+    }
+    return this;
+  }
+
+
 
   tb.help.update($,'$.');
   tb.help.update($.fn,'$.prototype.');
@@ -1744,24 +1794,32 @@
     return new tb.HTML('<span class=INVALIDLINK title="#'+url+' is not found in the table of content">'+text+'</span>');
   }
 
-  tb.sideBox = function(text,id) {
-    // return an html object that has a clickable text that will open if clicked a copy of the element id
+  tb.elementBox = function(text,id) {
+    // return an html object that has a clickable text that will open a box with the copy of the element id
+    // - id: the id of the element to display in the box like "rich0007"
+    //       if id is not found, it will try to find id as a [[SECTIONTITLE]] 
+    //       if id == undefined text is used as id or title
+    id = id || text;
     var e$ = $('#'+id);
     if (e$.length == 1) {
-      return tb.html('<span class=SIDEBOXTEXT data-showId="#'+id+'">'+text+'</span>');
+      return tb.html('<span class=BOXLINK data-showId="#'+id+'">'+text+'</span>');
+    }
+    var entry = tb.tableOfContent.find(id);
+    if (entry) {
+      return new tb.HTML('<span class=BOXLINK data-showId="#'+entry.sectionId+'">'+text+'</span>');
     }
     return new tb.HTML('<span class=INVALIDLINK title="#'+id+' is not found">'+text+'</span>');
   }
 
-  tb.openCloseSideBox = function(event) {
+  tb.openCloseBox = function(event) {
     // 
-    var sideBoxTextElement = event.target;
-    var sideBox$ = $('.SIDEBOX',sideBoxTextElement)
-    var open = sideBox$.length === 0;
-    sideBox$.remove();
+    var boxTextElement = event.target;
+    var box$ = $('.BOX',boxTextElement)
+    var open = box$.length === 0;
+    box$.remove();
     if (open) {
-      var id = $(sideBoxTextElement).attr('data-showId');
-      $('<DIV class=SIDEBOX>').html($(id).html()).appendTo(sideBoxTextElement);
+      var id = $(boxTextElement).attr('data-showId');
+      $('<DIV class=BOX>').html($(id).html()).appendTo(boxTextElement);
     }
     event.stopPropagation(); // prevent bubbling of the event
   }
@@ -2693,15 +2751,16 @@
   tb.execAll = function() {
     // execute all [[CODE]] [[ELEMENT]]
     // reset the environement before so that no side effect
-    $('.TRACE').remove();
     trace.off();
     tb.clearTimers();
+    $('.TRACE').remove();
+//    $('.OUTPUT').remove()
+    $('.BOX').remove();
     tb.finalizations = [];
     tb.vars = {}; // run from fresh
     tb.results = {};
     tb.IElement.idNumber = 0;
     tb.simulation = new tb.Simulation('tb.simulation');
-    $('.SIDEBOX').remove();
     tb.tableOfContent.updateSections();
     tb.editables$(tb.selectedElement).each(function(i,e){tb.reformatRichText(e)});
     $('.CODE').add('[itemtype]').each(function(i,e) {tb.execCode(e);});
@@ -2714,9 +2773,11 @@
   tb.execUntilSelected = function() {
     // execute all [[CODE]] [[ELEMENT]] until the selected Element
     // reset the environement before so that no side effect
-    $('.TRACE').remove();
     trace.off();
     tb.clearTimers();
+    $('.TRACE').remove();
+//    $('.OUTPUT').remove()
+    $('.BOX').remove();
     tb.finalizations = [];
     tb.vars = {}; // run from fresh
     tb.results = {};
@@ -2749,25 +2810,27 @@
 
   tb.reformatRichText = function(element) {
     // reformat a [[RICHTEXT]] [[ELEMENT]] in order to find potential [[EMBEDDED]] [[CODE]]
+    
     if ((element == undefined) || ($(element).hasClass('CODE'))) return;
-    var mark = /\{\{[#]?(.*?)\}\}/;
-    var h = element.innerHTML;
-    var idx=-1;
-    var change=false;
-    while ((idx=h.search(mark))!=-1) {
-      tb.blockNumber++;
-      if (h.charAt(idx+2) == '#') {
-        h = h.replace(mark,'<SPAN class="CODE EMBEDDED" id='+ tb.blockId('code')+' style="DISPLAY: none;">tb.link("$1")</SPAN>');
-      }
-      else {
-        h = h.replace(mark,'<SPAN class="CODE EMBEDDED" id='+ tb.blockId('code')+' style="DISPLAY: none;">$1</SPAN>');
-      }
-      change = true; 
-    }
+
+    var change = false;
+    $(element).replaceText(/\{\{([#]{0,2})(.*?)\}\}/,
+                           function(s,command,code) {
+                             change = true;  // if called, this function will change the document
+                             tb.blockNumber++;
+                             switch (command) {
+                               case ''   : return '<SPAN class="CODE EMBEDDED ELEMENT" id='+ tb.blockId('code')+' style="DISPLAY: none;">'+code+'</SPAN>';
+                               case '##' : return '<SPAN class="CODE EMBEDDED ELEMENT" id='+ tb.blockId('code')+' style="DISPLAY: none;">tb.elementBox("'+code+'")</SPAN>';
+                               case '#'  : return '<SPAN class="CODE EMBEDDED ELEMENT" id='+ tb.blockId('code')+' style="DISPLAY: none;">tb.link("'+code+'")</SPAN>';
+                             }
+                           },
+                           function(e) {  //replace in any tag except those having CODE or OUTPUT class
+                             return e.className.search(/OUTPUT|CODE/)=== -1;
+                           });
     if (change) {
+      element.normalize();
       tb.setUpToDate(false);
     }
-    element.innerHTML = h;
   }
 
   tb.showOutputHtml = function(checkBox) {
@@ -2788,7 +2851,6 @@
         "dialogwidth="+tb.content$.css('width'));
     }
   }
-
 
   // upgrades from previous versions ////////////////////////////////////////////////////////////////////////////////
     tb.upgradeModules = function() {
@@ -2868,7 +2930,8 @@ a('convert from jc to tb')
       $('.SCENE').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
       $('.INTERACTIVE').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
       $('.LINK').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
-      $('.SIDEBOXTEXT').live("click",tb.openCloseSideBox); // open or close sideBox and cancel bubbling of click to let the user control clicks
+      $('.BOXLINK').live("click",tb.openCloseBox); // open or close Box and cancel bubbling of click since it is only to open close
+      $('.BOX').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click
 
 
       tb.findblockNumber();
