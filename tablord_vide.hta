@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<HTML sizset="0" sizcache="1" xmlns="http://www.w3.org/1999/xhtml" APPLICATIONNAME="D:\Documents\programmation\tablord\tablord\tablord_vide.hta" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD sizset="3" sizcache="3"><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SINGLEINSTANCE="no" SCROLL="yes"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="tablord.css" src="tablord.css">
+<HTML APPLICATIONNAME="D:\Documents\programmation\tablord\tablord\tablord_vide.hta" xmlns="http://www.w3.org/1999/xhtml" sizcache="1" sizset="0" xmlns:svg = "http://www.w3.org/2000/svg" XMLNS:HTA><HEAD sizcache="3" sizset="3"><HTA:APPLICATION APPLICATIONNAME="JCalc vide" SCROLL="yes" SINGLEINSTANCE="no"></HTA:APPLICATION><LINK rel=stylesheet type=text/css href="tablord.css" src="tablord.css">
 <SCRIPT src="jquery-1.5.1.min.js"></SCRIPT>
 
 <SCRIPT class=UPDATE src="tablordEdi.js"></SCRIPT>
@@ -24,34 +24,118 @@
 
 <SCRIPT src="jquery-ui-1.8.13.custom.min.js"></SCRIPT>
 </HEAD>
-<BODY sizset="0" sizcache="1"  designMode="on">
+<BODY sizcache="1" sizset="0"  designMode="on">
 <DIV id=menu class=TOOLBAR style="MAX-WIDTH: 50%; FLOAT: right">
-<DIV><BUTTON onclick=tb.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=tb.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=tb.clearTimers(); disabled id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=tb.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=tb.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=tb.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON><BUTTON onclick=tb.helpPanel$.toggle(100); style="HEIGHT: 23px; WIDTH: 43px">help</BUTTON><INPUT onclick=tb.showCode(event) type=checkbox>codes</INPUT><INPUT onclick=tb.showCut(event) type=checkbox>cuts</INPUT><INPUT onclick=tb.showTest(event) type=checkbox>tests</INPUT><INPUT onclick=tb.showTrace(event) type=checkbox>traces</INPUT><INPUT onclick=tb.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
-<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=tb.cutBlock(tb.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertBefore(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].convert(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION></SELECT><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertAfter(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=tb.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=tb.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
+<DIV><BUTTON onclick=tb.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=tb.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60" >&#9658;&#9658;</BUTTON><BUTTON onclick=tb.clearTimers(); disabled id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=tb.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=tb.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px">save</BUTTON><BUTTON onclick=tb.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON><BUTTON onclick=tb.helpPanel$.toggle(100); style="HEIGHT: 23px; WIDTH: 43px">help</BUTTON><INPUT onclick=tb.showCode(event) type=checkbox>codes</INPUT><INPUT onclick=tb.showCut(event) type=checkbox>cuts</INPUT><INPUT onclick=tb.showTest(event) type=checkbox>tests</INPUT><INPUT onclick=tb.showTrace(event) type=checkbox>traces</INPUT><INPUT onclick=tb.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
+<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=tb.cutBlock(tb.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertBefore(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px" >&#8593;</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].convert(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION></SELECT><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertAfter(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=tb.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=tb.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
 <DIV id=objectToolBar></DIV></DIV>
-<DIV><SPAN onclick=tb.helpPanel$.hide(300) style="CURSOR: pointer; COLOR: red">&nbsp;×&nbsp;</SPAN><INPUT ><SPAN onclick=tb.help.index.back() style="CURSOR: pointer; COLOR: #8dff60">&#9668;</SPAN>
-<DIV style="OVERFLOW: auto; MAX-HEIGHT: 400px">please type your search above</DIV></DIV></DIV>
-<DIV id=tbContent class=CONTAINER sizset="0" sizcache="1" container="sectionContent">
-<DIV id=sect0015 class="ELEMENT SECTION" sizset="0" sizcache="1">
+<DIV style="ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN onclick=tb.helpPanel$.hide(300) style="CURSOR: pointer; COLOR: red">&nbsp;×&nbsp;</SPAN><INPUT value=tostr ><SPAN onclick=tb.help.index.back() style="CURSOR: pointer; COLOR: #8dff60">&#9668;</SPAN>
+<DIV style="OVERFLOW: auto; MAX-HEIGHT: 400px">
+<TABLE style="MARGIN-RIGHT: 30px">
+<DIV></DIV>
+<TBODY>
+<TR>
+<TD class=LEFT vAlign=top>$.prototype.<B>toStr</B>ing</TD>
+<TD class=LEFT><SPAN class=HELP><B>function()</B><BR></SPAN></TD></TR>
+<TR>
+<TD class=LEFT vAlign=top><SPAN onclick="tb.help.index.show('tb.Inspector');" class=HELPLINK>tb.Inspector</SPAN>.prototype.<B>toStr</B>ing</TD>
+<TD class=LEFT><SPAN class=HELP><B>function ()</B><BR>display the object hold by the inspector as a string <BR></SPAN></TD></TR>
+<TR>
+<TD class=LEFT vAlign=top>tb.<B>toStr</B>ing</TD>
+<TD class=LEFT><SPAN class=HELP><B>function(html)</B><BR>transform the <SPAN class=PARAMETER>html</SPAN> content (from innerHTML) to a string as if this content is a text editor <BR>removes any tags other than <BR>and 
+<P><BR></SPAN></P></TD></TR>
+<TR>
+<TD class=LEFT vAlign=top><SPAN onclick="tb.help.index.show('tb.Template');" class=HELPLINK>tb.Template</SPAN>.prototype.<B>toStr</B>ing</TD>
+<TD class=LEFT><SPAN class=HELP><B>function()</B><BR>return a string for a template <BR></SPAN></TD></TR>
+<TR>
+<TD class=LEFT vAlign=top><SPAN onclick="tb.help.index.show('tb.HTML');" class=HELPLINK>tb.HTML</SPAN>.prototype.<B>toStr</B>ing</TD>
+<TD class=LEFT><SPAN class=HELP><B>function()</B><BR></SPAN></TD></TR>
+<TR>
+<TD class=LEFT vAlign=top><SPAN onclick="tb.help.index.show('tb.Var');" class=HELPLINK>tb.Var</SPAN>.prototype.<B>toStr</B>ing</TD>
+<TD class=LEFT><SPAN class=HELP><B>function()</B><BR>return the summary of the variable <BR></SPAN></TD></TR>
+<TR>
+<TD class=LEFT vAlign=top><SPAN onclick="tb.help.index.show('tb.Row');" class=HELPLINK>tb.Row</SPAN>.prototype.<B>toStr</B>ing</TD>
+<TD class=LEFT><SPAN class=HELP><B>function()</B><BR></SPAN></TD></TR>
+<TR>
+<TD class=LEFT vAlign=top><SPAN onclick="tb.help.index.show('tb.Col');" class=HELPLINK>tb.Col</SPAN>.prototype.<B>toStr</B>ing</TD>
+<TD class=LEFT><SPAN class=HELP><B>function()</B><BR></SPAN></TD></TR>
+<TR>
+<TD class=LEFT vAlign=top><SPAN onclick="tb.help.index.show('tb.Table');" class=HELPLINK>tb.Table</SPAN>.prototype.<B>toStr</B>ing</TD>
+<TD class=LEFT><SPAN class=HELP><B>function()</B><BR>return a string summarizing the table <BR></SPAN></TD></TR>
+<TR>
+<TD class=LEFT vAlign=top><SPAN onclick="tb.help.index.show('tb.View');" class=HELPLINK>tb.View</SPAN>.prototype.<B>toStr</B>ing</TD>
+<TD class=LEFT><SPAN class=HELP><B>function()</B><BR>return a string summarizing the table <BR></SPAN></TD></TR>
+<TR>
+<TD class=LEFT vAlign=top><SPAN onclick="tb.help.index.show('tb.IElement');" class=HELPLINK>tb.IElement</SPAN>.prototype.<B>toStr</B>ing</TD>
+<TD class=LEFT><SPAN class=HELP><B>function()</B><BR></SPAN></TD></TR>
+<TR>
+<TD class=LEFT vAlign=top><SPAN onclick="tb.help.index.show('tb.IValue');" class=HELPLINK>tb.IValue</SPAN>.prototype.<B>toStr</B>ing</TD>
+<TD class=LEFT><SPAN class=HELP><B>function()</B><BR></SPAN></TD></TR>
+<TR>
+<TD class=LEFT vAlign=top><SPAN onclick="tb.help.index.show('tb.ICheckBox');" class=HELPLINK>tb.ICheckBox</SPAN>.prototype.<B>toStr</B>ing</TD>
+<TD class=LEFT><SPAN class=HELP><B>function()</B><BR></SPAN></TD></TR>
+<TR>
+<TD class=LEFT vAlign=top><SPAN onclick="tb.help.index.show('tb.Scene');" class=HELPLINK>tb.Scene</SPAN>.prototype.<B>toStr</B>ing</TD>
+<TD class=LEFT><SPAN class=HELP><B>function()</B><BR></SPAN></TD></TR>
+<TR>
+<TD class=LEFT vAlign=top><SPAN onclick="tb.help.index.show('tb.Cloud');" class=HELPLINK>tb.Cloud</SPAN>.prototype.<B>toStr</B>ing</TD>
+<TD class=LEFT><SPAN class=HELP><B>function()</B><BR></SPAN></TD></TR>
+<TR>
+<TD class=LEFT vAlign=top><SPAN onclick="tb.help.index.show('tb.Axe');" class=HELPLINK>tb.Axe</SPAN>.prototype.<B>toStr</B>ing</TD>
+<TD class=LEFT><SPAN class=HELP><B>function()</B><BR></SPAN></TD></TR>
+<TR>
+<TD class=LEFT vAlign=top><SPAN onclick="tb.help.index.show('tb.Simulation');" class=HELPLINK>tb.Simulation</SPAN>.prototype.<B>toStr</B>ing</TD>
+<TD class=LEFT><SPAN class=HELP><B>function(options)</B><BR></SPAN></TD></TR>
+<TR>
+<TD class=LEFT vAlign=top><SPAN onclick="tb.help.index.show('tb.StateMachine');" class=HELPLINK>tb.StateMachine</SPAN>.prototype.<B>toStr</B>ing</TD>
+<TD class=LEFT><SPAN class=HELP><B>function()</B><BR></SPAN></TD></TR></TBODY></TABLE></DIV></DIV></DIV>
+<DIV id=tbContent class=CONTAINER sizcache="1" sizset="0" container="sectionContent">
+<DIV id=sect0015 class="ELEMENT SECTION" sizcache="1" sizset="0">
 <H1 class="SECTIONTITLE EDITABLE" contentEditable=false>1 section one</H1>
-<DIV sizset="0" sizcache="1" container="sectionContent">
-<DIV id=rich0016 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false sizset="0" sizcache="1">
-<P sizset="0" sizcache="1"><SPAN id=code0017 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.link('section one')</SPAN><SPAN id=out0017 class="OUTPUT SUCCESS" contentEditable=false><A class=LINK href="file:///D:/Documents/programmation/tablord/tablord/tablord_vide.hta#sect0015">section one</A></SPAN>&nbsp;ceci est un rich text</P></DIV></DIV></DIV><PRE id=code0004 class="ELEMENT CODE EDITABLE" contentEditable=false><P>tb.elementBox('rich','rich0019')</P></PRE>
+<DIV sizcache="1" sizset="0" container="sectionContent">
+<DIV id=rich0016 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false sizcache="1" sizset="0">
+<P sizcache="1" sizset="0"><SPAN id=code0017 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.link('section one')</SPAN><SPAN id=out0017 class="OUTPUT SUCCESS" contentEditable=false><A class=LINK href="file:///D:/Documents/programmation/tablord/tablord/tablord_vide.hta#sect0015">section one</A></SPAN>&nbsp;ceci est un rich text</P></DIV></DIV></DIV><PRE id=code0048 class="ELEMENT CODE EDITABLE" contentEditable=false><P>tb.inspect("toto+'tu\'tu'+'toto'".match(/(['"])((<A href="file://\\.|.)*)\1/">\\.|.)*)\1/</A>    ))</P><P>//'toto\"est" \stupide'</P></PRE>
+<DIV id=out0048 class="OUTPUT SUCCESS">
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>[] </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>0</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>'tu'tu'+'toto'</TD></TR>
+<TR>
+<TH vAlign=top>1</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>'</TD></TR>
+<TR>
+<TH vAlign=top>2</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>tu'tu'+'toto</TD></TR>
+<TR>
+<TH vAlign=top>3</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>o</TD></TR>
+<TR>
+<TH vAlign=top>input</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>toto+'tu'tu'+'toto'</TD></TR>
+<TR>
+<TH vAlign=top>index</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>5</TD></TR>
+<TR>
+<TH vAlign=top>lastIndex</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>19</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0004 class="ELEMENT CODE EDITABLE" contentEditable=false><P>tb.elementBox('rich','rich0019')</P></PRE>
 <DIV id=out0004 class="OUTPUT SUCCESS"><SPAN class=BOXLINK data-showId="#rich0019">rich</SPAN></DIV><PRE id=code0042 class="ELEMENT CODE EDITABLE" contentEditable=false><P>'je mange de la choucroute'.replace(/\b\w+\b/g, function(word){</P><P> return word.substring(0,1).toUpperCase()+word.substring(1);</P><P>});</P></PRE>
 <DIV id=out0042 class="OUTPUT SUCCESS">Je&nbsp;Mange&nbsp;De&nbsp;La&nbsp;Choucroute</DIV>
-<DIV id=rich0019 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false sizset="3" sizcache="1">
+<DIV id=rich0019 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false sizcache="1" sizset="3">
 <P>ceci est riche</P>
-<P sizset="3" sizcache="1">uuuuuu<B>OOOOOO</B>uuuuuu<B>OOOOOO</B>uuuuuu<B>%%%%%</B><B>%%%%%</B><B>%%%%%</B><B>%%%%%</B><B>%%%%%</B><B>%%%%%</B><B>%%%%%</B>%%%%%%%%%%?????<SPAN id=code0025 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.elementBox('coucou','rich0022')</SPAN><SPAN id=out0025 class="OUTPUT SUCCESS"><SPAN class=BOXLINK data-showId="#rich0022">coucou</SPAN></SPAN> **ASD**f a sdfdfgsdfgsfdgsdfgsdfgsdfgsdfgsdfgsdf a sdf <SPAN id=code0027 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.elementBox('coucou','sect0015')</SPAN><SPAN id=out0027 class="OUTPUT SUCCESS"><SPAN class=BOXLINK data-showId="#sect0015">coucou</SPAN></SPAN> sdfa sdf**ASD** f&nbsp; f as df a sd f as df&nbsp; **ASD** f as df a sd f a sdf&nbsp; **ASD** f **ASD**f&nbsp; **ASD** f**ASD** f **ASD** f **ASD** f **ASD** f **ASD** f **ASD** f **ASD** f as df a sd f as df a sdf a sd fa sd f **ASD** f as df as df&nbsp; **ASD** f **ASD**fa sdf a sd f as df a sd f as df **ASD**f as&nbsp;<B>COUCOU</B> df as d f as df a sd f as df as df a sd <B>COUCOU</B></P>
+<P sizcache="1" sizset="3">uuuuuu<B>OOOOOO</B>uuuuuu<B>OOOOOO</B>uuuuuu<B>%%%%%</B><B>%%%%%</B><B>%%%%%</B><B>%%%%%</B><B>%%%%%</B><B>%%%%%</B><B>%%%%%</B>%%%%%%%%%%?????<SPAN id=code0025 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.elementBox('coucou','rich0022')</SPAN><SPAN id=out0025 class="OUTPUT SUCCESS"><SPAN class=BOXLINK data-showId="#rich0022">coucou</SPAN></SPAN> **ASD**f a sdfdfgsdfgsfdgsdfgsdfgsdfgsdfgsdfgsdf a sdf <SPAN id=code0027 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.elementBox('coucou','sect0015')</SPAN><SPAN id=out0027 class="OUTPUT SUCCESS"><SPAN class=BOXLINK data-showId="#sect0015">coucou</SPAN></SPAN> sdfa sdf**ASD** f&nbsp; f as df a sd f as df&nbsp; **ASD** f as df a sd f a sdf&nbsp; **ASD** f **ASD**f&nbsp; **ASD** f**ASD** f **ASD** f **ASD** f **ASD** f **ASD** f **ASD** f **ASD** f as df a sd f as df a sdf a sd fa sd f **ASD** f as df as df&nbsp; **ASD** f **ASD**fa sdf a sd f as df a sd f as df **ASD**f as&nbsp;<B>COUCOU</B> df as d f as df a sd f as df as df a sd <B>COUCOU</B></P>
 <P></P>
 <P></P>
 <P></P>
 <P>sydfsdfsdfgsdfgsdfg</P></DIV>
-<DIV id=rich0022 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false sizset="5" sizcache="1">
+<DIV id=rich0022 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false sizcache="1" sizset="5">
 <P>ceci est la définition de coucou&nbsp; asd f ghjfghjfghjfghjfghjfghjfghjfghjfghjfghasd f asd f asdfasdf asdfasdfa sd as df as df as df as df as df as d fas df a sdf a sdf</P>
-<P sizset="5" sizcache="1">voir aussi <SPAN id=code0030 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.elementBox('truc','rich0029')</SPAN><SPAN id=out0030 class="OUTPUT SUCCESS"><SPAN class=BOXLINK data-showId="#rich0029">truc</SPAN></SPAN></P>
+<P sizcache="1" sizset="5">voir aussi <SPAN id=code0030 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.elementBox('truc','rich0029')</SPAN><SPAN id=out0030 class="OUTPUT SUCCESS"><SPAN class=BOXLINK data-showId="#rich0029">truc</SPAN></SPAN></P>
 <P>&nbsp;</P>
 <P>&nbsp;</P>
-<P sizset="6" sizcache="1">asdf asd f asd f asd f as df a sd f <SPAN id=code0032 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.link("section one")</SPAN><SPAN id=out0032 class="OUTPUT SUCCESS"><A class=LINK href="file:///D:/Documents/programmation/tablord/tablord/tablord_vide.hta#sect0015">section one</A></SPAN>asd f a sdf <SPAN id=code0036 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.elementBox("section one")</SPAN><SPAN id=out0036 class="OUTPUT SUCCESS"><SPAN class=BOXLINK data-showId="#sect0015">section one</SPAN></SPAN> a sdf&nbsp; asd f asdfs adf as df</P></DIV>
+<P sizcache="1" sizset="6">asdf asd f asd f asd f as df a sd f <SPAN id=code0032 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.link("section one")</SPAN><SPAN id=out0032 class="OUTPUT SUCCESS"><A class=LINK href="file:///D:/Documents/programmation/tablord/tablord/tablord_vide.hta#sect0015">section one</A></SPAN>asd f a sdf <SPAN id=code0036 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.elementBox("section one")</SPAN><SPAN id=out0036 class="OUTPUT SUCCESS"><SPAN class=BOXLINK data-showId="#sect0015">section one</SPAN></SPAN> a sdf&nbsp; asd f asdfs adf as df</P></DIV>
 <DIV id=rich0029 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>truc: ce mot remplace un peu n'importe quoi dans le langage courant.</DIV><PRE id=code0037 class="ELEMENT CODE EDITABLE" contentEditable=false><P>$('#rich0019').replaceText(/coucou/g,"&lt;b&gt;COUCOU&lt;/b&gt;",function(e){</P><P>if ($(e).hasClass('OUTPUT')) return false;</P><P>if ($(e).hasClass('CODE'))   return false;</P><P>return true;</P><P>&nbsp;</P><P>})[0].nodeType</P></PRE>
 <DIV id=out0037 class="OUTPUT SUCCESS">1</DIV><PRE id=code0039 class="ELEMENT CODE EDITABLE" contentEditable=false><P>tb.html('&lt;div style="border-top:3px dashed blue;page-break-before:no"&gt;&lt;/div&gt;');</P></PRE>
 <DIV id=out0039 class="OUTPUT SUCCESS">
@@ -59,7 +143,7 @@
 <DIV id=out0040 class="OUTPUT SUCCESS">JQuery of 6 elements<BR>
 <OL start=0><BR>
 <LI class=INSPECTHTML><WBR>&lt;P&gt;ceci&nbsp;est&nbsp;riche<WBR>&lt;/P&gt;<BR>
-<LI class=INSPECTHTML><WBR>&lt;P&nbsp;sizset="3"&nbsp;sizcache="1"&gt;uuuuuu<WBR>&lt;B&gt;OOOOOO<WBR>&lt;/B&gt;uuuuuu<WBR>&lt;B&gt;OOOOOO<WBR>&lt;/B&gt;uuuuuu<WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;%%%%%%%%%%?????<WBR>&lt;SPAN&nbsp;id=code0025&nbsp;class="CODE&nbsp;EMBEDDED&nbsp;ELEMENT"&nbsp;style="DISPLAY:&nbsp;none"&gt;tb.elementBox('coucou','rich0022')<WBR>&lt;/SPAN&gt;<WBR>&lt;SPAN&nbsp;id=out0025&nbsp;class="OUTPUT&nbsp;SUCCESS"&gt;<WBR>&lt;SPAN&nbsp;class=BOXLINK&nbsp;data-showId="#rich0022"&gt;coucou<WBR>&lt;/SPAN&gt;<WBR>&lt;/SPAN&gt;**ASD**f&nbsp;a&nbsp;sdfdfgsdfgsfdgsdfgsdfgsdfgsdfgsdfgsdf&nbsp;a&nbsp;sdf<WBR>&lt;SPAN&nbsp;id=code0027&nbsp;class="CODE&nbsp;EMBEDDED&nbsp;ELEMENT"&nbsp;style="DISPLAY:&nbsp;none"&gt;tb.elementBox('coucou','sect0015')<WBR>&lt;/SPAN&gt;<WBR>&lt;SPAN&nbsp;id=out0027&nbsp;class="OUTPUT&nbsp;SUCCESS"&gt;<WBR>&lt;SPAN&nbsp;class=BOXLINK&nbsp;data-showId="#sect0015"&gt;coucou<WBR>&lt;/SPAN&gt;<WBR>&lt;/SPAN&gt;sdfa&nbsp;sdf**ASD**&nbsp;f&amp;nbsp;&nbsp;f&nbsp;as&nbsp;df&nbsp;a&nbsp;sd&nbsp;f&nbsp;as&nbsp;df&amp;nbsp;&nbsp;**ASD**&nbsp;f&nbsp;as&nbsp;df&nbsp;a&nbsp;sd&nbsp;f&nbsp;a&nbsp;sdf&amp;nbsp;&nbsp;**ASD**&nbsp;f&nbsp;**ASD**f&amp;nbsp;&nbsp;**ASD**&nbsp;f**ASD**&nbsp;f&nbsp;**ASD**&nbsp;f&nbsp;**ASD**&nbsp;f&nbsp;**ASD**&nbsp;f&nbsp;**ASD**&nbsp;f&nbsp;**ASD**&nbsp;f&nbsp;**ASD**&nbsp;f&nbsp;as&nbsp;df&nbsp;a&nbsp;sd&nbsp;f&nbsp;as&nbsp;df&nbsp;a&nbsp;sdf&nbsp;a&nbsp;sd&nbsp;fa&nbsp;sd&nbsp;f&nbsp;**ASD**&nbsp;f&nbsp;as&nbsp;df&nbsp;as&nbsp;df&amp;nbsp;&nbsp;**ASD**&nbsp;f&nbsp;**ASD**fa&nbsp;sdf&nbsp;a&nbsp;sd&nbsp;f&nbsp;as&nbsp;df&nbsp;a&nbsp;sd&nbsp;f&nbsp;as&nbsp;df&nbsp;**ASD**f&nbsp;as&amp;nbsp;<WBR>&lt;B&gt;COUCOU<WBR>&lt;/B&gt;df&nbsp;as&nbsp;d&nbsp;f&nbsp;as&nbsp;df&nbsp;a&nbsp;sd&nbsp;f&nbsp;as&nbsp;df&nbsp;as&nbsp;df&nbsp;a&nbsp;sd<WBR>&lt;B&gt;COUCOU<WBR>&lt;/B&gt;<WBR>&lt;/P&gt;<BR>
+<LI class=INSPECTHTML><WBR>&lt;P&nbsp;sizcache="1"&nbsp;sizset="3"&gt;uuuuuu<WBR>&lt;B&gt;OOOOOO<WBR>&lt;/B&gt;uuuuuu<WBR>&lt;B&gt;OOOOOO<WBR>&lt;/B&gt;uuuuuu<WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;<WBR>&lt;B&gt;%%%%%<WBR>&lt;/B&gt;%%%%%%%%%%?????<WBR>&lt;SPAN&nbsp;id=code0025&nbsp;class="CODE&nbsp;EMBEDDED&nbsp;ELEMENT"&nbsp;style="DISPLAY:&nbsp;none"&gt;tb.elementBox('coucou','rich0022')<WBR>&lt;/SPAN&gt;<WBR>&lt;SPAN&nbsp;id=out0025&nbsp;class="OUTPUT&nbsp;SUCCESS"&gt;<WBR>&lt;SPAN&nbsp;class=BOXLINK&nbsp;data-showId="#rich0022"&gt;coucou<WBR>&lt;/SPAN&gt;<WBR>&lt;/SPAN&gt;**ASD**f&nbsp;a&nbsp;sdfdfgsdfgsfdgsdfgsdfgsdfgsdfgsdfgsdf&nbsp;a&nbsp;sdf<WBR>&lt;SPAN&nbsp;id=code0027&nbsp;class="CODE&nbsp;EMBEDDED&nbsp;ELEMENT"&nbsp;style="DISPLAY:&nbsp;none"&gt;tb.elementBox('coucou','sect0015')<WBR>&lt;/SPAN&gt;<WBR>&lt;SPAN&nbsp;id=out0027&nbsp;class="OUTPUT&nbsp;SUCCESS"&gt;<WBR>&lt;SPAN&nbsp;class=BOXLINK&nbsp;data-showId="#sect0015"&gt;coucou<WBR>&lt;/SPAN&gt;<WBR>&lt;/SPAN&gt;sdfa&nbsp;sdf**ASD**&nbsp;f&amp;nbsp;&nbsp;f&nbsp;as&nbsp;df&nbsp;a&nbsp;sd&nbsp;f&nbsp;as&nbsp;df&amp;nbsp;&nbsp;**ASD**&nbsp;f&nbsp;as&nbsp;df&nbsp;a&nbsp;sd&nbsp;f&nbsp;a&nbsp;sdf&amp;nbsp;&nbsp;**ASD**&nbsp;f&nbsp;**ASD**f&amp;nbsp;&nbsp;**ASD**&nbsp;f**ASD**&nbsp;f&nbsp;**ASD**&nbsp;f&nbsp;**ASD**&nbsp;f&nbsp;**ASD**&nbsp;f&nbsp;**ASD**&nbsp;f&nbsp;**ASD**&nbsp;f&nbsp;**ASD**&nbsp;f&nbsp;as&nbsp;df&nbsp;a&nbsp;sd&nbsp;f&nbsp;as&nbsp;df&nbsp;a&nbsp;sdf&nbsp;a&nbsp;sd&nbsp;fa&nbsp;sd&nbsp;f&nbsp;**ASD**&nbsp;f&nbsp;as&nbsp;df&nbsp;as&nbsp;df&amp;nbsp;&nbsp;**ASD**&nbsp;f&nbsp;**ASD**fa&nbsp;sdf&nbsp;a&nbsp;sd&nbsp;f&nbsp;as&nbsp;df&nbsp;a&nbsp;sd&nbsp;f&nbsp;as&nbsp;df&nbsp;**ASD**f&nbsp;as&amp;nbsp;<WBR>&lt;B&gt;COUCOU<WBR>&lt;/B&gt;df&nbsp;as&nbsp;d&nbsp;f&nbsp;as&nbsp;df&nbsp;a&nbsp;sd&nbsp;f&nbsp;as&nbsp;df&nbsp;as&nbsp;df&nbsp;a&nbsp;sd<WBR>&lt;B&gt;COUCOU<WBR>&lt;/B&gt;<WBR>&lt;/P&gt;<BR>
 <LI class=INSPECTHTML><WBR>&lt;P&gt;<WBR>&lt;/P&gt;<BR>
 <LI class=INSPECTHTML><WBR>&lt;P&gt;<WBR>&lt;/P&gt;<BR>
 <LI class=INSPECTHTML><WBR>&lt;P&gt;<WBR>&lt;/P&gt;<BR>
