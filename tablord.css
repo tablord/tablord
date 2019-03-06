@@ -379,6 +379,11 @@ pre {
   color:blue;
 }
 
+.PAGEBREAK {
+  border-bottom: 2px dashed blue;
+  color: grey;
+}
+
 #tbContent {
   padding-left:0px;  /*jcContent is a .CONTAINER but overrides everything that makes intentation */
   border-left: none;
@@ -400,6 +405,11 @@ button {
 @media print {
   #menu {
     display:none;
+  }
+  .PAGEBREAK {
+    page-break-before:always;
+    border:none;
+    color:white;
   }
   tbody: {
     font-size:0.8em !important;

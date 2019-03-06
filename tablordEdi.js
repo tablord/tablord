@@ -43,6 +43,7 @@
             vars:{},              // where all user variables are stored
 
             autoRun:true,
+            resets:[],            // list of functions that are called to reset global components before execAll 
             url:{},               // the url of the sheet decomposed in protocol {host user password domain path fileName ext tag search arguments}
             results:{},           // if != {}, when the sheet is closed a file with the same name .jres will be written and its content is JSON.stringify(tb.results)
 
@@ -1777,6 +1778,47 @@
       return new tb.HTML(h+'</DIV>');
     }
   };
+
+  tb.note = function(html,ref) {
+    // insert a note into the [[tb.notes]] having the html given in parameter
+    // if ref is present ref is associated with the note and can be reused with [[tb.ref]] function
+    // returns an html object wth the note number
+    tb.notes.entries.push({html:html,ref:ref});
+    if (ref) tb.notes.refs[ref] = {no:tb.notes.entries.length,nbRefs:0};
+    return tb.html('<a class=LINK id=cite_ref'+tb.notes.entries.length+' href="#cite_note'+tb.notes.entries.length+'">['+tb.notes.entries.length+']</a>');
+  }
+
+  tb.ref = function(ref) {
+    // insert a reference to an already existing note
+    var r = tb.notes.refs[ref];
+    if (r === undefined) throw new Error('unknown ref "'+ref+'"');
+    r.nbRefs++;
+    return tb.html('<a class=LINK id=cite_ref'+r.no+'_'+r.nbRefs+' href="#cite_note'+r.no+'">['+r.no+']</a>');
+  }
+
+  tb.notes = function() {
+    // returns an html object with all the foot notes
+    var h = ''
+    for (var no = 1; no<= tb.notes.entries.length; no++) {
+      h += '<div id=cite_note'+no+'><b>'+no+'</b>&nbsp;<a href="#cite_ref'+no+'">&#8593;</a>';
+      var e = tb.notes.entries[no-1];
+      var r = tb.notes.refs[e.ref];
+      var nb = r?r.nbRefs:0;
+      for (var n = 1; n<=nb; n++) {
+        h += '<a href="#cite_ref'+no+'_'+n+'">&#8593;</a>';
+      }
+      h += e.html+'</div>';
+    }
+    return tb.html(h);
+  }
+
+  tb.notes.reset = function(){
+    // reset the notes
+    tb.notes.entries = [];
+    tb.notes.refs = {};
+  }
+
+  tb.resets.push(tb.notes.reset);
     
   tb.link = function(text,url) {
     // if no url is given, text is used as a search into table of content to find the section
@@ -2089,6 +2131,15 @@
     name : 'paste',
     element$: function() {
       return $('.CUT').detach().removeClass('CUT');
+    }
+  });
+
+  tb.template({
+    name : 'page break',
+    element$ : function() {
+      tb.blockNumber++;
+      var n$ = $('<DIV  class="ELEMENT PAGEBREAK" id='+tb.blockId('page')+'>page break</DIV>');
+      return n$;
     }
   });
 
@@ -2751,6 +2802,7 @@
   tb.execAll = function() {
     // execute all [[CODE]] [[ELEMENT]]
     // reset the environement before so that no side effect
+    for (var i=0; i<tb.resets.length; i++) tb.resets[i]();
     trace.off();
     tb.clearTimers();
     $('.TRACE').remove();
@@ -2773,6 +2825,7 @@
   tb.execUntilSelected = function() {
     // execute all [[CODE]] [[ELEMENT]] until the selected Element
     // reset the environement before so that no side effect
+    for (var i=0; i<tb.resets.length; i++) tb.resets[i]();
     trace.off();
     tb.clearTimers();
     $('.TRACE').remove();
