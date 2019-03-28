@@ -43,7 +43,7 @@
             vars:{},              // where all user variables are stored
 
             autoRun:true,
-            resets:[],            // list of functions that are called to reset global components before execAll 
+            features:[],          // list of Features. cf tb.Features for more informations 
             url:{},               // the url of the sheet decomposed in protocol {host user password domain path fileName ext tag search arguments}
             results:{},           // if != {}, when the sheet is closed a file with the same name .jres will be written and its content is JSON.stringify(tb.results)
 
@@ -126,7 +126,7 @@
     // - prop: the name of the property
     // - path: the context of this property
     // - markDownLines: an array of lines in markDown
-
+    if (markDownLines.length === undefined) throw new Error('HelpIndex.add: markDownLines must be an array like of line');
     this.index.push({prop:prop,path:path,desc:markDownLines});
   }
 
@@ -149,8 +149,10 @@
     }
     else { // free search
       var regExp = new RegExp('^(.*)('+name+')(.*)$','i');
+      // first priority is find in prop
       for (var i=0;i<this.index.length;i++) {
-        if (this.index[i].prop.search(regExp)!==-1) res.push(this.index[i]);
+        if ((this.index[i].prop.search(regExp)!==-1) ||
+            (this.index[i].path.search(regExp)!==-1)) res.push(this.index[i]);
       }
     }
     return res;
@@ -161,7 +163,7 @@
     this.history[++this.historyPos] = tb.helpSearch$.val();
     this.history.length = this.historyPos+1;
     tb.helpSearch$.val(name);
-    tb.helpOutput$.html(tb.help.index.help$(name));
+    tb.helpOutput$.html(tb.help.index.help$(name)).show(500);
   }
 
   tb.HelpIndex.prototype.back = function() {
@@ -175,6 +177,7 @@
 
   tb.HelpIndex.prototype.help$ = function(name) {
     // return the jquery in order to display the result of the search of `name`
+    name = name.replace(/[\$\^\[\]\(\)\\]/g,'\\$&'); // fix chars that have a special meaning for regExp
     var regExp = new RegExp('^(.*)('+name+')(.*)$','i');
     var res = this.find(name);
     var n$ = $('<table style="margin-right:30px">');  //TODO: remove this magic number that reserves the space for the scroll bar (check with HTML5)
@@ -186,13 +189,13 @@
       }
 
       for (var i = 0; i<l; i++) {
-        var path = res[i].path.replace(/^(.*\.[\$A-Z][\w\$]*)\./,'<span class=HELPLINK onclick="tb.help.index.show(\'$1\');">$1</span>.');
+        var path = res[i].path.replace(/([\$\w]+)/ig,'<span class=HELPLINK>$1</span>');
         var desc = res[i].func?tb.help(res[i].func):tb.help.markDownToHtml(res[i].desc);
         n$.append($('<TR><TD valign="top" class=LEFT>'+path+res[i].prop.replace(regExp,'$1<b>$2</b>$3')+'</TD><TD class=LEFT>'+desc+'</TD></TR>'));
       }
     }
     catch (e) {
-      n$ = $('<div class=ERROR>'+e.message+' res.length='+res.length+' l='+l+'</div>'+tb.inspect(res[i]));
+      n$ = $('<div class=ERROR>'+e.message+' res.length='+res.length+' l='+l+'i='+i+'<br>'+tb.inspect(res[i]).span()+'</div>');
     }
     return n$;
   }
@@ -385,6 +388,9 @@
   
   tb.help.add('CODE','DOM class=',['a CODE [[ELEMENT]] is a DOM element of the document that contains JavaScript CODE. It can also have the [[EMBEDDED]]']);
 
+  tb.help.add('INTERACTIVE','DOM class=',['DOM element with a INTERACTIVE class will stop propagation of click, so a <DIV class=INTERACTIVE> can hold other DOM Element that will have onclick event handlers']);
+
+
   tb.help.add('container','DOM attribute ',['a DOM element that has the attribute container="name" is a container that accepts other [[ELEMENT]]'+
                                             ' as content. normally such an element also has the [[templates]] attribute',
                                             ' if the name ends with [], it means that this container can accept multiple [[ELEMENTS]]']);
@@ -400,6 +406,10 @@
                                            'there are some shortcuts:',
                                            '{{#title or id or url}} creates a link to a given title or id or url by creating EMBEDDED CODE [[tb.link]]("title or id")',
                                            '{{##title or id}} creates a box with the content of title or id by creating EMBEDDED CODE [[tb.elementBox]]("title or id")']);
+
+  tb.help.add('Feature','Interface', ['an global object like tb.tableOfContent must implement the **Feature interface** which is composed of the following methods:',
+                                      '- reset(): the reset method is called before the execution od the sheet ([[tb.execAll]] or [[tb.execUntil]]). it should erase all data from a previous execution',
+                                      '- update(): before the execution this method (if it exists) will give a chance to update the document or the object with the current version of the document']);
 
   tb.help.update = function(object,path) {
     // update the help index with all functions of object that will be recorded under path
@@ -1748,10 +1758,14 @@
   tb.editor = new tb.Editor();
   tb.editor.createToolBar();
 
+
   // Table of Content //////////////////////////////////////////////////////////////////
   tb.tableOfContent = {
     toc : [],
-    updateSections : function (element) {
+    reset : function () {
+      tb.tableOfContent.toc = [];
+    },
+    update : function () {
       var currentNumbers = [];
       this.toc = [];
       $('.SECTION').each(function (i,e) {
@@ -1778,14 +1792,16 @@
       return new tb.HTML(h+'</DIV>');
     }
   };
+  tb.features.push(tb.tableOfContent);
 
+  // Notes //////////////////////////////////////////////////////////////////////////////
   tb.note = function(html,ref) {
     // insert a note into the [[tb.notes]] having the html given in parameter
     // if ref is present ref is associated with the note and can be reused with [[tb.ref]] function
     // returns an html object wth the note number
     tb.notes.entries.push({html:html,ref:ref});
     if (ref) tb.notes.refs[ref] = {no:tb.notes.entries.length,nbRefs:0};
-    return tb.html('<a class=LINK id=cite_ref'+tb.notes.entries.length+' href="#cite_note'+tb.notes.entries.length+'">['+tb.notes.entries.length+']</a>');
+    return tb.html('<a class=REF id=cite_ref'+tb.notes.entries.length+' href="#cite_note'+tb.notes.entries.length+'" title="'+html+'"><sup>['+tb.notes.entries.length+']</sup></a>');
   }
 
   tb.ref = function(ref) {
@@ -1793,7 +1809,7 @@
     var r = tb.notes.refs[ref];
     if (r === undefined) throw new Error('unknown ref "'+ref+'"');
     r.nbRefs++;
-    return tb.html('<a class=LINK id=cite_ref'+r.no+'_'+r.nbRefs+' href="#cite_note'+r.no+'">['+r.no+']</a>');
+    return tb.html('<a class=REF id=cite_ref'+r.no+'_'+r.nbRefs+' href="#cite_note'+r.no+'" title="'+tb.notes.entries[r.no-1].html+'"><sup>['+r.no+']</sup></a>');
   }
 
   tb.notes = function() {
@@ -1818,7 +1834,7 @@
     tb.notes.refs = {};
   }
 
-  tb.resets.push(tb.notes.reset);
+  tb.features.push(tb.notes);
     
   tb.link = function(text,url) {
     // if no url is given, text is used as a search into table of content to find the section
@@ -2178,13 +2194,6 @@
     return prefix+tb.pad(tb.blockNumber,4);
   }
 
-/*TODO: remove
-  tb.removeErrors = function(html) {
-    return html.replace(/<SPAN class\=ERROR>(.+?)<\/SPAN>/g,"$1")
-  }
-   
-*/            
-
   tb.outputElement = function(element) {
     // return the output element associated with element if any
     // if applied on another element than id=codexxxx return undefined;
@@ -2315,6 +2324,7 @@
                     .append('<span style="color:#8dff60;cursor:pointer;" onclick="tb.help.index.back()">&#9668;</span>')
                     .append(tb.helpOutput$)
                     //.hide();
+    tb.debug$ = $('<div style="overflow:auto;max-height:400px;">');
 
     tb.menu$ =  $(
     '<DIV id=menu class=TOOLBAR style="float:right;max-width:50%;">'+
@@ -2334,7 +2344,8 @@
       '</DIV>'+
     '</DIV>')
     .append(tb.selectionToolBar$)
-    .append(tb.helpPanel$);
+    .append(tb.helpPanel$)
+    .append(tb.debug$);
 
     $('BODY').prepend(tb.menu$);
 
@@ -2508,8 +2519,13 @@
 
   tb.bodyKeyDown = function(event) {
     // special keys at EDI level
-/*
     switch (event.keyCode) {
+      case 112:
+        tb.help.index.show(window.document.selection.createRange().text); //TODO: works only with IE7
+        break;
+    }
+
+/*
       case 120: 
         tb.templateChoice$.val('code');
         break;
@@ -2525,6 +2541,10 @@
     }
 */
     return true;
+  }
+
+  tb.bodyKeyUp = function(event) {
+    tb.debug$.html(tb.inspect(window.document.selection).span().toString())
   }
 
 
@@ -2645,7 +2665,7 @@
 
     // Execute CODE ELEMENT
     // clear if any previous WRONG marker
-    var wrong$ = $('.WRONG',element);
+    var wrong$ = $('.WRONG',element).add('font',element);  //TODO: check in future: IE7 had a tendency to add FONT instead of the SPAN if the text is edited
     if (wrong$.length > 0) wrong$.replaceWith(function(i,c){return c});
 
     var out  = tb.outputElement(element);
@@ -2736,7 +2756,8 @@
                     errCode:res.errCode,
                     nbPassed:res.testStatus&&res.testStatus.nbPassed,
                     nbFailed:res.testStatus&&res.testStatus.nbFailed,
-                    dateTime:res.testStatus&&res.testStatus.dateTime});
+                    dateTime:res.testStatus&&res.testStatus.dateTime,
+                    exec$ms :res.execStat.execAll$ms});
     }
     return table().addRows(results).colStyle(function(r,c,value){return (value !== 0)?{backgroundColor:'red'}:{}},'nbFailed');
   }
@@ -2798,47 +2819,41 @@
     var c$ = $('[container]:empty');
     c$.append('<DIV class="ELEMENT EMPTY" contentEditable=false>empty container: click here to add an element</DIV>');
   }
- 
-  tb.execAll = function() {
-    // execute all [[CODE]] [[ELEMENT]]
+
+  tb.prepareExec = function() {
     // reset the environement before so that no side effect
-    for (var i=0; i<tb.resets.length; i++) tb.resets[i]();
+    // let [[Feature]]s object collect data on the document
+    tb.results = {execStat:{start: new Date()}};
+    
+    for (var i=0; i<tb.features.length; i++) tb.features[i].reset();
     trace.off();
     tb.clearTimers();
     $('.TRACE').remove();
-//    $('.OUTPUT').remove()
     $('.BOX').remove();
+    $('*').removeClass('SUCCESS').removeClass('ERROR')
     tb.finalizations = [];
     tb.vars = {}; // run from fresh
-    tb.results = {};
     tb.IElement.idNumber = 0;
+    for (var i=0; i<tb.features.length; i++) tb.features[i].update && tb.features[i].update();
     tb.simulation = new tb.Simulation('tb.simulation');
-    tb.tableOfContent.updateSections();
     tb.editables$(tb.selectedElement).each(function(i,e){tb.reformatRichText(e)});
+    tb.results.execStat.prepare$ms=Date.now()-tb.results.execStat.start;
+  }
+     
+  tb.execAll = function() {
+    // execute all [[CODE]] [[ELEMENT]]
+    tb.prepareExec();
     $('.CODE').add('[itemtype]').each(function(i,e) {tb.execCode(e);});
     tb.updateContainers();
     tb.finalize();
+    tb.results.execStat.execAll$ms=Date.now()-tb.results.execStat.start;
     tb.writeResults();
     tb.setUpToDate(true);
   }
 
   tb.execUntilSelected = function() {
     // execute all [[CODE]] [[ELEMENT]] until the selected Element
-    // reset the environement before so that no side effect
-    for (var i=0; i<tb.resets.length; i++) tb.resets[i]();
-    trace.off();
-    tb.clearTimers();
-    $('.TRACE').remove();
-//    $('.OUTPUT').remove()
-    $('.BOX').remove();
-    tb.finalizations = [];
-    tb.vars = {}; // run from fresh
-    tb.results = {};
-    tb.IElement.idNumber = 0;
-    tb.tableOfContent.updateSections();
-    tb.updateContainers();
-    tb.editables$(tb.selectedElement).each(function(i,e){tb.reformatRichText(e)});
-    $('*').removeClass('SUCCESS').removeClass('ERROR')
+    tb.prepareExec();
     var $codes = $('.CODE');
     if ($(tb.selectedElement).hasClass('CODE')){
       var lastI = $codes.index(tb.selectedElement);
@@ -2983,6 +2998,7 @@ a('convert from jc to tb')
       $('.SCENE').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
       $('.INTERACTIVE').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
       $('.LINK').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
+      $('.HELPLINK').live("click",function(event){tb.help.index.show(event.target.innerHTML)});
       $('.BOXLINK').live("click",tb.openCloseBox); // open or close Box and cancel bubbling of click since it is only to open close
       $('.BOX').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click
 
@@ -2990,7 +3006,7 @@ a('convert from jc to tb')
       tb.findblockNumber();
       tb.initToolBars();
       $(window).bind('beforeunload',tb.beforeUnload);
-      $('body').keydown(tb.bodyKeyDown);
+      $('body').keydown(tb.bodyKeyDown)//.keyup(tb.bodyKeyUp);
       tb.autoRun = $('body').attr('autoRun')!==false;
       tb.help.update(tb,'tb.');
     }

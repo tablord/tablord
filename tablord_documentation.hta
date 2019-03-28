@@ -24,8 +24,8 @@
 </HEAD>
 <BODY sizset="0" sizcache="1"  designMode="on" showCode="true" showCut="true" showTest="true" showTrace="true">
 <DIV id=menu class=TOOLBAR style="MAX-WIDTH: 50%; FLOAT: right">
-<DIV><BUTTON onclick=tb.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=tb.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60" >&#9658;&#9658;</BUTTON><BUTTON onclick=tb.clearTimers(); disabled id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=tb.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=tb.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=tb.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON><BUTTON onclick=tb.helpPanel$.toggle(100); style="HEIGHT: 23px; WIDTH: 43px">help</BUTTON><INPUT onclick=tb.showCode(event) CHECKED type=checkbox>codes</INPUT><INPUT onclick=tb.showCut(event) CHECKED type=checkbox>cuts</INPUT><INPUT onclick=tb.showTest(event) CHECKED type=checkbox>tests</INPUT><INPUT onclick=tb.showTrace(event) CHECKED type=checkbox>traces</INPUT><INPUT onclick=tb.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
-<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=tb.cutBlock(tb.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px">cut</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertBefore(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].convert(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT><OPTION selected value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION value=paste>paste</OPTION><OPTION value=person>person</OPTION></SELECT><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertAfter(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8595;</BUTTON><BUTTON onclick=tb.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=tb.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
+<DIV><BUTTON onclick=tb.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON><BUTTON onclick=tb.execAll(); id=runAllBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON><BUTTON onclick=tb.clearTimers(); disabled id=stopAnimation style="HEIGHT: 23px; WIDTH: 43px; COLOR: red">&#9632;</BUTTON><BUTTON onclick=tb.clearOutputs(); id=clearOutputsBtn style="HEIGHT: 23px; WIDTH: 43px">clear</BUTTON><BUTTON onclick=tb.save(); id=saveBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px" >save</BUTTON><BUTTON onclick=tb.print(); style="HEIGHT: 23px; WIDTH: 43px">print</BUTTON><BUTTON onclick=tb.helpPanel$.toggle(100); style="HEIGHT: 23px; WIDTH: 43px">help</BUTTON><INPUT onclick=tb.showCode(event) CHECKED type=checkbox>codes</INPUT><INPUT onclick=tb.showCut(event) CHECKED type=checkbox>cuts</INPUT><INPUT onclick=tb.showTest(event) CHECKED type=checkbox>tests</INPUT><INPUT onclick=tb.showTrace(event) CHECKED type=checkbox>traces</INPUT><INPUT onclick=tb.setAutoRun(event) CHECKED type=checkbox>auto run</INPUT></DIV>
+<DIV style="POSITION: ; ZOOM: 1; FILTER:  ; DISPLAY: none" ><SPAN id=codeId>no selection</SPAN><BUTTON onclick=tb.cutBlock(tb.selectedElement); id=cutBtn style="HEIGHT: 23px; WIDTH: 43px" >cut</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertBefore(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8593;</BUTTON><BUTTON onclick="tb.templates[tb.templateChoice$.val()].convert(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px">&#8596;</BUTTON><SELECT ><OPTION value=code>code</OPTION><OPTION value=richText>richText</OPTION><OPTION value=section>section</OPTION><OPTION selected value=paste>paste</OPTION><OPTION value="page break">page break</OPTION><OPTION value=person>person</OPTION></SELECT><BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertAfter(tb.selectedElement,tb.currentContainer$.attr('container'))" style="HEIGHT: 23px; WIDTH: 43px" >&#8595;</BUTTON><BUTTON onclick=tb.showOutputHtml(this); id=showHtmlBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;html</BUTTON><BUTTON onclick=tb.copyOutputToTest(this); id=toTestBtn style="HEIGHT: 23px; WIDTH: 43px">&#8594;test</BUTTON>
 <DIV id=objectToolBar></DIV></DIV>
 <DIV><SPAN onclick=tb.helpPanel$.hide(300) style="CURSOR: pointer; COLOR: red">&nbsp;×&nbsp;</SPAN><INPUT ><SPAN onclick=tb.help.index.back() style="CURSOR: pointer; COLOR: #8dff60">&#9668;</SPAN>
 <DIV style="OVERFLOW: auto; MAX-HEIGHT: 400px">please type your search above</DIV></DIV></DIV>
@@ -47,10 +47,9 @@
 <TR>
 <TH vAlign=top>rights</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>CC-BY-SA&nbsp;2018</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
-<DIV id=sect0003 class="SECTION ELEMENT">
+<DIV id=sect0003 class="SECTION ELEMENT" sizset="1" sizcache="1">
 <H1 class="SECTIONTITLE EDITABLE" contentEditable=false>1 table of content</H1>
-<DIV container="sectionContent">
-<DIV class="ELEMENT EMPTY" contentEditable=false>empty container: click here to add an element</DIV></DIV></DIV><PRE id=code0002 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.tableOfContent</PRE>
+<DIV sizset="1" sizcache="1" container="sectionContent"><PRE id=code0002 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.tableOfContent</PRE>
 <DIV id=out0002 class="OUTPUT SUCCESS">
 <DIV class=INTERACTIVE>
 <DIV class=TOC0>1 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0003">table of content</A></DIV>
@@ -70,7 +69,7 @@
 <DIV class=TOC1>2.6 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0069">Code Execution </A></DIV>
 <DIV class=TOC2>2.6.1 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0213">Run Until Selected button or ctrl-Enter</A></DIV>
 <DIV class=TOC2>2.6.2 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0215">Run All and auto run</A></DIV>
-<DIV class=TOC0>3 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0070">the Tablordlibrary</A></DIV>
+<DIV class=TOC0>3 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0070">the Tablord library</A></DIV>
 <DIV class=TOC1>3.1 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0076">Variable declaration</A></DIV>
 <DIV class=TOC2>3.1.1 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0107">Naming conventions</A></DIV>
 <DIV class=TOC2>3.1.2 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0085">Unit support</A></DIV>
@@ -90,7 +89,8 @@
 <DIV class=TOC2>3.4.4 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0225">edit</A></DIV>
 <DIV class=TOC1>3.5 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0209">output</A></DIV>
 <DIV class=TOC1>3.6 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0158">function delaration</A></DIV>
-<DIV class=TOC0>4 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0047">known issue:</A></DIV></DIV></DIV>
+<DIV class=TOC0>4 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0047">known issue:</A></DIV>
+<DIV class=TOC0>5 <A href="file:///D:/Documents/programmation/tablord/tablord/tablord_documentation.hta#sect0319">Results</A></DIV></DIV></DIV></DIV></DIV>
 <DIV id=sect0004 class="SECTION ELEMENT" sizset="3" sizcache="1">
 <H1 class="SECTIONTITLE EDITABLE" contentEditable=false>2 Introduction</H1>
 <DIV sizset="3" sizcache="1" container="sectionContent">
@@ -99,7 +99,7 @@
 <DIV sizset="3" sizcache="1" container="sectionContent">
 <DIV id=rich0004 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="3" sizcache="1">
 <P>A bit of Word, a bit of wikipedia, a bit of Excel and a bit of python "notebook".</P>
-<P sizset="3" sizcache="1"><SPAN id=code0009 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0009 class="OUTPUT SUCCESS">Tablord</SPAN></P>is born out a frustration: if you want to do a descent report for a scientific publication or a business plan, or any document that mixes both text and some calculation (in fact almost anything that is not poetry), you eventually come to a big dilema: should I use Word our should I use Excel? of course Word because I need quite a lot of explanation and of course Ecel because I use quite a bit of calculation. At the end, you cut and paste excel tables in Word. So far so good (in fact already some pain, but ok, worth the pain). But then the good news is someone read your work! Here is the bad news: someone read your work, find it very interresting and "just" point out: "what about if &#8364; / $ is 10% higher?" Ouuups! of course, most probably you can change some cells in Excel and it will do the maths... and then you cut &amp; paste again in Word, re-read all the text to see where you included some figure that now are no longer valid and and and... you fear the next question since you realize this job is very time consuming. 
+<P sizset="3" sizcache="1"><SPAN id=code0009 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0009 class="OUTPUT SUCCESS">Tablord</SPAN> is born out a frustration: if you want to do a descent report for a scientific publication or a business plan, or any document that mixes both text and some calculation (in fact almost anything that is not poetry), you eventually come to a big dilema: should I use Word our should I use Excel? of course Word because I need quite a lot of explanation and of course Ecel because I use quite a bit of calculation. At the end, you cut and paste excel tables in Word. So far so good (in fact already some pain, but ok, worth the pain). But then the good news is someone read your work! Here is the bad news: someone read your work, find it very interresting and "just" point out: "what about if &#8364; / $ is 10% higher?" Ouuups! of course, most probably you can change some cells in Excel and it will do the maths... and then you cut &amp; paste again in Word, re-read all the text to see where you included some figure that now are no longer valid and and and... you fear the next question since you realize this job is very time consuming. </P>
 <P></P>
 <P>&nbsp;</P>
 <P>The second frustration comes from Excel itself: as long as you do some simple calculation, this is extreamly efficient. but as soon as you start to do some complex work, this becomes extremely frustrating since complex equations with meaningless cells name like A3+C5+D2/2 are almost impossible to maintain.</P>
@@ -151,9 +151,9 @@
 <P>There are 2 short cuts</P>
 <P sizset="17" sizcache="1"><SPAN id=code0284 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">'\{\{#...\}\}'</SPAN><SPAN id=out0284 class="OUTPUT SUCCESS" sizset="20" sizcache="1">{{#...}}</SPAN>&nbsp; is transformed into a <STRONG>tb.link('...')</STRONG></P>
 <P sizset="18" sizcache="1"><SPAN id=code0310 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">'\{\{##...\}\}'</SPAN><SPAN id=out0310 class="OUTPUT SUCCESS" sizset="22" sizcache="1">{{##...}}</SPAN> is transformed into a tb.elementBox('...')</P>when you run the sheet or change of selected elements, the edited element will be transformed so that <SPAN id=code0317 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">'\{\{..code..\}\}'</SPAN><SPAN id=out0317 class="OUTPUT SUCCESS">{{..code..}}</SPAN> is transformed in a EMBEEDED CODE element</DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0022 class="SECTION ELEMENT" sizset="19" sizcache="1">
+<DIV id=sect0022 class="SECTION ELEMENT" sizset="20" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>2.4.3 code</H3>
-<DIV sizset="19" sizcache="1" container="sectionContent">
+<DIV sizset="20" sizcache="1" container="sectionContent">
 <DIV id=rich0063 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>A code section is very similar to the one that is created within Rich Text but consist of one block in itself</P>
 <P>usually, this is intended for either a bunch of variable declaration, calculation and other, while within Rich Text this is more "showing the result of some already calculated variables".</P>
@@ -161,14 +161,14 @@
 <P>code is followed by an output division and has an optional test element below a complete example</P></DIV><PRE id=code0064 class="CODE ELEMENT EDITABLE" contentEditable=false>10+12</PRE>
 <DIV id=out0064 class="OUTPUT SUCCESS">22</DIV>
 <DIV id=test0064 class="TEST SUCCESS">22</DIV>
-<DIV id=rich0065 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="20" sizcache="1">The <SPAN id=code0068 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.html('&lt;span class=CODEEXAMPLE&gt;code&lt;/span&gt;')</SPAN><SPAN id=out0068 class="OUTPUT SUCCESS"><SPAN class=CODEEXAMPLE>code</SPAN></SPAN>is followed by an <SPAN id=code0073 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.html('&lt;span class="OUTPUTEXAMPLE SUCCESS"&gt;output&lt;/span&gt;')</SPAN><SPAN id=out0073 class="OUTPUT SUCCESS"><SPAN class="OUTPUTEXAMPLE SUCCESS">output</SPAN></SPAN>and followed by an optionnal&nbsp;<SPAN id=code0066 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.html('&lt;span class=TESTEXAMPLE&gt;testElement&lt;/span&gt;')</SPAN><SPAN id=out0066 class="OUTPUT SUCCESS"><SPAN class=TESTEXAMPLE>testElement</SPAN></SPAN></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0229 class="ELEMENT SECTION" sizset="23" sizcache="1">
+<DIV id=rich0065 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="21" sizcache="1">The <SPAN id=code0068 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.html('&lt;span class=CODEEXAMPLE&gt;code&lt;/span&gt;')</SPAN><SPAN id=out0068 class="OUTPUT SUCCESS"><SPAN class=CODEEXAMPLE>code</SPAN></SPAN>is followed by an <SPAN id=code0073 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.html('&lt;span class="OUTPUTEXAMPLE SUCCESS"&gt;output&lt;/span&gt;')</SPAN><SPAN id=out0073 class="OUTPUT SUCCESS"><SPAN class="OUTPUTEXAMPLE SUCCESS">output</SPAN></SPAN>and followed by an optionnal&nbsp;<SPAN id=code0066 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.html('&lt;span class=TESTEXAMPLE&gt;testElement&lt;/span&gt;')</SPAN><SPAN id=out0066 class="OUTPUT SUCCESS"><SPAN class=TESTEXAMPLE>testElement</SPAN></SPAN></DIV></DIV></DIV></DIV></DIV>
+<DIV id=sect0229 class="ELEMENT SECTION" sizset="24" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>2.5 Template block</H2>
-<DIV class=CONTAINER sizset="23" sizcache="1" container="sectionContent">
+<DIV class=CONTAINER sizset="24" sizcache="1" container="sectionContent">
 <DIV id=rich0234 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>In addition to the basic blocks, the user can define Template block and use them. Technically speaking, code, richText and section blocks also are templates, but they are defined in the EDI.</DIV>
-<DIV id=sect0233 class="ELEMENT SECTION" sizset="23" sizcache="1">
+<DIV id=sect0233 class="ELEMENT SECTION" sizset="24" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>2.5.1 jc.template</H3>
-<DIV class=CONTAINER sizset="23" sizcache="1" container="sectionContent"><PRE id=code0235 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.help(tb.template)</PRE>
+<DIV class=CONTAINER sizset="24" sizcache="1" container="sectionContent"><PRE id=code0235 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.help(tb.template)</PRE>
 <DIV id=out0235 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function(newTemplate,itemprop)</B><BR>create a new template and register it <BR>it will inherit from tb.Template <BR>
 <DT><SPAN class=PARAMETER>newTemplate</SPAN>:
 <DD>is a simple object that must at least define <BR>
@@ -211,6 +211,9 @@
 <TH vAlign=top>paste</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>template&nbsp;paste&nbsp;created&nbsp;[http://tablord.com/templates/paste]</TD></TR>
 <TR>
+<TH vAlign=top>page break</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>template&nbsp;page&nbsp;break&nbsp;created&nbsp;[http://tablord.com/templates/page&nbsp;break]</TD></TR>
+<TR>
 <TH vAlign=top>person</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>template&nbsp;person&nbsp;created&nbsp;[http://tablord.com/templates/person]</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
 <DIV id=rich0239 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>
@@ -246,9 +249,9 @@
 <TH>lastName</TH>
 <TD class=LEFT width="90%">
 <DIV class="FIELD EDITABLE" contentEditable=false itemprop="lastName">Smith</DIV></TD></TR></TBODY></TABLE></DIV>
-<DIV id=sect0241 class="ELEMENT SECTION" sizset="26" sizcache="1">
+<DIV id=sect0241 class="ELEMENT SECTION" sizset="27" sizcache="1">
 <H4 class="SECTIONTITLE EDITABLE" contentEditable=false>2.5.1.1 tb.getItems$(url)&nbsp; and&nbsp; $.getData()</H4>
-<DIV class=CONTAINER sizset="26" sizcache="1" container="sectionContent">
+<DIV class=CONTAINER sizset="27" sizcache="1" container="sectionContent">
 <DIV id=rich0242 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>In order to get the data of templates, one can use the <STRONG>tb.getItems$()</STRONG> function that return a jquery with all element that are an item of the type specified by the url&nbsp;followed by the&nbsp;extension of jQuery <STRONG>.getData()</STRONG> that return an array of objects, which is handy to create tables. Please note that the search of template is done on the <STRONG>entire</STRONG> document as it is at the time of the code execution. Normally this is not an issue since template are mostly used as a way to enter manually structured data, but it can become of concern if some template block are created programmatically within the document.</DIV><PRE id=code0240 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.inspect(tb.getItems$('http://tablord.com/templates/person.html').getData(),10)</PRE>
 <DIV id=out0240 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
@@ -303,9 +306,9 @@
 <TD style="TEXT-ALIGN: left">Don</TD>
 <TD style="TEXT-ALIGN: left">H</TD>
 <TD style="TEXT-ALIGN: left">Smith</TD></TR></TBODY></TABLE></DIV></DIV></DIV>
-<DIV id=sect0247 class="ELEMENT SECTION" sizset="28" sizcache="1">
+<DIV id=sect0247 class="ELEMENT SECTION" sizset="29" sizcache="1">
 <H4 class="SECTIONTITLE EDITABLE" contentEditable=false>2.5.1.2 $.getMicrodata()</H4>
-<DIV sizset="28" sizcache="1" container="sectionContent">
+<DIV sizset="29" sizcache="1" container="sectionContent">
 <DIV id=rich0248 class="ELEMENT RICHTEXT EDITABLE" contentEditable=false>for a more general purpose use but also more complex use, you can use the <STRONG>.getMicrodata()</STRONG> extension method of jQuery. the result is complient with the microdata API.</DIV><PRE id=code0249 class="ELEMENT CODE EDITABLE" contentEditable=false>tb.inspect(tb.getItems$('http://tablord.com/templates/person.html').getMicrodata(),10)</PRE>
 <DIV id=out0249 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
@@ -419,35 +422,33 @@
 <TR>
 <TH vAlign=top>0</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=INSPECT>"Smith"</SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0069 class="SECTION ELEMENT" sizset="29" sizcache="1">
+<DIV id=sect0069 class="SECTION ELEMENT" sizset="30" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>2.6 Code Execution </H2>
-<DIV sizset="29" sizcache="1" container="sectionContent">
-<DIV id=sect0213 class="SECTION ELEMENT" sizset="29" sizcache="1">
+<DIV sizset="30" sizcache="1" container="sectionContent">
+<DIV id=sect0213 class="SECTION ELEMENT" sizset="30" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>2.6.1 Run Until Selected button or ctrl-Enter</H3>
-<DIV sizset="29" sizcache="1" container="sectionContent">
-<DIV id=rich0219 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="29" sizcache="1">
-<P sizset="29" sizcache="1">While editing an element, you can either click on the "run until selected" <SPAN id=code0216 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.html($('#runUntilSelectedBtn')[0].outerHTML)</SPAN><SPAN id=out0216 class="OUTPUT SUCCESS"><BUTTON onclick=tb.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON></SPAN></P>or press ctrl-Enter. Both will run all code element until (and including) the currently selected Element. 
+<DIV sizset="30" sizcache="1" container="sectionContent">
+<DIV id=rich0219 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="30" sizcache="1">
+<P sizset="30" sizcache="1">While editing an element, you can either click on the "run until selected" <SPAN id=code0216 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.html($('#runUntilSelectedBtn')[0].outerHTML)</SPAN><SPAN id=out0216 class="OUTPUT SUCCESS"><BUTTON onclick=tb.execUntilSelected(); id=runUntilSelectedBtn style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;|</BUTTON></SPAN></P>or press ctrl-Enter. Both will run all code element until (and including) the currently selected Element. 
 <P></P>
 <P>Please note that every run is done in a new fresh environnement, so every previously declared variable through v, table... are deleted before execution.</P></DIV></DIV></DIV>
-<DIV id=sect0215 class="SECTION ELEMENT" sizset="30" sizcache="1">
+<DIV id=sect0215 class="SECTION ELEMENT" sizset="31" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>2.6.2 Run All and auto run</H3>
-<DIV sizset="30" sizcache="1" container="sectionContent">
-<DIV id=rich0217 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="30" sizcache="1">
+<DIV sizset="31" sizcache="1" container="sectionContent">
+<DIV id=rich0217 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="31" sizcache="1">
 <P>if the sheet is marked with auto run (by default) it will be executed fully on the openning of the sheet.</P>
-<P sizset="30" sizcache="1">you can reexecute everything by pressing the run all button <SPAN id=code0218 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.html($('#runAllBtn')[0].outerHTML)</SPAN><SPAN id=out0218 class="OUTPUT SUCCESS"><BUTTON onclick=tb.execAll(); id=runAllBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60" >&#9658;&#9658;</BUTTON></SPAN></P>. In both cases, the execution start by creating a fresh new variables environnement 
+<P sizset="31" sizcache="1">you can reexecute everything by pressing the run all button <SPAN id=code0218 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.html($('#runAllBtn')[0].outerHTML)</SPAN><SPAN id=out0218 class="OUTPUT SUCCESS"><BUTTON onclick=tb.execAll(); id=runAllBtn class=WARNING style="HEIGHT: 23px; WIDTH: 43px; COLOR: #8dff60">&#9658;&#9658;</BUTTON></SPAN></P>. In both cases, the execution start by creating a fresh new variables environnement 
 <P></P></DIV></DIV></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0070 class="SECTION ELEMENT" sizset="32" sizcache="1">
-<H1 class="SECTIONTITLE EDITABLE" contentEditable=false>3 the <SPAN id=code0072 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0072 class="OUTPUT SUCCESS">Tablord</SPAN>library</H1>
-<DIV sizset="32" sizcache="1" container="sectionContent">
+<DIV id=sect0070 class="SECTION ELEMENT" sizset="33" sizcache="1">
+<H1 class="SECTIONTITLE EDITABLE" contentEditable=false>3 the <SPAN id=code0072 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0072 class="OUTPUT SUCCESS">Tablord</SPAN> library</H1>
+<DIV sizset="33" sizcache="1" container="sectionContent">
 <DIV id=rich0071 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false></DIV>
-<DIV id=sect0076 class="SECTION ELEMENT" sizset="32" sizcache="1">
+<DIV id=sect0076 class="SECTION ELEMENT" sizset="33" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>3.1 Variable declaration</H2>
-<DIV sizset="32" sizcache="1" container="sectionContent">
-<DIV id=rich0077 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="32" sizcache="1">
-<P sizset="32" sizcache="1">the most uncommon part of <SPAN id=code0079 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0079 class="OUTPUT SUCCESS">Tablord</SPAN></P>for already knowlegable JavaScript users is how to declare variables. 
-<P></P>
+<DIV sizset="33" sizcache="1" container="sectionContent">
+<DIV id=rich0077 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="33" sizcache="1">
+<P sizset="33" sizcache="1">the most uncommon part of <SPAN id=code0079 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0079 class="OUTPUT SUCCESS">Tablord</SPAN>&nbsp;for already knowlegable JavaScript users is how to declare variables. </P>
 <P>As all calculation will occure in the client, technically speaking, all should impact the JavaScript environnement, which is very impractical. if you would declare a variable "window" nothing would be reachable anymore since "window" is <STRONG>the</STRONG> root of many things in browser JavaScript.</P>
-<P>&nbsp;</P>
 <P>In order to avoid this problem, variables are declared using the v function like below</P></DIV><PRE id=code0078 class="CODE ELEMENT EDITABLE" contentEditable=false>v('myVariable','its value')</PRE>
 <DIV id=out0078 class="OUTPUT SUCCESS">its&nbsp;value</DIV>
 <DIV id=rich0080 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
@@ -521,8 +522,8 @@
 <TR>
 <TH vAlign=top>isV</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>true</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
-<DIV id=rich0099 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="37" sizcache="1">
-<P sizset="37" sizcache="1">more will be detailled in <SPAN id=code0100 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.link("tb.inspect")</SPAN><SPAN id=out0100 class="OUTPUT SUCCESS"><SPAN title="#tb.inspect is not found in the table of content" class=INVALIDLINK>tb.inspect</SPAN></SPAN></P>but for now just take it as a good way to inspect anything and a way to get help on an object 
+<DIV id=rich0099 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="38" sizcache="1">
+<P sizset="38" sizcache="1">more will be detailled in <SPAN id=code0100 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.link("tb.inspect")</SPAN><SPAN id=out0100 class="OUTPUT SUCCESS"><SPAN title="#tb.inspect is not found in the table of content" class=INVALIDLINK>tb.inspect</SPAN></SPAN></P>but for now just take it as a good way to inspect anything and a way to get help on an object 
 <P></P>
 <P>&nbsp;</P>
 <P>you can inspect anything, so you can also&nbsp;just type <STRONG>jc.vars</STRONG> to have a look of&nbsp;all declared variables.</P></DIV><PRE id=code0105 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.vars</PRE>
@@ -551,23 +552,23 @@
 <TR>
 <TH vAlign=top>myJavaScriptVariable2</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;JQuery]&nbsp;length:1</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV>
-<DIV id=sect0107 class="SECTION ELEMENT" sizset="40" sizcache="1">
+<DIV id=sect0107 class="SECTION ELEMENT" sizset="41" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.1.1 Naming conventions</H3>
-<DIV sizset="40" sizcache="1" container="sectionContent">
-<DIV id=rich0108 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="40" sizcache="1">
-<P sizset="40" sizcache="1">In <SPAN id=code0109 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0109 class="OUTPUT SUCCESS">Tablord</SPAN></P>one should avoid starting a variable name by _ since those are reserved for the library usage (like _simulation). 
+<DIV sizset="41" sizcache="1" container="sectionContent">
+<DIV id=rich0108 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="41" sizcache="1">
+<P sizset="41" sizcache="1">In <SPAN id=code0109 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0109 class="OUTPUT SUCCESS">Tablord</SPAN></P>one should avoid starting a variable name by _ since those are reserved for the library usage (like _simulation). 
 <P></P>
-<P sizset="41" sizcache="1">If you do so, you will be sure that this name space is for you and no upgrade of <SPAN id=code0110 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0110 class="OUTPUT SUCCESS">Tablord</SPAN></P>will interfear in your variables. 
+<P sizset="42" sizcache="1">If you do so, you will be sure that this name space is for you and no upgrade of <SPAN id=code0110 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0110 class="OUTPUT SUCCESS">Tablord</SPAN></P>will interfear in your variables. 
 <P></P>
 <P>For the rest, it's up to you, but common good practice for JavaScript is to camelCase every word but the first and avoid underscore.</P>
 <P>&nbsp;</P>
 <P>the library follows those common conventions:</P>
 <P>a function stating with a CapitalCase is a constructor (~ a Class)</P></DIV></DIV></DIV>
-<DIV id=sect0085 class="SECTION ELEMENT" sizset="42" sizcache="1">
+<DIV id=sect0085 class="SECTION ELEMENT" sizset="43" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.1.2 Unit support</H3>
-<DIV sizset="42" sizcache="1" container="sectionContent">
-<DIV id=rich0086 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="42" sizcache="1">
-<P sizset="42" sizcache="1">One on the very common programming mistake is to missmatch units, adding for example $ and &#8364; and of course having strange results. Unfortunally no modern language supports properly units (which is a shame). JavaScript is no exception :-( . So, even if this is far from perfect, some provision have been given in <SPAN id=code0088 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0088 class="OUTPUT SUCCESS">Tablord</SPAN></P>while remaining pure JavaScript. 
+<DIV sizset="43" sizcache="1" container="sectionContent">
+<DIV id=rich0086 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="43" sizcache="1">
+<P sizset="43" sizcache="1">One on the very common programming mistake is to missmatch units, adding for example $ and &#8364; and of course having strange results. Unfortunally no modern language supports properly units (which is a shame). JavaScript is no exception :-( . So, even if this is far from perfect, some provision have been given in <SPAN id=code0088 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0088 class="OUTPUT SUCCESS">Tablord</SPAN></P>while remaining pure JavaScript. 
 <P></P>
 <P>&nbsp;</P>
 <P>By convention the unit is located in the variable name after a <STRONG>$</STRONG> sign</P></DIV><PRE id=code0087 class="CODE ELEMENT EDITABLE" contentEditable=false>v('currentPrice$USD',1234).view()</PRE>
@@ -575,21 +576,21 @@
 <DIV id=out0089 class="OUTPUT SUCCESS">1234</DIV><PRE id=code0090 class="CODE ELEMENT EDITABLE" contentEditable=false>currentPrice$USD.unit</PRE>
 <DIV id=out0090 class="OUTPUT SUCCESS">USD</DIV><PRE id=code0091 class="CODE ELEMENT EDITABLE" contentEditable=false>currentPrice$USD.label</PRE>
 <DIV id=out0091 class="OUTPUT SUCCESS">currentPrice</DIV>
-<DIV id=rich0092 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="47" sizcache="1">
-<P sizset="47" sizcache="1">In the future some capability of unit convertion will be given. nothing prevents you to write code like <SPAN id=code0093 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.codeExample('currentPrice$USD-margin$EUR')</SPAN><SPAN id=out0093 class="OUTPUT SUCCESS"><SPAN class=CODEEXAMPLE>currentPrice$USD-margin$EUR</SPAN></SPAN> 
+<DIV id=rich0092 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="48" sizcache="1">
+<P sizset="48" sizcache="1">In the future some capability of unit convertion will be given. nothing prevents you to write code like <SPAN id=code0093 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.codeExample('currentPrice$USD-margin$EUR')</SPAN><SPAN id=out0093 class="OUTPUT SUCCESS"><SPAN class=CODEEXAMPLE>currentPrice$USD-margin$EUR</SPAN></SPAN> 
 <P></P>but at least this notation makes you a little bit more aware of the problem.</DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0173 class="SECTION ELEMENT" sizset="48" sizcache="1">
+<DIV id=sect0173 class="SECTION ELEMENT" sizset="49" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>3.2 view the result</H2>
-<DIV sizset="48" sizcache="1" container="sectionContent">
+<DIV sizset="49" sizcache="1" container="sectionContent">
 <DIV id=rich0174 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>The simpliest method to view a result is just to execute a code that ends with some results like in a JavaScript console</P></DIV><PRE id=code0175 class="CODE ELEMENT EDITABLE" contentEditable=false>2+3</PRE>
 <DIV id=out0175 class="OUTPUT SUCCESS">5</DIV>
-<DIV id=rich0176 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="49" sizcache="1">in <SPAN id=code0178 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0178 class="OUTPUT SUCCESS">Tablord</SPAN>, when a piece of code returns a result, it will first look if this is a simple type and display it in a human format</DIV><PRE id=code0177 class="CODE ELEMENT EDITABLE" contentEditable=false>undefined</PRE>
+<DIV id=rich0176 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="50" sizcache="1">in <SPAN id=code0178 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0178 class="OUTPUT SUCCESS">Tablord</SPAN>, when a piece of code returns a result, it will first look if this is a simple type and display it in a human format</DIV><PRE id=code0177 class="CODE ELEMENT EDITABLE" contentEditable=false>undefined</PRE>
 <DIV id=out0177 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV><PRE id=code0179 class="CODE ELEMENT EDITABLE" contentEditable=false>''</PRE>
 <DIV id=out0179 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">empty string</SPAN></DIV>
 <DIV id=rich0182 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>note that this is close to the toString(), so an array will show like a list.</DIV><PRE id=code0180 class="CODE ELEMENT EDITABLE" contentEditable=false>[1,2,3]</PRE>
 <DIV id=out0180 class="OUTPUT SUCCESS">1,2,3</DIV>
-<DIV id=rich0183 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="53" sizcache="1">then if this is an object, it will try to use the <STRONG>span()</STRONG> method to get an decent html representation of the object. This works well on the <SPAN id=code0184 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0184 class="OUTPUT SUCCESS">Tablord</SPAN>library that consitently implement this method</DIV><PRE id=code0185 class="CODE ELEMENT EDITABLE" contentEditable=false><P>table('aTable')</P><P>.add({id:'zero',col1:1,col2:2,col3:3})</P><P>.add({id:'one' ,col1:10,col2:20,col3:30})</P><P>.add({id:'two' ,col1:100,col2:200,col3:300})</P></PRE>
+<DIV id=rich0183 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="54" sizcache="1">then if this is an object, it will try to use the <STRONG>span()</STRONG> method to get an decent html representation of the object. This works well on the <SPAN id=code0184 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0184 class="OUTPUT SUCCESS">Tablord</SPAN>library that consitently implement this method</DIV><PRE id=code0185 class="CODE ELEMENT EDITABLE" contentEditable=false><P>table('aTable')</P><P>.add({id:'zero',col1:1,col2:2,col3:3})</P><P>.add({id:'one' ,col1:10,col2:20,col3:30})</P><P>.add({id:'two' ,col1:100,col2:200,col3:300})</P></PRE>
 <DIV id=out0185 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
@@ -615,9 +616,9 @@
 <TD>200</TD>
 <TD>300</TD></TR></TBODY></TABLE></DIV><PRE id=code0197 class="CODE ELEMENT EDITABLE" contentEditable=false><P>function sum(a,b) {return a+b};</P><P>sum</P></PRE>
 <DIV id=out0197 class="OUTPUT SUCCESS"></DIV>
-<DIV id=sect0186 class="SECTION ELEMENT" sizset="56" sizcache="1">
+<DIV id=sect0186 class="SECTION ELEMENT" sizset="57" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.2.1 jc.inspect</H3>
-<DIV sizset="56" sizcache="1" container="sectionContent">
+<DIV sizset="57" sizcache="1" container="sectionContent">
 <DIV id=rich0187 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>sometime you need to be close to the technical result, and the native format is to ambigous. this is specially the case with array that looks very much like a string, specially if empty</P>
 <P><STRONG>jc.inspect</STRONG> give you a better technical representation</P>
@@ -1061,12 +1062,12 @@
 <TR>
 <TH vAlign=top>updateCode</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>generate the code that represents the element as edited <BR>can be used to replace the existing code <BR></SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV>
-<DIV id=sect0202 class="SECTION ELEMENT" sizset="64" sizcache="1">
+<DIV id=sect0202 class="SECTION ELEMENT" sizset="65" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.2.2 jc.help</H3>
-<DIV sizset="64" sizcache="1" container="sectionContent">
+<DIV sizset="65" sizcache="1" container="sectionContent">
 <DIV id=rich0203 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>jc.help show the essential of a function</DIV><PRE id=code0204 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.help(v)</PRE>
 <DIV id=out0204 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function v(name,value)</B><BR>v(<SPAN class=PARAMETER>name</SPAN>) returns the variable <SPAN class=PARAMETER>name</SPAN>: rarely used since <SPAN class=PARAMETER>name</SPAN> alone will represent the same as well as tb.vars[<SPAN class=PARAMETER>name</SPAN>] <BR>v(<SPAN class=PARAMETER>name</SPAN>,value) creates a new variable if it does not already exists and sets a new <SPAN class=PARAMETER>value</SPAN> <BR></SPAN></DIV>
-<DIV id=rich0206 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="65" sizcache="1">without parameters, jc.help show the help of <SPAN id=code0207 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0207 class="OUTPUT SUCCESS">Tablord</SPAN></DIV><PRE id=code0205 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.help()</PRE>
+<DIV id=rich0206 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="66" sizcache="1">without parameters, jc.help show the help of <SPAN id=code0207 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0207 class="OUTPUT SUCCESS">Tablord</SPAN></DIV><PRE id=code0205 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.help()</PRE>
 <DIV id=out0205 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
 <FIELDSET><LEGEND>{} </LEGEND>
@@ -1147,10 +1148,10 @@
 <TR>
 <TH vAlign=top>symbole</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function(unit)</B><BR>returns the "pretty" symbole for <SPAN class=PARAMETER>unit</SPAN> or <SPAN class=PARAMETER>unit</SPAN> itself if none if found <BR></SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0143 class="SECTION ELEMENT" sizset="67" sizcache="1">
+<DIV id=sect0143 class="SECTION ELEMENT" sizset="68" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>3.3 General methods</H2>
-<DIV sizset="67" sizcache="1" container="sectionContent">
-<DIV id=rich0144 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="67" sizcache="1">in the <SPAN id=code0146 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0146 class="OUTPUT SUCCESS">Tablord</SPAN>there are some methods that all object implements</DIV>
+<DIV sizset="68" sizcache="1" container="sectionContent">
+<DIV id=rich0144 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="68" sizcache="1">in the <SPAN id=code0146 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.name</SPAN><SPAN id=out0146 class="OUTPUT SUCCESS">Tablord</SPAN>there are some methods that all object implements</DIV>
 <DIV id=sect0145 class="SECTION ELEMENT">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.3.1 toString</H3>
 <DIV container="sectionContent">
@@ -1165,21 +1166,25 @@
 <DIV id=sect0148 class="SECTION ELEMENT">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.3.3 span</H3>
 <DIV container="sectionContent">
-<DIV id=rich0149 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>returns a HTML object containing the html code of the representation for this object. span shows it with a &lt;SPAN&gt; tag or directly with the necessary tag (like &lt;TABLE&gt;) so that the representation can be embedded inside the text stream. Sometimes, span has optional parameters to specify how to display it</DIV></DIV></DIV>
+<DIV id=rich0149 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>returns a HTML object containing the html code of the representation for this object. span shows it with a <SPAN>tag or directly with the necessary tag (like 
+<TABLE>) so that the representation can be embedded inside the text stream. Sometimes, span has optional parameters to specify how to display it 
+<DIV></DIV>
+<TBODY></TBODY></TABLE></SPAN></DIV></DIV></DIV>
 <DIV id=sect0150 class="SECTION ELEMENT">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.3.4 view</H3>
 <DIV container="sectionContent">
-<DIV id=rich0151 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>similar to span and also returns an HTML object, but displayed in a &lt;DIV&gt; and displaying more informations like the instance name or other usefull information</DIV></DIV></DIV>
-<DIV id=sect0154 class="SECTION ELEMENT" sizset="68" sizcache="1">
+<DIV id=rich0151 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>similar to span and also returns an HTML object, but displayed in a 
+<DIV>and displaying more informations like the instance name or other usefull information</DIV></DIV></DIV></DIV>
+<DIV id=sect0154 class="SECTION ELEMENT" sizset="69" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.3.5 method chaining</H3>
-<DIV sizset="68" sizcache="1" container="sectionContent">
-<DIV id=rich0155 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="68" sizcache="1">
+<DIV sizset="69" sizcache="1" container="sectionContent">
+<DIV id=rich0155 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="69" sizcache="1">
 <P>most methods returns the calling object excepted when the method clearly specifies another result. so method chaining is easy like</P>
-<P sizset="68" sizcache="1"><SPAN id=code0156 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.codeExample("table('myTable').add({some row}).addRows([...]).sort()")</SPAN><SPAN id=out0156 class="OUTPUT SUCCESS"><SPAN class=CODEEXAMPLE>table('myTable').add({some row}).addRows([...]).sort()</SPAN></SPAN> 
+<P sizset="69" sizcache="1"><SPAN id=code0156 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.codeExample("table('myTable').add({some row}).addRows([...]).sort()")</SPAN><SPAN id=out0156 class="OUTPUT SUCCESS"><SPAN class=CODEEXAMPLE>table('myTable').add({some row}).addRows([...]).sort()</SPAN></SPAN> 
 <P></P></DIV></DIV></DIV></DIV></DIV>
-<DIV id=sect0095 class="SECTION ELEMENT" sizset="69" sizcache="1">
+<DIV id=sect0095 class="SECTION ELEMENT" sizset="70" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>3.4 Table</H2>
-<DIV sizset="69" sizcache="1" container="sectionContent"><PRE id=code0101 class="CODE ELEMENT EDITABLE" contentEditable=false><P>table('myTable')</P><P>.add({_id:'zero',col1:1,col2:2,col3:3})</P><P>.add({_id:'one' ,col1:10,col2:20,col3:30})</P><P>.add({_id:'two' ,col1:100,col2:200,col3:300})</P></PRE>
+<DIV sizset="70" sizcache="1" container="sectionContent"><PRE id=code0101 class="CODE ELEMENT EDITABLE" contentEditable=false><P>table('myTable')</P><P>.add({_id:'zero',col1:1,col2:2,col3:3})</P><P>.add({_id:'one' ,col1:10,col2:20,col3:30})</P><P>.add({_id:'two' ,col1:100,col2:200,col3:300})</P></PRE>
 <DIV id=out0101 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
@@ -1261,11 +1266,11 @@
 <DIV id=out0116 class="OUTPUT SUCCESS">300</DIV><PRE id=code0220 class="CODE ELEMENT EDITABLE" contentEditable=false><P>// exactly the same as above:</P><P>myTable[2]._.col3</P></PRE>
 <DIV id=out0220 class="OUTPUT SUCCESS">300</DIV><PRE id=code0221 class="CODE ELEMENT EDITABLE" contentEditable=false><P>// or another method</P><P>myTable.cell(2,'col3')</P></PRE>
 <DIV id=out0221 class="OUTPUT SUCCESS">300</DIV>
-<DIV id=sect0119 class="SECTION ELEMENT" sizset="76" sizcache="1">
+<DIV id=sect0119 class="SECTION ELEMENT" sizset="77" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.4.1 span</H3>
-<DIV sizset="76" sizcache="1" container="sectionContent">
-<DIV id=rich0120 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="76" sizcache="1">
-<P sizset="76" sizcache="1"><SPAN id=code0121 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.help(myTable.span)</SPAN><SPAN id=out0121 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function()</B><BR>deprecated: only for backward compatibility: use node$ instead <BR></SPAN></SPAN>
+<DIV sizset="77" sizcache="1" container="sectionContent">
+<DIV id=rich0120 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="77" sizcache="1">
+<P sizset="77" sizcache="1"><SPAN id=code0121 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.help(myTable.span)</SPAN><SPAN id=out0121 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function()</B><BR>deprecated: only for backward compatibility: use node$ instead <BR></SPAN></SPAN>
 <P></P></DIV><PRE id=code0123 class="CODE ELEMENT EDITABLE" contentEditable=false><P>myTable.span({cols:{_id:1,col1:1}});</P></PRE>
 <DIV id=out0123 class="OUTPUT SUCCESS">
 <TABLE>
@@ -1316,10 +1321,10 @@
 <TD>200</TD>
 <TD>300</TD></TR></TBODY></TABLE></DIV></DIV></DIV>
 <DIV id=rich0118 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false></DIV>
-<DIV id=sect0126 class="SECTION ELEMENT" sizset="79" sizcache="1">
+<DIV id=sect0126 class="SECTION ELEMENT" sizset="80" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.4.2 sort</H3>
-<DIV sizset="79" sizcache="1" container="sectionContent">
-<DIV id=rich0127 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="79" sizcache="1"><SPAN id=code0128 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.help(myTable.sort)</SPAN><SPAN id=out0128 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function(cols)</B><BR>sort the table according to the "<SPAN class=PARAMETER>cols</SPAN>" criteria <BR><SPAN class=PARAMETER>cols</SPAN> is an object of the form: <BR>{ col1: 1 // 1 means ascending alphabetic or numeric order <BR>col2:-1 //-1 means descending alphabetic or numeric order <BR>col3: function(a,b) {... // any function that compare a and b and returns &gt;0 if a&gt;b, &lt;0 if a<B, 0 if a="=b" <br> return the table for command chaining <BR></SPAN></SPAN></DIV><PRE id=code0129 class="CODE ELEMENT EDITABLE" contentEditable=false>myTable.sort({_id:1})</PRE>
+<DIV sizset="80" sizcache="1" container="sectionContent">
+<DIV id=rich0127 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="80" sizcache="1"><SPAN id=code0128 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">tb.help(myTable.sort)</SPAN><SPAN id=out0128 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function(cols)</B><BR>sort the table according to the "<SPAN class=PARAMETER>cols</SPAN>" criteria <BR><SPAN class=PARAMETER>cols</SPAN> is an object of the form: <BR>{ col1: 1 // 1 means ascending alphabetic or numeric order <BR>col2:-1 //-1 means descending alphabetic or numeric order <BR>col3: function(a,b) {... // any function that compare a and b and returns &gt;0 if a&gt;b, &lt;0 if a<B, 0 if a="=b" <br> return the table for command chaining <BR></SPAN></SPAN></DIV><PRE id=code0129 class="CODE ELEMENT EDITABLE" contentEditable=false>myTable.sort({_id:1})</PRE>
 <DIV id=out0129 class="OUTPUT SUCCESS">
 <TABLE>
 <THEAD>
@@ -1410,9 +1415,9 @@
 <TD>10</TD>
 <TD>20</TD>
 <TD>30</TD></TR></TBODY></TABLE></DIV></DIV></DIV></DIV>
-<DIV id=sect0136 class="SECTION ELEMENT" sizset="84" sizcache="1">
+<DIV id=sect0136 class="SECTION ELEMENT" sizset="85" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.4.3 addRows</H3>
-<DIV sizset="84" sizcache="1" container="sectionContent"><PRE id=code0137 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.help(tb.Table.prototype.addRows)</PRE>
+<DIV sizset="85" sizcache="1" container="sectionContent"><PRE id=code0137 class="CODE ELEMENT EDITABLE" contentEditable=false>tb.help(tb.Table.prototype.addRows)</PRE>
 <DIV id=out0137 class="OUTPUT SUCCESS"><SPAN class=HELP><B>function(rows)</B><BR>add multiple <SPAN class=PARAMETER>rows</SPAN> <BR><SPAN class=PARAMETER>rows</SPAN> must be an array or array-like of objects <BR>columns are ajusted automatically <BR></SPAN></DIV><PRE id=code0138 class="CODE ELEMENT EDITABLE" contentEditable=false><P>myTable.addRows([</P><P>{_id:'four',col1:1000,col4:4000},</P><P>{_id:'five',col1:10000,col4:40000}]);</P></PRE>
 <DIV id=out0138 class="OUTPUT SUCCESS">
 <TABLE>
@@ -1454,9 +1459,9 @@
 <TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD style="TEXT-ALIGN: left"><SPAN style="COLOR: red">undefined</SPAN></TD>
 <TD>40000</TD></TR></TBODY></TABLE></DIV></DIV></DIV>
-<DIV id=sect0225 class="SECTION ELEMENT" sizset="86" sizcache="1">
+<DIV id=sect0225 class="SECTION ELEMENT" sizset="87" sizcache="1">
 <H3 class="SECTIONTITLE EDITABLE" contentEditable=false>3.4.4 edit</H3>
-<DIV sizset="86" sizcache="1" container="sectionContent"><PRE id=code0227 class="CODE AUTOEDIT ELEMENT EDITABLE" contentEditable=false jcObject="newTable">table("newTable")<BR>.add({"toto":127,"tutu":1452,"somme":f("toto+tutu")})<BR>.add({"toto":133,"tutu":145,"somme":f("toto+tutu")})<BR>.edit()</PRE>
+<DIV sizset="87" sizcache="1" container="sectionContent"><PRE id=code0227 class="CODE AUTOEDIT ELEMENT EDITABLE" contentEditable=false jcObject="newTable">table("newTable")<BR>.add({"toto":127,"tutu":1452,"somme":f("toto+tutu")})<BR>.add({"toto":133,"tutu":145,"somme":f("toto+tutu")})<BR>.edit()</PRE>
 <DIV id=out0227 class="OUTPUT SUCCESS">
 <DIV><VAR>newTable</VAR>
 <TABLE>
@@ -1619,9 +1624,9 @@
 <TH vAlign=top>updateCode</TH>
 <TD style="TEXT-ALIGN: left" vAlign=top><SPAN class=HELP><B>function()</B><BR>generate the code that represents the element as edited <BR>can be used to replace the existing code <BR></SPAN></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV><PRE id=code0117 class="CODE ELEMENT EDITABLE" contentEditable=false></PRE>
 <DIV id=out0117 class="OUTPUT SUCCESS"><SPAN style="COLOR: red">undefined</SPAN></DIV></DIV></DIV>
-<DIV id=sect0209 class="SECTION ELEMENT" sizset="89" sizcache="1">
+<DIV id=sect0209 class="SECTION ELEMENT" sizset="90" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>3.5 output</H2>
-<DIV sizset="89" sizcache="1" container="sectionContent">
+<DIV sizset="90" sizcache="1" container="sectionContent">
 <DIV id=rich0210 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
 <P>so far all output where just the result of the last statment displayed by the EDI in a proper format. Sometimes you want to better control the output of your code Element.</P>
 <P>For every code Element an output object is created. this output object is an HTML object with 2 extra properties: codeElement and outputElement that points to the code DOM Element and the output DOM Element.</P>
@@ -1638,13 +1643,13 @@
 <P>the square of 7 is 49</P>
 <P>the square of 8 is 64</P>
 <P>the square of 9 is 81</P></DIV></DIV></DIV>
-<DIV id=sect0158 class="SECTION ELEMENT" sizset="90" sizcache="1">
+<DIV id=sect0158 class="SECTION ELEMENT" sizset="91" sizcache="1">
 <H2 class="SECTIONTITLE EDITABLE" contentEditable=false>3.6 function delaration</H2>
-<DIV sizset="90" sizcache="1" container="sectionContent">
-<DIV id=rich0159 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="90" sizcache="1">
+<DIV sizset="91" sizcache="1" container="sectionContent">
+<DIV id=rich0159 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false sizset="91" sizcache="1">
 <P>such a spreadsheet would be of no use if we can not make calculation.</P>
 <P>&nbsp;</P>
-<P sizset="90" sizcache="1">As we already have declared <SPAN id=code0161 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">currentPrice$USD.view()</SPAN><SPAN id=out0161 class="OUTPUT SUCCESS"><VAR>currentPrice</VAR> = <SPAN class=VALUE>1234</SPAN>&nbsp;<SPAN class=UNIT>USD</SPAN></SPAN></P>we can now define the following <SPAN id=code0162 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">v('costOfGood$USD',1000).view()</SPAN><SPAN id=out0162 class="OUTPUT SUCCESS"><VAR>costOfGood</VAR> = <SPAN class=VALUE>1000</SPAN>&nbsp;<SPAN class=UNIT>USD</SPAN></SPAN> 
+<P sizset="91" sizcache="1">As we already have declared <SPAN id=code0161 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">currentPrice$USD.view()</SPAN><SPAN id=out0161 class="OUTPUT SUCCESS"><VAR>currentPrice</VAR> = <SPAN class=VALUE>1234</SPAN>&nbsp;<SPAN class=UNIT>USD</SPAN></SPAN></P>we can now define the following <SPAN id=code0162 class="CODE EMBEDDED ELEMENT" style="DISPLAY: none">v('costOfGood$USD',1000).view()</SPAN><SPAN id=out0162 class="OUTPUT SUCCESS"><VAR>costOfGood</VAR> = <SPAN class=VALUE>1000</SPAN>&nbsp;<SPAN class=UNIT>USD</SPAN></SPAN> 
 <P></P>so now we can calculate the margin as a formula</DIV><PRE id=code0160 class="CODE ELEMENT EDITABLE" contentEditable=false>v('margin$USD',f('currentPrice$USD-costOfGood$USD')).view()</PRE>
 <DIV id=out0160 class="OUTPUT SUCCESS"><VAR>margin</VAR> = <SPAN class=VALUE>234</SPAN>&nbsp;<SPAN class=UNIT>USD</SPAN></DIV>
 <DIV id=rich0163 class="RICHTEXT ELEMENT EDITABLE" contentEditable=false>
@@ -1688,12 +1693,41 @@
 <DIV id=sect0047 class="SECTION ELEMENT">
 <H1 class="SECTIONTITLE EDITABLE" contentEditable=false>4 known issue:</H1>
 <DIV container="sectionContent">
-<DIV class="ELEMENT EMPTY" contentEditable=false>empty container: click here to add an element</DIV></DIV></DIV><PRE id=code0245 class="ELEMENT CODE EDITABLE" contentEditable=false><P>tb.updateResultsTestStatus();</P><P>tb.inspect(tb.results,'',2);</P><P>if ('runonce' in tb.url.arguments) window.close();</P></PRE>
+<DIV class="ELEMENT EMPTY" contentEditable=false>empty container: click here to add an element</DIV></DIV></DIV>
+<DIV id=sect0319 class="ELEMENT SECTION">
+<H1 class="SECTIONTITLE EDITABLE" contentEditable=false>5 Results</H1>
+<DIV container="sectionContent"><PRE id=code0245 class="ELEMENT CODE EDITABLE" contentEditable=false><P>tb.updateResultsTestStatus();</P><P>tb.inspect(tb.results,2);</P><P>if ('runonce' in tb.url.arguments) window.close();</P></PRE>
 <DIV id=out0245 class="OUTPUT SUCCESS">
 <DIV class=INSPECT>
-<FIELDSET><LEGEND>{} 2</LEGEND>
+<FIELDSET><LEGEND>{} </LEGEND>
 <TABLE>
 <TBODY>
 <TR>
+<TH vAlign=top>execStat</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>start</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>Thu&nbsp;Mar&nbsp;14&nbsp;20:25:52&nbsp;UTC+0100&nbsp;2019</TD></TR>
+<TR>
+<TH vAlign=top>prepare$ms</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>249</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR>
+<TR>
 <TH vAlign=top>testStatus</TH>
-<TD style="TEXT-ALIGN: left" vAlign=top>[object&nbsp;Object]</TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></BODY></HTML>
+<TD style="TEXT-ALIGN: left" vAlign=top>
+<DIV class=INSPECT>
+<FIELDSET><LEGEND>{} </LEGEND>
+<TABLE>
+<TBODY>
+<TR>
+<TH vAlign=top>nbPassed</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>1</TD></TR>
+<TR>
+<TH vAlign=top>nbFailed</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>0</TD></TR>
+<TR>
+<TH vAlign=top>dateTime</TH>
+<TD style="TEXT-ALIGN: left" vAlign=top>Thu&nbsp;Mar&nbsp;14&nbsp;20:25:53&nbsp;UTC+0100&nbsp;2019</TD></TR></TBODY></TABLE></FIELDSET></DIV></TD></TR></TBODY></TABLE></FIELDSET></DIV></DIV></DIV></DIV></DIV></BODY></HTML>

@@ -12,6 +12,7 @@ body {
   font-family: Arial;
 /*  font-size: 10pt;*/
   color: black;
+  width: 21cm;
 }
 tbody {
   font-family: Arial;
@@ -332,6 +333,14 @@ pre {
   cursor:pointer;
 }
 
+.REF {
+  
+}
+
+.LNIK {
+
+}
+
 .DIFF.EQUAL {
   background-color: #8dff60;
 }
@@ -402,6 +411,8 @@ pre {
 button {
   background-color: #909090;
 }  
+
+
 @media print {
   #menu {
     display:none;

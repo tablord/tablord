@@ -105,5 +105,6 @@
 
   
   tb.shell = new ActiveXObject("WScript.Shell");
-  tb.help.index.add('shell','tb.','an instance of WScript.Shell\n.run run a file');
+  tb.help.index.add('shell','tb.',['an instance of WScript.Shell',
+                                   '.run run a file']);
   

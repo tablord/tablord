@@ -1,3 +1,6 @@
-{"testStatus":{"nbPassed":1,
+{"execStat":{"start":"Thu, 14 Mar 2019 19:30:30 UTC",
+"prepare$ms":241,
+"execAll$ms":1037},
+"testStatus":{"nbPassed":1,
 "nbFailed":0,
-"dateTime":"Tue, 5 Mar 2019 19:03:06 UTC"}}
+"dateTime":"Thu, 14 Mar 2019 19:30:30 UTC"}}
