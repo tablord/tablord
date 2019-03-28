@@ -2882,7 +2882,7 @@
     if ((element == undefined) || ($(element).hasClass('CODE'))) return;
 
     var change = false;
-    $(element).replaceText(/\{\{([#]{0,2})(.*?)\}\}/,
+    $(element).replaceText(/\{\{([#]{0,2})(.*?)\}\}/g,
                            function(s,command,code) {
                              change = true;  // if called, this function will change the document
                              tb.blockNumber++;
