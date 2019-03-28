@@ -1252,7 +1252,7 @@
   }
 
 
-  tb.urlComponents = function(url) {
+  tb.urlComponents = function(urlOrFileName) {
     // return an object with all components of an url
     // - protocol
     // - user
@@ -1266,7 +1266,7 @@
     // - search  
     //   - arguments (object param=values of search)
     // if url is an ordinary file name it is first transformed to an url with file:///
-    url = url.replace(/\\/g,'/');
+    var url = urlOrFileName.replace(/\\/g,'/');
     if (/file:|http[s]?:|mailto:|ftp:/i.test(url)==false) url='file:///'+url;
     var urlSplitRegExp = /(\w+):((\/\/((\w+):(\w+)@)?([\w\.]+)(:(\w+))?)|(\/\/\/(\w:)?))?(\/.+\/)?(.+)\.(\w+)(\#(\w+))?(\?(.+))?/;
     var comp = url.match(urlSplitRegExp);
@@ -1282,7 +1282,7 @@
     res.fileName = comp[13];
     res.ext      = comp[14];
     res.tag      = comp[16];
-    res.search   = comp[18];
+    res.search   = comp[18] || '';
     if (res.drive) {
       res.absolutePath = res.drive+res.path;
     }
@@ -1368,12 +1368,12 @@
     return result;
   }
 
-  tb.toString = function(html) {
+  tb.htmlToText = function(html) {
     // transform the html content (from innerHTML) to a string as if this content is a text editor
     // removes any tags other than <BR> and <P>
     var res = html
-              .replace(/<BR>/g,'\n')
-              .replace(/<P>/g,'\n\n')
+              .replace(/<BR>/ig,'\n')
+              .replace(/<P>/ig,'\n\n')
               .replace(/<.+?>/g,"")
               .replace(/&nbsp;/g," ")
               .replace(/&lt;/g,"<")
@@ -2414,9 +2414,14 @@
   }
 
   tb.writeResults = function() {
-    // write the tb.results as JSON in a file of the same name .jres
-    var resFileName = ''+tb.url.drive+tb.url.path+tb.url.fileName+'.jres';
-    tb.fso.writeFile(resFileName,JSON.stringify(tb.results));
+    if (tb.fso) {
+      // write the tb.results as JSON in a file of the same name .jres
+      var resFileName = ''+tb.url.drive+tb.url.path+tb.url.fileName+'.jres';
+      tb.fso.writeFile(resFileName,JSON.stringify(tb.results));
+    }
+    else {
+      tb.debug$.html("can't write results if not .hta or connected to tablord.com").addClass('WARNING');
+    }
   }
 
   tb.close = function() {
@@ -2671,7 +2676,7 @@
     var out  = tb.outputElement(element);
     var test = tb.testElement(element)
     tb.output = newOutput(element,out);
-    var res = tb.securedEval(tb.toString(element.innerHTML));
+    var res = tb.securedEval(tb.htmlToText(element.innerHTML));
     tb.displayResult(res,tb.output);
     // test
     if (test != undefined) {

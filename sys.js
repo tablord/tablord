@@ -1,3 +1,5 @@
+if (window.ActiveXObject) {
+
   tb.fso = function(){
   // tb.fso is a collection of function using the ActiveX FileSystemObject in order to read/write text files
 
@@ -108,3 +110,4 @@
   tb.help.index.add('shell','tb.',['an instance of WScript.Shell',
                                    '.run run a file']);
   
+}

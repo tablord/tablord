@@ -933,7 +933,7 @@
 
 
 
-  function tb.HTML(html) {
+  tb.HTML = function(html) {
     this.htmlCode = html || '';
     this.tagsEnd = [];
   }
