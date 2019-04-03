@@ -1,4 +1,4 @@
-// tablordEdi.js
+ï»¿// tablordEdi.js
 //
 // This is the core of tablord both defining the tb namespace that holds all global variables and functions
 // and where all EDI behaviour is coded
@@ -71,7 +71,7 @@
                 }
                 else {
                   var code = tb.errorHandler.code || '';
-                  var faults = message.match(/« (.+?) »/);
+                  var faults = message.match(/Â« (.+?) Â»/);
                   if (faults != null) {
                     var fault = faults[1];
                     code = tb.output.codeElement.innerHTML
@@ -297,7 +297,7 @@
       var parameterRegExp = new RegExp('(\\W)('+parameters.join('|')+')(\\W)','g');
     }
     else {
-      var parameterRegExp = /éèàö very improbable string that never match/g;
+      var parameterRegExp = /Ã©Ã¨Ã Ã¶ very improbable string that never match/g;
     }
     for (var i = 0; i<markDownLines.length; i++) {
       h += markDownLines[i]
@@ -1612,9 +1612,9 @@
   //TODO: there is problem at least in IE7: when the users click on another control, first a change event is triggerd
   //normally it should be followed by a click envent, but as the control is destroyed and re-created, it seems to "capture" the next click
   //event
-  // ?????? peut être qu'avec un setTimeout(0) on peut passer outre, en laissant d'abord le click se faire et en updatant le code via le timer
-  //  pas mieux : l'evenement click n'arrive jamais sur l'endroit où on a cliqué et si dans le change on return true, c'est encore pire, on ne retrouve 
-  //              jamais le focus.  &&%ç%*&@
+  // ?????? peut Ãªtre qu'avec un setTimeout(0) on peut passer outre, en laissant d'abord le click se faire et en updatant le code via le timer
+  //  pas mieux : l'evenement click n'arrive jamais sur l'endroit oÃ¹ on a cliquÃ© et si dans le change on return true, c'est encore pire, on ne retrouve 
+  //              jamais le focus.  &&%Ã§%*&@
   ////////////
 
   tb.Editor.eventHandler = function(event) {
