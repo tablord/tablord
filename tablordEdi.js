@@ -259,7 +259,7 @@
     }
 
     for (var i=1; i<source.length; i++) {
-      var comment = source[i].match(/^\s*\/\/(.*)$/);
+      var comment = source[i].match(/^\s*\/\/(.*)/);
       if (comment && (comment.length ==2)) {
         comments.push(comment[1]);
       }
@@ -1585,11 +1585,11 @@
   tb.Editor.prototype.createToolBar = function() {
     // create a tool bar for the [[tb.Editor]]
     this.toolBar$ = $('<SPAN/>')
-      .append('<input type="radio" name="type" value="string" onclick="tb.editor.force(\'string\');">String</input>')
-      .append('<input type="radio" name="type" value="number" onclick="tb.editor.force(\'number\')">Number</input>')
-      .append('<input type="radio" name="type" value="function" onclick="tb.editor.force(\'function\')">Function</input>')
+      .append('<input type="radio" name="type" value="string" onclick="tb.editor.force(\'string\');">String')
+      .append('<input type="radio" name="type" value="number" onclick="tb.editor.force(\'number\')">Number')
+      .append('<input type="radio" name="type" value="function" onclick="tb.editor.force(\'function\')">Function')
       .append(this.funcCode$=$('<input type="text"  name="funcCode" value="" onchange="tb.editor.funcCodeChange();" onclick="tb.editor.funcCodeClick();">'))
-      .append('<input type="radio" name="type" value="undefined" onclick="tb.editor.force(\'undefined\')">undefined</input>');
+      .append('<input type="radio" name="type" value="undefined" onclick="tb.editor.force(\'undefined\')">undefined');
   };
 
 
@@ -2336,11 +2336,11 @@
         '<BUTTON id="saveBtn" onclick="tb.save();">save</BUTTON>'+
         '<BUTTON onclick="tb.print();">print</BUTTON>'+
         '<BUTTON onclick="tb.helpPanel$.toggle(100);">help</BUTTON>'+
-        '<INPUT onclick="tb.showCode(event)"'+(b$.attr('showCode')=="true"?' checked':'')+' type=checkbox>codes</INPUT>'+
-        '<INPUT onclick="tb.showCut(event)"'+(b$.attr('showCut')=="true"?' checked':'')+' type=checkbox>cuts</INPUT>'+
-        '<INPUT onclick="tb.showTest(event)"'+(b$.attr('showTest')=="true"?' checked':'')+' type=checkbox>tests</INPUT>'+
-        '<INPUT onclick="tb.showTrace(event)"'+(b$.attr('showTrace')=="true"?' checked':'')+' type=checkbox>traces</INPUT>'+
-        '<INPUT onclick="tb.setAutoRun(event)"'+(tb.autoRun?' checked':'')+' type=checkbox>auto run</INPUT>'+
+        '<INPUT onclick="tb.showCode(event)"'+(b$.attr('showCode')=="true"?' checked':'')+' type=checkbox>codes'+
+        '<INPUT onclick="tb.showCut(event)"'+(b$.attr('showCut')=="true"?' checked':'')+' type=checkbox>cuts'+
+        '<INPUT onclick="tb.showTest(event)"'+(b$.attr('showTest')=="true"?' checked':'')+' type=checkbox>tests'+
+        '<INPUT onclick="tb.showTrace(event)"'+(b$.attr('showTrace')=="true"?' checked':'')+' type=checkbox>traces'+
+        '<INPUT onclick="tb.setAutoRun(event)"'+(tb.autoRun?' checked':'')+' type=checkbox>auto run'+
       '</DIV>'+
     '</DIV>')
     .append(tb.selectionToolBar$)
@@ -2570,6 +2570,7 @@
     tb.setModified(true);
     tb.setUpToDate(false);
     if ((event.keyCode==13) && event.ctrlKey) { 
+      event.stopPropagation();
       tb.run(); 
     }
   }
