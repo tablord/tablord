@@ -2307,13 +2307,13 @@
 
     tb.selectionToolBar$ = $('<DIV/>')
       .append('<SPAN id=codeId>no selection</SPAN>')
-      .append('<BUTTON id="cutBtn" onclick=tb.cutBlock(tb.selectedElement);>cut</BUTTON>')
-      .append('<BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertBefore(tb.selectedElement,tb.currentContainer$.attr(\'container\'))">&#8593;</BUTTON>')
-      .append('<BUTTON onclick="tb.templates[tb.templateChoice$.val()].convert(tb.selectedElement,tb.currentContainer$.attr(\'container\'))">&#8596;</BUTTON>')
+      .append('<input type=button id="cutBtn" onclick=tb.cutBlock(tb.selectedElement); value="cut"/>')
+      .append('<input type=button onclick="tb.templates[tb.templateChoice$.val()].insertBefore(tb.selectedElement,tb.currentContainer$.attr(\'container\'))" value="&#8593;"/>')
+      .append('<input type=button onclick="tb.templates[tb.templateChoice$.val()].convert(tb.selectedElement,tb.currentContainer$.attr(\'container\'))" value="&#8596;"/>')
       .append(tb.templateChoice$)
-      .append('<BUTTON onclick="tb.templates[tb.templateChoice$.val()].insertAfter(tb.selectedElement,tb.currentContainer$.attr(\'container\'))">&#8595;</BUTTON>')
-      .append('<BUTTON id="showHtmlBtn" onclick=tb.showOutputHtml(this);>&#8594;html</BUTTON>')
-      .append('<BUTTON id="toTestBtn" onclick=tb.copyOutputToTest(this);>&#8594;test</BUTTON>')
+      .append('<input type=button onclick="tb.templates[tb.templateChoice$.val()].insertAfter(tb.selectedElement,tb.currentContainer$.attr(\'container\'))" value="&#8595;"/>')
+      .append('<input type=button id="showHtmlBtn" onclick=tb.showOutputHtml(this); value="&#8594;html"/>')
+      .append('<input type=button id="toTestBtn" onclick=tb.copyOutputToTest(this); value="&#8594;test"/>')
       .append(tb.objectToolBar$)
       .hide();
 
@@ -2329,13 +2329,13 @@
     tb.menu$ =  $(
     '<DIV id=menu class=TOOLBAR style="float:right;max-width:50%;">'+
       '<DIV>'+
-        '<BUTTON id=runUntilSelectedBtn onclick=tb.execUntilSelected(); style="color: #8dff60;">&#9658;|</BUTTON>'+
-        '<BUTTON id=runAllBtn onclick=tb.execAll(); style="color: #8dff60;">&#9658;&#9658;</BUTTON>'+
-        '<BUTTON id=stopAnimation onclick=tb.clearTimers(); style="color: red" disabled=true>&#9632;</BUTTON>'+
-        '<BUTTON id="clearOutputsBtn" onclick="tb.clearOutputs();">clear</BUTTON>'+
-        '<BUTTON id="saveBtn" onclick="tb.save();">save</BUTTON>'+
-        '<BUTTON onclick="tb.print();">print</BUTTON>'+
-        '<BUTTON onclick="tb.helpPanel$.toggle(100);">help</BUTTON>'+
+        '<input type=button id=runUntilSelectedBtn onclick=tb.execUntilSelected(); style="color: #8dff60;" value="&#9658;|"/>'+
+        '<input type=button id=runAllBtn onclick=tb.execAll(); style="color: #8dff60;" value="&#9658;&#9658;"/>'+
+        '<input type=button id=stopAnimation onclick=tb.clearTimers(); style="color: red" disabled=true value="&#9632;"/>'+
+        '<input type=button id="clearOutputsBtn" onclick="tb.clearOutputs();" value="clear"/>'+
+        '<input type=button id="saveBtn" onclick="tb.save();" value="save"/>'+
+        '<input type=button onclick="tb.print();" value="print"/>'+
+        '<input type=button onclick="tb.helpPanel$.toggle(100);" value="help"/>'+
         '<INPUT onclick="tb.showCode(event)"'+(b$.attr('showCode')=="true"?' checked':'')+' type=checkbox>codes'+
         '<INPUT onclick="tb.showCut(event)"'+(b$.attr('showCut')=="true"?' checked':'')+' type=checkbox>cuts'+
         '<INPUT onclick="tb.showTest(event)"'+(b$.attr('showTest')=="true"?' checked':'')+' type=checkbox>tests'+
@@ -2359,17 +2359,17 @@
 
     $('#richTextToolBar').remove(); // kill anything previouly in the saved document
     tb.richTextToolBar$ =  $('<SPAN id=richTextToolBar class=TOOLBAR></SPAN>')
-      .append('<BUTTON onclick=tb.richedit.bold();><b>B</b></BUTTON>')
-      .append('<BUTTON onclick=tb.richedit.italic();><i>i</i></BUTTON>')
-      .append('<BUTTON onclick=tb.richedit.underline();><U>U</U></BUTTON>')
-      .append('<BUTTON onclick=tb.richedit.strike();><strike>S</strike></BUTTON>')
-      .append('<BUTTON onclick=tb.richedit.h1();><b>H1</b></BUTTON>')
-      .append('<BUTTON onclick=tb.richedit.h2();><b>H2</b></BUTTON>')
-      .append('<BUTTON onclick=tb.richedit.div();>div</BUTTON>')
-      .append('<BUTTON onclick=tb.richedit.p();>&#182;</BUTTON>')
-      .append('<BUTTON onclick=tb.richedit.ol();>#</BUTTON>')
-      .append('<BUTTON onclick=tb.richedit.ul();>&#8226;</BUTTON>')
-      .append('<BUTTON onclick=tb.richedit.pre();>{}</BUTTON>')
+      .append('<input type=button onclick=tb.richedit.bold(); value="<b>B</b>"/>')
+      .append('<input type=button onclick=tb.richedit.italic(); value="<i>i</i>"/>')
+      .append('<input type=button onclick=tb.richedit.underline(); value="<U>U</U>"/>')
+      .append('<input type=button onclick=tb.richedit.strike(); value="<strike>S</strike>"/>')
+      .append('<input type=button onclick=tb.richedit.h1(); value="<b>H1</b>"/>')
+      .append('<input type=button onclick=tb.richedit.h2(); value="<b>H2</b>"/>')
+      .append('<input type=button onclick=tb.richedit.div(); value="div"/>')
+      .append('<input type=button onclick=tb.richedit.p(); value="&#182;"/>')
+      .append('<input type=button onclick=tb.richedit.ol(); value="#"/>')
+      .append('<input type=button onclick=tb.richedit.ul(); value="&#8226;"/>')
+      .append('<input type=button onclick=tb.richedit.pre(); value="{}"/>')
 
   }
 
@@ -2397,7 +2397,7 @@
     $('.OUTPUT').remove();
   }
 
-  tb.save = function() {
+  tb.saveFile = function() {
     // save the sheet under fileName or the current name if fileName is not specified
     var fileName = window.prompt('save this sheet in this file?',window.location.pathname);
     if (fileName == undefined) return;
@@ -2411,6 +2411,26 @@
     file.Close();
     tb.setModified(false);
     window.alert('file saved');
+  }
+
+  tb.saveRemote = function() {
+    // save to a remote server
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    $.post(window.location,
+            {csrfmiddlewaretoken:csrftoken,
+             toBeSaved:$('#tbContent').html()})
+    .success(function(data){
+        tb.debug$.html(data);
+        tb.setModified(false);
+    })
+    .error(function(data){tb.debug$.html(data)})
+  }
+
+  if (tb.fso) {
+      tb.save = tb.saveFile;
+  }
+  else {
+      tb.save = tb.saveRemote;
   }
 
   tb.writeResults = function() {
