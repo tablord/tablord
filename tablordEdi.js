@@ -1,8 +1,8 @@
-﻿// tablordEdi.js
+// tablordEdi.js
 //
 // This is the core of tablord both defining the tb namespace that holds all global variables and functions
 // and where all EDI behaviour is coded
-// 
+//
 // it needs the tablord.js library and jquery (for now 1.5.1)
 //
 // (CC-BY-SA 2019) according to https://creativecommons.org/
@@ -19,7 +19,7 @@
             rights:'CC-BY-SA 2018',
             selectedElement:undefined,
             output: undefined,
-                        //a new Output is created for each code. 
+                        //a new Output is created for each code.
                         //it hold both the code and output Elements as well as the htlm
                         //at init an empty object so _codeElement and _outputElement are undefined
                         //tb.output is only defined during user code execution in order to catch errors
@@ -43,7 +43,7 @@
             vars:{},              // where all user variables are stored
 
             autoRun:true,
-            features:[],          // list of Features. cf tb.Features for more informations 
+            features:[],          // list of Features. cf tb.Features for more informations
             url:{},               // the url of the sheet decomposed in protocol {host user password domain path fileName ext tag search arguments}
             results:{},           // if != {}, when the sheet is closed a file with the same name .jres will be written and its content is JSON.stringify(tb.results)
 
@@ -53,7 +53,7 @@
                 nullObj:function(){return '<SPAN style=color:red;>null</SPAN>'},
                 emptStr:function(){return '<SPAN style=color:red;>empty string</SPAN>'},
                 func:function(f){return tb.help(f)},
-                array:function(a){return a.toString()},              
+                array:function(a){return a.toString()},
                 domElement:function(element){return 'DOM Element<SPAN class="INSPECTHTML">'+tb.toHtml(tb.trimHtml(tb.purgeJQueryAttr(element.outerHTML)))+'</SPAN>'},
                 obj:function(obj){return tb.inspect(obj).span().toString()},
                 date:function(date){return date.yyyymmdd()},
@@ -95,7 +95,7 @@
 
   // HELP system ///////////////////////////////////////////////////////////////////////
   // must be defined very early so that every module can also add documentation
-            
+
   tb.HelpIndex = function() {
     // HelpIndex objects contain an index of all functions of the system
     // tb.help.index is created automatically by the system
@@ -107,7 +107,7 @@
 
   tb.HelpIndex.prototype.update = function (object,path) {
     // update the index by adding all methods of object and all static methods of object
-    // using path as base path. path must include the . 
+    // using path as base path. path must include the .
 
     for (var prop in object) {
       if (typeof object[prop] == 'function') {
@@ -133,10 +133,10 @@
   tb.HelpIndex.prototype.find = function(name) {
     // return all entry corresponding to `name`: name can be partial
     // if name is a full path (ie. tb.help) the result is an exact match
-    // if not (ie no . notation) any entry having name inside is valid 
+    // if not (ie no . notation) any entry having name inside is valid
     var res = [];
     var m = name.match(/^(.+\.)(.*)$/i);
-    
+
     if (m) { // fully specified search ==> only one result
       var path = m[1];
       var prop = m[2];
@@ -233,7 +233,7 @@
   tb.helps = {'tb.credits':tb.credits};
 
   tb.help = function(func) {
-  // returns the signature of the function and the first comment in a pretty html 
+  // returns the signature of the function and the first comment in a pretty html
   //         followed by the content of the .[[help]]() static method of func if any
   // func: the function to be inspected
 
@@ -270,13 +270,13 @@
       methods = '<fieldset><legend>methods</legend><table>';
       for (var m in func.prototype) {
         if (typeof func.prototype[m] === 'function'){
-          methods += '<tr><th valign="top">'+m+'</th><td valign="top" style="text-align:left;">'+tb.help(func.prototype[m])+'</td></tr>'; 
+          methods += '<tr><th valign="top">'+m+'</th><td valign="top" style="text-align:left;">'+tb.help(func.prototype[m])+'</td></tr>';
         }
       }
       methods += '</table></fieldset><fieldset><legend>static methods</legend><table>';
       for (var m in func) {
         if (typeof func[m] === 'function'){
-          methods += '<tr><th valign="top">'+m+'</th><td valign="top" style="text-align:left;">'+tb.help(func[m])+'</td></tr>'; 
+          methods += '<tr><th valign="top">'+m+'</th><td valign="top" style="text-align:left;">'+tb.help(func[m])+'</td></tr>';
         }
       }
       methods += '</table></fieldset>';
@@ -289,7 +289,7 @@
     // convert markDown to HTML with link for the help
     // - markDownLines: an array of comments in markDown
     // - parameters: an array of parameters that will be marked as parameters in the text
-    // any line starting with .xxxx or - xxxx will be considered as a definition 
+    // any line starting with .xxxx or - xxxx will be considered as a definition
     // .property describes the property
     // - parameter describes the parameter
     var h = '';
@@ -339,7 +339,7 @@
     }
 
     comment = comments.join(' ');
-    
+
     for (var i in parameters) {
       if (comment.search(parameters[i]) === -1) problems.li('parameter '+parameters[i]+' is not described');
     }
@@ -350,7 +350,7 @@
 
 
   tb.help.index = new tb.HelpIndex();
- 
+
   tb.help.add = function(prop,path,markDown) {
     // add a topic to the help index
     tb.help.index.add(prop,path,markDown);
@@ -385,7 +385,7 @@
   tb.help.add('SECTIONTITLE','DOM class=',['a SECTIONTITLE is the DOM element of the title of a [[SECTION]].',
                                        'It will be automatically numbered and [[tb.tableOfContent]] is updated automatically',
                                        'title can be used in {{#title}} or {{##title}} instead of id']);
-  
+
   tb.help.add('CODE','DOM class=',['a CODE [[ELEMENT]] is a DOM element of the document that contains JavaScript CODE. It can also have the [[EMBEDDED]]']);
 
   tb.help.add('INTERACTIVE','DOM class=',['DOM element with a INTERACTIVE class will stop propagation of click, so a <DIV class=INTERACTIVE> can hold other DOM Element that will have onclick event handlers']);
@@ -397,11 +397,11 @@
   tb.help.add('templates','DOM attribute ',['a DOM element that has the attribute templates="template1 template2..." is an element that must '+
                                             ' also have the [[container]] attribute, so it can accept one or many of the specified templates as content.',
                                             ' if this attribute is missing all templates are accepted']);
-  
+
   tb.help.add('itemtype','DOM attribute ',['a DOM [[ELEMENT]] that has itemtype attribute is a template ',
                                            'it also has the [[itemscope]] attribute also have the [[container]] attribute, so it can accept one or many of the specified templates as content.',
                                             ' if this attribute is missing all templates are accepted']);
-  
+
   tb.help.add('{{  }} reformat','reformat ',['in a [[RICHTEXT]] [[ELEMENT]] you can type {{code}} in order to place an [[EMBEDDED]] [[CODE]] ',
                                            'there are some shortcuts:',
                                            '{{#title or id or url}} creates a link to a given title or id or url by creating EMBEDDED CODE [[tb.link]]("title or id")',
@@ -417,7 +417,7 @@
   }
 
   // classical formating functions ////////////////////////////////////////////
-  
+
   tb.Format = function() {
     // this class is compatible with the format property of options object used in tb.format(value,options)
     // but it has methods that helps to build this object
@@ -452,7 +452,7 @@
   }
 
   $.extend(tb,tb.Format.prototype); // make those methods directly availlable to tb
-    
+
   tb.getScrollOffsets = function(w) {
     // return the scroll offset for the window w. if w is not specified, window is used
     w = w||window;
@@ -471,7 +471,7 @@
     // return {width,height} of the window w. if w is undefined, window is used
     w = w||window;
     if (w.innerWidth != null) return {width:w.innerWidth,Height:w.innerHeight};
-  
+
     var d = w.document;
     if (window.document.compatMode == "CSS1Compat")
       return {width:d.documentElement.clientWidth, height:d.documentElement.clientHeight};
@@ -529,7 +529,7 @@
     }
     s.push('</ol>');
     return new tb.HTML('JQuery of '+this.length+' elements<br>'+s.join('<br>'));
-  }  
+  }
 
   $.fn.toString = function(){
     return '[object JQuery] length:'+ this.length;
@@ -553,7 +553,7 @@
     // please note that if an itemtype is embeeded in another instance of itemtype, both will be part of the result
     return this.find('[itemtype~="'+url+'"]');
   }
-  
+
   $.getItems = function(url) {
     // get all itemtype = url of the document.
     return $('[itemtype~="'+url+'"]');
@@ -581,7 +581,7 @@
     // {type:url,
     //  properties: {...},
     //  id:...}   //In addition to microdata specification
-   
+
     if (! this.is('[itemscope=""]')) throw new Error('getItemscopeMicrodata must be called on a jquery having a itemscope');
     var result={id:this.attr('id') || undefined,
                 type:this.attr('itemtype') || '',
@@ -638,24 +638,24 @@
       }
       else {
         data[itemprop] = value;
-      } 
+      }
     }
-    
+
     if (this[0].id) data._id = this[0].id;
     this.children().each(function(i,element) {
       var itemprop = element.itemprop;
       if (itemprop !== undefined) {
         if (element.itemscope !== undefined) {
-          set(itemprop,$(element).getItemscopeData()); 
+          set(itemprop,$(element).getItemscopeData());
         }
         else {
           set(itemprop,$(element).getItemValue());
         }
       }
       else {  // this node is not an itemprop, look if its children have data
-        $.extend(true,data,$(element).getItemscopeData()); 
+        $.extend(true,data,$(element).getItemscopeData());
       }
-      
+
     });
     return data;
   }
@@ -720,7 +720,7 @@
       }
     });
     return result;
-  }   
+  }
 
   $.fn.setMicrodata = function(data) {
     // set the itemprop elements under all elements of the jQuery
@@ -751,7 +751,7 @@
       }
     });
     return this;
-  }          
+  }
 
   $.fn.filterFromToId = function(fromId,toId) {
     // filter the query to keep only query Element that are between the fromId element and toId element
@@ -803,12 +803,12 @@
     // returns a jQuery of all itemscope in the document having the itemtype=url
     // if url is undefined, gets all itemscope
     // if url ends with # select any url that match any version
-    //   ex: http://www.tablord.com/templates/product#      
+    //   ex: http://www.tablord.com/templates/product#
     //     matches
     //       http://www.tablord.com/templates/product#1line
     //       http://www.tablord.com/templates/product
     //       http://www.tablord.com/templates/product#2
-    //     
+    //
     if (url === undefined) {
       var items$ = $('[itemscope=""]');
     }
@@ -821,7 +821,7 @@
     return items$.filter(function(){return $(this).parent().closest('[itemscope=""]').length === 0});
   }
 
-  
+
   tb.get = function(/*path*/) {
     // applied as a method (either declare MyClass.prototype.get = tb.get or tb.get.call(obj,path)
     // returns this.path1.path2.path3 or undefined if at any stage it becomes undefined
@@ -855,7 +855,7 @@
     }
     o[arguments[i]] = value;
     return this;
-  }  
+  }
 
   // functions for reduce /////////////////////////////////////////////
   tb.reduce = {};
@@ -875,7 +875,7 @@
     if (h < 120) return {r:255-(h-60)/60*255,g:255,b:0};
     if (h < 180) return {r:0,g:255,b:(h-120)/60*255};
     if (h < 240) return {r:0,g:255-(h-180)/60*255,b:255};
-    if (h < 300) return {r:(h-240)/60*255,g:0,b:255}; 
+    if (h < 300) return {r:(h-240)/60*255,g:0,b:255};
     return {r:255,g:0,b:255-(h-300)/60*255};
   }
 
@@ -883,11 +883,11 @@
     // return a string 'rgb(...)' for h:hue s:saturation l:luminosity
     var color = tb.hue(h); //TODO integrate s,l
     return 'rgb('+color.r+','+color.g+','+color.b+')';
-  } 
+  }
 
   // JSON ///////////////////////////////////////////////////////////
   //
-  // a replacement for ECMA5+ 
+  // a replacement for ECMA5+
 
   try {
     var test = JSON == undefined; // in ECMA3 JSON doesn't exist and will make this statement crash
@@ -934,8 +934,8 @@
 
       return (new Function('return '+json))();  //as jQuery does
     }
-    
-  }    
+
+  }
 
   tb.help.update(JSON,'JSON.');
   tb.help.update({JSON:JSON},'');
@@ -961,7 +961,7 @@
 
 
   function a(/*objects*/) {
-    // show a dialog with the text view of the objects 
+    // show a dialog with the text view of the objects
     // returns the last object in order to be able to use a(x) in an expression
     var message = '';
     for (var i=0; i<arguments.length; i++){
@@ -976,7 +976,7 @@
     // write to the trace the content of all objects passed in the parameters
     // use trace.on() to enable traces and trace.off() to disable traces
     // you can also use trace.push() and trace.pop() to save restore the trace states
-    if (trace._on) { 
+    if (trace._on) {
       var message = '';
       for (var i=0; i<arguments.length; i++){
         message += tb.inspect(arguments[i]).span();
@@ -1029,7 +1029,7 @@
 
   tb.help.update({a:a,trace:trace},'');
   tb.help.update(trace,'trace.');
-  
+
 
   // Inspector ////////////////////////////////////////////////////////
   tb.Inspector = function Inspector(obj,depth,name) {
@@ -1064,18 +1064,18 @@
     }
     else if (this.obj.toString) {
       l = this.obj.toString();
-    } 
+    }
     else {
       l = 'special object';
     }
     return l;
   }
 
-    
+
   tb.Inspector.prototype.toString = function (){
     // display the object hold by the inspector as a string
 
-    // BE CARFULL IN DEBUGGING THAT FUNCTION: DO NOT CALL a(....), 
+    // BE CARFULL IN DEBUGGING THAT FUNCTION: DO NOT CALL a(....),
     // since it will create an inspector recursivelly
     // use window.alert instead !!
     if (this.obj === undefined) {
@@ -1101,7 +1101,7 @@
     }
     var r = this.legend()+' '+this.name+'\n';
     for (var k in this.obj) {
-      r += k+':  '+tb.summary(this.obj[k])+'\n' 
+      r += k+':  '+tb.summary(this.obj[k])+'\n'
     };
     return r;
   }
@@ -1136,7 +1136,7 @@
            (  (typeof this.obj[k] == 'function')?tb.help(this.obj[k]):
                  ((depth == 1)?tb.toHtml(this.obj[k]):tb.inspect(this.obj[k]).span(depth-1))
            )
-          +'</td></tr>'; 
+          +'</td></tr>';
     };
     return new tb.HTML(r+'</table></fieldset></DIV>');
   }
@@ -1157,7 +1157,7 @@
     }
     else if (obj.toString) {
       l = obj.toString();
-    } 
+    }
     else {
       l = '['+typeof obj+']';
     }
@@ -1199,7 +1199,7 @@
 
   tb.keys = function(obj) {
     // returns an Array with all keys (=non inherited properties) of an object
-    // replacement for ECMA5 
+    // replacement for ECMA5
     var res = [];
     for (var k in obj) {
       if (obj.hasOwnProperty(k)) res.push(k);
@@ -1263,7 +1263,7 @@
     // - fileName
     // - ext
     // - tag
-    // - search  
+    // - search
     //   - arguments (object param=values of search)
     // if url is an ordinary file name it is first transformed to an url with file:///
     var url = urlOrFileName.replace(/\\/g,'/');
@@ -1312,7 +1312,7 @@
     // return the fileName.ext of url (or os file)
     var comp = tb.urlComponents(url);
     return comp.fileName+'.'+comp.ext;
-  }  
+  }
 
   tb.absoluteFileName = function (relativeFileName,path) {
     // return a absolute path+filename combining the absolute path and the relative fileName
@@ -1394,7 +1394,7 @@
   }
 
   tb.isJSid = function (id) {
-    // return true if id is a javaScript id 
+    // return true if id is a javaScript id
     return id.match(/^[\w$]+\w*$/) !== null;
   }
 
@@ -1441,7 +1441,7 @@
   }
 
   tb.htmlAttribute = function(attr,value) {
-    // return a string as found in html tag for the attribute attr assigning a value 
+    // return a string as found in html tag for the attribute attr assigning a value
     var h = ' '+attr+'='+(typeof value == 'number'?value:'"'+tb.toHtml(value).replace(/"/g,'&quote;')+'"');
     return h;
   }
@@ -1464,8 +1464,8 @@
     return html.replace(/\<.*?style\="DISPLAY\: none".*?\<\/.*?\>/g,'').replace(/\<.*?\>/g,'');
   }
 
-  // helpers for functions ///////////////////////////////////////// 
-    
+  // helpers for functions /////////////////////////////////////////
+
   tb.signature = function(func) {
     // returns only the signature of the function
     var m = func.toString().match(/(function.*?\))/);
@@ -1477,9 +1477,9 @@
     // returns the name of the function or '' if an anonymous function
     return func.toString().match(/function *([a-zA-Z0-9_$]*)/)[1];
   }
-    
+
   tb.constructorName = function(name) {
-  // returns if name is a constructor name for a function 
+  // returns if name is a constructor name for a function
   // the last identified starting with a capital character
   // 'tb' --> false
   // 'Table' --> true
@@ -1547,14 +1547,14 @@
 
 
   tb.Editor = function Editor(){
-  // the goal of Editor is to offer a genenral mechanism in order to help implement 
+  // the goal of Editor is to offer a genenral mechanism in order to help implement
   // tbObject edition capabilities.
   // this mechanism is the following:
   // an object that would like to propose edition capabilities has to offer the following interface
   //   .edit()  similar to .span() but return html code representing the object in edition.
   //            usually .edit() calls tb.editor.html(...) in order to get the necessary html code that will
   //            interact with tb.editor
-  //   .codeElement this property must be created by edit() and must containt the codeElement that contains the .edit() function 
+  //   .codeElement this property must be created by edit() and must containt the codeElement that contains the .edit() function
   //                and that will be updated after edition
   //
   //   .getEditableValue(editor)  will be called by the editor when the user selects a given DOM EDITOR element
@@ -1566,13 +1566,13 @@
   //                              this method has the responsibility to upgrade the code
   //   .updateCode()              not strictly speaking part of the Editor interface, but common practice to encapsulate the code update
   //                              in updateCode and call this function in setEditableValue through a window.setTimout(
-  //   
+  //
   //--------------
   //  tb.editor is a single instance object that provides most of the services and that dialogs with the DOM elements composing
   //            the user interface.
   //
   //  tb.editor.html(...) return html code needed to create the editor for a simple value
-  //                      if the value is simple (undefined, number, string or function) it will 
+  //                      if the value is simple (undefined, number, string or function) it will
   //                      be handled natively.
   //                      if value is an object, it will return the code of object.edit()
   //                      TODO: provide mechanism for simple object / arrays
@@ -1581,7 +1581,7 @@
 
   }
   tb.Editor.className = 'tb.Editor';
- 
+
   tb.Editor.prototype.createToolBar = function() {
     // create a tool bar for the [[tb.Editor]]
     this.toolBar$ = $('<SPAN/>')
@@ -1613,7 +1613,7 @@
   //normally it should be followed by a click envent, but as the control is destroyed and re-created, it seems to "capture" the next click
   //event
   // ?????? peut être qu'avec un setTimeout(0) on peut passer outre, en laissant d'abord le click se faire et en updatant le code via le timer
-  //  pas mieux : l'evenement click n'arrive jamais sur l'endroit où on a cliqué et si dans le change on return true, c'est encore pire, on ne retrouve 
+  //  pas mieux : l'evenement click n'arrive jamais sur l'endroit où on a cliqué et si dans le change on return true, c'est encore pire, on ne retrouve
   //              jamais le focus.  &&%ç%*&@
   ////////////
 
@@ -1728,11 +1728,11 @@
     // return the attr value of the html editor
     return this.currentEditor[attr];
   }
-  
+
   tb.Editor.prototype.html = function(value,params) {
     // value : the initial value of the editor
     // params : an object that at least has tbObject:nameOfTheObject in tb.vars
-    
+
     var type = typeof value;
     if (value && value.isV && value.code()) {
       type = 'function ';
@@ -1835,7 +1835,7 @@
   }
 
   tb.features.push(tb.notes);
-    
+
   tb.link = function(text,url) {
     // if no url is given, text is used as a search into table of content to find the section
     // url can be either a full url or an id of an [[ELEMENT]]
@@ -1855,7 +1855,7 @@
   tb.elementBox = function(text,id) {
     // return an html object that has a clickable text that will open a box with the copy of the element id
     // - id: the id of the element to display in the box like "rich0007"
-    //       if id is not found, it will try to find id as a [[SECTIONTITLE]] 
+    //       if id is not found, it will try to find id as a [[SECTIONTITLE]]
     //       if id == undefined text is used as id or title
     id = id || text;
     var e$ = $('#'+id);
@@ -1870,7 +1870,7 @@
   }
 
   tb.openCloseBox = function(event) {
-    // 
+    //
     var boxTextElement = event.target;
     var box$ = $('.BOX',boxTextElement)
     var open = box$.length === 0;
@@ -1884,16 +1884,16 @@
 
   tb.level = function(element) {
     // returns the level of the element = number of section between body and the element
-    // please note that the first section has level = 0 according to this definition 
+    // please note that the first section has level = 0 according to this definition
     // (but the title will be a <H1>)
     return $(element).parentsUntil('BODY').filter('.SECTION').length;
   }
 
 
   // Template //////////////////////////////////////////////////////////////////////////
- 
+
   tb.Template = function Template(name){
-    // Template objects are generators of DOM ELEMENT 
+    // Template objects are generators of DOM ELEMENT
     // there is one single instance for any number of DOM instances
     // for example Template('code') is the Template object of all CODE Elements
     // normally users create template through the [[tb.template]] function
@@ -1949,7 +1949,7 @@
       this.convertData(data,new$);
     }
     else {
-      new$.setMicrodata(newData);    
+      new$.setMicrodata(newData);
       tb.Template.setElement$Containers(new$,containers);
     }
     new$
@@ -1962,7 +1962,7 @@
     }
     else {
       e$.replaceWith(new$);
-    }   
+    }
     return this;
   }
 
@@ -1990,7 +1990,7 @@
 
   tb.Template.prototype.find = function(criteria,fields) {
     // return the data of a template collection as mongodb would do using criteria and returning only the specified fields
-   
+
     return tb.getItems$(this.url()).getData(criteria,fields);
   }
 
@@ -2064,7 +2064,7 @@
 
   tb.template = function(newTemplate,itemprop) {
     // create a new template and register it
-    // it will inherit from tb.Template 
+    // it will inherit from tb.Template
     // - newTemplate: is a simple object that must at least define
     // .name: a name like an id optionaly followed by #version
     //
@@ -2078,7 +2078,7 @@
     //          - string:{}                     the field is a string:  default if nothing is specified
     //          - func:function(data){...}  the field is calculated (=> readonly) and the html is the result of this function
     //          - select:{choice1:val1,choice2:val2...) the field is a SELECT
-    //          - container:"template1 template2" 
+    //          - container:"template1 template2"
     //                 a container that accepts the specified template names and how the itemprop . if "", accepts anything
     //
     //          formating
@@ -2227,14 +2227,14 @@
     $('.CUT').toggleClass('HIDDEN',!button.checked);
     $('body').attr('showCut',button.checked);
   }
-      
+
   tb.showTest = function(event) {
     // click event handler for the show test checkbox
     var button = event.target || window.event.srcElement; //IE7 compatibility
     $('.TEST').toggleClass('HIDDEN',!button.checked);
     $('body').attr('showTest',button.checked);
   }
-      
+
   tb.showTrace = function(event) {
     // click event handler for the show trace checkbox
     var button = event.target || window.event.srcElement; //IE7 compatibility
@@ -2254,7 +2254,7 @@
     tb.selectElement(undefined);
     window.print();
   }
-     
+
   tb.helpSearchChange = function(event) {
     // event handler for the help search box
     tb.helpOutput$.html(tb.help.index.help$(event.currentTarget.value));
@@ -2264,7 +2264,7 @@
     // update the template selection box according to the context i.e. the acceptedTemplate of the current container
     var currentValue = tb.templateChoice$.val();
     tb.templateChoice$.empty();
-    tb.currentContainer$ = $(tb.selectedElement).closest('[container]')  
+    tb.currentContainer$ = $(tb.selectedElement).closest('[container]')
     var acceptedTemplates = tb.currentContainer$.attr('templates');
     if (acceptedTemplates) {
       acceptedTemplates = acceptedTemplates.split(' ');
@@ -2291,7 +2291,7 @@
       return;
     }
     tb.templateChoice$.val(acceptedTemplates[0]);
-  } 
+  }
 
   tb.initToolBars = function() {
     // creates the tools bars
@@ -2301,7 +2301,7 @@
     tb.objectToolBar$ = $(
       '<DIV id=objectToolBar></DIV>'
     );
-    
+
     tb.templateChoice$ = $('<SELECT>');
     tb.updateTemplateChoice();
 
@@ -2316,7 +2316,7 @@
       .append('<BUTTON id="toTestBtn" onclick=tb.copyOutputToTest(this);>&#8594;test</BUTTON>')
       .append(tb.objectToolBar$)
       .hide();
-    
+
     tb.helpSearch$ = $('<INPUT/>').keyup(tb.helpSearchChange);
     tb.helpOutput$ = $('<DIV  style="overflow:auto;max-height:400px;">please type your search above</DIV>');
     tb.helpPanel$ = $('<DIV><SPAN style="color:red;cursor:pointer;" onclick="tb.helpPanel$.hide(300)">&nbsp;&#215;&nbsp;</SPAN></DIV>')
@@ -2364,13 +2364,13 @@
       .append('<BUTTON onclick=tb.richedit.underline();><U>U</U></BUTTON>')
       .append('<BUTTON onclick=tb.richedit.strike();><strike>S</strike></BUTTON>')
       .append('<BUTTON onclick=tb.richedit.h1();><b>H1</b></BUTTON>')
-      .append('<BUTTON onclick=tb.richedit.h2();><b>H2</b></BUTTON>') 
+      .append('<BUTTON onclick=tb.richedit.h2();><b>H2</b></BUTTON>')
       .append('<BUTTON onclick=tb.richedit.div();>div</BUTTON>')
-      .append('<BUTTON onclick=tb.richedit.p();>&#182;</BUTTON>') 
+      .append('<BUTTON onclick=tb.richedit.p();>&#182;</BUTTON>')
       .append('<BUTTON onclick=tb.richedit.ol();>#</BUTTON>')
       .append('<BUTTON onclick=tb.richedit.ul();>&#8226;</BUTTON>')
       .append('<BUTTON onclick=tb.richedit.pre();>{}</BUTTON>')
-    
+
   }
 
   tb.setModified = function(state) {
@@ -2391,7 +2391,7 @@
     }
     tb.setUpToDate.state = state;
   }
-  
+
   tb.clearOutputs = function() {
     // remove all outputs
     $('.OUTPUT').remove();
@@ -2420,7 +2420,7 @@
       tb.fso.writeFile(resFileName,JSON.stringify(tb.results));
     }
     else {
-      tb.debug$.html("can't write results if not .hta or connected to tablord.com").addClass('WARNING');
+      //tb.debug$.html("can't write results if not .hta or connected to tablord.com").addClass('WARNING');
     }
   }
 
@@ -2491,12 +2491,12 @@
   tb.selectElement = function(element) {
     // select element as tb.selectedElement and update the EDI accordingly
     var e = tb.selectedElement;
-    if (e) { 
+    if (e) {
       if (element && (e === element)) { // if already selected nothing to do but give focus again
         e.focus();
         return;
       }
-      
+
       // remove the old selection
       $(e).removeClass('SELECTED');
       tb.editables$(e)
@@ -2531,7 +2531,7 @@
     }
 
 /*
-      case 120: 
+      case 120:
         tb.templateChoice$.val('code');
         break;
       case 121:
@@ -2569,9 +2569,9 @@
     if ($.inArray(event.keyCode,[16,17,18,20,27,33,34,35,36,37,38,39,40,45,91,92,93]) != -1) return; // non modifying keys like shift..
     tb.setModified(true);
     tb.setUpToDate(false);
-    if ((event.keyCode==13) && event.ctrlKey) { 
+    if ((event.keyCode==13) && event.ctrlKey) {
       event.stopPropagation();
-      tb.run(); 
+      tb.run();
     }
   }
 
@@ -2583,7 +2583,7 @@
     var tbObject = tb.vars[element.tbObject]
     return tbObject.editorEvent(event);
   }
-  
+
 
   // formating / display / execution ////////////////////////////////////////////////////
 
@@ -2697,7 +2697,7 @@
     // by the user in order to execute some codes repeatidly
     // nor it will perform any finalization (but it will register output.finalize functions
     // that will be executed at the end of the sheet execution
-    // please note that it is POSSIBLE to run the code containing the tb.execCodes() allowing 
+    // please note that it is POSSIBLE to run the code containing the tb.execCodes() allowing
     // some recursivity. Of course this can also result in an never ending loop if not used properly
 
     var code$ = $('.CODE');
@@ -2713,7 +2713,7 @@
     // if noWait is false or undefined, just open the file and returns without waiting
     //           is true run the file with ?runonce. it is the file responsibility to behave in this manner
     //                   this function will return the result object produced by the .hta file
-    // parameters is encoded for uri and added to the searchstring 
+    // parameters is encoded for uri and added to the searchstring
     var params = [];
     if (noWait) {
       runOnce=false;
@@ -2728,7 +2728,7 @@
       }
     }
 
-    
+
     fileName = tb.absoluteFileName(fileName,tb.url.absolutePath);
     var resultFileName = fileName.replace(/\.hta/i,'.jres');
     if (params.length > 0) {
@@ -2830,7 +2830,7 @@
     // reset the environement before so that no side effect
     // let [[Feature]]s object collect data on the document
     tb.results = {execStat:{start: new Date()}};
-    
+
     for (var i=0; i<tb.features.length; i++) tb.features[i].reset();
     trace.off();
     tb.clearTimers();
@@ -2845,7 +2845,7 @@
     tb.editables$(tb.selectedElement).each(function(i,e){tb.reformatRichText(e)});
     tb.results.execStat.prepare$ms=Date.now()-tb.results.execStat.start;
   }
-     
+
   tb.execAll = function() {
     // execute all [[CODE]] [[ELEMENT]]
     tb.prepareExec();
@@ -2884,7 +2884,7 @@
 
   tb.reformatRichText = function(element) {
     // reformat a [[RICHTEXT]] [[ELEMENT]] in order to find potential [[EMBEDDED]] [[CODE]]
-    
+
     if ((element == undefined) || ($(element).hasClass('CODE'))) return;
 
     var change = false;
@@ -2942,10 +2942,10 @@
     window.prompt(/*'your need to edit your scripts to upgrade\n'+*/modules+'\n'+modulesNeeded,h);
   }
 
-    
+
   tb.upgradeFramework = function() {
     // upgrades the sheet framework from previous versions
-    
+
     $('*').removeClass('OLD').removeClass('AUTOEXEC');// not in use anymore
     $('.OUTPUT').add('.CODE').add('.RICHTEXT').removeAttr('onclick');  // no longer in the HTML but bound dynamically
     $('.RICHTEXT .CODE').add('.SECTIONTITLE .CODE').addClass('EMBEDDED');        // reserved for code inside another element
@@ -2955,17 +2955,17 @@
     $('#bottomToolBar').remove();  // no longer in use since v0160
     $('.CODE').add('.RICHTEXT').add('.SECTION').addClass('ELEMENT'); // since v160 all ELEMENT are selectable
     $('.CODE:not(.EMBEDDED)').add('.RICHTEXT').add('.SECTIONTITLE').addClass('EDITABLE'); // since v160 EDITABLE tags will be set to contentEditable=true /false when the itself or its parent is selected
-    
+
     // since v0.0110 the menu is fixed in a #menu DIV and all sheet is contained in a #jcContent DIV
     var jc$ = $('#jcContent')
     if (jc$.length == 1) {
 a('convert from jc to tb')
-      jc$.removeAttr('style').attr('container','items').attr('id','tbContent'); // since tablord0200 
+      jc$.removeAttr('style').attr('container','items').attr('id','tbContent'); // since tablord0200
       $('.CODE').each(function(i,code){code.innerHTML = code.innerHTML.replace(/jc\./g,'tb.');});
     }
     tb.content$ = $('#tbContent');
     var b$ = $('BODY');
-    if (tb.content$.length == 0) {                                   
+    if (tb.content$.length == 0) {
       b$.wrapInner('<DIV id=tbContent container="items"/>');
     }
     $('.CONTAINER').removeClass('.CONTAINER').attr('container','sectionContent');
@@ -2987,7 +2987,7 @@ a('convert from jc to tb')
   $(window).load(function () {
     // upgrades ////////////////////////////////////////////////////
     try {
-      tb.upgradeModules();
+      //tb.upgradeModules();
       tb.upgradeFramework();
       if (window.document.compatMode != 'CSS1Compat') {
         window.alert('your document must have <!DOCTYPE html> as first line in order to run properly: please save and re-run it');
@@ -3020,6 +3020,6 @@ a('convert from jc to tb')
       window.alert(e.message);
     }
     if (tb.autoRun) tb.execAll();
-  });  
-  
+  });
+
   window.onerror = tb.errorHandler;
