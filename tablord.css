@@ -1,22 +1,11 @@
-:root {
-  box-sizing: border-box;
-}
-
-*,
-::before,
-::after {
-  box-sizing: inherit;
-}
-
 body {
   font-family: Arial;
-/*  font-size: 10pt;*/
   color: black;
   width: 21cm;
 }
 tbody {
   font-family: Arial;
-  font-size: 1em; 
+  font-size: 1em;
 }
 thead {
   font-family: Arial;
@@ -84,7 +73,7 @@ td {
 }
 
 .TRACE {
-  border: 1px solid #000080;  
+  border: 1px solid #000080;
   text-align: left;
   text-valign: top;
 }
@@ -97,13 +86,6 @@ p {
 .FIELD p,
 .RICHTEXT p {
   padding-bottom:0.5em;
-}
-
-pre {
-  font-family: courier;
-  font-size: 14px;      
-  margin: 0px;
-  padding: 0px;
 }
 
 .ELEMENT {
@@ -141,7 +123,7 @@ pre {
 
 .CODEVIEW {
   font-family: courier;
-  font-size: 14px;      
+  font-size: 0.85rem;
   background-color: #bbf9a8;
   border:solid green 1px;
   margin: 0px;
@@ -151,7 +133,7 @@ pre {
 .CODEEXAMPLE,
 .CODE {
   font-family: courier;
-  font-size: 14px;      
+  font-size: 0.85rem;
   background-color: #f2f9a8;
   border: none;
   margin: 0px;
@@ -236,7 +218,7 @@ pre {
 
 .TRACE,
 .DEBUG {
-  font-size: 14px;      
+  font-size: 14px;
   background-color: #b6fff7;
   border:solid blue 1px;
 }
@@ -251,7 +233,7 @@ pre {
 
 .CODEINERROR {
   font-family: courier;
-  font-size: 14px;      
+  font-size: 14px;
   background-color: yellow;
   border:solid yellow 1px;
 }
@@ -278,7 +260,7 @@ pre {
   color: 004129;
   background-color: #00ffa2;
   font-family: courier;
-  font-size: 14px;      
+  font-size: 14px;
 }
 
 
@@ -286,7 +268,7 @@ pre {
 .SMTRANSITION {
   margin: 5px;
   border:solid green 1px;
-}  
+}
 .SMCURRENTSTATE {
   background-color: yellow;
 }
@@ -334,7 +316,7 @@ pre {
 }
 
 .REF {
-  
+
 }
 
 .LNIK {
@@ -406,12 +388,11 @@ pre {
   background-color: #909090;
   z-index:100;
   font-size:12px;
-}  
+}
 
-button {
-  background-color: #909090;
-}  
-
+#menu .btn {
+    font-size:1em;
+}
 
 @media print {
   #menu {
@@ -426,4 +407,3 @@ button {
     font-size:0.8em !important;
   }
 }
-    

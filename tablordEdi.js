@@ -64,7 +64,7 @@
 
             errorHandler:function(message,url,line) {
               // the default handler called by JavaScript giving the message, the url of the page or script and the faulty line
-              var out  = tb.output.outputElement;
+              var out  = tb.output && tb.output.outputElement;
               if (out) {
                 if (url) {
                   out.innerHTML = message+'<br>'+url+' line:'+line+'<br>'+trace.span();
@@ -2307,13 +2307,13 @@
 
     tb.selectionToolBar$ = $('<DIV/>')
       .append('<SPAN id=codeId>no selection</SPAN>')
-      .append('<input type=button id="cutBtn" onclick=tb.cutBlock(tb.selectedElement); value="cut"/>')
-      .append('<input type=button onclick="tb.templates[tb.templateChoice$.val()].insertBefore(tb.selectedElement,tb.currentContainer$.attr(\'container\'))" value="&#8593;"/>')
-      .append('<input type=button onclick="tb.templates[tb.templateChoice$.val()].convert(tb.selectedElement,tb.currentContainer$.attr(\'container\'))" value="&#8596;"/>')
+      .append('<button type="button" class="btn btn-secondary btn-sm" id="cutBtn" onclick=tb.cutBlock(tb.selectedElement); >cut</button>')
+      .append('<button type="button" class="btn btn-secondary btn-sm" onclick="tb.templates[tb.templateChoice$.val()].insertBefore(tb.selectedElement,tb.currentContainer$.attr(\'container\'))" >&#8593;</button>')
+      .append('<button type="button" class="btn btn-secondary btn-sm" onclick="tb.templates[tb.templateChoice$.val()].convert(tb.selectedElement,tb.currentContainer$.attr(\'container\'))" >&#8596;</button>')
       .append(tb.templateChoice$)
-      .append('<input type=button onclick="tb.templates[tb.templateChoice$.val()].insertAfter(tb.selectedElement,tb.currentContainer$.attr(\'container\'))" value="&#8595;"/>')
-      .append('<input type=button id="showHtmlBtn" onclick=tb.showOutputHtml(this); value="&#8594;html"/>')
-      .append('<input type=button id="toTestBtn" onclick=tb.copyOutputToTest(this); value="&#8594;test"/>')
+      .append('<button type="button" class="btn btn-secondary btn-sm" onclick="tb.templates[tb.templateChoice$.val()].insertAfter(tb.selectedElement,tb.currentContainer$.attr(\'container\'))" >&#8595;</button>')
+      .append('<button type="button" class="btn btn-secondary btn-sm" id="showHtmlBtn" onclick=tb.showOutputHtml(this); >&#8594;html</button>')
+      .append('<button type="button" class="btn btn-secondary btn-sm" id="toTestBtn" onclick=tb.copyOutputToTest(this); >&#8594;test</button>')
       .append(tb.objectToolBar$)
       .hide();
 
@@ -2329,13 +2329,13 @@
     tb.menu$ =  $(
     '<DIV id=menu class=TOOLBAR style="float:right;max-width:50%;">'+
       '<DIV>'+
-        '<input type=button id=runUntilSelectedBtn onclick=tb.execUntilSelected(); style="color: #8dff60;" value="&#9658;|"/>'+
-        '<input type=button id=runAllBtn onclick=tb.execAll(); style="color: #8dff60;" value="&#9658;&#9658;"/>'+
-        '<input type=button id=stopAnimation onclick=tb.clearTimers(); style="color: red" disabled=true value="&#9632;"/>'+
-        '<input type=button id="clearOutputsBtn" onclick="tb.clearOutputs();" value="clear"/>'+
-        '<input type=button id="saveBtn" onclick="tb.save();" value="save"/>'+
-        '<input type=button onclick="tb.print();" value="print"/>'+
-        '<input type=button onclick="tb.helpPanel$.toggle(100);" value="help"/>'+
+        '<button type="button" class="btn btn-secondary btn-sm" id=runUntilSelectedBtn onclick=tb.execUntilSelected(); style="color: #8dff60;" >&#9658;|</button>'+
+        '<button type="button" class="btn btn-secondary btn-sm" id=runAllBtn onclick=tb.execAll(); style="color: #8dff60;" >&#9658;&#9658;</button>'+
+        '<button type="button" class="btn btn-secondary btn-sm" id=stopAnimation onclick=tb.clearTimers(); style="color: red" disabled=true >&#9632;</button>'+
+        '<button type="button" class="btn btn-secondary btn-sm" id="clearOutputsBtn" onclick="tb.clearOutputs();" >clear</button>'+
+        '<button type="button" class="btn btn-secondary btn-sm" id="saveBtn" onclick="tb.save();" >save</button>'+
+        '<button type="button" class="btn btn-secondary btn-sm" onclick="tb.print();" >print</button>'+
+        '<button type="button" class="btn btn-secondary btn-sm" onclick="tb.helpPanel$.toggle(100);" >help</button>'+
         '<INPUT onclick="tb.showCode(event)"'+(b$.attr('showCode')=="true"?' checked':'')+' type=checkbox>codes'+
         '<INPUT onclick="tb.showCut(event)"'+(b$.attr('showCut')=="true"?' checked':'')+' type=checkbox>cuts'+
         '<INPUT onclick="tb.showTest(event)"'+(b$.attr('showTest')=="true"?' checked':'')+' type=checkbox>tests'+
@@ -2350,26 +2350,26 @@
     $('BODY').prepend(tb.menu$);
 
     // make all button the same size
-    var h=0;
+    /*var h=0;
     var w=0;
     tb.menu$.find('button').each(function(i,e){
       w=Math.max(w,e.offsetWidth);
       h=Math.max(h,e.offsetHeight);
     }).width(w).height(h);
-
+    */
     $('#richTextToolBar').remove(); // kill anything previouly in the saved document
     tb.richTextToolBar$ =  $('<SPAN id=richTextToolBar class=TOOLBAR></SPAN>')
-      .append('<input type=button onclick=tb.richedit.bold(); value="<b>B</b>"/>')
-      .append('<input type=button onclick=tb.richedit.italic(); value="<i>i</i>"/>')
-      .append('<input type=button onclick=tb.richedit.underline(); value="<U>U</U>"/>')
-      .append('<input type=button onclick=tb.richedit.strike(); value="<strike>S</strike>"/>')
-      .append('<input type=button onclick=tb.richedit.h1(); value="<b>H1</b>"/>')
-      .append('<input type=button onclick=tb.richedit.h2(); value="<b>H2</b>"/>')
-      .append('<input type=button onclick=tb.richedit.div(); value="div"/>')
-      .append('<input type=button onclick=tb.richedit.p(); value="&#182;"/>')
-      .append('<input type=button onclick=tb.richedit.ol(); value="#"/>')
-      .append('<input type=button onclick=tb.richedit.ul(); value="&#8226;"/>')
-      .append('<input type=button onclick=tb.richedit.pre(); value="{}"/>')
+      .append('<button type="button" class="btn btn-secondary btn-sm" onclick=tb.richedit.bold(); ><b>B</b></button>')
+      .append('<button type="button" class="btn btn-secondary btn-sm" onclick=tb.richedit.italic(); ><i>i</i></button>')
+      .append('<button type="button" class="btn btn-secondary btn-sm" onclick=tb.richedit.underline(); ><U>U</U></button>')
+      .append('<button type="button" class="btn btn-secondary btn-sm" onclick=tb.richedit.strike(); ><strike>S</strike></button>')
+      .append('<button type="button" class="btn btn-secondary btn-sm" onclick=tb.richedit.h1(); ><b>H1</b></button>')
+      .append('<button type="button" class="btn btn-secondary btn-sm" onclick=tb.richedit.h2(); ><b>H2</b></button>')
+      .append('<button type="button" class="btn btn-secondary btn-sm" onclick=tb.richedit.div(); >div</button>')
+      .append('<button type="button" class="btn btn-secondary btn-sm" onclick=tb.richedit.p(); >&#182;</button>')
+      .append('<button type="button" class="btn btn-secondary btn-sm" onclick=tb.richedit.ol(); >#</button>')
+      .append('<button type="button" class="btn btn-secondary btn-sm" onclick=tb.richedit.ul(); >&#8226;</button>')
+      .append('<button type="button" class="btn btn-secondary btn-sm" onclick=tb.richedit.pre(); >{}</button>')
 
   }
 
@@ -2418,12 +2418,12 @@
     var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
     $.post(window.location,
             {csrfmiddlewaretoken:csrftoken,
-             toBeSaved:$('#tbContent').html()})
-    .success(function(data){
-        tb.debug$.html(data);
-        tb.setModified(false);
-    })
-    .error(function(data){tb.debug$.html(data)})
+             toBeSaved:$('#tbContent').html()},
+            function(data){
+                tb.debug$.html(data);
+                tb.setModified(false);
+            })
+    .fail(function(data){tb.debug$.html(data)})
   }
 
   if (tb.fso) {
@@ -3004,7 +3004,7 @@ a('convert from jc to tb')
   }
 
 
-  $(window).load(function () {
+  $(function () {
     // upgrades ////////////////////////////////////////////////////
     try {
       //tb.upgradeModules();
@@ -3015,18 +3015,22 @@ a('convert from jc to tb')
       // prepare the sheet ///////////////////////////////////////////
       tb.url = tb.urlComponents(window.document.location.href);
       $('.SELECTED').removeClass('SELECTED');
-      $('.ELEMENT').live("click",tb.elementClick);
-      $('.EDITABLE').live("keydown",tb.editableKeyDown);
-      $('.EDITOR').live("change",tb.Editor.eventHandler).live("click",tb.Editor.eventHandler);
+      $(document)
+      .on("click",'.ELEMENT',tb.elementClick)
+      .on("keydown",'.EDITABLE',tb.editableKeyDown)
+      .on("change",'.EDITOR',tb.Editor.eventHandler)
+      .on("click",'.EDITOR',tb.Editor.eventHandler)
+      .on("click",'.SCENE',function(event){event.stopPropagation()})       // cancel bubbling of click to let the user control clicks
+      .on("click",'.INTERACTIVE',function(event){event.stopPropagation()}) // cancel bubbling of click to let the user control clicks
+      .on("click",'.LINK',function(event){event.stopPropagation()})        // cancel bubbling of click to let the user control clicks
+      .on("click",'.HELPLINK',function(event){tb.help.index.show(event.target.innerHTML)})
+      .on("click",'.BOXLINK',tb.openCloseBox)                              // open or close Box and cancel bubbling of click since it is only to open close
+      .on("click",'.BOX',function(event){event.stopPropagation()});    // cancel bubbling of click
+
+
       $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR');
       $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
 
-      $('.SCENE').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
-      $('.INTERACTIVE').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
-      $('.LINK').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click to let the user control clicks
-      $('.HELPLINK').live("click",function(event){tb.help.index.show(event.target.innerHTML)});
-      $('.BOXLINK').live("click",tb.openCloseBox); // open or close Box and cancel bubbling of click since it is only to open close
-      $('.BOX').live("click",function(event){event.stopPropagation()}); // cancel bubbling of click
 
 
       tb.findblockNumber();
