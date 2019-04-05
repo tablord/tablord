@@ -390,7 +390,9 @@ p {
   font-size:12px;
 }
 
-#menu .btn {
+#menu .btn,
+#menu .input-group-text,
+#menu .custom-select {
     font-size:1em;
 }
 

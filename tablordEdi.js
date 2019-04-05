@@ -2302,23 +2302,31 @@
       '<DIV id=objectToolBar></DIV>'
     );
 
-    tb.templateChoice$ = $('<SELECT>');
+    tb.templateChoice$ = $('<select class="custom-select">');
     tb.updateTemplateChoice();
 
-    tb.selectionToolBar$ = $('<DIV/>')
-      .append('<SPAN id=codeId>no selection</SPAN>')
-      .append('<button type="button" class="btn btn-secondary btn-sm" id="cutBtn" onclick=tb.cutBlock(tb.selectedElement); >cut</button>')
-      .append('<button type="button" class="btn btn-secondary btn-sm" onclick="tb.templates[tb.templateChoice$.val()].insertBefore(tb.selectedElement,tb.currentContainer$.attr(\'container\'))" >&#8593;</button>')
-      .append('<button type="button" class="btn btn-secondary btn-sm" onclick="tb.templates[tb.templateChoice$.val()].convert(tb.selectedElement,tb.currentContainer$.attr(\'container\'))" >&#8596;</button>')
-      .append(tb.templateChoice$)
-      .append('<button type="button" class="btn btn-secondary btn-sm" onclick="tb.templates[tb.templateChoice$.val()].insertAfter(tb.selectedElement,tb.currentContainer$.attr(\'container\'))" >&#8595;</button>')
-      .append('<button type="button" class="btn btn-secondary btn-sm" id="showHtmlBtn" onclick=tb.showOutputHtml(this); >&#8594;html</button>')
-      .append('<button type="button" class="btn btn-secondary btn-sm" id="toTestBtn" onclick=tb.copyOutputToTest(this); >&#8594;test</button>')
+    tb.selectionToolBar$ = $('<div class="btn-toolbar" role="toolbar">')
+      .append('<div class="btn-group btn-group-sm mr-2" role="group">'+
+                '<button type="button" class="btn btn-outline-dark" id="codeId">no selection</button>'+
+                '<button type="button" class="btn btn-dark" id="cutBtn" onclick=tb.cutBlock(tb.selectedElement); >cut</button>'+
+                '<button type="button" class="btn btn-dark" id="showHtmlBtn" onclick=tb.showOutputHtml(this); >&#8594;html</button>'+
+                '<button type="button" class="btn btn-dark" id="toTestBtn" onclick=tb.copyOutputToTest(this); >&#8594;test</button>'+
+              '</div>')
+      .append($('<div class="input-group input-group-sm mr-2">')
+          .append('<div class="input-group-prepend">'+
+                    '<button type="button" class="btn btn-dark" onclick="tb.templates[tb.templateChoice$.val()].insertBefore(tb.selectedElement,tb.currentContainer$.attr(\'container\'))" >&#8593;</button>'+
+                    '<button type="button" class="btn btn-dark" onclick="tb.templates[tb.templateChoice$.val()].convert(tb.selectedElement,tb.currentContainer$.attr(\'container\'))" >&#8596;</button>'+
+                  '</div>')
+          .append(tb.templateChoice$)
+          .append('<div class="input-group-append">'+
+                    '<button type="button" class="btn btn-dark" onclick="tb.templates[tb.templateChoice$.val()].insertAfter(tb.selectedElement,tb.currentContainer$.attr(\'container\'))" >&#8595;</button>'+
+                  '</div>')
+      )
       .append(tb.objectToolBar$)
       .hide();
 
-    tb.helpSearch$ = $('<INPUT/>').keyup(tb.helpSearchChange);
-    tb.helpOutput$ = $('<DIV  style="overflow:auto;max-height:400px;">please type your search above</DIV>');
+    tb.helpSearch$ = $('<input placeholder="help search"/>').keyup(tb.helpSearchChange);
+    tb.helpOutput$ = $('<DIV  style="overflow:auto;max-height:400px;"></DIV>');
     tb.helpPanel$ = $('<DIV><SPAN style="color:red;cursor:pointer;" onclick="tb.helpPanel$.hide(300)">&nbsp;&#215;&nbsp;</SPAN></DIV>')
                     .append(tb.helpSearch$)
                     .append('<span style="color:#8dff60;cursor:pointer;" onclick="tb.help.index.back()">&#9668;</span>')
@@ -2328,20 +2336,27 @@
 
     tb.menu$ =  $(
     '<DIV id=menu class=TOOLBAR style="float:right;max-width:50%;">'+
-      '<DIV>'+
-        '<button type="button" class="btn btn-secondary btn-sm" id=runUntilSelectedBtn onclick=tb.execUntilSelected(); style="color: #8dff60;" >&#9658;|</button>'+
-        '<button type="button" class="btn btn-secondary btn-sm" id=runAllBtn onclick=tb.execAll(); style="color: #8dff60;" >&#9658;&#9658;</button>'+
-        '<button type="button" class="btn btn-secondary btn-sm" id=stopAnimation onclick=tb.clearTimers(); style="color: red" disabled=true >&#9632;</button>'+
-        '<button type="button" class="btn btn-secondary btn-sm" id="clearOutputsBtn" onclick="tb.clearOutputs();" >clear</button>'+
-        '<button type="button" class="btn btn-secondary btn-sm" id="saveBtn" onclick="tb.save();" >save</button>'+
-        '<button type="button" class="btn btn-secondary btn-sm" onclick="tb.print();" >print</button>'+
-        '<button type="button" class="btn btn-secondary btn-sm" onclick="tb.helpPanel$.toggle(100);" >help</button>'+
-        '<INPUT onclick="tb.showCode(event)"'+(b$.attr('showCode')=="true"?' checked':'')+' type=checkbox>codes'+
-        '<INPUT onclick="tb.showCut(event)"'+(b$.attr('showCut')=="true"?' checked':'')+' type=checkbox>cuts'+
-        '<INPUT onclick="tb.showTest(event)"'+(b$.attr('showTest')=="true"?' checked':'')+' type=checkbox>tests'+
-        '<INPUT onclick="tb.showTrace(event)"'+(b$.attr('showTrace')=="true"?' checked':'')+' type=checkbox>traces'+
-        '<INPUT onclick="tb.setAutoRun(event)"'+(tb.autoRun?' checked':'')+' type=checkbox>auto run'+
-      '</DIV>'+
+        '<div class="btn-toolbar mb-1" role="toolbar" aria-label="main buttons">'+
+            '<div class="btn-group btn-group-sm mr-2" role="group" aria-label="run btns">'+
+                '<button type="button" class="btn btn-dark" id=runUntilSelectedBtn onclick=tb.execUntilSelected(); style="color: #8dff60;" >&#9658;|</button>'+
+                '<button type="button" class="btn btn-dark" id=runAllBtn onclick=tb.execAll(); style="color: #8dff60;" >&#9658;&#9658;</button>'+
+                '<button type="button" class="btn btn-dark" id=stopAnimation onclick=tb.clearTimers(); style="color: red" disabled=true >&#9632;</button>'+
+            '</div>'+
+            '<div class="btn-group btn-group-sm mr-2" role="group" aria-label="actions on sheet">'+
+                '<button type="button" class="btn btn-dark" id="saveBtn" onclick="tb.save();" >save</button>'+
+                '<button type="button" class="btn btn-dark" onclick="tb.print();" >print</button>'+
+                '<button type="button" class="btn btn-dark" onclick="tb.helpPanel$.toggle(100);" >help</button>'+
+                '<button id="btnGroupDrop1" type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">options</button>'+
+                '<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">'+
+                    '<a class="dropdown-item" id="clearOutputsBtn" onclick="tb.clearOutputs();" >clear outputs</a>'+
+                    '<INPUT onclick="tb.showCode(event)"'+(b$.attr('showCode')=="true"?' checked':'')+' type=checkbox>codes<br/>'+
+                    '<INPUT onclick="tb.showCut(event)"'+(b$.attr('showCut')=="true"?' checked':'')+' type=checkbox>cuts<br/>'+
+                    '<INPUT onclick="tb.showTest(event)"'+(b$.attr('showTest')=="true"?' checked':'')+' type=checkbox>tests<br/>'+
+                    '<INPUT onclick="tb.showTrace(event)"'+(b$.attr('showTrace')=="true"?' checked':'')+' type=checkbox>traces<br/>'+
+                    '<INPUT onclick="tb.setAutoRun(event)"'+(tb.autoRun?' checked':'')+' type=checkbox>auto run'+
+                '</div>'+
+            '</div>'+
+        '</div>'+
     '</DIV>')
     .append(tb.selectionToolBar$)
     .append(tb.helpPanel$)
@@ -2349,27 +2364,19 @@
 
     $('BODY').prepend(tb.menu$);
 
-    // make all button the same size
-    /*var h=0;
-    var w=0;
-    tb.menu$.find('button').each(function(i,e){
-      w=Math.max(w,e.offsetWidth);
-      h=Math.max(h,e.offsetHeight);
-    }).width(w).height(h);
-    */
     $('#richTextToolBar').remove(); // kill anything previouly in the saved document
-    tb.richTextToolBar$ =  $('<SPAN id=richTextToolBar class=TOOLBAR></SPAN>')
-      .append('<button type="button" class="btn btn-secondary btn-sm" onclick=tb.richedit.bold(); ><b>B</b></button>')
-      .append('<button type="button" class="btn btn-secondary btn-sm" onclick=tb.richedit.italic(); ><i>i</i></button>')
-      .append('<button type="button" class="btn btn-secondary btn-sm" onclick=tb.richedit.underline(); ><U>U</U></button>')
-      .append('<button type="button" class="btn btn-secondary btn-sm" onclick=tb.richedit.strike(); ><strike>S</strike></button>')
-      .append('<button type="button" class="btn btn-secondary btn-sm" onclick=tb.richedit.h1(); ><b>H1</b></button>')
-      .append('<button type="button" class="btn btn-secondary btn-sm" onclick=tb.richedit.h2(); ><b>H2</b></button>')
-      .append('<button type="button" class="btn btn-secondary btn-sm" onclick=tb.richedit.div(); >div</button>')
-      .append('<button type="button" class="btn btn-secondary btn-sm" onclick=tb.richedit.p(); >&#182;</button>')
-      .append('<button type="button" class="btn btn-secondary btn-sm" onclick=tb.richedit.ol(); >#</button>')
-      .append('<button type="button" class="btn btn-secondary btn-sm" onclick=tb.richedit.ul(); >&#8226;</button>')
-      .append('<button type="button" class="btn btn-secondary btn-sm" onclick=tb.richedit.pre(); >{}</button>')
+    tb.richTextToolBar$ =  $('<div class="btn-group" role="group" id=richTextToolBar </div>')
+      .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.bold(); ><b>B</b></button>')
+      .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.italic(); ><i>i</i></button>')
+      .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.underline(); ><U>U</U></button>')
+      .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.strike(); ><strike>S</strike></button>')
+      .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.h1(); ><b>H1</b></button>')
+      .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.h2(); ><b>H2</b></button>')
+      .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.div(); >div</button>')
+      .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.p(); >&#182;</button>')
+      .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.ol(); >#</button>')
+      .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.ul(); >&#8226;</button>')
+      .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.pre(); >{}</button>')
 
   }
 
