@@ -306,7 +306,7 @@
       .replace(/-{4,}/g,'<hr>')
       .replace(/\s\*\*(\S.*)\*\*\s/g,'<em>$1</em>')
       .replace(/\s\*(\S.*)\*\s/g,'<strong>$1</strong>')
-      .replace(/`(.+?)`/g,'<code>$1</code>')
+      .replace(/`(.+?)`/g,'<span class="CODEEXAMPLE">$1</span>')
       .replace(/\[\[(.+?)\]\]/g,'<span class=HELPLINK onclick="tb.help.index.show(\'$1\');">$1</span>')
       .replace(parameterRegExp,'$1<span class=PARAMETER>$2</span>$3')
       +'<br>';
@@ -375,6 +375,7 @@
                                       '[[itemscope]] is also set to be complient with microData (cf [[getMicroData]])']);
   tb.help.add('SELECTED','DOM class=',['an SELECTED [[ELEMENT]] is the DOM element of the document that is currently SELECTED']);
   tb.help.add('CODE','DOM class=',['a CODE [[ELEMENT]] is a DOM element of the document that contains JavaScript CODE. It can also have the [[EMBEDDED]]']);
+  tb.help.add('AUTOEDIT','DOM class=',['a [[CODE]] [[ELEMENT]] that is AUTOEDIT is modified automatically by the corresponding [[EDITOR]]s since it contains the .[[edit]]() of an [[EditableObject]]']);
   tb.help.add('EMBEDDED','DOM class=',['a EMBEDDED [[CODE]] [[ELEMENT]] is a DOM element of the document that contains JavaScript CODE but inside another ELEMENT (usually [[RICHTEXT]]).',
                                        'EMBEDDED CODE are hidden unless the parent ELEMENT is edited, so only the OUPUT is visible.']);
   tb.help.add('CODE','DOM class=',['a CODE [[ELEMENT]] is a DOM element of the document that contains JavaScript CODE. It can also have the [[EMBEDDED]]']);
@@ -1544,45 +1545,80 @@
   };
 
   // Editor ////////////////////////////////////////////////////////////////////////////
+  tb.EditableObject = function (){
+  // tb.TbEditableObject is an interface that must be implemented by any object that want to be editable within the sheet
+  // [[tb.Table]] and [[tb.Var]] are typical class that implement the *EditableObject* interface
+  // all methods of this class are empty: the declarations are here only for documentation
+  //   .codeElement property that must be created by .edit() and must containt the [[CODE]] [[ELEMENT]] that contains the .edit() function
+  //                and that will be updated after edition and become also [[AUTOEDIT]]
+  //
+    throw new Error('abstract class: do not instanciate')
+  }
+  tb.EditableObject.className = 'tb.EditableObject';
 
+  tb.EditableObject.prototype.edit = function(){
+  // similar to .span() but return html code representing the object in edition.
+  // usually .edit() calls [[tb.editor.html]](...) in order to get the necessary html code that will
+  // interact with tb.editor
+    throw new Error('abstract method')
+  }
 
-  tb.Editor = function Editor(){
+  tb.EditableObject.prototype.getEditableValue = function(editor){
+  //  will be called by the editor when the user selects a given [[EDITOR]] element
+  //  this is the responsibility of the object to look on editor's properties that are specific to this
+  //  object to know how to get the value. the returned value can be a simple type (undefined,number,string)
+  //  or a function. if this function has a .code property, it is considered to be a tbFunc and .code represents
+  //  only the body of the function (usually an expression)
+    throw new Error('abstract method')
+  }
+
+  tb.EditableObject.prototype.setEditableValue = function(editor){
+  // will be called by the editor when the user has finished to edit a given value.
+  // this method has the responsibility to upgrade the code
+    throw new Error('abstract method')
+  }
+
+  tb.EditableObject.prototype.updateCode = function(){
+  // this function must replace the code of the [[CODE]] [[ELEMENT]] (that is stored in .codeElement of this)
+
+  }
+
+  tb.Editor = function (){
   // the goal of Editor is to offer a genenral mechanism in order to help implement
   // tbObject edition capabilities.
+  // it is implemented as a class in order to get the documentation eventhought there is only one single instance [[tb.editor]]
   // this mechanism is the following:
-  // an object that would like to propose edition capabilities has to offer the following interface
-  //   .edit()  similar to .span() but return html code representing the object in edition.
-  //            usually .edit() calls tb.editor.html(...) in order to get the necessary html code that will
-  //            interact with tb.editor
+  // an object that would like to propose edition capabilities has to offer the following [[TbObject]] interface
   //   .codeElement this property must be created by edit() and must containt the codeElement that contains the .edit() function
   //                and that will be updated after edition
   //
-  //   .getEditableValue(editor)  will be called by the editor when the user selects a given DOM EDITOR element
-  //                              this is the responsibility of the object to look on editor's properties that are specific to this
-  //                              object to know how to get the value. the returned value can be a simple type (undefined,number,string)
-  //                              or a function. if this function has a .code property, it is considered to be a tbFunc and .code represents
-  //                              only the body of the function (usually an expression)
-  //   .setEditableValue(editor)  will be called by the editor when the user has finished to edit a given value.
-  //                              this method has the responsibility to upgrade the code
-  //   .updateCode()              not strictly speaking part of the Editor interface, but common practice to encapsulate the code update
-  //                              in updateCode and call this function in setEditableValue through a window.setTimout(
   //
   //--------------
-  //  tb.editor is a single instance object that provides most of the services and that dialogs with the DOM elements composing
-  //            the user interface.
+  //  - tb.editor is a single instance object that provides most of the services and that dialogs with the DOM elements composing
+  //              the user interface.
   //
-  //  tb.editor.html(...) return html code needed to create the editor for a simple value
+  //  - tb.editor.html(...) return html code needed to create the editor for a simple value
   //                      if the value is simple (undefined, number, string or function) it will
   //                      be handled natively.
   //                      if value is an object, it will return the code of object.edit()
   //                      TODO: provide mechanism for simple object / arrays
   //
-  //  tb.editor.simpleTypeToolBar$ a jQuery storing the necessary toolBar for the simple types
+  //  - tb.editor.simpleTypeToolBar$ a jQuery storing the necessary toolBar for the simple types
+  //
 
-  }
-  tb.Editor.className = 'tb.Editor';
+    //participant IDE
+    //participant tb.editor
+    //note over .CODE: represents the CODE\nELEMENT containing\n "tbObject.edit()"
+    //note over .OUTPUT: the .OUTPUT that will\ncontain all .EDITOR\n for tbObject
+    //note over .EDITOR: is a child ELEMENT\n of .OUTPUT
+    //note over tbObject:name:'myVar'
+    //IDE -> IDE: .execCode
+    //IDE -> tbObject:edit()
+    //note right of tbObject:usually gets html code from tb.editor
+    //tbObject -> tb.editor: .html(value,{tbObject:'myVar'})
+    //tb.editor -->tbObject: <input class=EDITOR tbobject="myVar">
+    //tbObject --> IDE: <div...all .EDITORs needed to edit myVar>
 
-  tb.Editor.prototype.createToolBar = function() {
     // create a tool bar for the [[tb.Editor]]
     this.toolBar$ = $('<SPAN/>')
       .append('<input type="radio" name="type" value="string" onclick="tb.editor.force(\'string\');">String')
@@ -1590,7 +1626,9 @@
       .append('<input type="radio" name="type" value="function" onclick="tb.editor.force(\'function\')">Function')
       .append(this.funcCode$=$('<input type="text"  name="funcCode" value="" onchange="tb.editor.funcCodeChange();" onclick="tb.editor.funcCodeClick();">'))
       .append('<input type="radio" name="type" value="undefined" onclick="tb.editor.force(\'undefined\')">undefined');
-  };
+  }
+  tb.Editor.className = 'tb.Editor';
+
 
 
   tb.Editor.prototype.funcCodeClick = function() {
@@ -1608,55 +1646,6 @@
     return false; //?????
   }
 
-  ////////////
-  //TODO: there is problem at least in IE7: when the users click on another control, first a change event is triggerd
-  //normally it should be followed by a click envent, but as the control is destroyed and re-created, it seems to "capture" the next click
-  //event
-  // ?????? peut être qu'avec un setTimeout(0) on peut passer outre, en laissant d'abord le click se faire et en updatant le code via le timer
-  //  pas mieux : l'evenement click n'arrive jamais sur l'endroit où on a cliqué et si dans le change on return true, c'est encore pire, on ne retrouve
-  //              jamais le focus.  &&%ç%*&@
-  ////////////
-
-  tb.Editor.eventHandler = function(event) {
-    // the event handler that will recieve click, keypress and change event
-    var obj = tb.vars[event.target.tbObject];
-    if (obj == undefined) throw new Error('event on a editor linked to a non existing object '+event.target.tbObject);
-    switch (event.type) {
-      case 'click':
-        if (obj.codeElement !== tb.selectedElement) {
-          tb.selectElement(obj.codeElement);
-        }
-        tb.editor.setCurrentEditor(event.target);
-      return false; // prevent bubbling
-
-      case 'change':
-        var value = event.target.value;
-        switch (tb.editor.type) {
-          case 'number':
-            if (!isNaN(Number(value))) {
-              value = Number(value);
-            }
-            else {
-              tb.editor.force('string');
-              return false; // a new event will take place and finish the job
-            }
-            break;
-          case 'function':
-            value = f(tb.editor.funcCode$.val());
-            break;
-          case 'undefined':
-            value = undefined;
-            break;
-        }
-        tb.editor.value = value;
-        obj.setEditableValue(tb.editor);
-        return false;
-
-      default :
-        window.alert('unexpected event',event.type)
-        return true;
-    }
-  }
 
   tb.Editor.prototype.force = function(type) {
     // force the [[tb.Editor]] to a given type
@@ -1693,7 +1682,7 @@
         break;
     }
     this.type = type;
-    editor$.change();  // will update the value, update the code, run the sheet and so updage the editors and tool bars
+    editor$.triggerHandler('change');  // will update the value, update the code, run the sheet and so updage the editors and tool bars
     this.setCurrentEditor(this.currentEditor); // will refresh the toolbar and refocus the editor according to the new situation
   }
 
@@ -1702,7 +1691,7 @@
     // set an editor as the current Editor
     this.currentEditor = editor;
     if (editor) {
-      this.tbObject = tb.vars[editor.tbObject];
+      this.tbObject = tb.vars[$(editor).attr('tbObject')];
       tb.objectToolBar$.append(tb.editor.toolBar$);
       this.value = this.tbObject.getEditableValue(this);
       this.type = (this.value && this.value.isV)?'function':typeof this.value;
@@ -1726,7 +1715,7 @@
 
   tb.Editor.prototype.attr = function(attr) {
     // return the attr value of the html editor
-    return this.currentEditor[attr];
+    return $(this.currentEditor).attr(attr);
   }
 
   tb.Editor.prototype.html = function(value,params) {
@@ -1756,7 +1745,58 @@
 
 
   tb.editor = new tb.Editor();
-  tb.editor.createToolBar();
+
+
+  ////////////
+  //TODO: there is problem at least in IE7: when the users click on another control, first a change event is triggerd
+  //normally it should be followed by a click envent, but as the control is destroyed and re-created, it seems to "capture" the next click
+  //event
+  // ?????? peut être qu'avec un setTimeout(0) on peut passer outre, en laissant d'abord le click se faire et en updatant le code via le timer
+  //  pas mieux : l'evenement click n'arrive jamais sur l'endroit où on a cliqué et si dans le change on return true, c'est encore pire, on ne retrouve
+  //              jamais le focus.  &&%ç%*&@
+  ////////////
+
+  tb.editorEventHandler = function(event) {
+    // the event handler for all .EDITOR that will recieve click, keypress and change event
+    var target$ = $(event.target);
+    var obj = tb.vars[target$.attr('tbObject')];
+    if (obj == undefined) throw new Error('event on a editor linked to a non existing object '+$(event.target).attr('tbObject'));
+    switch (event.type) {
+      case 'click':
+        if (obj.codeElement !== tb.selectedElement) {
+          tb.selectElement(obj.codeElement);
+        }
+        tb.editor.setCurrentEditor(event.target);
+      return false; // prevent bubbling
+
+      case 'change':
+        var value = target$.val();
+        switch (tb.editor.type) {
+          case 'number':
+            if (!isNaN(Number(value))) {
+              value = Number(value);
+            }
+            else {
+              tb.editor.force('string');
+              return false; // a new event will take place and finish the job
+            }
+            break;
+          case 'function':
+            value = f(tb.editor.funcCode$.val());
+            break;
+          case 'undefined':
+            value = undefined;
+            break;
+        }
+        tb.editor.value = value;
+        obj.setEditableValue(tb.editor);
+        return false;
+
+      default :
+        window.alert('unexpected event',event.type)
+        return true;
+    }
+  }
 
 
   // Table of Content //////////////////////////////////////////////////////////////////
@@ -1770,7 +1810,7 @@
       this.toc = [];
       $('.SECTION').each(function (i,e) {
         if ($(e).hasClass('CUT')) return;
-        var title = e.firstChild;
+        var title = $('.SECTIONTITLE',e)[0];
         var level = tb.level(e);
 
         currentNumbers[level] = (currentNumbers[level] || 0)+1;
@@ -2383,17 +2423,17 @@
   tb.setModified = function(state) {
     // set the modified state and modify the save button accordingly
     tb.modified = state;
-    $('#saveBtn').toggleClass('WARNING',state);
+    $('#saveBtn').toggleClass('btn-warning',state).toggleClass('btn-dark',!state);
   }
 
   tb.setUpToDate = function(state) {
     // set if the sheet is up to date or not (has to be re-run)
     if (state === tb.setUpToDate.state) return;
     if (state) {
-      $('#runAllBtn').removeClass('WARNING');
+      $('#runAllBtn').removeClass('btn-warning').addClass('btn-dark');
     }
     else {
-      $('#runAllBtn').addClass('WARNING');
+      $('#runAllBtn').removeClass('btn-dark').addClass('btn-warning');
       $('*').removeClass('SUCCESS ERROR');
     }
     tb.setUpToDate.state = state;
@@ -2423,6 +2463,8 @@
   tb.saveRemote = function() {
     // save to a remote server
     var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    tb.removeCutBlocks();
+    tb.selectElement(undefined);
     $.post(window.location,
             {csrfmiddlewaretoken:csrftoken,
              toBeSaved:$('#tbContent').html()},
@@ -2941,16 +2983,15 @@
       var hout  = out.innerHTML;
       var htest = test.innerHTML;
       diff = tb.diff(hout,htest).span().toString();
-      window.showModalDialog('dialog.htm',[
+      $('#showHtmlBody').html(
         '<fieldset><legend>'+tb.selectedElement.id+'</div></legend><div  class=CODEEXAMPLE>'+tb.toHtml(tb.selectedElement.outerHTML)+'</fieldset>'+
-        '<fieldset><legend>diff <span class="DIFF DEL">output</span> vs <span class="DIFF ADD">test</legend>'+diff+'</fieldset>'],
-        "dialogwidth="+tb.content$.css('width'));
+        '<fieldset><legend>diff <span class="DIFF DEL">output</span> vs <span class="DIFF ADD">test</legend>'+diff+'</fieldset>')
     }
     else {
-      window.showModalDialog('dialog.htm',[
-        '<fieldset><legend>'+tb.selectedElement.id+'</legend>'+tb.toHtml(tb.selectedElement.outerHTML)+'</fieldset>'],
-        "dialogwidth="+tb.content$.css('width'));
+      $('#showHtmlBody').html(
+        '<fieldset><legend>'+tb.selectedElement.id+'</legend>'+tb.toHtml(tb.selectedElement.outerHTML)+'</fieldset>')
     }
+    $('#showHtml').modal()
   }
 
   // upgrades from previous versions ////////////////////////////////////////////////////////////////////////////////
@@ -3025,8 +3066,8 @@ a('convert from jc to tb')
       $(document)
       .on("click",'.ELEMENT',tb.elementClick)
       .on("keydown",'.EDITABLE',tb.editableKeyDown)
-      .on("change",'.EDITOR',tb.Editor.eventHandler)
-      .on("click",'.EDITOR',tb.Editor.eventHandler)
+      .on("change",'.EDITOR',tb.editorEventHandler)
+      .on("click",'.EDITOR',tb.editorEventHandler)
       .on("click",'.SCENE',function(event){event.stopPropagation()})       // cancel bubbling of click to let the user control clicks
       .on("click",'.INTERACTIVE',function(event){event.stopPropagation()}) // cancel bubbling of click to let the user control clicks
       .on("click",'.LINK',function(event){event.stopPropagation()})        // cancel bubbling of click to let the user control clicks

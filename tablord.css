@@ -133,10 +133,12 @@ p {
 .CODEEXAMPLE,
 .CODE {
   font-family: courier;
-  font-size: 0.85rem;
   background-color: #f2f9a8;
   border: none;
   margin: 0px;
+}
+.CODE {
+  font-size: 0.85rem;
 }
 
 .INANIMATION {
@@ -178,7 +180,7 @@ p {
 .OUTPUTEXAMPLE,
 .OUTPUT {
   background-color: #b7b7b7;
-  color: 828282;
+  color: #828282;
   margin: 0px;
   padding: 0px;
 }
@@ -208,7 +210,7 @@ p {
 .DIFFSAME,
 .USERSUCCESS,
 .SUCCESS {
-  background-color: #8dff60;
+  background-color: #d4edda;
   color: black;
 }
 
@@ -227,7 +229,7 @@ p {
 .USERERROR,
 .WRONG,
 .ERROR {
-  background-color: #ff4d4d;
+  background-color: var(--error);
   color: black;
 }
 
@@ -336,7 +338,8 @@ p {
 }
 
 .WARNING {
-  background-color:yellow;
+  background-color:var(--warning);
+  color:black;
 }
 
 .INTERACTIVE,
@@ -385,7 +388,7 @@ p {
   position:fixed;
   top:0;
   right:0;
-  background-color: #909090;
+  background-color: #dddcdc;
   z-index:100;
   font-size:12px;
 }

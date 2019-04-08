@@ -1,7 +1,7 @@
-﻿
+
   // tablord library /////////////////////////////////////////////////////
-    
-  
+
+
   // calcul ///////////////////
   tb.Var = function(name,value) {
     //rarely use it directly, but use the v() function instead that also register the variable
@@ -60,7 +60,7 @@
     if (this.func) return this.func.toString();
     return undefined
   }
- 
+
   tb.Var.prototype.to = function(unit) {
     // return the value converted to unit
     return tb.Units.convert(this.valueOf(),this.unit,unit);
@@ -79,9 +79,9 @@
 
   tb.Var.prototype.edit = function() {
     // returns an HTML object with the necessary controls to edit the variable
-    this.codeElement = tb.output.codeElement;   
-    $(this.codeElement).addClass('AUTOEDIT').attr('jcObject',this.name);
-    return tb.html('<var>'+this.label+'</var>'+tb.editor.html(this.valueOf(),{jcObject:this.name})+(this.unit?'&nbsp;<span class=UNIT>'+this.unit+'</span>':''));
+    this.codeElement = tb.output.codeElement;
+    $(this.codeElement).addClass('AUTOEDIT').attr('tbObject',this.name);
+    return tb.html('<var>'+this.label+'</var>'+tb.editor.html(this.valueOf(),{tbObject:this.name})+(this.unit?'&nbsp;<span class=UNIT>'+this.unit+'</span>':''));
   }
 
 
@@ -100,10 +100,9 @@
     var obj = this;
     window.setTimeout(function(){obj.updateCode();tb.run()},0);
   }
-  
+
   tb.Var.prototype.updateCode = function() {
-    // generate the code that represents the element as edited
-    // can be used to replace the existing code 
+    // implementation of the [[tb.EditableObject.prototype.updateCode]]
     var code = 'v('+JSON.stringify(this.name)+','+this.toJSON()+')';
     this.codeElement.innerHTML = tb.toHtml(code+'.edit()');
   }
@@ -130,40 +129,40 @@
 
   /////////////////////////////////////////////////////////////////////////
 
-  function f(jcFunc) {
-    // jcFunc can eiter be a true function (rare since in that case it just returns the function)
-    // or a string that is the body of a function that will be called with 2 parameters row and col 
+  function f(tbFunc) {
+    // tbFunc can eiter be a true function (rare since in that case it just returns the function)
+    // or a string that is the body of a function that will be called with 2 parameters row and col
     // in case this function is used inside a table
 
-    if (typeof jcFunc == "string") {
+    if (typeof tbFunc == "string") {
       try {
-        var code = jcFunc;
-        if (jcFunc.search(/return/)== -1) {
-          jcFunc.replace(/^\s*\{(.*)\}\s*$/,'({$1})');
-          code = 'return '+jcFunc;
+        var code = tbFunc;
+        if (tbFunc.search(/return/)== -1) {
+          tbFunc.replace(/^\s*\{(.*)\}\s*$/,'({$1})');
+          code = 'return '+tbFunc;
         }
         var f = new Function('rowData','col','value','with (tb.vars){with(rowData||{}) {'+code+'}}');
-        f.userCode = jcFunc;
+        f.userCode = tbFunc;
         f.toString = function(){return this.userCode};
-        f.joJson = function(){return 'f("'+JSON.stringify(this.userCode)+'")'};
+        f.toJson = function(){return 'f("'+JSON.stringify(this.userCode)+'")'};
         return f;
       }
       catch (e) {
-        e.message = 'Error while compiling jcFunc\n'+jcFunc+'\n'+e.message;
+        e.message = 'Error while compiling tbFunc\n'+tbFunc+'\n'+e.message;
         throw e;
       }
     }
-    else if (typeof jcFunc == "function") {
-      return jcFunc;
+    else if (typeof tbFunc == "function") {
+      return tbFunc;
     }
-    this.error = 'jcFunc argument must either be a function() or a string representing the code of an expression like A+3 or return A+3\n'+code; 
+    this.error = 'tbFunc argument must either be a function() or a string representing the code of an expression like A+3 or return A+3\n'+code;
     throw new Error(this.error);
   }
 
   // Row //////////////////////////////////////////////
 
   tb.Row = function Row(obj,table) {
-    // create a Row from an object or a Row. 
+    // create a Row from an object or a Row.
     // only ownProperties (not inherited) are used is the Row
     this._ = {};
     this.table = table;
@@ -178,16 +177,16 @@
 
   tb.Row.prototype.cell = function(col) {
     return this._[col];
-  }  
+  }
 
   tb.Row.prototype.val = function(col) {
     return this._[col] && this._[col].valueOf();
-  }  
+  }
 
   tb.Row.prototype.setCell = function (col,value) {
     if (typeof value == "function") {
       var f = new tb.Var(undefined,value);  //wrap the function into a V
-      f.row = this;       //and assign the _row,_col 
+      f.row = this;       //and assign the _row,_col
       f.col = col;
       this._[col] = f;
       return this;
@@ -210,7 +209,7 @@
 
   tb.Row.prototype.reduce = function(reduceF,criteria,initialValue) {
     // apply a reduce function on a column
-    // criteria is an optional f(jcFunc) that process only row that return true
+    // criteria is an optional f(tbFunc) that process only row that return true
     var first = true;
     var r;
     if (initialValue !== undefined) {
@@ -279,7 +278,7 @@
     for (var col in options.cols) {
       h += '<th>'+col+'</th>';
     }
-    h += '</tr></thead><tbody>';    
+    h += '</tr></thead><tbody>';
     h += '<tr>';
     for (var col in options.cols) {
       var cell = this._[col];
@@ -319,7 +318,7 @@
     this.name = name;
     this.length = 0;
     this.pk = undefined;
-    this.pks = {}; 
+    this.pks = {};
     this.cols = {};
     var leftStyle = function(table,row,col,value,style){if (typeof value!=='number') style.textAlign='left'};
     leftStyle.toString = function(){return 'left for not numbers'};
@@ -328,10 +327,10 @@
                     defValues:{},
                     colOrder:[],
                     visibleCols:tb.heir(this.cols)
-                   };  
+                   };
   }
   tb.Table.className = 'tb.Table';
-  
+
   tb.Table.prototype.set = tb.set;
   tb.Table.prototype.get = tb.get;
 
@@ -373,9 +372,9 @@
 
   tb.Table.prototype.defCol = function(name, defValue, style) {
     // set the column attribute
-    // 
+    //
     // defValue is the value that is used when a new Row is added and that column is not defined
-    // it can be a JavaScript value (number, object.. or an f(jcFunc)
+    // it can be a JavaScript value (number, object.. or an f(tbFunc)
     // the style if set will call colStyle
     var c = new tb.Col(name);
     this.cols[name]=c;
@@ -409,7 +408,7 @@
 
     order = this.options.colOrder.concat(); // make a copy
     for (var col in this.cols) {
-      if ($.inArray(col,this.options.colOrder)===-1) order.push(col); 
+      if ($.inArray(col,this.options.colOrder)===-1) order.push(col);
     }
     return order;
   }
@@ -447,7 +446,7 @@
     // add a row
     // row can be either a simple object or a Row object
     // return the table for method chaining
-    
+
     row = new tb.Row($.extend(true,{},this.options.defValues,row),this);
     row.index = this.length;
     this[this.length++] = row;
@@ -455,7 +454,7 @@
     this.updateCols(row);
     return this;
   }
-  
+
   tb.Table.prototype.addRows = function(rows) {
     // add multiple rows
     // rows must be an array or array-like of objects
@@ -468,9 +467,9 @@
 
   tb.Table.prototype.update = function(cols,keepOnlyValue) {
     // cols is an object {colName:value,....}
-    // value can be a simple value like a number or a string, 
-    // but can also be a jcFunc produced by f(jcFunc)
-    // that will either be stored in the table 
+    // value can be a simple value like a number or a string,
+    // but can also be a tbFunc produced by f(tbFunc)
+    // that will either be stored in the table
     // or be used during the update to calculate the static value of the cell
     // if keepOnlyValue == true
 
@@ -494,7 +493,7 @@
     }
     return this;
   }
-  
+
   tb.Table.prototype.forEachRow = function(func) {
     // execute func for each row of the table
     // func must be function(i,row) in which this represents the Row object
@@ -524,7 +523,7 @@
 
   tb.Table.prototype.reduce = function(colName,reduceF,criteria,initialValue) {
     // apply a reduce function on a column
-    // criteria is an optional f(jcFunc) that process only row that return true
+    // criteria is an optional f(tbFunc) that process only row that return true
     var first = true;
     var r;
     if (initialValue !== undefined) {
@@ -547,12 +546,12 @@
   }
 
   tb.Table.prototype.sum = function(colName,criteria) {
-    // return the sum of the column 
+    // return the sum of the column
     return this.reduce(colName,function(a,b){return a+b},criteria)
   }
 
   tb.Table.prototype.min = function(colName,criteria) {
-    // return the min of the column 
+    // return the min of the column
     return this.reduce(colName,Math.min,criteria);
   }
 
@@ -591,7 +590,7 @@
       this.add(r);
       return this;
     }
-    
+
     if (col === this.pk) {
       this.pks[r.val(col)]=undefined;
       this.registerPk(r);
@@ -618,7 +617,7 @@
   tb.Table.prototype.colStyle = function(style,colName){
     // set the style for a column
     // style can be either an object of $.css() parameters
-    //       or a function(data,col,value) where this represents the row object which is compatible with f("jcFunc")
+    //       or a function(data,col,value) where this represents the row object which is compatible with f("tbFunc")
     //       and which return an object of css parameters
 
     var fStyle = function(table,row,col,value,compoundStyle) {
@@ -643,7 +642,7 @@
     this.options.styles.push(fStyle);
     return this;
   }
-  
+
   tb.Table.prototype.style = function(newStyle,rowNumber,colName){
     // .style(newStyle)  will set the default newStyle for the complete table
     // .style(newStyle,rowNumber) will set the default style for a given row
@@ -748,7 +747,7 @@
     });
     return '['+e.join(',\n')+']';
   }
-  
+
   tb.Table.prototype.node$ = function() {
     // display the table without its name
     var t$ = $('<table/>').css(this.options.tableStyle || {});
@@ -762,7 +761,7 @@
     h$.append(r$);
     for (var rowNumber=0;rowNumber<this.length;rowNumber++) {
       var row = this[rowNumber];
-      r$ = $('<tr/>'); 
+      r$ = $('<tr/>');
       for (var i in colOrder) {
         var col = colOrder[i];
         if (this.options.visibleCols[col] !== false) {
@@ -792,16 +791,16 @@
 
 
   // editor interface ////////////////////////////////////////////////////
-    
+
   tb.Table.prototype.edit = function(options) {
     // edit is similar to span, but gernerates HTML code in order to edit the object interactively
     // it will also set the code to AUTOEDIT class which means that it should no longer be modified by the user since it will
     // be generated by the edition mecanism.
-    
+
     // premier jet: toute la table est éditée peut être simple et efficasse: en cas de tables partielles, faire simplement plusieurs tables et faire une fct pour lier plusieurs tables
-    this.codeElement = tb.output.codeElement;   
-    $(this.codeElement).addClass('AUTOEDIT').attr('jcObject',this.name);
-    
+    this.codeElement = tb.output.codeElement;
+    $(this.codeElement).addClass('AUTOEDIT').attr('tbObject',this.name);
+
     var h = '<div><var>'+this.name+'</var><table><tr><th>#</th>';
     for (var col in this.cols) {
       h += '<th>'+col+'</th>';
@@ -810,20 +809,20 @@
     for (var row=0; row<this.length; row++) {
       h += '<tr><th draggable=true>'+row+'</th>';
       for (var col in this.cols) {
-        h += '<td>'+tb.editor.html(this.cell(row,col),{jcObject:this.name,'jcRow':row,jcCol:col})+'</td>';
+        h += '<td>'+tb.editor.html(this.cell(row,col),{tbObject:this.name,'tbRow':row,tbCol:col})+'</td>';
       }
       h += '</tr>';
-    }    
+    }
     h+='</table></div>';
     return tb.html(h);
   }
 
   tb.Table.prototype.getEditableValue = function(editor) {
-    return this.cell(Number(editor.attr('jcRow')),editor.attr('jcCol'));
+    return this.cell(Number(editor.attr('tbRow')),editor.attr('tbCol'));
   }
 
   tb.Table.prototype.setEditableValue = function(editor) {
-    this.setCell(Number(editor.attr('jcRow')),editor.attr('jcCol'),editor.value);
+    this.setCell(Number(editor.attr('tbRow')),editor.attr('tbCol'),editor.value);
     tb.setModified(true);
     var obj = this;
     window.setTimeout(function(){obj.updateCode();tb.run()},0);
@@ -832,14 +831,14 @@
 
   tb.Table.prototype.updateCode = function() {
     // generate the code that represents the element as edited
-    // can be used to replace the existing code 
+    // can be used to replace the existing code
     var code = 'table('+JSON.stringify(this.name)+')\n';
     for (var i=0; i<this.length; i++) {
       code += '.add('+this[i].toJSON()+')\n';
     }
     this.codeElement.innerHTML = tb.toHtml(code+'.edit()');
   }
-        
+
 
   // factory ////////////////////////////////////////////////
   table = function(name,local) {
@@ -865,10 +864,10 @@
     this.pk = parent.pk;
     this.pks = parent.pks;          //hash table is empty but inherit from primary key
     this.options = {tableStyle:tb.heir(parent.options.tableStyle),
-                    styles:[],      //no additionnal styles, since it will be computed 
+                    styles:[],      //no additionnal styles, since it will be computed
                     colOrder:parent.options.colOrder,
                     visibleCols:tb.heir(parent.options.visibleCols)
-                   };  
+                   };
     this.cols = {};
     for (var col in parent.cols) this.cols[col] = new tb.Col(col,this);
   }
@@ -897,7 +896,7 @@
   tb.View.prototype.colStyle = tb.Table.prototype.colStyle;
   tb.View.prototype.rowStyle = tb.Table.prototype.rowStyle;
   tb.View.prototype.style = tb.Table.prototype.style;
-  tb.View.prototype.compoundStyle = tb.Table.prototype.compoundStyle; 
+  tb.View.prototype.compoundStyle = tb.Table.prototype.compoundStyle;
   tb.View.prototype.sort = tb.Table.prototype.sort;
   tb.View.prototype.find = tb.Table.prototype.find;
   tb.View.prototype.reduce = tb.Table.prototype.reduce;
@@ -952,7 +951,7 @@
     this.htmlCode = this.htmlCode.replace(/jQuery\d+="\d+"/g,'');
     return this;
   }
-  
+
   tb.HTML.prototype.toAscii = function() {
     // same as toString(), but no character is bigger than &#255; every such a character is transformed into &#xxx;
     // Needed for this /&ç&"@ activeX of FileSystem
@@ -971,7 +970,7 @@
     asciiH += h.slice(last);
     return asciiH;
   }
-    
+
   tb.HTML.prototype.span = tb.HTML.prototype.toString;
 
   tb.HTML.prototype.html = function (html) {
@@ -1007,7 +1006,7 @@
     this.htmlCode += '<span class=DIFFSAME>'+tb.toHtml(e1.slice(0,i))+'</span><br>e1:<span class=DIFFERENT>'+tb.toHtml(e1.slice(i))+'</span><br>e2:<span class=DIFFERENT>'+tb.toHtml(e2.slice(i))+'</span>';
     return this;
   }
-    
+
   tb.HTML.prototype.p = function (/*elements*/) {
     this._tag('P',arguments);
     return this;
@@ -1047,7 +1046,7 @@
 
   tb.HTML.prototype.tag = function(tagNameAndAttributes /*,elements*/) {
     // adds to the html <tagNameAndAttributes>span of all elements</tagName>
-    // if element is empty, only adds <tagNameAndAttributes> and push the 
+    // if element is empty, only adds <tagNameAndAttributes> and push the
     // closing </tagName> on the stack waiting for an .end()
     var elements = [];
     for (var i = 1; i<arguments.length; i++) elements.push(arguments[i]);
@@ -1073,7 +1072,7 @@
       else {
         this.htmlCode  += e;
       }
-    }  
+    }
     this.htmlCode += tagEnd;
     return this;
   }
@@ -1082,8 +1081,8 @@
     // close the last opened tag
     this.htmlCode += this.tagsEnd.pop();
     return this;
-  }  
-    
+  }
+
   tb.HTML.prototype.inspect = function(/*objects*/) {
     // adds to the HTML object the inspection of all objects passed in parameters
     for (var i=0; i<arguments.length; i++) {
@@ -1112,7 +1111,7 @@
     tb.finalizations.push(this);
     return this;
   }
-    
+
   tb.HTML.prototype.alert = function(message) {
     window.alert(message);
     return this;
@@ -1125,9 +1124,9 @@
 
   // interactive Elements ////////////////////////////////////////////////////////
   tb.IElement = function IElement(name,css,innerHtml,scene) {
-    //create a new JcElement that can be added inside scene
+    //create a new IElement that can be added inside scene
     //css is an object like {top:100,left:200....} that surcharge {top:0,left:0}
-    //html is html code that will be used as innerHTML 
+    //html is html code that will be used as innerHTML
     //scene is the scene whom this element belongs to
     this.name = name;
     this.scene = scene;
@@ -1144,7 +1143,7 @@
   tb.IElement.className = 'tb.IElement';
 
   tb.IElement.prototype.create$ = function(css,html) {
-    // return the jQuery object corresponding to the DOM element of the JcElement
+    // return the jQuery object corresponding to the DOM element of the IElement
     return $('<DIV>'+html+'</DIV>').addClass('IELEMENT').css(css);
   }
 
@@ -1208,7 +1207,7 @@
 
   tb.IElement.prototype.addForces = function(forces) {
     // add new forces
-    // forces is an object {jcElementName:forceFunction,....}
+    // forces is an object {IElementName:forceFunction,....}
     // forceFunction can be generated by tb.spring or any function(thisElement, otherElement) that return a force{x,y}
     // or undefined to cancel the force produced by a given element
     $.extend(this.forces,forces);
@@ -1263,14 +1262,14 @@
     }
     return this;
   }
-    
+
   tb.IElement.prototype.animate = function(deltaT$ms) {
     // calculate all forces on this element, then calculate a new acceleration, speed and position
 
     var deltaT = (deltaT$ms || 100)/1000;
     var friction = {x:0,y:0,u:1};
     var thisElement = this;
-    
+
     $.each(this.forces,function(name,forceFunc){
       if (!forceFunc) return;
       var fe=forceFunc(thisElement,thisElement.scene[name]);
@@ -1345,7 +1344,7 @@
         f.x = f.force;
         f.y = f.force
       }
-      return f;      
+      return f;
     }
   }
 
@@ -1357,9 +1356,9 @@
     return function springForce(thisElement,otherElement) {
       var f = {};
       f.dist = otherElement.p.y-thisElement.p.y;
-      f.x = 0;      
+      f.x = 0;
       f.y = f.dist*k;
-      return f;      
+      return f;
     }
   }
 
@@ -1384,7 +1383,7 @@
 
   tb.repulseIElements = function(iElements,repulsionForce){
   // repulse all iElements between them by repulseForce
-    
+
     for (var i = 0;i<iElements.length;i++) {
       for (var j = i+1;j<iElements.length;j++) {
         iElements[i].applyForceWith(iElements[j],repulsionForce);
@@ -1403,11 +1402,11 @@
       iElements[i].applyForceWith(iECenter,centripetalForce);
     }
   }
-    
+
 
   // IValue //////////////////////////////////////////////////
 
-  tb.IValue = function JcValue(name,css,html,scene) {
+  tb.IValue = function (name,css,html,scene) {
     tb.IElement.call(this,name,css,html || name,scene);
   }
   tb.IValue.className = 'tb.IValue';
@@ -1422,42 +1421,22 @@
     this.$.children('INPUT').val(newValue);
     return this;
   }
-  
+
   tb.IValue.prototype.valueOf = function() {
     // returns the state of the value attribute
     return this.value();
   }
 
   tb.IValue.prototype.create$ = function(css,html) {
-    // return the JQuery for a checkBox 
+    // return the JQuery for a checkBox
     // this checkBox will have the class IELEMENT and so will be positionned absolute
     return $('<SPAN class=IELEMENT>'+html+'<INPUT type="number" value=0></INPUT></SPAN>').css(css);
   }
 
-/*
-  // IFileName //////////////////////////////////////////////////
-
-  tb.IFileName = function JcFileName(name,css,html,scene) {
-    // IFileName is an IElement for <INPUT type=file>
-    tb.IElement.call(this,name,css,html || name,scene);
-    this._value = 0;
-  }
-  tb.IFileName.className = 'tb.IFileName';
-
-  tb.makeInheritFrom(tb.IFileName,tb.IElement);
-
-  tb.IFileName.prototype.control = function() {
-    // return the HTML code for a checkBox with id=id and text as content
-    // this checkBox will have the class IELEMENT and so will be positionned absolute
-    // at the same time a JcCheckBox is created with the same id allowing to interact
-    // easily with the checkBox in user code
-    return '<SPAN class=IELEMENT'+this.style()+'>'+this._html+'<INPUT id='+this.id+' type="file" value='+this._value+'></INPUT></SPAN>';
-  }
-*/
 
   // ICheckBox //////////////////////////////////////////////////
 
-  tb.ICheckBox = function ICheckBox(name,css,html,scene) {
+  tb.ICheckBox = function (name,css,html,scene) {
     // ICheckBox is an IElement for <INPUT type=checkbox>
     tb.IElement.call(this,name,css,html || name,scene);
   }
@@ -1473,16 +1452,16 @@
     this.$.children().attr('checked',newState);
     return this;
   }
-  
+
   tb.ICheckBox.prototype.valueOf = function() {
     // returns the state of the checked attribute
     return this.checked();
   }
- 
+
   tb.ICheckBox.prototype.create$ = function(css,html) {
     // return the HTML code for a checkBox with id=id and text as content
     // this checkBox will have the class IELEMENT and so will be positionned absolute
-    // at the same time a JcCheckBox is created with the same id allowing to interact
+    // at the same time a ICheckBox is created with the same id allowing to interact
     // easily with the checkBox in user code
     return $('<SPAN class=IELEMENT><INPUT type="checkbox">'+html+'</INPUT></SPAN>').css(css);
   }
@@ -1491,7 +1470,7 @@
 
   tb.Scene = function Scene(name,css,html) {
   // a scene has itself as scene so all .div.. methods of IElement are also valid
-    tb.IElement.call(this,name,css || {},html || '',this); 
+    tb.IElement.call(this,name,css || {},html || '',this);
     this.length = 0;
   }
   tb.Scene.className = 'tb.Scene';
@@ -1509,7 +1488,7 @@
     this[this.length++] = iElement;
     this.container$.append(iElement.element$())
     return iElement;
-  }    
+  }
 
   tb.Scene.prototype.remove = function(iElement) {
   // remove iElement from the sceen
@@ -1541,11 +1520,11 @@
   }
 
   tb.scene = function(name,css) {
-    // creates a new Scene and return a fake IElement that has scene as "parent" 
+    // creates a new Scene and return a fake IElement that has scene as "parent"
     // so that method chaining is only done at IElement level
     var scene = new tb.Scene(name,css);
     tb.vars[name] = scene;
-    return scene; 
+    return scene;
   }
 
   // Cloud ///////////////////////////////////////////////
@@ -1553,7 +1532,7 @@
   tb.Cloud = function Cloud(name,css,html) {
     // Cloud is a Scene that contains IElement that represents a Cloud of information
     tb.Scene.call(this,name,css,html);
-    this.repulseForce = tb.repulseForce;    
+    this.repulseForce = tb.repulseForce;
     this.centripetalForce = tb.centripetalForce;
   }
   tb.Cloud.className = 'tb.Cloud';
@@ -1584,7 +1563,7 @@
     tb.vars[name] = cloud;
     return cloud;
   }
-  
+
   // helpers /////////////////////////////////////////////
 
   function range(min,max) {    //TODO devrait être un itérateur, mais n'existe pas encore dans cette version
