@@ -28,7 +28,7 @@
 
   tb.Var.prototype.setValue = function(value){
     if (typeof value == "function") {
-      this.func =value;
+      this.func = value;
       this.type = 'function';
     }
     else {
@@ -50,8 +50,9 @@
     return this.value;
   }
 
-  tb.Var.prototype.toJSON = function () {
-    return this.code()?'f('+JSON.stringify(this.code())+')':JSON.stringify(this.value);
+  tb.Var.prototype.toJSCode = function () {
+    // return a string that can be interpreted by eval and will give the same result as the value
+    return this.code()?'f('+tb.toJSCode(this.code())+')':tb.toJSCode(this.value);
   }
 
   tb.Var.prototype.code = function() {
@@ -95,6 +96,7 @@
   }
 
   tb.Var.prototype.setEditableValue = function(editor) {
+    // implementation of the [[tb.EditableObject.prototype.setEditableValue]]
     this.setValue(editor.value);
     tb.setModified(true);
     var obj = this;
@@ -103,7 +105,7 @@
 
   tb.Var.prototype.updateCode = function() {
     // implementation of the [[tb.EditableObject.prototype.updateCode]]
-    var code = 'v('+JSON.stringify(this.name)+','+this.toJSON()+')';
+    var code = 'v('+tb.toJSCode(this.name)+','+this.toJSCode()+')';
     this.codeElement.innerHTML = tb.toHtml(code+'.edit()');
   }
 
@@ -144,7 +146,7 @@
         var f = new Function('rowData','col','value','with (tb.vars){with(rowData||{}) {'+code+'}}');
         f.userCode = tbFunc;
         f.toString = function(){return this.userCode};
-        f.toJson = function(){return 'f("'+JSON.stringify(this.userCode)+'")'};
+        f.toJson = function(){return 'f('+JSON.stringify(this.userCode)+')'};
         return f;
       }
       catch (e) {
@@ -258,10 +260,10 @@
     return Math.sqrt(sc.sum/sc.count);
   }
 
-  tb.Row.prototype.toJSON = function() {
+  tb.Row.prototype.toJSCode = function() {
     var e = [];
     this.eachCol(function(colName,colObject){
-      e.push(JSON.stringify(colName)+':'+JSON.stringify(colObject));
+      e.push(tb.toJSCode(colName)+':'+tb.toJSCode(colObject));
     });
     return '{'+ e.join(',')+ '}';
   }
@@ -740,10 +742,10 @@
     return '[object Table('+this.name+') of '+this.length+' rows]';
   }
 
-  tb.Table.prototype.toJSON = function() {
+  tb.Table.prototype.toJSCode = function() {
     var e = [];
     this.forEachRow(function(i,row){
-      e.push(row.toJSON())
+      e.push(row.toJSCode())
     });
     return '['+e.join(',\n')+']';
   }
@@ -834,7 +836,7 @@
     // can be used to replace the existing code
     var code = 'table('+JSON.stringify(this.name)+')\n';
     for (var i=0; i<this.length; i++) {
-      code += '.add('+this[i].toJSON()+')\n';
+      code += '.add('+this[i].toJSCode()+')\n';
     }
     this.codeElement.innerHTML = tb.toHtml(code+'.edit()');
   }

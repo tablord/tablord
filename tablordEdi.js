@@ -1423,6 +1423,9 @@
     else if (typeof obj === 'function') {
       return obj.toString();
     }
+    else if (obj.toJSCode) {
+      return obj.toJSCode();
+    }
     else if (obj.toJSON) {
       return obj.toJSON();
     }
@@ -1620,21 +1623,21 @@
     //tbObject --> IDE: <div...all .EDITORs needed to edit myVar>
 
     // create a tool bar for the [[tb.Editor]]
-    this.toolBar$ = $('<SPAN/>')
-      .append('<input type="radio" name="type" value="string" onclick="tb.editor.force(\'string\');">String')
-      .append('<input type="radio" name="type" value="number" onclick="tb.editor.force(\'number\')">Number')
-      .append('<input type="radio" name="type" value="function" onclick="tb.editor.force(\'function\')">Function')
+    this.toolBar$ = $('<div>')
+      .append('<input type="radio" name="type" value="string" autocomplete="off" onclick="tb.editor.force(\'string\');">String')
+      .append('<input type="radio" name="type" value="number" autocomplete="off" onclick="tb.editor.force(\'number\')">Number')
+      .append('<input type="radio" name="type" value="function" autocomplete="off" onclick="tb.editor.force(\'function\')">Function')
       .append(this.funcCode$=$('<input type="text"  name="funcCode" value="" onchange="tb.editor.funcCodeChange();" onclick="tb.editor.funcCodeClick();">'))
-      .append('<input type="radio" name="type" value="undefined" onclick="tb.editor.force(\'undefined\')">undefined');
+      .append('<input type="radio" name="type" value="undefined" autocomplete="off" onclick="tb.editor.force(\'undefined\')">undefined')
+      .hide();
+    tb.objectToolBar$.append(this.toolBar$);
   }
   tb.Editor.className = 'tb.Editor';
-
-
 
   tb.Editor.prototype.funcCodeClick = function() {
     // click event handler of the code INPUT of the toolbar of the [[tb.Editor]]
     this.force('function');
-    $('[value=function]',this.toolBar$).attr('checked',true);
+    $('[value=function]',this.toolBar$).prop('checked',true);
     this.funcCode$.focus();
   }
 
@@ -1678,11 +1681,13 @@
         this.funcCode$.val('');
         break;
       case 'string':
+        this.value = (this.value!==undefined)?this.value.toString():'undefined';
         this.funcCode$.val('');
         break;
     }
     this.type = type;
-    editor$.triggerHandler('change');  // will update the value, update the code, run the sheet and so updage the editors and tool bars
+    tb.editorEventHandler({target:this.currentEditor,type:'change'}); // synchronusly run the change event
+    //editor$.triggerHandler('change');  // will update the value, update the code, run the sheet and so updage the editors and tool bars
     this.setCurrentEditor(this.currentEditor); // will refresh the toolbar and refocus the editor according to the new situation
   }
 
@@ -1692,12 +1697,11 @@
     this.currentEditor = editor;
     if (editor) {
       this.tbObject = tb.vars[$(editor).attr('tbObject')];
-      tb.objectToolBar$.append(tb.editor.toolBar$);
       this.value = this.tbObject.getEditableValue(this);
       this.type = (this.value && this.value.isV)?'function':typeof this.value;
       var radio$ = $('[value='+this.type+']',this.toolBar$);
-      radio$.attr('checked',true);
-
+      radio$.prop('checked',true);
+      this.toolBar$.show();
       if (this.type == 'function') {
         this.funcCode$.val(this.value.code());
         if (this.funcCode$[0] != window.document.activeElement){
@@ -1710,6 +1714,9 @@
           editor.focus();
         }
       }
+    }
+    else {
+      this.toolBar$.hide();
     }
   }
 
@@ -1744,7 +1751,6 @@
   };
 
 
-  tb.editor = new tb.Editor();
 
 
   ////////////
@@ -2342,6 +2348,7 @@
       '<DIV id=objectToolBar></DIV>'
     );
 
+
     tb.templateChoice$ = $('<select class="custom-select">');
     tb.updateTemplateChoice();
 
@@ -2559,6 +2566,7 @@
 
   tb.selectElement = function(element) {
     // select element as tb.selectedElement and update the EDI accordingly
+    tb.editor.setCurrentEditor(undefined);
     var e = tb.selectedElement;
     if (e) {
       if (element && (e === element)) { // if already selected nothing to do but give focus again
@@ -3083,6 +3091,7 @@ a('convert from jc to tb')
 
       tb.findblockNumber();
       tb.initToolBars();
+      tb.editor = new tb.Editor();
       $(window).bind('beforeunload',tb.beforeUnload);
       $('body').keydown(tb.bodyKeyDown)//.keyup(tb.bodyKeyUp);
       tb.autoRun = $('body').attr('autoRun')!==false;

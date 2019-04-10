@@ -1,3 +1,9 @@
+:root {
+  --bgsuccess: #d4edda;
+  --bgcode: #f2f9a8;
+  --bginfo: #d1ecf1;
+  --bgeditor : #b9a3c1;
+}
 body {
   font-family: Arial;
   color: black;
@@ -57,12 +63,12 @@ table {
 
 th {
   text-align: left;
-  text-valign: top;
+  vertical-align: top;
 }
 
 td {
   text-align: right;
-  text-valign: top;
+  vertical-align: top;
 }
 
 .LEFT {
@@ -75,7 +81,7 @@ td {
 .TRACE {
   border: 1px solid #000080;
   text-align: left;
-  text-valign: top;
+  vertical-align: top;
 }
 
 p {
@@ -124,7 +130,7 @@ p {
 .CODEVIEW {
   font-family: courier;
   font-size: 0.85rem;
-  background-color: #bbf9a8;
+  background-color: var(--bgcode);
   border:solid green 1px;
   margin: 0px;
   padding: 0px;
@@ -133,7 +139,7 @@ p {
 .CODEEXAMPLE,
 .CODE {
   font-family: courier;
-  background-color: #f2f9a8;
+  background-color: var(--bgcode);
   border: none;
   margin: 0px;
 }
@@ -155,26 +161,27 @@ p {
 }
 
 .EDITOR {
-  background-color: #b9a3c1;
+  background-color:  var(--bgeditor);
+  border: 1px solid black;
 }
 
 .EDITOR.undefined {
-  background-color: #b9a3C1;
+  background-color:  var(--bgeditor);
   color : white;
 }
 
 .EDITOR.number {
-  background-color: #b9a3c1;
+  background-color:  var(--bgeditor);
   color : blue;
   text-align: right;
 }
 .EDITOR.string {
-  background-color: #b9a3c1;
+  background-color: var(--bgeditor);
   color : red;
   text-align: left;
 }
 .EDITOR.function {
-  background-color: #f2f9a8;
+  background-color: var(--bgsuccess);
 }
 
 .OUTPUTEXAMPLE,
@@ -192,12 +199,11 @@ p {
 }
 
 .TEST {
-  background-color: #b6fff7;
+  background-color: var(--bginfo);
   border:solid blue 3px;
   color: blue;
 }
 .TEST.ERROR {
-  background-color: #b6fff7;
   border:solid red 3px;
   color: black;
 }
@@ -210,18 +216,18 @@ p {
 .DIFFSAME,
 .USERSUCCESS,
 .SUCCESS {
-  background-color: #d4edda;
+  background-color: var(--bgsuccess);
   color: black;
 }
 
 .INFO  {
-  background-color: #b6fff7;
+  background-color: var(--bginfo);
 }
 
 .TRACE,
 .DEBUG {
   font-size: 14px;
-  background-color: #b6fff7;
+  background-color: var(--bginfo);
   border:solid blue 1px;
 }
 
@@ -277,7 +283,7 @@ p {
 
 .CUT {
   background-color: #b7b7b7;
-  color: 828282;
+  color: #828282;
   font-size: 8px;
 }
 
@@ -348,7 +354,7 @@ p {
 }
 
 .INTERACTIVE > [contenteditable=true] {
-  background-color:#b9a3c1;
+  background-color: var(--bgeditor);
 }
 
 .SCENECONTAINER {
