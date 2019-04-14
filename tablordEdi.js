@@ -592,34 +592,29 @@
 
   $.fn.getItemValue = function(){
     // return the value of an element handling all specifications of microdata of the getter of itemValue
-    var e = this[0];
-    if (e.itemprop === undefined) return null;
-    if (e.itemscope) return e;
-    if (e.tagName === 'META') return e.content;
-    if ($.inArray(e.tagName,['AUDIO','EMBED','IFRAME','IMG','SOURCE','TRACK','VIDEO'])!=-1) return e.src;
-    if ($.inArray(e.tagName,['A','AREA','LINK'])!=-1) return e.href;
-    if (e.tagName === 'OBJECT') return e.data;
-    if ($.inArray(e.tagName,['DATA','METER','SELECT'])!=-1) return this.val();
-    if (e.tagName === 'TIME') return e.datetime?e.datetime:this.text();
+    var tag = this.prop('tagName');
+    if (this.attr('itemprop') === undefined) return null;
+    if (this.attr('itemscope')) return this[0];
+    if (tag === 'META') return this.attr('content');
+    if ($.inArray(tag,['AUDIO','EMBED','IFRAME','IMG','SOURCE','TRACK','VIDEO'])!=-1) return this.attr('src');
+    if ($.inArray(tag,['A','AREA','LINK'])!=-1) return this.attr('href');
+    if (tag === 'OBJECT') return this.attr('data');
+    if ($.inArray(tag,['DATA','METER','SELECT'])!=-1) return this.val();
+    if (tag === 'TIME') return this.attr('datetime') || this.text();
     return this.text();
   }
 
   $.fn.setItemValue = function(value){
     // set the value of an element handling all specifications of microdata of the getter of itemValue
-    var e = this[0];
-    if (e.itemprop === undefined) throw new Error("can't set the itemprop value of an element that is not an itemprop\n"+e.outerHTML);
-    else if (e.tagName === 'META') e.content = value;
-    else if ($.inArray(e.tagName,['AUDIO','EMBED','IFRAME','IMG','SOURCE','TRACK','VIDEO'])!=-1) e.src=value;
-    else if ($.inArray(e.tagName,['A','AREA','LINK'])!=-1) e.href=value;
-    else if (e.tagName === 'OBJECT') e.data=value;
-    else if ($.inArray(e.tagName,['DATA','METER','SELECT'])!=-1) this.val(value);
-    else if (e.tagName === 'TIME') {
-      if (e.datetime) {
-        e.datetime=value;
-      }
-      else {
-        this.text(value);
-      }
+    var tag = this.prop('tagName');
+    if (this.attr('itemprop') === undefined) throw new Error("can't set the itemprop value of an element that is not an itemprop\n"+e.outerHTML);
+    else if (tag === 'META') this.attr('content',value);
+    else if ($.inArray(tag,['AUDIO','EMBED','IFRAME','IMG','SOURCE','TRACK','VIDEO'])!=-1) this.attr('src',value);
+    else if ($.inArray(tag,['A','AREA','LINK'])!=-1) this.attr('href',value);
+    else if (tag === 'OBJECT') this.attr('data',value);
+    else if ($.inArray(tag,['DATA','METER','SELECT'])!=-1) this.val(value);
+    else if (tag === 'TIME') {
+      this.attr('datetime',value);
     }
     else this.text(value);
     return this;
@@ -642,19 +637,20 @@
       }
     }
 
-    if (this[0].id) data._id = this[0].id;
+    if (this.attr('id')) data._id = this.attr('id');
     this.children().each(function(i,element) {
-      var itemprop = element.itemprop;
+      var e$ = $(element);
+      var itemprop = e$.attr('itemprop');
       if (itemprop !== undefined) {
-        if (element.itemscope !== undefined) {
-          set(itemprop,$(element).getItemscopeData());
+        if (e$.attr('itemscope') !== undefined) {
+          set(itemprop,e$.getItemscopeData());
         }
         else {
-          set(itemprop,$(element).getItemValue());
+          set(itemprop,e$.getItemValue());
         }
       }
       else {  // this node is not an itemprop, look if its children have data
-        $.extend(true,data,$(element).getItemscopeData());
+        $.extend(true,data,e$.getItemscopeData());
       }
 
     });
@@ -703,16 +699,17 @@
     var result = result || {};
     this.each(function(i,e){
       var e$ = $(e);
-      if (e.itemprop) {
-        if (result[e.itemprop] == undefined) result[e.itemprop] = [];
-        if (e.itemscope !== undefined) {
-          result[e.itemprop].push(e$.getItemscopeMicrodata());
+      var itemprop = e$.attr('itemprop')
+      if (itemprop) {
+        if (result[itemprop] == undefined) result[itemprop] = [];
+        if (e$.attr('itemscope') !== undefined) {
+          result[itemprop].push(e$.getItemscopeMicrodata());
         }
         else {
-          result[e.itemprop].push(e$.getItemValue());
+          result[itemprop].push(e$.getItemValue());
         }
       }
-      else if (e.itemscope !== undefined) {
+      else if (e$.attr('itemscope') !== undefined) {
         if (result.items === undefined) result.items = [];
         result.items.push(e$.getItemscopeMicrodata());
       }
@@ -732,22 +729,24 @@
     // as all itemprop are arrays (since it is legal to have multiple itemprops having the same name)
     // every itemprop will "consume" the first element of the array
     this.each(function(i,e){
-      if (e.itemscope !== undefined)  {
-        var itemprop = e.itemprop?e.itemprop:'items';
+      var e$ = $(e);
+      if (e$.attr('itemscope') !== undefined)  {
+        var itemprop = e$.attr('itemprop') || 'items';
         var subData = data && data[itemprop] && data[itemprop].shift();
         if (subData !== undefined) {
-          $(e).children().setMicrodata(subData.properties);
+          e$.children().setMicrodata(subData.properties);
         }
       }
       else {
-        if (e.itemprop) {
-          var subData = data && data[e.itemprop] && data[e.itemprop].shift();
+        var itemprop = e$.attr('itemprop');
+        if (itemprop) {
+          var subData = data && data[itemprop] && data[itemprop].shift();
           if (subData) {
-            $(e).setItemValue(subData);
+            e$.setItemValue(subData);
           }
         }
         else { //an intermedate node look if anything to set in its children
-          $(e).children().setMicrodata(data);
+          e$.children().setMicrodata(data);
         }
       }
     });
@@ -1983,16 +1982,16 @@
     // convert element to template(name) as itemprop
 
     var e$ = $(element);
-    var data = $.extend(true,e$.data('itemData') || {},e$.getMicrodata());
-    var id = element.id;
+    var microdata = $.extend(true,e$.data('itemData') || {},e$.getMicrodata());
+    var id = e$.attr('id');
     var containers = $.extend(true,e$.data('containers') || {},tb.Template.getElement$Containers(e$));
-    var k = tb.keys(data);
-    if (k.length > 1) throw new Error('element.convert error: data has more than 1 head key\n'+tb.toJSCode(data));
+    var k = tb.keys(microdata);
+    if (k.length > 1) throw new Error('element.convert error: microdata has more than 1 head key\n'+tb.toJSCode(microdata));
     var newData = {};
-    newData[itemprop || 'items'] = data[k[0]] || {};
+    newData[itemprop || 'items'] = microdata[k[0]] || {};
     var new$ = this.element$(itemprop,id);
     if (this.convertData) {
-      this.convertData(data,new$);
+      this.convertData(microdata,new$);
     }
     else {
       new$.setMicrodata(newData);
@@ -2070,8 +2069,8 @@
     // - element$  a jQuery of 1 element that potentially has embedded containers
     // - containers an object {containerName:jQueryOfContentOfContainer,....}
     element$.children().each(function(i,e) {
-      var containerName = e.container;
       var e$ = $(e);
+      var containerName = e$.attr('container');
       if (containerName) {
         e$.empty();
         if (containers[containerName]) {
@@ -2090,7 +2089,7 @@
     //    all containers found will be added to containers
     containers = containers || {};
     element$.children().each(function(i,e) {
-      var containerName = e.container;
+      var containerName = $(e).attr('container');
       if (containerName) {
         containers[containerName] = $(e).children();
       }
@@ -2325,8 +2324,8 @@
       );
     }
     if (tb.selectedElement &&
-        tb.selectedElement.itemtype) {
-      var name = tb.Template.urlToName(tb.selectedElement.itemtype);
+        $(tb.selectedElement).attr('itemtype')) {
+      var name = tb.Template.urlToName($(tb.selectedElement).attr('itemtype'));
       if (name && ($.inArray(name,acceptedTemplates)!=-1)) {
         tb.templateChoice$.val(name);
         return;
@@ -2409,7 +2408,43 @@
     .append(tb.helpPanel$)
     .append(tb.debug$);
 
-    $('BODY').prepend(tb.menu$);
+
+    $('BODY')
+    .prepend(tb.menu$)
+    .prepend(
+        '<div class="modal fade" id="showHtml" role="dialog">'+
+          '<div class="modal-dialog" role="document">'+
+            '<div class="modal-content">'+
+              '<div class="modal-header">'+
+                '<h5 class="modal-title" id="showHtmlTitle">Show Html</h5>'+
+                '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
+                  '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+              '</div>'+
+              '<div class="modal-body" id="showHtmlBody"></div>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="modal fade" id="closeDialog" role="dialog">'+
+          '<div class="modal-dialog" role="document">'+
+            '<div class="modal-content">'+
+              '<div class="modal-header">'+
+                '<h5 class="modal-title">Leave without saving?</h5>'+
+                '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
+                  '<span aria-hidden="true">&times;</span>'+
+                '</button>'+
+              '</div>'+
+              '<div class="modal-body">'+
+                'You are about to leave an unsaved sheet!<br>what do you want?'+
+                '<button type="button" class="btn btn-success">Save changes and close</button>'+
+                '<button type="button" class="btn btn-danger">Discard changes</button>'+
+                '<button type="button" class="btn btn-secondary" data-dismiss="modal">Do not leave</button>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+        '</div>'
+    );
+
 
     $('#richTextToolBar').remove(); // kill anything previouly in the saved document
     tb.richTextToolBar$ =  $('<div class="btn-group" role="group" id=richTextToolBar </div>')
@@ -2508,12 +2543,11 @@
   }
 
 
-  tb.beforeUnload = function() {  //TODO avec hta, ne fonctionne pas bien
+  tb.beforeUnload = function(event) {  //TODO avec hta, ne fonctionne pas bien
     // event handler before closing check if a save is needed and desired
     if (tb.modified) {
-      if (window.confirm('your file has been modified since last save\n;save it now?')) {
-        tb.save();
-      }
+      event.returnValue='ouups?';
+      return 'ouups?'
     }
   }
 
@@ -2737,8 +2771,8 @@
     if (element$.hasClass('CUT')) return;
 
     // if template, lauch exec method if any
-    if (element.itemtype) {
-      var t = tb.templates[element.itemtype];
+    if (element$.attr('itemtype')) {
+      var t = tb.templates[element$.attr('itemtype')];
       if (t && t.exec) {
         t.exec(element$);
       }
@@ -2899,7 +2933,7 @@
     // make sure that containers are never empty (= have a fake [[EMPTY]] [[ELEMENT]])
     // and that no fake element remains if there is another element inside the container
     $('.ELEMENT.EMPTY:not(:only-child)').remove();
-    var c$ = $('[container]:empty');
+    var c$ = $('[container]:not(:has(> *))');
     c$.append('<DIV class="ELEMENT EMPTY" contentEditable=false>empty container: click here to add an element</DIV>');
   }
 
@@ -3096,6 +3130,7 @@ a('convert from jc to tb')
       $('body').keydown(tb.bodyKeyDown)//.keyup(tb.bodyKeyUp);
       tb.autoRun = $('body').attr('autoRun')!==false;
       tb.help.update(tb,'tb.');
+      tb.updateContainers();
     }
     catch (e) {
       window.alert(e.message);

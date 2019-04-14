@@ -69,7 +69,7 @@
 
   tb.Var.prototype.toString = function() {
     // return the summary of the variable
-    return '[object tb.Var('+this.name+'):'+(this.func?this.toJSON()+'==>':'')+this.valueOf()+']';
+    return '[object tb.Var('+this.name+'):'+(this.func?this.toJSCode()+'==>':'')+this.valueOf()+']';
   }
 
   tb.Var.prototype.view = function(options) {
@@ -1450,8 +1450,8 @@
     // when used without parameters, return the current state of the corresponding checkBox (generally created with output.iCheckBox)
     // (same as valueOf)
     // with a parameter (true or false) set a new state to the checked attribute of the iCheckBox
-    if (newState===undefined) return this.$.children().attr('checked');
-    this.$.children().attr('checked',newState);
+    if (newState===undefined) return this.$.children().prop('checked');
+    this.$.children().prop('checked',newState);
     return this;
   }
 

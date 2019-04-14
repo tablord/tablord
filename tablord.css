@@ -3,6 +3,7 @@
   --bgcode: #f2f9a8;
   --bginfo: #d1ecf1;
   --bgeditor : #b9a3c1;
+  --bgerror : var(--danger);
 }
 body {
   font-family: Arial;
@@ -107,6 +108,8 @@ p {
 
 .FIELD.EDITABLE {
   border-bottom: solid grey 1px;
+  display:inline-block;
+  width:100%;
 }
 
 
@@ -235,7 +238,7 @@ p {
 .USERERROR,
 .WRONG,
 .ERROR {
-  background-color: var(--error);
+  background-color: var(--bgerror);
   color: black;
 }
 
@@ -255,6 +258,18 @@ p {
   padding: 2px;
   margin: 0px;
   font-size: 11px;
+}
+.INSPECT legend,
+.HELP legend {
+  width:initial;
+  margin: 0px;
+  padding: 0px 4px;
+  font-size: 1em;
+}
+
+.INSPECT fieldset,
+.HELP fielset {
+  border: 1px solid black;
 }
 
 .PARAMETER {
