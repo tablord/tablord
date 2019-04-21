@@ -1,23 +1,24 @@
-jc.diff = function (t1,t2) {
-  return (new jc.Diff(t1,t2)).execute()
+tb.diff = function (t1,t2) {
+  return (new tb.Diff(t1,t2)).execute()
 }
 
-jc.diffFiles = function (fileName1,fileName2) {
-  var t1 = jc.fso.readFile(fileName1);
-  var t2 = jc.fso.readFile(fileName2);
-  return jc.diff(t1,t2);
+tb.diffFiles = function (fileName1,fileName2) {
+  var t1 = tb.fso.readFile(fileName1);
+  var t2 = tb.fso.readFile(fileName2);
+  return tb.diff(t1,t2);
 }
 
-jc.Diff = function (t1,t2) {
+tb.Diff = function (t1,t2) {
   this.l1 = $.map(t1.split('\n'), function(l,i) {return {i1:i,line:l};});
   this.l2 = $.map(t2.split('\n'), function(l,i) {return {i2:i,line:l};});
   var mods = [];
   this.i1 = 0;
   this.i2 = 0;
 }
+tb.Diff.className = 'tb.Diff';
 
 
-jc.Diff.prototype.markIdentical = function () {
+tb.Diff.prototype.markIdentical = function () {
   // mark identical lines using the 2 indexes this.i1 and this.i2
 trace('markIdentical start @',this.l1[this.i1],this.l2[this.i2])
   while ((this.i1 < this.l1.length) && (this.i2 < this.l2.length)) {
@@ -33,8 +34,8 @@ trace('...found diff',this.l1[this.i1],this.l2[this.i2])
 trace('...end of 1 text')
   return this;
 }
-  
-jc.Diff.prototype.resynchronize = function () {
+
+tb.Diff.prototype.resynchronize = function () {
   // assumes that the lines at current index are not identical
   // tries to resynchronize
 
@@ -91,7 +92,7 @@ trace('NEVER BE HERE')
   return this;
 }
 
-jc.Diff.prototype.markDiff = function (begin1,end1,begin2,end2) {
+tb.Diff.prototype.markDiff = function (begin1,end1,begin2,end2) {
   // mark the lines of 1 as '-' (deleted) between begin1(included) and end1(not included)
   //  and the lines of 2 as '+' (aded) between begin2(included) and end2(notincluded)
 trace('....markDiff('+begin1+','+end1+','+begin2+','+end2+')');
@@ -105,7 +106,7 @@ trace('....markDiff('+begin1+','+end1+','+begin2+','+end2+')');
 }
 
 
-jc.Diff.prototype.execute = function () {
+tb.Diff.prototype.execute = function () {
   // execute the diff
 trace('execute',this.i1,this.i2)
   while ((this.i1 < this.l1.length) && (this.i2 < this.l2.length)) {
@@ -116,7 +117,7 @@ trace('execute',this.i1,this.i2)
 }
 
 
-jc.Diff.prototype.span = function () {
+tb.Diff.prototype.span = function () {
   var h = '';
   var s1=0;
   var s2=0;
@@ -128,10 +129,10 @@ jc.Diff.prototype.span = function () {
            (i2 < this.l2.length) && (this.l2[i2].status==='=')) {
       i1++;
       i2++;
-    }    
+    }
     h += '<pre class="DIFF EQUAL">';
     $.each(this.l1.slice(s1,i1),
-        function(i,e) {h +='='+jc.pad(s1+i,4)+','+jc.pad(s2+i,4)+' '+jc.toHtml(e.line)+'<br>'});
+        function(i,e) {h +='='+tb.pad(s1+i,4)+','+tb.pad(s2+i,4)+' '+tb.toHtml(e.line)+'<br>'});
     h +='</pre>';
     s1 = i1;
     s2 = i2;
@@ -140,18 +141,17 @@ jc.Diff.prototype.span = function () {
       i1++;
     }
     h += '<pre class="DIFF DEL">';
-    $.each(this.l1.slice(s1,i1),function(i,e) {h += '-'+jc.pad(s1+i,4)+',     '+jc.toHtml(e.line)+'<br>'});
+    $.each(this.l1.slice(s1,i1),function(i,e) {h += '-'+tb.pad(s1+i,4)+',     '+tb.toHtml(e.line)+'<br>'});
     h +='</pre>';
     s1 = i1;
-    
+
     while ((i2 < this.l2.length) && (this.l2[i2].status==='+')) {
       i2++;
     }
     h += '<pre class="DIFF ADD">';
-    $.each(this.l2.slice(s2,i2),function(i,e) {h += '+    ,'+jc.pad(s2+i,4)+' '+jc.toHtml(e.line)+'<br>'});
+    $.each(this.l2.slice(s2,i2),function(i,e) {h += '+    ,'+tb.pad(s2+i,4)+' '+tb.toHtml(e.line)+'<br>'});
     h +='</pre>';
     s2 = i2;
   }
-  return jc.html(h);
+  return tb.html(h);
 }
-
