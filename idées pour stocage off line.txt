@@ -1,8 +1,0 @@
-Enregistrer sous: ne fonctionne pas, car il stock le document comme il a été téléchargé ==> sans les modifications de l'utilisateur
-
-localStorage: ne semble pas être disponible (probablement car un nom de fichier, pas une URL http...   A VERIFIER )
-
-COOKIES: à vérifier si disponibles
-//-------------------------------------------
-// à voir ce qui se passe si on a téléchargé la page depuis internet. dans ce cas, il est possible que l'on puisse avoir localStorage + manifest etc pour avoir les lib offline
-//-------------------------------------------
