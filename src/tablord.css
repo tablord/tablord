@@ -8,7 +8,6 @@
 body {
   font-family: Arial;
   color: black;
-  width: 21cm;
 }
 tbody {
   font-family: Arial;
@@ -161,6 +160,18 @@ p {
 
 .EMBEDDED {
   background-color: #ffb848;
+  display:none;
+}
+.EMBEDDED:before {
+  content:"{{ "
+}
+
+.EMBEDDED:after {
+  content:" }}"
+}
+
+.SELECTED .EMBEDDED {
+  display:inline;
 }
 
 .EDITOR {
@@ -397,6 +408,7 @@ p {
 .PAGEBREAK {
   border-bottom: 2px dashed blue;
   color: grey;
+  background: #e0e0e0;
 }
 
 #tbContent {
@@ -421,15 +433,67 @@ p {
 }
 
 @media print {
-  #menu {
+  .no_print {
     display:none;
   }
-  .PAGEBREAK {
+  .PAGEBREAK,
+  .A3,
+  .A4,
+  .A5 {
     page-break-before:always;
     border:none;
     color:white;
   }
-  tbody: {
-    font-size:0.8em !important;
+
+       .A3.landscape { width: 420mm }
+  .A3, .A4.landscape { width: 297mm }
+  .A4, .A5.landscape { width: 210mm }
+  .A5                { width: 148mm }
+}
+
+@page { margin: 0 }
+body { margin: 0 }
+.sheet {
+  margin: 0;
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+  page-break-after: always;
+}
+
+/** Paper sizes **/
+     .A3.landscape { width: 420mm }
+.A3, .A4.landscape { width: 297mm }
+.A4, .A5.landscape { width: 210mm }
+.A5                { width: 148mm }
+
+@media screen {
+  body { background: white; }
+
+  .A3,.A4,.A5 {
+    background: white;
+    color: black;
+    box-shadow: 0 .5mm 2mm rgba(0,0,0,.3);
+    margin: 5mm;
+  }
+  .A4:before {
+    display:block;
+    color  :grey;
+    background: #e0e0e0;
+    content:'A4';
+  }
+  .PAGEBREAK:before {
+    display:block;
+    color  :grey;
+    background: #e0e0e0;
+    content:'page break';
   }
 }
+
+/** Padding area **/
+.sheet.padding-10mm { padding: 10mm }
+.sheet.padding-15mm { padding: 15mm }
+.sheet.padding-20mm { padding: 20mm }
+.sheet.padding-25mm { padding: 25mm }
+
+

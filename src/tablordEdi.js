@@ -14,7 +14,7 @@
   // global variables /////////////////////////////////////////////////
 
   var tb = {name:'Tablord',
-            version:'0.1',
+            version:'1.0',
             authors:['Marc Nicole'],
             rights:'CC-BY-SA 2018',
             selectedElement:undefined,
@@ -1260,6 +1260,7 @@
     // - domain
     // - port
     // - path
+    // - fullFilName
     // - fileName
     // - ext
     // - tag
@@ -1268,7 +1269,8 @@
     // if url is an ordinary file name it is first transformed to an url with file:///
     var url = urlOrFileName.replace(/\\/g,'/');
     if (/file:|http[s]?:|mailto:|ftp:/i.test(url)==false) url='file:///'+url;
-    var urlSplitRegExp = /(\w+):((\/\/((\w+):(\w+)@)?([\w\.]+)(:(\w+))?)|(\/\/\/(\w:)?))?(\/.+\/)?(.+)\.(\w+)(\#(\w+))?(\?(.+))?/;
+    // you can test this regex at https://regex101.com/r/8f4HUA/1/
+    var urlSplitRegExp = /(\w+):((\/\/((\w+):(\w+)@)?([\w\.]+)(:(\w+))?)|(\/\/\/(\w:)?))?(\/.+\/)?([^\?\#]+)?(\?([^\#]+))?(\#(\w+))?/;
     var comp = url.match(urlSplitRegExp);
     if (comp == null) throw new Error(url+" doesn't look like an URL");
     var res = {};
@@ -1279,10 +1281,12 @@
     res.port     = comp[9];
     res.drive    = comp[11];
     res.path     = comp[12];
-    res.fileName = comp[13];
-    res.ext      = comp[14];
-    res.tag      = comp[16];
-    res.search   = comp[18] || '';
+    res.fullFileName = comp[13] || '';
+    res.search   = comp[15] || '';
+    res.tag      = comp[17] || '';
+    var m = res.fullFileName.match(/((.*)\.(\w+$))|(.*)/)
+    res.fileName = m[2] || m[4] || '';
+    res.ext      = m[3] || '';
     if (res.drive) {
       res.absolutePath = res.drive+res.path;
     }
@@ -1311,7 +1315,7 @@
   tb.fileName = function(url) {
     // return the fileName.ext of url (or os file)
     var comp = tb.urlComponents(url);
-    return comp.fileName+'.'+comp.ext;
+    return comp.fullFileName;
   }
 
   tb.absoluteFileName = function (relativeFileName,path) {
@@ -2195,11 +2199,30 @@
     }
   });
 
+
   tb.template({
     name : 'page break',
     element$ : function() {
       tb.blockNumber++;
-      var n$ = $('<DIV  class="ELEMENT PAGEBREAK" id='+tb.blockId('page')+'>page break</DIV>');
+      var n$ = $('<DIV  class="ELEMENT PAGEBREAK" id='+tb.blockId('page')+'></DIV>');
+      return n$;
+    }
+  });
+
+  tb.template({
+    name : 'A4 portrait',
+    element$ : function() {
+      tb.blockNumber++;
+      var n$ = $('<DIV  class="ELEMENT A4" id='+tb.blockId('page')+' container="elem"></DIV>');
+      return n$;
+    }
+  });
+
+  tb.template({
+    name : 'A4 landscape',
+    element$ : function() {
+      tb.blockNumber++;
+      var n$ = $('<DIV  class="ELEMENT A4 landscape" id='+tb.blockId('page')+' container="elem"></DIV>');
       return n$;
     }
   });
@@ -2381,7 +2404,7 @@
     tb.debug$ = $('<div style="overflow:auto;max-height:400px;">');
 
     tb.menu$ =  $(
-    '<DIV id=menu class=TOOLBAR style="float:right;max-width:50%;">'+
+    '<DIV id=menu class="TOOLBAR no_print" style="float:right;max-width:50%;">'+
         '<div class="btn-toolbar mb-1" role="toolbar" aria-label="main buttons">'+
             '<div class="btn-group btn-group-sm mr-2" role="group" aria-label="run btns">'+
                 '<button type="button" class="btn btn-dark" id=runUntilSelectedBtn onclick=tb.execUntilSelected(); style="color: #8dff60;" >&#9658;|</button>'+
@@ -2412,7 +2435,7 @@
     $('BODY')
     .prepend(tb.menu$)
     .prepend(
-        '<div class="modal fade" id="showHtml" role="dialog">'+
+        '<div class="modal fade no_print" id="showHtml" role="dialog">'+
           '<div class="modal-dialog" role="document">'+
             '<div class="modal-content">'+
               '<div class="modal-header">'+
@@ -2425,7 +2448,7 @@
             '</div>'+
           '</div>'+
         '</div>'+
-        '<div class="modal fade" id="closeDialog" role="dialog">'+
+        '<div class="modal fade no_print" id="closeDialog" role="dialog">'+
           '<div class="modal-dialog" role="document">'+
             '<div class="modal-content">'+
               '<div class="modal-header">'+
@@ -3004,9 +3027,9 @@
                              change = true;  // if called, this function will change the document
                              tb.blockNumber++;
                              switch (command) {
-                               case ''   : return '<SPAN class="CODE EMBEDDED ELEMENT" id='+ tb.blockId('code')+' style="DISPLAY: none;">'+code+'</SPAN>';
-                               case '##' : return '<SPAN class="CODE EMBEDDED ELEMENT" id='+ tb.blockId('code')+' style="DISPLAY: none;">tb.elementBox("'+code+'")</SPAN>';
-                               case '#'  : return '<SPAN class="CODE EMBEDDED ELEMENT" id='+ tb.blockId('code')+' style="DISPLAY: none;">tb.link("'+code+'")</SPAN>';
+                               case ''   : return '<SPAN class="CODE EMBEDDED ELEMENT" id='+ tb.blockId('code')+'">'+code+'</SPAN>';
+                               case '##' : return '<SPAN class="CODE EMBEDDED ELEMENT" id='+ tb.blockId('code')+'">tb.elementBox("'+code+'")</SPAN>';
+                               case '#'  : return '<SPAN class="CODE EMBEDDED ELEMENT" id='+ tb.blockId('code')+'">tb.link("'+code+'")</SPAN>';
                              }
                            },
                            function(e) {  //replace in any tag except those having CODE or OUTPUT class
@@ -3055,42 +3078,13 @@
 
   tb.upgradeFramework = function() {
     // upgrades the sheet framework from previous versions
+    // the past before v1.0.0 has been forgotten since no real sheet in production before
 
-    $('*').removeClass('OLD').removeClass('AUTOEXEC');// not in use anymore
-    $('.OUTPUT').add('.CODE').add('.RICHTEXT').removeAttr('onclick');  // no longer in the HTML but bound dynamically
-    $('.RICHTEXT .CODE').add('.SECTIONTITLE .CODE').addClass('EMBEDDED');        // reserved for code inside another element
-    $('#localToolBar').add('.BOTTOMTOOLBAR').add('.TOOLBAR').remove();           // no longer saved with the document and must be regenerated at init
-    $('#topToolBar').remove();     // no longer in use since v0160
-    $('#insideToolBar').remove();  // no longer in use since v0160
-    $('#bottomToolBar').remove();  // no longer in use since v0160
-    $('.CODE').add('.RICHTEXT').add('.SECTION').addClass('ELEMENT'); // since v160 all ELEMENT are selectable
-    $('.CODE:not(.EMBEDDED)').add('.RICHTEXT').add('.SECTIONTITLE').addClass('EDITABLE'); // since v160 EDITABLE tags will be set to contentEditable=true /false when the itself or its parent is selected
+    // in order to fix issue #1
+    $('.EMBEDDED').css('display','');
+    $('.EMBEDDED[style=""]').removeAttr('style');
 
-    // since v0.0110 the menu is fixed in a #menu DIV and all sheet is contained in a #jcContent DIV
-    var jc$ = $('#jcContent')
-    if (jc$.length == 1) {
-a('convert from jc to tb')
-      jc$.removeAttr('style').attr('container','items').attr('id','tbContent'); // since tablord0200
-      $('.CODE').each(function(i,code){code.innerHTML = code.innerHTML.replace(/jc\./g,'tb.');});
-    }
-    tb.content$ = $('#tbContent');
-    var b$ = $('BODY');
-    if (tb.content$.length == 0) {
-      b$.wrapInner('<DIV id=tbContent container="items"/>');
-    }
-    $('.CONTAINER').removeClass('.CONTAINER').attr('container','sectionContent');
-    $('.SECTIONCONTAINER').removeClass('SECTIONCONTAINER').attr('container','sectionContent');
 
-    // since v0.0145 the <body> attributes hideCodes,hideCut,hideTest,hideTrace are deprecated
-    var b$ = $('BODY');
-    if (b$.attr('hideCode')) b$.attr('showCode' ,b$.attr('hideCode')!=false);
-    if (b$.attr('hideCut') ) b$.attr('showCut'  ,b$.attr('hideCut')!=false);
-    if (b$.attr('hideTest')) b$.attr('showTest' ,b$.attr('hideTest')!=false);
-    if (b$.attr('hideCode')) b$.attr('showTrace',b$.attr('hideTrace')!=false);
-    b$.removeAttr('hideCode')
-      .removeAttr('hideCut')
-      .removeAttr('hideTest')
-      .removeAttr('hideTrace');
   }
 
 
