@@ -2163,35 +2163,6 @@
     return newT;
   }
 
-
-  tb.template({
-    name : 'code',
-    element$: function() {
-      tb.blockNumber++;
-      return $('<PRE class="ELEMENT CODE EDITABLE" id='+tb.blockId('code')+'>');
-    },
-    convertData: function(data,element$) {element$.html('Object('+tb.toJSCode(data)+')')}
-  });
-
-  tb.template({
-    name : 'richText',
-    element$: function() {
-      tb.blockNumber++;
-      return $('<DIV  class="ELEMENT RICHTEXT EDITABLE" id='+tb.blockId('rich')+'>');
-    }
-  });
-
-  tb.template({
-    name : 'section',
-    element$ : function() {
-      tb.blockNumber++;
-      var n$ = $('<DIV  class="ELEMENT SECTION" id='+tb.blockId('sect')+'></DIV>')
-               .append('<H1 class="SECTIONTITLE EDITABLE"></H1>')
-               .append('<DIV container="sectionContent"></DIV>');
-      return n$;
-    }
-  });
-
   tb.template({
     name : 'paste',
     element$: function() {
@@ -2199,30 +2170,35 @@
     }
   });
 
+  tb.template({
+    name : 'code',
+    element$: function() {
+      return $('<PRE class="ELEMENT CODE EDITABLE" id='+tb.blockId('code')+'>');
+    },
+    convertData: function(data,element$) {element$.html('Object('+tb.toJSCode(data)+')')}
+  });
+
+  tb.template({
+    name : 'section',
+    element$ : function() {
+      var n$ = $('<DIV  class="ELEMENT SECTION" id='+tb.blockId('sect')+'></DIV>')
+               .append('<H1 class="SECTIONTITLE EDITABLE"></H1>')
+               .append('<DIV container="sectionContent"><DIV  class="ELEMENT RICHTEXT EDITABLE" id='+tb.blockId('rich')+'></DIV>');
+      return n$;
+    }
+  });
+
+  tb.template({
+    name : 'richText',
+    element$: function() {
+      return $('<DIV  class="ELEMENT RICHTEXT EDITABLE" id='+tb.blockId('rich')+'>');
+    }
+  });
 
   tb.template({
     name : 'page break',
     element$ : function() {
-      tb.blockNumber++;
       var n$ = $('<DIV  class="ELEMENT PAGEBREAK" id='+tb.blockId('page')+'></DIV>');
-      return n$;
-    }
-  });
-
-  tb.template({
-    name : 'A4 portrait',
-    element$ : function() {
-      tb.blockNumber++;
-      var n$ = $('<DIV  class="ELEMENT A4" id='+tb.blockId('page')+' container="elem"></DIV>');
-      return n$;
-    }
-  });
-
-  tb.template({
-    name : 'A4 landscape',
-    element$ : function() {
-      tb.blockNumber++;
-      var n$ = $('<DIV  class="ELEMENT A4 landscape" id='+tb.blockId('page')+' container="elem"></DIV>');
       return n$;
     }
   });
@@ -2258,8 +2234,9 @@
   }
 
   tb.blockId = function(prefix) {
+    // increment tb.blockNumber and
     // return the block id using prefix which must be a 4 characters prefix
-    return prefix+tb.pad(tb.blockNumber,4);
+    return prefix+tb.pad(tb.blockNumber++,4);
   }
 
   tb.outputElement = function(element) {
@@ -2343,7 +2320,7 @@
     for (var i=0;i<acceptedTemplates.length;i++) {
       var template = tb.templates[acceptedTemplates[i]];
       if (template) tb.templateChoice$.append(
-        '<OPTION value="'+acceptedTemplates[i]+'">'+acceptedTemplates[i]+'</OPTION>'
+        '<button class="dropdown-item" template="'+acceptedTemplates[i]+'">'+acceptedTemplates[i]+'</button>'
       );
     }
     if (tb.selectedElement &&
@@ -2361,6 +2338,22 @@
     tb.templateChoice$.val(acceptedTemplates[0]);
   }
 
+
+  tb.templateButtonClick = function(event) {
+    var where = $(event.currentTarget).attr('where');
+    var template = $(event.target).attr('template');
+    if (where===undefined || template === undefined) return;
+    switch (where) {
+    case 'before':
+      tb.templates[template].insertBefore(tb.selectedElement,tb.currentContainer$.attr('container'));
+      break;
+    case 'after':
+      tb.templates[template].insertAfter (tb.selectedElement,tb.currentContainer$.attr('container'));
+      break;
+    }
+  }
+
+
   tb.initToolBars = function() {
     // creates the tools bars
     $('#menu').remove();
@@ -2371,28 +2364,46 @@
     );
 
 
-    tb.templateChoice$ = $('<select class="custom-select">');
+    tb.templateChoice$ = $('<div>');
     tb.updateTemplateChoice();
 
+
     tb.selectionToolBar$ = $('<div class="btn-toolbar" role="toolbar">')
-      .append('<div class="btn-group btn-group-sm mr-2" role="group">'+
-                '<button type="button" class="btn btn-outline-dark" id="codeId">no selection</button>'+
-                '<button type="button" class="btn btn-dark" id="cutBtn" onclick=tb.cutBlock(tb.selectedElement); >cut</button>'+
-                '<button type="button" class="btn btn-dark" id="showHtmlBtn" onclick=tb.showOutputHtml(this); >&#8594;html</button>'+
-                '<button type="button" class="btn btn-dark" id="toTestBtn" onclick=tb.copyOutputToTest(this); >&#8594;test</button>'+
-              '</div>')
-      .append($('<div class="input-group input-group-sm mr-2">')
-          .append('<div class="input-group-prepend">'+
-                    '<button type="button" class="btn btn-dark" onclick="tb.templates[tb.templateChoice$.val()].insertBefore(tb.selectedElement,tb.currentContainer$.attr(\'container\'))" >&#8593;</button>'+
-                    '<button type="button" class="btn btn-dark" onclick="tb.templates[tb.templateChoice$.val()].convert(tb.selectedElement,tb.currentContainer$.attr(\'container\'))" >&#8596;</button>'+
-                  '</div>')
-          .append(tb.templateChoice$)
-          .append('<div class="input-group-append">'+
-                    '<button type="button" class="btn btn-dark" onclick="tb.templates[tb.templateChoice$.val()].insertAfter(tb.selectedElement,tb.currentContainer$.attr(\'container\'))" >&#8595;</button>'+
-                  '</div>')
-      )
-      .append(tb.objectToolBar$)
-      .hide();
+    .append('<div class="btn-group btn-group-sm mr-2" role="group">'+
+              '<button type="button" class="btn btn-outline-dark" id="codeId">no selection</button>'+
+              '<a href="javascript:tb.cutBlock(tb.selectedElement);" class="btn btn-dark" id="cutBtn">'+
+                '<img src="/static/images/cut_white.png" style="height:1.5em;width:1.5em;"></a>'+
+              '<a href="#" onclick="javascript:tb.templateButtonClick(event);" class="btn btn-dark" where="after" template="paste" >'+
+                '<img src="/static/images/paste_white.png" template="paste" style="height:1.5em;width:1.5em;"></a>'+
+              '<a href="#" onclick="javascript:tb.templateButtonClick(event);" class="btn btn-dark dropdwon-toggle" data-toggle="dropdown">'+
+                '<img src="/static/images/pallete_white.png" template="paste" style="height:1.5em;width:1.5em;"></a>'+
+              '<div id="class_options" class="dropdown-menu">'+
+                '<input type="radio" name="severity" value="INFO">INFO '+
+                '<input type="radio" name="severity" value="OK">OK '+
+                '<input type="radio" name="severity" value="WARNING">WARNING '+
+                '<input type="radio" name="severity" value="DANGER">DANGER '+
+                '<input type="radio" name="severity" value="">--<br>'+
+                '<input type="checkbox" value="NOTE">NOTE<br>'+
+              '</div>'+
+              '<button type="button" class="btn btn-dark" onclick="tb.moveSelectedElement(-1);" >&#8593;</button>'+
+              '<button type="button" class="btn btn-dark" onclick="tb.moveSelectedElement(1);" >&#8595;</button>'+
+              '<button type="button" class="btn btn-dark" id="showHtmlBtn" onclick=tb.showOutputHtml(this); >&#8594;html</button>'+
+              '<button type="button" class="btn btn-dark" id="toTestBtn" onclick=tb.copyOutputToTest(this); >&#8594;test</button>'+
+            '</div>')
+    .append($('<div class="btn-group btn-group-sm mr-2" role="group" where="after">')
+        .click(tb.templateButtonClick)
+        .append('<button type="button" class="btn btn-dark" title="Text" template="richText">§</button>'+
+                '<button type="button" class="btn btn-dark" title="section" template="section">1.</button>'+
+                '<button type="button" class="btn btn-dark" title="code" template="code">{}</button>'+
+                '<button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">...</button>')
+        .append($('<div class="dropdown-menu" where="after">')
+                .click(tb.templateButtonClick)
+                .append(tb.templateChoice$)
+        )
+
+    )
+    .append(tb.objectToolBar$)
+    .hide();
 
     tb.helpSearch$ = $('<input placeholder="help search"/>').keyup(tb.helpSearchChange);
     tb.helpOutput$ = $('<DIV  style="overflow:auto;max-height:400px;"></DIV>');
@@ -2471,18 +2482,27 @@
 
     $('#richTextToolBar').remove(); // kill anything previouly in the saved document
     tb.richTextToolBar$ =  $('<div class="btn-group" role="group" id=richTextToolBar </div>')
-      .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.bold(); ><b>B</b></button>')
-      .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.italic(); ><i>i</i></button>')
-      .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.underline(); ><U>U</U></button>')
-      .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.strike(); ><strike>S</strike></button>')
-      .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.h1(); ><b>H1</b></button>')
-      .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.h2(); ><b>H2</b></button>')
-      .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.div(); >div</button>')
-      .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.p(); >&#182;</button>')
-      .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.ol(); >#</button>')
-      .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.ul(); >&#8226;</button>')
-      .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.pre(); >{}</button>')
+    .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.bold(); ><b>B</b></button>')
+    .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.italic(); ><i>i</i></button>')
+    .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.underline(); ><U>U</U></button>')
+    .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.strike(); ><strike>S</strike></button>')
+    .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.h1(); ><b>H1</b></button>')
+    .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.h2(); ><b>H2</b></button>')
+    .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.div(); >div</button>')
+    .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.p(); >&#182;</button>')
+    .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.ol(); >#</button>')
+    .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.ul(); >&#8226;</button>')
+    .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.pre(); >{}</button>')
 
+    $('#class_options').click(function(event){
+      $(event.currentTarget).children().each(function(){
+        var className = $(this).val()
+        if (className) {
+           $(tb.selectedElement).toggleClass(className,$(this).prop('checked'))
+        }
+      })
+      tb.setModified(true);
+    })
   }
 
   tb.setModified = function(state) {
@@ -2499,7 +2519,7 @@
     }
     else {
       $('#runAllBtn').removeClass('btn-dark').addClass('btn-warning');
-      $('*').removeClass('SUCCESS ERROR');
+      $('.OUTPUT').add('.TEST').removeClass('SUCCESS ERROR');
     }
     tb.setUpToDate.state = state;
   }
@@ -2648,10 +2668,35 @@
     tb.menu$.show();
     tb.selectionToolBar$.show(500);
     $('#codeId').html(element.id+'<SPAN style="color:red;cursor:pointer;" onclick="tb.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
+    $('#class_options').children().each(function(){
+      var checkbox$ = $(this);
+      var c = checkbox$.val();
+      if (c) {
+        checkbox$.prop('checked',$(element).hasClass(c));
+      };
+    });
+
     $(element).addClass('SELECTED');
     tb.updateTemplateChoice();
     tb.editables$(element).attr('contentEditable',true);
     element.focus();
+  }
+
+  tb.moveSelectedElement = function(dist) {
+    // moves the selectedElement (if any) before the previous ELEMENT
+    // - dist: if negative move up by dist
+    //         if positive move down by dist
+    if (tb.selectedElement===undefined) return;
+    var elements$ = $('.ELEMENT').not('.EMBEDDED');
+    var index = elements$.index(tb.selectedElement)+dist;
+    if (dist<0) {
+      if (index < 0) index = 0;
+      $(elements$[index]).before(tb.selectedElement);
+    }
+    else {
+      if (index > elements$.length) index = elements$.length;
+      $(elements$[index]).after(tb.selectedElement);
+    }
   }
 
   // EDI eventHandlers ///////////////////////////////////////////////////////////////
@@ -2957,7 +3002,7 @@
     // and that no fake element remains if there is another element inside the container
     $('.ELEMENT.EMPTY:not(:only-child)').remove();
     var c$ = $('[container]:not(:has(> *))');
-    c$.append('<DIV class="ELEMENT EMPTY" contentEditable=false>empty container: click here to add an element</DIV>');
+    c$.append('<DIV class="ELEMENT EDITABLE RICHTEXT" id='+tb.blockId('rich')+'></DIV>');
   }
 
   tb.prepareExec = function() {
@@ -2970,7 +3015,7 @@
     tb.clearTimers();
     $('.TRACE').remove();
     $('.BOX').remove();
-    $('*').removeClass('SUCCESS').removeClass('ERROR')
+    $('.OUTPUT').add('.TEST').removeClass('SUCCESS').removeClass('ERROR')
     tb.finalizations = [];
     tb.vars = {}; // run from fresh
     tb.IElement.idNumber = 0;
@@ -3025,11 +3070,10 @@
     $(element).replaceText(/\{\{([#]{0,2})(.*?)\}\}/g,
                            function(s,command,code) {
                              change = true;  // if called, this function will change the document
-                             tb.blockNumber++;
                              switch (command) {
-                               case ''   : return '<SPAN class="CODE EMBEDDED ELEMENT" id='+ tb.blockId('code')+'">'+code+'</SPAN>';
-                               case '##' : return '<SPAN class="CODE EMBEDDED ELEMENT" id='+ tb.blockId('code')+'">tb.elementBox("'+code+'")</SPAN>';
-                               case '#'  : return '<SPAN class="CODE EMBEDDED ELEMENT" id='+ tb.blockId('code')+'">tb.link("'+code+'")</SPAN>';
+                               case ''   : return '<SPAN class="CODE EMBEDDED ELEMENT" id='+ tb.blockId('code')+'">&nbsp;'+code+'</SPAN>';
+                               case '##' : return '<SPAN class="CODE EMBEDDED ELEMENT" id='+ tb.blockId('code')+'">&nbsp;tb.elementBox("'+code+'")</SPAN>';
+                               case '#'  : return '<SPAN class="CODE EMBEDDED ELEMENT" id='+ tb.blockId('code')+'">&nbsp;tb.link("'+code+'")</SPAN>';
                              }
                            },
                            function(e) {  //replace in any tag except those having CODE or OUTPUT class

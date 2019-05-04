@@ -3,7 +3,9 @@
   --bgcode: #f2f9a8;
   --bginfo: #d1ecf1;
   --bgeditor : #b9a3c1;
+  --bgwarning : #fff3cd;
   --bgerror : var(--danger);
+  --bgdanger : #f8d7da;
 }
 body {
   font-family: Arial;
@@ -163,7 +165,7 @@ p {
   display:none;
 }
 .EMBEDDED:before {
-  content:"{{ "
+  content:"{{"
 }
 
 .EMBEDDED:after {
@@ -223,20 +225,47 @@ p {
 }
 
 .RICHTEXT {
+  min-height:1em;
   border:none;
 }
 
 
-.DIFFSAME,
-.USERSUCCESS,
-.SUCCESS {
-  background-color: var(--bgsuccess);
-  color: black;
+.NOTE {
+   margin-left:25px;
+   margin-right:25px;
+   border-left:3px solid black;
+   padding-left:6px;
 }
 
 .INFO  {
   background-color: var(--bginfo);
 }
+
+.DIFFSAME,
+.USERSUCCESS,
+.SUCCESS,
+.OK {
+  background-color: var(--bgsuccess);
+  color: black;
+}
+
+.WARNING {
+  background-color:var(--bgwarning);
+  color:black;
+}
+
+.DANGER {
+  background-color:var(--bgdanger)
+}
+.DIFFERENT,
+.USERERROR,
+.WRONG,
+.ERROR  {
+  background-color: var(--bgerror);
+  color: black;
+}
+
+
 
 .TRACE,
 .DEBUG {
@@ -245,13 +274,6 @@ p {
   border:solid blue 1px;
 }
 
-.DIFFERENT,
-.USERERROR,
-.WRONG,
-.ERROR {
-  background-color: var(--bgerror);
-  color: black;
-}
 
 .CODEINERROR {
   font-family: courier;
@@ -308,9 +330,7 @@ p {
 }
 
 .CUT {
-  background-color: #b7b7b7;
-  color: #828282;
-  font-size: 8px;
+  filter:blur(5px);
 }
 
 .SECTION {
@@ -321,10 +341,15 @@ p {
   border:none;
 }
 
-[container=sectionContent],
-.CONTAINER {
+[container] {
   padding-left: 25px;
   border-left: grey solid 1px;
+}
+
+@media print {
+  [container] {
+      border:none;
+  }
 }
 
 .BOXLINK {
@@ -369,11 +394,6 @@ p {
   color: green;
 }
 
-.WARNING {
-  background-color:var(--warning);
-  color:black;
-}
-
 .INTERACTIVE,
 .SCENE {
   background-color:cyan;
@@ -406,15 +426,20 @@ p {
 }
 
 .PAGEBREAK {
-  border-bottom: 2px dashed blue;
   color: grey;
-  background: #e0e0e0;
+  background: #dbdbdb;
+}
+.PAGEBREAK:before {
+  display:block;
+  color  :grey;
+  content:'page break';
 }
 
+
 #tbContent {
-  padding-left:0px;  /*jcContent is a .CONTAINER but overrides everything that makes intentation */
+  padding-left:0px;  /*tbContent is a [container] but overrides everything that makes intentation */
   border-left: none;
-  margin-top:4em;
+  margin-top:1em;
 }
 
 #menu {
@@ -449,10 +474,21 @@ p {
   .A3, .A4.landscape { width: 297mm }
   .A4, .A5.landscape { width: 210mm }
   .A5                { width: 148mm }
+
+  .landscape {
+    transform: rotate(90deg);
+  }
+
+
+}
+
+body {
+  margin:0;
+  background: white;
 }
 
 @page { margin: 0 }
-body { margin: 0 }
+
 .sheet {
   margin: 0;
   overflow: hidden;
@@ -467,8 +503,13 @@ body { margin: 0 }
 .A4, .A5.landscape { width: 210mm }
 .A5                { width: 148mm }
 
+           .A3.landscape.sheet { height: 297mm }
+.A3.sheet, .A4.landscape.sheet { height: 210mm }
+.A4.sheet, .A5.landscape.sheet { height: 148mm }
+.A5.sheet                      { height: 104mm }
+
 @media screen {
-  body { background: white; }
+
 
   .A3,.A4,.A5 {
     background: white;
@@ -481,12 +522,7 @@ body { margin: 0 }
     color  :grey;
     background: #e0e0e0;
     content:'A4';
-  }
-  .PAGEBREAK:before {
-    display:block;
-    color  :grey;
-    background: #e0e0e0;
-    content:'page break';
+    title:
   }
 }
 
