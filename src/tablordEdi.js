@@ -71,7 +71,7 @@
                 }
                 else {
                   var code = tb.errorHandler.code || '';
-                  var faults = message.match(/« (.+?) »/);
+                  var faults = message.match(/Ãƒâ€šÃ‚Â« (.+?) Ãƒâ€šÃ‚Â»/);
                   if (faults != null) {
                     var fault = faults[1];
                     code = tb.output.codeElement.innerHTML
@@ -297,7 +297,7 @@
       var parameterRegExp = new RegExp('(\\W)('+parameters.join('|')+')(\\W)','g');
     }
     else {
-      var parameterRegExp = /éèàö very improbable string that never match/g;
+      var parameterRegExp = /ÃƒÆ’Ã‚Â©ÃƒÆ’Ã‚Â¨ÃƒÆ’Ã‚Â ÃƒÆ’Ã‚Â¶ very improbable string that never match/g;
     }
     for (var i = 0; i<markDownLines.length; i++) {
       h += markDownLines[i]
@@ -510,7 +510,20 @@
     return this.getFullYear()+'-'+tb.pad(this.getMonth()+1,2)+'-'+tb.pad(this.getDate(),2);
   }
 
-
+  Date.prototype.hhh_mm = function () {
+    // return a duration in a number of hours and minutes
+    // even if the duration is month, it will be expressed as hours
+    var t = this.valueOf();
+    var ms = t % 1000;
+    t = (t - ms) / 1000;
+    var s = t % 60;
+    t = (t -s) / 60
+    var min = t % 60;
+    var hhh = (t - min) / 60;
+    return hhh.toString()+'h '+tb.pad(min,2)+'m';
+  }
+  
+  
   //JQuery extentions /////////////////////////////////////////////////
 
   $.fn.span = function() {
@@ -599,7 +612,7 @@
     if ($.inArray(tag,['AUDIO','EMBED','IFRAME','IMG','SOURCE','TRACK','VIDEO'])!=-1) return this.attr('src');
     if ($.inArray(tag,['A','AREA','LINK'])!=-1) return this.attr('href');
     if (tag === 'OBJECT') return this.attr('data');
-    if ($.inArray(tag,['DATA','METER','SELECT'])!=-1) return this.val();
+    if ($.inArray(tag,['DATA','METER','SELECT','INPUT'])!=-1) return this.val();
     if (tag === 'TIME') return this.attr('datetime') || this.text();
     return this.text();
   }
@@ -612,7 +625,7 @@
     else if ($.inArray(tag,['AUDIO','EMBED','IFRAME','IMG','SOURCE','TRACK','VIDEO'])!=-1) this.attr('src',value);
     else if ($.inArray(tag,['A','AREA','LINK'])!=-1) this.attr('href',value);
     else if (tag === 'OBJECT') this.attr('data',value);
-    else if ($.inArray(tag,['DATA','METER','SELECT'])!=-1) this.val(value);
+    else if ($.inArray(tag,['DATA','METER','SELECT','INPUT'])!=-1) this.attr('value',value).val(value); // set also the attribute, so it will be saved 
     else if (tag === 'TIME') {
       this.attr('datetime',value);
     }
@@ -623,8 +636,10 @@
 
 
 
-  $.fn.getItemscopeData = function() {
+  $.fn.getItemscopeData = function(remap) {
     // jquery must be a single itemscope element
+    // - remap: an optionnal function that remaps the found itemprop in an object
+    //          
     var data = {};
 
     function set(itemprop,value) {
@@ -654,10 +669,11 @@
       }
 
     });
+    if (remap) data = remap(data);
     return data;
   }
 
-  $.fn.getData = function(criteria,fields) {
+  $.fn.getData = function(criteria,fields,remap) {
     // return data object for the jQuery, very similarly as a mongoDB .find
     // the object is NOT compatible with microdata (cf [[getMicroData]]), but much easier to use
     // even if not as flexible as microdata
@@ -666,11 +682,14 @@
     // this function assume that all jQuery elements are itemscope
     // So it is possible to get data from nested nodes
     // and is the responsibility of the caller to know what to do
-    // the parameter result is only intended for recusivity purpose and should be undefined
     // the structure also set "_id" if id is defined at the itemscope element
+    // - criteria: is an object defining what itemscope will be take in the set
+    //             if remap, criteria compares *after* the remapping
+    // - fields:   an object that describe the fields that are included in the returned data
+    // - remap:    a function (data) that return a new object with the remapped fields
     result = [];
     this.each(function(i,element){
-      var data = $(element).getItemscopeData();
+      var data = $(element).getItemscopeData(remap);
       if (tb.objMatchCriteria(data,criteria)) {
         if (fields == undefined){
           result.push(data);
@@ -1760,9 +1779,9 @@
   //TODO: there is problem at least in IE7: when the users click on another control, first a change event is triggerd
   //normally it should be followed by a click envent, but as the control is destroyed and re-created, it seems to "capture" the next click
   //event
-  // ?????? peut être qu'avec un setTimeout(0) on peut passer outre, en laissant d'abord le click se faire et en updatant le code via le timer
-  //  pas mieux : l'evenement click n'arrive jamais sur l'endroit où on a cliqué et si dans le change on return true, c'est encore pire, on ne retrouve
-  //              jamais le focus.  &&%ç%*&@
+  // ?????? peut ÃƒÆ’Ã‚Âªtre qu'avec un setTimeout(0) on peut passer outre, en laissant d'abord le click se faire et en updatant le code via le timer
+  //  pas mieux : l'evenement click n'arrive jamais sur l'endroit oÃƒÆ’Ã‚Â¹ on a cliquÃƒÆ’Ã‚Â© et si dans le change on return true, c'est encore pire, on ne retrouve
+  //              jamais le focus.  &&%ÃƒÆ’Ã‚Â§%*&@
   ////////////
 
   tb.editorEventHandler = function(event) {
@@ -2040,7 +2059,7 @@
   tb.Template.prototype.find = function(criteria,fields) {
     // return the data of a template collection as mongodb would do using criteria and returning only the specified fields
 
-    return tb.getItems$(this.url()).getData(criteria,fields);
+    return tb.getItems$(this.url()).getData(criteria,fields,this.remap);
   }
 
   tb.Template.microdataToData = function(microdata) {
@@ -2058,7 +2077,7 @@
   tb.Template.urlToName = function(url) {
     // return the name from the url
     if (url === undefined) return undefined;
-    return url.match(/.*\/(.*)$/)[1];
+    return url.match(/(.*\/)?([^\.]*)/)[2];
   }
 
   tb.Template.moveContainerContent = function(oldElement$,newElement$) {
@@ -2137,10 +2156,15 @@
     //    so do not define .fields if you want to define .html
     // .html: a string representing the html code of the template
     // .element$: a function() returning a DOM Element; normally not defined and inherited form tb.Template
+    // .insertBefore:
+    // .insertAfter:  function(element) that can override the default behaviour to insert before or after another element
+    //                those function can help to create complex html (instead of .element$) depending on the context of where to insert the template
+    // .remap: a function(data) that will return a new object based on data (that is the object collecting all itemprop of one template instance)
+    //         this can be used to have for example native Date object instead of a string or combining two fields in one etc..
 
     itemprop = itemprop || newTemplate.name;
     var newT = new tb.Template(newTemplate.name);
-    newT.html = newTemplate.html;
+    $.extend(newT,newTemplate)
     if (newTemplate.fields) {
       var h = '<DIV class="ELEMENT" itemprop="'+itemprop+'" itemscope itemtype="'+newT.url()+'"><TABLE width="100%">';
       for (var f in newTemplate.fields) {
@@ -2154,8 +2178,6 @@
       }
       newT.html = h + '</TABLE></DIV>';
     }
-    if (newTemplate.element$) newT.element$ = newTemplate.element$;
-    if (newTemplate.convertData)  newT.convertData  = newTemplate.convertData;
     tb.templates[newT.name] = newT;
     tb.updateTemplateChoice();
     var elementsToConvert$ = $('[itemtype="'+newT.url()+'"]');
@@ -2203,6 +2225,111 @@
     }
   });
 
+  tb.template({
+    name : 'table',
+    element$ : function() {
+      var n$ = $('<table  class="ELEMENT TABLE" id='+tb.blockId('tabl')+'><theader><tr class="ELEMENT ROW" id='+tb.blockId('row_')+'><td class="ELEMENT RICHTEXT EDITABLE">cell</td></tr></table>');
+      return n$;
+    }
+  });
+
+  tb.template({
+    name : 'row',
+    html:'<div>coucou</div>', // dummy, but "normal" template must have at least html. here
+    // as this is quite special, we redefine insertBefore and insertAfter
+    // in order to insert what is needed
+    insertBefore: function(element,itemprop) {
+      var tag = tb.selectedElement.tagName
+      if (tag === 'TD') {
+        var r$ = $(tb.selectedElement).closest('.ROW');
+        var n$ = r$.clone();
+        n$.insertBefore(r$);
+        // faudra encore chercher la cellule correspondante (ou la première)
+        var cols$ = n$.children().empty().removeClass('SELECTED');
+        tb.selectElement(cols$[0]);
+      }
+      tb.setModified(true);
+      tb.run();
+    },
+    insertAfter: function(element,itemprop) {
+      var tag = tb.selectedElement.tagName
+      if (tag === 'TD') {
+        var r$ = $(tb.selectedElement).closest('.ROW');
+        var n$ = r$.clone();
+        n$.insertAfter(r$);
+        // faudra encore chercher la cellule correspondante (ou la premiÃƒÂ¨re)
+        var cols$ = n$.children().empty().removeClass('SELECTED');
+        tb.selectElement(cols$[0]);
+      }
+      tb.setModified(true);
+      tb.run();
+    }
+    
+  });
+
+  tb.template({
+    name : 'col',
+    // as this is quite special, we redefine insertBefore and insertAfter
+    // in order to insert what is needed
+    insertBefore: function(element,itemprop) {
+    },
+    insertAfter: function(element,itemprop) {
+      var tag = tb.selectedElement.tagName
+      if (tag === 'TD') {
+        var colNb = $(tb.selectedElement).prevAll('td').length;
+        var table$ = $(tb.selectedElement).closest('table');
+        var rows$ = table$.children('tbody').children('tr');
+        rows$.each(function() {
+          $('<td class="ELEMENT RICHTEXT EDITABLE">new col</td>').insertAfter($(this).children('td')[colNb]);
+        })
+      }
+      tb.setModified(true);
+      tb.run();
+    }
+    
+  });
+
+  tb.template({
+    name : 'cell',
+    element$ : function() {
+      var n$ = $('<td class="ELEMENT RICHTEXT EDITABLE">cell</td>');
+      return n$;
+    }
+  });
+  
+  tb.template({
+    name : 'time_frame',
+    element$ : function() {
+      return $('<div class="ELEMENT" id="'+tb.blockId('tfrm')+'" itemscope itemtype="'+this.url()+'">'+
+               '<div>Du <input type="date" itemprop="fromDate"> <input type="time" itemprop="fromTime"> '+
+                    'au <input type="date" itemprop="toDate"> <input type="time" itemprop="toTime"> '+
+                    '(durée :<time itemprop="duration"></time>)</div>'+
+                '<h2 class="EDITABLE" itemprop="title">&nbsp;</h2>'+
+                '<div container="items[]"></div>');
+    },
+    exec: function(element) {
+      var data = $(element).getItemscopeData()
+      // to ensure the data persistance when saved, set the value attr with the current value
+      $('[itemprop=fromDate]',element).attr('value',data.fromDate);
+      $('[itemprop=fromTime]',element).attr('value',data.fromTime);
+      $('[itemprop=toDate]',element).attr('value',data.toDate);
+      $('[itemprop=toTime]',element).attr('value',data.toTime);
+      data = this.remap(data)
+      if (isNaN(data.duration)) {
+        $('[itemprop=duration]',element).text('NaN');
+      }
+      else {
+        $('[itemprop=duration]',element).text(data.duration.hhh_mm());
+      }
+    },
+    remap: function(data){
+      var from = new Date(data.fromDate +' '+ data.fromTime);
+      var to   = new Date(data.toDate + ' '+ data.toTime);
+      var duration = new Date(to-from);
+      return {from:from,to:to,duration:duration,title:data.title,_id:data._id}
+    }
+  });
+    
   //////////////////////////////////////////////////////////////////////////////////////
   // EDI ///////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
@@ -2351,6 +2478,8 @@
       tb.templates[template].insertAfter (tb.selectedElement,tb.currentContainer$.attr('container'));
       break;
     }
+    event.stopPropagation(); // in order to have embedded buttons like the drop down menu 
+                             // otherwise the event will be treated twice issue #13
   }
 
 
@@ -2392,7 +2521,7 @@
             '</div>')
     .append($('<div class="btn-group btn-group-sm mr-2" role="group" where="after">')
         .click(tb.templateButtonClick)
-        .append('<button type="button" class="btn btn-dark" title="Text" template="richText">§</button>'+
+        .append('<button type="button" class="btn btn-dark" title="Text" template="richText">Ãƒâ€šÃ‚Â§</button>'+
                 '<button type="button" class="btn btn-dark" title="section" template="section">1.</button>'+
                 '<button type="button" class="btn btn-dark" title="code" template="code">{}</button>'+
                 '<button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">...</button>')
@@ -2840,7 +2969,7 @@
 
     // if template, lauch exec method if any
     if (element$.attr('itemtype')) {
-      var t = tb.templates[element$.attr('itemtype')];
+      var t = tb.templates[tb.Template.urlToName(element$.attr('itemtype'))];
       if (t && t.exec) {
         t.exec(element$);
       }
