@@ -71,7 +71,7 @@
                 }
                 else {
                   var code = tb.errorHandler.code || '';
-                  var faults = message.match(/ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â« (.+?) ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â»/);
+                  var faults = message.match(/« (.+?) »/);
                   if (faults != null) {
                     var fault = faults[1];
                     code = tb.output.codeElement.innerHTML
@@ -297,7 +297,7 @@
       var parameterRegExp = new RegExp('(\\W)('+parameters.join('|')+')(\\W)','g');
     }
     else {
-      var parameterRegExp = /ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶ very improbable string that never match/g;
+      var parameterRegExp = /ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©ÃƒÆ’¶ very improbable string that never match/g;
     }
     for (var i = 0; i<markDownLines.length; i++) {
       h += markDownLines[i]
@@ -522,8 +522,8 @@
     var hhh = (t - min) / 60;
     return hhh.toString()+'h '+tb.pad(min,2)+'m';
   }
-  
-  
+
+
   //JQuery extentions /////////////////////////////////////////////////
 
   $.fn.span = function() {
@@ -625,7 +625,7 @@
     else if ($.inArray(tag,['AUDIO','EMBED','IFRAME','IMG','SOURCE','TRACK','VIDEO'])!=-1) this.attr('src',value);
     else if ($.inArray(tag,['A','AREA','LINK'])!=-1) this.attr('href',value);
     else if (tag === 'OBJECT') this.attr('data',value);
-    else if ($.inArray(tag,['DATA','METER','SELECT','INPUT'])!=-1) this.attr('value',value).val(value); // set also the attribute, so it will be saved 
+    else if ($.inArray(tag,['DATA','METER','SELECT','INPUT'])!=-1) this.attr('value',value).val(value); // set also the attribute, so it will be saved
     else if (tag === 'TIME') {
       this.attr('datetime',value);
     }
@@ -639,7 +639,7 @@
   $.fn.getItemscopeData = function(remap) {
     // jquery must be a single itemscope element
     // - remap: an optionnal function that remaps the found itemprop in an object
-    //          
+    //
     var data = {};
 
     function set(itemprop,value) {
@@ -1779,9 +1779,9 @@
   //TODO: there is problem at least in IE7: when the users click on another control, first a change event is triggerd
   //normally it should be followed by a click envent, but as the control is destroyed and re-created, it seems to "capture" the next click
   //event
-  // ?????? peut ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªtre qu'avec un setTimeout(0) on peut passer outre, en laissant d'abord le click se faire et en updatant le code via le timer
-  //  pas mieux : l'evenement click n'arrive jamais sur l'endroit oÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¹ on a cliquÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© et si dans le change on return true, c'est encore pire, on ne retrouve
-  //              jamais le focus.  &&%ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§%*&@
+  // ?????? peut être qu'avec un setTimeout(0) on peut passer outre, en laissant d'abord le click se faire et en updatant le code via le timer
+  //  pas mieux : l'evenement click n'arrive jamais sur l'endroit où on a cliqué et si dans le change on return true, c'est encore pire, on ne retrouve
+  //              jamais le focus.  %*&@
   ////////////
 
   tb.editorEventHandler = function(event) {
@@ -2225,14 +2225,14 @@
     }
   });
 
-  
+
   tb.template({
     name : 'time_frame',
     element$ : function() {
       return $('<div class="ELEMENT" id="'+tb.blockId('tfrm')+'" itemscope itemtype="'+this.url()+'">'+
                '<div>Du <input type="date" itemprop="fromDate"> <input type="time" itemprop="fromTime"> '+
                     'au <input type="date" itemprop="toDate"> <input type="time" itemprop="toTime"> '+
-                    '(durÃ©e :<time itemprop="duration"></time>)</div>'+
+                    '(durée :<time itemprop="duration"></time>)</div>'+
                 '<h2 class="EDITABLE" itemprop="title">&nbsp;</h2>'+
                 '<div container="items[]"></div>');
     },
@@ -2258,7 +2258,7 @@
       return {from:from,to:to,duration:duration,title:data.title,_id:data._id}
     }
   });
-    
+
   //////////////////////////////////////////////////////////////////////////////////////
   // EDI ///////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
@@ -2407,7 +2407,7 @@
       tb.templates[template].insertAfter (tb.selectedElement,tb.currentContainer$.attr('container'));
       break;
     }
-    event.stopPropagation(); // in order to have embedded buttons like the drop down menu 
+    event.stopPropagation(); // in order to have embedded buttons like the drop down menu
                              // otherwise the event will be treated twice issue #13
   }
 
@@ -2450,7 +2450,7 @@
             '</div>')
     .append($('<div class="btn-group btn-group-sm mr-2" role="group" where="after">')
         .click(tb.templateButtonClick)
-        .append('<button type="button" class="btn btn-dark" title="Text" template="richText">ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§</button>'+
+        .append('<button type="button" class="btn btn-dark" title="Text" template="richText">§</button>'+
                 '<button type="button" class="btn btn-dark" title="section" template="section">1.</button>'+
                 '<button type="button" class="btn btn-dark" title="code" template="code">{}</button>'+
                 '<button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">...</button>')
