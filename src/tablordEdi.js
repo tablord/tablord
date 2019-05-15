@@ -71,7 +71,7 @@
                 }
                 else {
                   var code = tb.errorHandler.code || '';
-                  var faults = message.match(/Ãƒâ€šÃ‚Â« (.+?) Ãƒâ€šÃ‚Â»/);
+                  var faults = message.match(/ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â« (.+?) ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â»/);
                   if (faults != null) {
                     var fault = faults[1];
                     code = tb.output.codeElement.innerHTML
@@ -297,7 +297,7 @@
       var parameterRegExp = new RegExp('(\\W)('+parameters.join('|')+')(\\W)','g');
     }
     else {
-      var parameterRegExp = /ÃƒÆ’Ã‚Â©ÃƒÆ’Ã‚Â¨ÃƒÆ’Ã‚Â ÃƒÆ’Ã‚Â¶ very improbable string that never match/g;
+      var parameterRegExp = /ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶ very improbable string that never match/g;
     }
     for (var i = 0; i<markDownLines.length; i++) {
       h += markDownLines[i]
@@ -1779,9 +1779,9 @@
   //TODO: there is problem at least in IE7: when the users click on another control, first a change event is triggerd
   //normally it should be followed by a click envent, but as the control is destroyed and re-created, it seems to "capture" the next click
   //event
-  // ?????? peut ÃƒÆ’Ã‚Âªtre qu'avec un setTimeout(0) on peut passer outre, en laissant d'abord le click se faire et en updatant le code via le timer
-  //  pas mieux : l'evenement click n'arrive jamais sur l'endroit oÃƒÆ’Ã‚Â¹ on a cliquÃƒÆ’Ã‚Â© et si dans le change on return true, c'est encore pire, on ne retrouve
-  //              jamais le focus.  &&%ÃƒÆ’Ã‚Â§%*&@
+  // ?????? peut ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªtre qu'avec un setTimeout(0) on peut passer outre, en laissant d'abord le click se faire et en updatant le code via le timer
+  //  pas mieux : l'evenement click n'arrive jamais sur l'endroit oÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¹ on a cliquÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© et si dans le change on return true, c'est encore pire, on ne retrouve
+  //              jamais le focus.  &&%ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§%*&@
   ////////////
 
   tb.editorEventHandler = function(event) {
@@ -2225,77 +2225,6 @@
     }
   });
 
-  tb.template({
-    name : 'table',
-    element$ : function() {
-      var n$ = $('<table  class="ELEMENT TABLE" id='+tb.blockId('tabl')+'><theader><tr class="ELEMENT ROW" id='+tb.blockId('row_')+'><td class="ELEMENT RICHTEXT EDITABLE">cell</td></tr></table>');
-      return n$;
-    }
-  });
-
-  tb.template({
-    name : 'row',
-    html:'<div>coucou</div>', // dummy, but "normal" template must have at least html. here
-    // as this is quite special, we redefine insertBefore and insertAfter
-    // in order to insert what is needed
-    insertBefore: function(element,itemprop) {
-      var tag = tb.selectedElement.tagName
-      if (tag === 'TD') {
-        var r$ = $(tb.selectedElement).closest('.ROW');
-        var n$ = r$.clone();
-        n$.insertBefore(r$);
-        // faudra encore chercher la cellule correspondante (ou la première)
-        var cols$ = n$.children().empty().removeClass('SELECTED');
-        tb.selectElement(cols$[0]);
-      }
-      tb.setModified(true);
-      tb.run();
-    },
-    insertAfter: function(element,itemprop) {
-      var tag = tb.selectedElement.tagName
-      if (tag === 'TD') {
-        var r$ = $(tb.selectedElement).closest('.ROW');
-        var n$ = r$.clone();
-        n$.insertAfter(r$);
-        // faudra encore chercher la cellule correspondante (ou la premiÃƒÂ¨re)
-        var cols$ = n$.children().empty().removeClass('SELECTED');
-        tb.selectElement(cols$[0]);
-      }
-      tb.setModified(true);
-      tb.run();
-    }
-    
-  });
-
-  tb.template({
-    name : 'col',
-    // as this is quite special, we redefine insertBefore and insertAfter
-    // in order to insert what is needed
-    insertBefore: function(element,itemprop) {
-    },
-    insertAfter: function(element,itemprop) {
-      var tag = tb.selectedElement.tagName
-      if (tag === 'TD') {
-        var colNb = $(tb.selectedElement).prevAll('td').length;
-        var table$ = $(tb.selectedElement).closest('table');
-        var rows$ = table$.children('tbody').children('tr');
-        rows$.each(function() {
-          $('<td class="ELEMENT RICHTEXT EDITABLE">new col</td>').insertAfter($(this).children('td')[colNb]);
-        })
-      }
-      tb.setModified(true);
-      tb.run();
-    }
-    
-  });
-
-  tb.template({
-    name : 'cell',
-    element$ : function() {
-      var n$ = $('<td class="ELEMENT RICHTEXT EDITABLE">cell</td>');
-      return n$;
-    }
-  });
   
   tb.template({
     name : 'time_frame',
@@ -2303,7 +2232,7 @@
       return $('<div class="ELEMENT" id="'+tb.blockId('tfrm')+'" itemscope itemtype="'+this.url()+'">'+
                '<div>Du <input type="date" itemprop="fromDate"> <input type="time" itemprop="fromTime"> '+
                     'au <input type="date" itemprop="toDate"> <input type="time" itemprop="toTime"> '+
-                    '(durée :<time itemprop="duration"></time>)</div>'+
+                    '(durÃ©e :<time itemprop="duration"></time>)</div>'+
                 '<h2 class="EDITABLE" itemprop="title">&nbsp;</h2>'+
                 '<div container="items[]"></div>');
     },
@@ -2521,7 +2450,7 @@
             '</div>')
     .append($('<div class="btn-group btn-group-sm mr-2" role="group" where="after">')
         .click(tb.templateButtonClick)
-        .append('<button type="button" class="btn btn-dark" title="Text" template="richText">Ãƒâ€šÃ‚Â§</button>'+
+        .append('<button type="button" class="btn btn-dark" title="Text" template="richText">ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§</button>'+
                 '<button type="button" class="btn btn-dark" title="section" template="section">1.</button>'+
                 '<button type="button" class="btn btn-dark" title="code" template="code">{}</button>'+
                 '<button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">...</button>')
