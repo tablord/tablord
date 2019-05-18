@@ -1,0 +1,517 @@
+<div id="sect0002" class="SECTION ELEMENT" sizset="1" sizcache="1">
+
+<h1 class="SECTIONTITLE EDITABLE" contenteditable="false">1 tests of tablordEdi <span id="code0015" class="CODE EMBEDDED ELEMENT">tb.testStatus()</span><span id="out0015" class="OUTPUT SUCCESS" contenteditable="false"><span class="SUCCESS">tests passed:62 failed:0</span></span>&nbsp;</h1>
+
+<div sizset="1" sizcache="1" container="sectionContent"><pre id="code0096" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.tableOfContent</pre>
+
+<div id="out0096" class="OUTPUT SUCCESS"><div class="INTERACTIVE"><div class="TOC0">1 <a href="#sect0002">tests of tablordEdi tb.testStatus()tests passed:62 failed:0&nbsp;</a></div><div class="TOC1">1.1 <a href="#sect0017">Consistence of rendering results</a></div><div class="TOC2">1.1.1 <a href="#sect0018">numbers</a></div><div class="TOC2">1.1.2 <a href="#sect0022">Dates</a></div><div class="TOC2">1.1.3 <a href="#sect0034">Strings</a></div><div class="TOC2">1.1.4 <a href="#sect0027">Arrays</a></div><div class="TOC2">1.1.5 <a href="#sect0029">plain objects</a></div><div class="TOC2">1.1.6 <a href="#sect0039">HTML</a></div><div class="TOC3">1.1.6.1 <a href="#sect0055"></a></div><div class="TOC1">1.2 <a href="#sect0048">V</a></div><div class="TOC1">1.3 <a href="#sect0003">JSON</a></div><div class="TOC1">1.4 <a href="#sect0172">jQuery extensions</a></div><div class="TOC1">1.5 <a href="#sect0009">jc helpers</a></div><div class="TOC2">1.5.1 <a href="#sect0007">jc.inspect</a></div><div class="TOC2">1.5.2 <a href="#sect0099">jc.heir</a></div><div class="TOC2">1.5.3 <a href="#sect0102">jc.makeInheritFrom</a></div><div class="TOC2">1.5.4 <a href="#sect0081">jc.constructorName</a></div><div class="TOC2">1.5.5 <a href="#sect0097">jc.keys</a></div><div class="TOC2">1.5.6 <a href="#sect0098">jc.pad</a></div><div class="TOC2">1.5.7 <a href="#sect0151">jc.urlComponents</a></div><div class="TOC2">1.5.8 <a href="#sect0169">jc.fileName</a></div><div class="TOC2">1.5.9 <a href="#sect0096">Helpers for functions</a></div><div class="TOC2">1.5.10 <a href="#sect0144">helpers to write code</a></div><div class="TOC2">1.5.11 <a href="#sect0159">helper to match object and find objects in arrays</a></div><div class="TOC2">1.5.12 <a href="#sect0099">helpers for html</a></div><div class="TOC3">1.5.12.1 <a href="#sect0100">jc.toString</a></div><div class="TOC1">1.6 <a href="#sect0043">trace</a></div><div class="TOC1">1.7 <a href="#sect0074">Interactive and animation</a></div><div class="TOC1">1.8 <a href="#sect0165">help system</a></div><div class="TOC1">1.9 <a href="#sect0166">test results</a></div></div></div>
+
+<div id="sect0017" class="SECTION ELEMENT" sizset="2" sizcache="1">
+
+<h2 class="SECTIONTITLE EDITABLE" contenteditable="false">1.1 Consistence of rendering results</h2>
+
+<div sizset="2" sizcache="1" container="sectionContent">
+
+<div id="sect0018" class="SECTION ELEMENT" sizset="2" sizcache="1">
+
+<h3 class="SECTIONTITLE EDITABLE" contenteditable="false">1.1.1 numbers</h3>
+
+<div sizset="2" sizcache="1" container="sectionContent"><pre id="code0019" class="CODE ELEMENT EDITABLE" contenteditable="false">5</pre>
+
+<div id="out0019" class="OUTPUT SUCCESS">5</div>
+
+<div id="test0019" class="TEST SUCCESS">5</div><pre id="code0020" class="CODE ELEMENT EDITABLE" contenteditable="false">v('toto',6)</pre>
+
+<div id="out0020" class="OUTPUT SUCCESS">6</div>
+
+<div id="test0020" class="TEST SUCCESS">6</div></div></div>
+
+<div id="sect0022" class="SECTION ELEMENT" sizset="4" sizcache="1">
+
+<h3 class="SECTIONTITLE EDITABLE" contenteditable="false">1.1.2 Dates</h3>
+
+<div sizset="4" sizcache="1" container="sectionContent"><pre id="code0023" class="CODE ELEMENT EDITABLE" contenteditable="false">new Date('2018/8/30')</pre>
+
+<div id="out0023" class="OUTPUT SUCCESS">2018-08-30</div>
+
+<div id="test0023" class="TEST SUCCESS">2018-08-30</div><pre id="code0024" class="CODE ELEMENT EDITABLE" contenteditable="false">v('startDate',new Date('2018/7/1'))</pre>
+
+<div id="out0024" class="OUTPUT SUCCESS">2018-07-01</div>
+
+<div id="test0024" class="TEST SUCCESS">2018-07-01</div><pre id="code0025" class="CODE ELEMENT EDITABLE" contenteditable="false">startDate.valueOf()</pre>
+
+<div id="out0025" class="OUTPUT SUCCESS">1530396000000</div>
+
+<div id="test0025" class="TEST SUCCESS">1530396000000</div><pre id="code0026" class="CODE ELEMENT EDITABLE" contenteditable="false">startDate.toUTCString()</pre>
+
+<div id="out0026" class="OUTPUT SUCCESS">Sat,&nbsp;30&nbsp;Jun&nbsp;2018&nbsp;22:00:00&nbsp;GMT</div>
+
+<div id="test0026" class="TEST SUCCESS">Sat,&nbsp;30&nbsp;Jun&nbsp;2018&nbsp;22:00:00&nbsp;GMT</div></div></div>
+
+<div id="sect0034" class="SECTION ELEMENT" sizset="8" sizcache="1">
+
+<h3 class="SECTIONTITLE EDITABLE" contenteditable="false">1.1.3 Strings</h3>
+
+<div sizset="8" sizcache="1" container="sectionContent"><pre id="code0035" class="CODE ELEMENT EDITABLE" contenteditable="false">"guns an' roses"</pre>
+
+<div id="out0035" class="OUTPUT SUCCESS">guns&nbsp;an'&nbsp;roses</div><pre id="code0036" class="CODE ELEMENT EDITABLE" contenteditable="false">"multi line\nstring\nshould display\non several lines\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and spaces should be preserved &lt;b&gt;and no tag should become a tag&lt;/b&gt;"</pre>
+
+<div id="out0036" class="OUTPUT SUCCESS">multi&nbsp;line<br>string<br>should&nbsp;display<br>on&nbsp;several&nbsp;lines<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;spaces&nbsp;should&nbsp;be&nbsp;preserved&nbsp;<wbr>&lt;b&gt;and&nbsp;no&nbsp;tag&nbsp;should&nbsp;become&nbsp;a&nbsp;tag<wbr>&lt;/b&gt;</div></div></div>
+
+<div id="sect0027" class="SECTION ELEMENT" sizset="10" sizcache="1">
+
+<h3 class="SECTIONTITLE EDITABLE" contenteditable="false">1.1.4 Arrays</h3>
+
+<div sizset="10" sizcache="1" container="sectionContent"><pre id="code0028" class="CODE ELEMENT EDITABLE" contenteditable="false">[1,2,3]</pre>
+
+<div id="out0028" class="OUTPUT SUCCESS">1,2,3</div>
+
+<div id="test0028" class="TEST SUCCESS">1,2,3</div><pre id="code0032" class="CODE ELEMENT EDITABLE" contenteditable="false">v('array',[1,2,3])</pre>
+
+<div id="out0032" class="OUTPUT SUCCESS">1,2,3</div>
+
+<div id="test0032" class="TEST SUCCESS">1,2,3</div></div></div>
+
+<div id="sect0029" class="SECTION ELEMENT" sizset="12" sizcache="1">
+
+<h3 class="SECTIONTITLE EDITABLE" contenteditable="false">1.1.5 plain objects</h3>
+
+<div sizset="12" sizcache="1" container="sectionContent"><pre id="code0030" class="CODE ELEMENT EDITABLE" contenteditable="false"><p>v('o',{toto:1,tutu:2})</p><p>o</p></pre>
+
+<div id="out0030" class="OUTPUT SUCCESS"><div class="INSPECT"><fieldset><legend>{} </legend><table><tbody><tr><th valign="top">toto</th><td valign="top" style="text-align:left;">1</td></tr><tr><th valign="top">tutu</th><td valign="top" style="text-align:left;">2</td></tr></tbody></table></fieldset></div></div>
+
+<div id="test0030" class="TEST SUCCESS"><div class="INSPECT"><fieldset><legend>{} </legend><table><tbody><tr><th valign="top">toto</th><td valign="top" style="text-align:left;">1</td></tr><tr><th valign="top">tutu</th><td valign="top" style="text-align:left;">2</td></tr></tbody></table></fieldset></div></div></div></div>
+
+<div id="sect0039" class="SECTION ELEMENT" sizset="13" sizcache="1">
+
+<h3 class="SECTIONTITLE EDITABLE" contenteditable="false">1.1.6 HTML</h3>
+
+<div sizset="13" sizcache="1" container="sectionContent"><pre id="code0037" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.html('if you &lt;b style="color:red;"&gt;want&lt;/b&gt; to format a string as html')</pre>
+
+<div id="out0037" class="OUTPUT SUCCESS">if you <b style="color:red;">want</b> to format a string as html</div><pre id="code0040" class="CODE ELEMENT EDITABLE" contenteditable="false"><p>// be carefull if an attribute values is calculated, use tb.htmlAttribute to make sure everything goes right</p><p>var myStupidAttributeValue = 'joe\'s "stupidness"';</p><p>tb.html('&lt;span class=USERERROR '+tb.htmlAttribute('stupid',myStupidAttributeValue)+'&gt;So "stupid"&lt;/SPAN&gt;');</p></pre>
+
+<div id="out0040" class="OUTPUT SUCCESS"><span class="USERERROR" stupid="joe's&nbsp;&amp;quote;stupidness&amp;quote;">So "stupid"</span></div>
+
+<div id="test0040" class="TEST SUCCESS"><span class="USERERROR" stupid="joe's&nbsp;&amp;quote;stupidness&amp;quote;">So "stupid"</span></div>
+
+<div id="sect0055" class="SECTION ELEMENT">
+
+<h4 class="SECTIONTITLE EDITABLE" contenteditable="false">1.1.6.1 </h4>
+
+<div container="sectionContent">
+
+<div class="ELEMENT EMPTY" contenteditable="false">empty container: click here to add an element</div></div></div><pre id="code0041" class="CODE ELEMENT EDITABLE" contenteditable="false">$('#out0040 SPAN').attr('stupid')</pre>
+
+<div id="out0041" class="OUTPUT SUCCESS">joe's&nbsp;&amp;quote;stupidness&amp;quote;</div>
+
+<div id="test0041" class="TEST SUCCESS">joe's&nbsp;&amp;quote;stupidness&amp;quote;</div><pre id="code0054" class="CODE ELEMENT EDITABLE" contenteditable="false"><p>$('#out0040').add('#test0040')</p></pre>
+
+<div id="out0054" class="OUTPUT SUCCESS">JQuery of 2 elements<br><ol start="0"><br><li class="INSPECTHTML"><wbr>&lt;div&nbsp;id="out0040"&nbsp;class="OUTPUT&nbsp;SUCCESS"&gt;<wbr>&lt;span&nbsp;class="USERERROR"&nbsp;stupid="joe's&amp;nbsp;&amp;amp;quote;stupidness&amp;amp;quote;"&gt;So&nbsp;"stupid"<wbr>&lt;/span&gt;<wbr>&lt;/div&gt;<br></li><li class="INSPECTHTML"><wbr>&lt;div&nbsp;id="test0040"&nbsp;class="TEST&nbsp;SUCCESS"&gt;<wbr>&lt;span&nbsp;class="USERERROR"&nbsp;stupid="joe's&amp;nbsp;&amp;amp;quote;stupidness&amp;amp;quote;"&gt;So&nbsp;"stupid"<wbr>&lt;/span&gt;<wbr>&lt;/div&gt;<br></li></ol></div></div></div></div></div>
+
+<div id="sect0048" class="SECTION ELEMENT" sizset="17" sizcache="1">
+
+<h2 class="SECTIONTITLE EDITABLE" contenteditable="false">1.2 V</h2>
+
+<div sizset="17" sizcache="1" container="sectionContent"><pre id="code0049" class="CODE ELEMENT EDITABLE" contenteditable="false">v('toto',3)</pre>
+
+<div id="out0049" class="OUTPUT SUCCESS">3</div>
+
+<div id="test0049" class="TEST SUCCESS">3</div><pre id="code0050" class="CODE ELEMENT EDITABLE" contenteditable="false">toto.label</pre>
+
+<div id="out0050" class="OUTPUT SUCCESS">toto</div>
+
+<div id="test0050" class="TEST SUCCESS">toto</div><pre id="code0051" class="CODE ELEMENT EDITABLE" contenteditable="false">toto.unit</pre>
+
+<div id="out0051" class="OUTPUT SUCCESS"><span style="color:red;">undefined</span></div>
+
+<div id="test0051" class="TEST SUCCESS"><span style="color:red;">undefined</span></div><pre id="code0052" class="CODE ELEMENT EDITABLE" contenteditable="false">toto.setValue(5)</pre>
+
+<div id="out0052" class="OUTPUT SUCCESS">5</div>
+
+<div id="test0052" class="TEST SUCCESS">5</div><pre id="code0056" class="CODE ELEMENT EDITABLE" contenteditable="false">toto.valueOf()</pre>
+
+<div id="out0056" class="OUTPUT SUCCESS">5</div>
+
+<div id="test0056" class="TEST SUCCESS">5</div><pre id="code0057" class="CODE ELEMENT EDITABLE" contenteditable="false">toto.toJSCode()</pre>
+
+<div id="out0057" class="OUTPUT SUCCESS">5</div>
+
+<div id="test0057" class="TEST SUCCESS">5</div><pre id="code0058" class="CODE ELEMENT EDITABLE" contenteditable="false">toto.code()</pre>
+
+<div id="out0058" class="OUTPUT SUCCESS"><span style="color:red;">undefined</span></div>
+
+<div id="test0058" class="TEST SUCCESS"><span style="color:red;">undefined</span></div><pre id="code0059" class="CODE ELEMENT EDITABLE" contenteditable="false">toto.toString()</pre>
+
+<div id="out0059" class="OUTPUT SUCCESS">[object&nbsp;tb.Var(toto):5]</div>
+
+<div id="test0059" class="TEST SUCCESS">[object&nbsp;tb.Var(toto):5]</div><pre id="code0060" class="CODE ELEMENT EDITABLE" contenteditable="false">toto.view()</pre>
+
+<div id="out0060" class="OUTPUT SUCCESS"><var>toto</var> = <span class="VALUE">5</span></div>
+
+<div id="test0060" class="TEST SUCCESS"><var>toto</var> = <span class="VALUE">5</span></div><pre id="code0061" class="CODE AUTOEDIT ELEMENT EDITABLE" contenteditable="false" jcobject="toto" tbobject="toto">v("toto",12215).edit()</pre>
+
+<div id="out0061" class="OUTPUT SUCCESS"><var>toto</var><input class="EDITOR number" value="12215" tbobject="toto"></div><pre id="code0062" class="CODE ELEMENT EDITABLE" contenteditable="false">toto.isV</pre>
+
+<div id="out0062" class="OUTPUT SUCCESS">true</div>
+
+<div id="test0062" class="TEST SUCCESS">true</div><pre id="code0063" class="CODE ELEMENT EDITABLE" contenteditable="false">v('length$m',10)</pre>
+
+<div id="out0063" class="OUTPUT SUCCESS">10</div>
+
+<div id="test0063" class="TEST SUCCESS">10</div><pre id="code0064" class="CODE ELEMENT EDITABLE" contenteditable="false"><p>length$m.to('mm')</p></pre>
+
+<div id="out0064" class="OUTPUT SUCCESS">10000</div>
+
+<div id="test0064" class="TEST SUCCESS">10000</div><pre id="code0065" class="CODE ELEMENT EDITABLE" contenteditable="false">length$m.unit</pre>
+
+<div id="out0065" class="OUTPUT SUCCESS">m</div>
+
+<div id="test0065" class="TEST SUCCESS">m</div><pre id="code0066" class="CODE ELEMENT EDITABLE" contenteditable="false">length$m.label</pre>
+
+<div id="out0066" class="OUTPUT SUCCESS">length</div>
+
+<div id="test0066" class="TEST SUCCESS">length</div><pre id="code0067" class="CODE ELEMENT EDITABLE" contenteditable="false">length$m.view()</pre>
+
+<div id="out0067" class="OUTPUT SUCCESS"><var>length</var> = <span class="VALUE">10</span>&nbsp;<span class="UNIT">m</span></div>
+
+<div id="test0067" class="TEST SUCCESS"><var>length</var> = <span class="VALUE">10</span>&nbsp;<span class="UNIT">m</span></div><pre id="code0069" class="CODE ELEMENT EDITABLE" contenteditable="false">v('totalLength$mm',f("length$m*1000+128"))</pre>
+
+<div id="out0069" class="OUTPUT SUCCESS">10128</div>
+
+<div id="test0069" class="TEST SUCCESS">10128</div><pre id="code0070" class="CODE ELEMENT EDITABLE" contenteditable="false"><p>v('length$m',1)</p></pre>
+
+<div id="out0070" class="OUTPUT SUCCESS">1</div>
+
+<div id="test0070" class="TEST SUCCESS">1</div><pre id="code0071" class="CODE ELEMENT EDITABLE" contenteditable="false">totalLength$mm.view()</pre>
+
+<div id="out0071" class="OUTPUT SUCCESS"><var>totalLength</var> = <span class="VALUE">1128</span>&nbsp;<span class="UNIT">mm</span></div>
+
+<div id="test0071" class="TEST SUCCESS"><var>totalLength</var> = <span class="VALUE">1128</span>&nbsp;<span class="UNIT">mm</span></div><pre id="code0072" class="CODE ELEMENT EDITABLE" contenteditable="false">totalLength$mm.code()</pre>
+
+<div id="out0072" class="OUTPUT SUCCESS">length$m*1000+128</div>
+
+<div id="test0072" class="TEST SUCCESS">length$m*1000+128</div></div></div>
+
+<div id="sect0003" class="SECTION ELEMENT" sizset="37" sizcache="1">
+
+<h2 class="SECTIONTITLE EDITABLE" contenteditable="false">1.3 JSON</h2>
+
+<div sizset="37" sizcache="1" container="sectionContent"><pre id="code0004" class="CODE ELEMENT EDITABLE" contenteditable="false">JSON.stringify('myString is "stupid"')</pre>
+
+<div id="out0004" class="OUTPUT SUCCESS">"myString&nbsp;is&nbsp;\"stupid\""</div>
+
+<div id="test0004" class="TEST SUCCESS">"myString&nbsp;is&nbsp;\"stupid\""</div><pre id="code0005" class="CODE ELEMENT EDITABLE" contenteditable="false">JSON.stringify([1,2,3,4])</pre>
+
+<div id="out0005" class="OUTPUT SUCCESS">[1,2,3,4]</div>
+
+<div id="test0005" class="TEST SUCCESS">[1,2,3,4]</div><pre id="code0006" class="CODE ELEMENT EDITABLE" contenteditable="false">JSON.stringify({one:1,two:2})</pre>
+
+<div id="out0006" class="OUTPUT SUCCESS">{"one":1,"two":2}</div>
+
+<div id="test0006" class="TEST SUCCESS">{"one":1,"two":2}</div><pre id="code0011" class="CODE ELEMENT EDITABLE" contenteditable="false"><p>var a = {one:1,two:2};</p><p>var b = tb.copy(a);</p><p>output</p><p>.p(a===b)</p><p>.p(JSON.stringify(a))</p><p>.p(JSON.stringify(b))</p></pre>
+
+<div id="out0011" class="OUTPUT SUCCESS"><p>false</p><p>{"one":1,"two":2}</p><p>{"one":1,"two":2}</p></div>
+
+<div id="test0011" class="TEST SUCCESS"><p>false</p><p>{"one":1,"two":2}</p><p>{"one":1,"two":2}</p></div></div></div>
+
+<div id="sect0172" class="ELEMENT SECTION" sizset="41" sizcache="1">
+
+<h2 class="SECTIONTITLE EDITABLE" contenteditable="false">1.4 jQuery extensions</h2>
+
+<div sizset="41" sizcache="1" container="sectionContent"><pre id="code0173" class="ELEMENT CODE EDITABLE" contenteditable="false">// this is the code0173</pre>
+
+<div id="out0173" class="OUTPUT SUCCESS"><span style="color:red;">undefined</span></div><pre id="code0174" class="ELEMENT CODE EDITABLE" contenteditable="false"><p>// this is the code 0174</p></pre>
+
+<div id="out0174" class="OUTPUT SUCCESS"><span style="color:red;">undefined</span></div><pre id="code0177" class="ELEMENT CODE EDITABLE" contenteditable="false">// this is the code 0177</pre>
+
+<div id="out0177" class="OUTPUT SUCCESS"><span style="color:red;">undefined</span></div><pre id="code0175" class="ELEMENT CODE EDITABLE" contenteditable="false">$('.CODE').filterFromToId('code0173','code0177')</pre>
+
+<div id="out0175" class="OUTPUT SUCCESS">JQuery of 3 elements<br><ol start="0"><br><li class="INSPECTHTML"><wbr>&lt;pre&nbsp;id="code0173"&nbsp;class="ELEMENT&nbsp;CODE&nbsp;EDITABLE"&nbsp;contenteditable="false"&gt;//&nbsp;this&nbsp;is&nbsp;the&nbsp;code0173<wbr>&lt;/pre&gt;<br></li><li class="INSPECTHTML"><wbr>&lt;pre&nbsp;id="code0174"&nbsp;class="ELEMENT&nbsp;CODE&nbsp;EDITABLE"&nbsp;contenteditable="false"&gt;<wbr>&lt;p&gt;//&nbsp;this&nbsp;is&nbsp;the&nbsp;code&nbsp;0174<wbr>&lt;/p&gt;<wbr>&lt;/pre&gt;<br></li><li class="INSPECTHTML"><wbr>&lt;pre&nbsp;id="code0177"&nbsp;class="ELEMENT&nbsp;CODE&nbsp;EDITABLE"&nbsp;contenteditable="false"&gt;//&nbsp;this&nbsp;is&nbsp;the&nbsp;code&nbsp;0177<wbr>&lt;/pre&gt;<br></li></ol></div>
+
+<div id="test0175" class="TEST SUCCESS">JQuery of 3 elements<br><ol start="0"><br><li class="INSPECTHTML"><wbr>&lt;pre&nbsp;id="code0173"&nbsp;class="ELEMENT&nbsp;CODE&nbsp;EDITABLE"&nbsp;contenteditable="false"&gt;//&nbsp;this&nbsp;is&nbsp;the&nbsp;code0173<wbr>&lt;/pre&gt;<br></li><li class="INSPECTHTML"><wbr>&lt;pre&nbsp;id="code0174"&nbsp;class="ELEMENT&nbsp;CODE&nbsp;EDITABLE"&nbsp;contenteditable="false"&gt;<wbr>&lt;p&gt;//&nbsp;this&nbsp;is&nbsp;the&nbsp;code&nbsp;0174<wbr>&lt;/p&gt;<wbr>&lt;/pre&gt;<br></li><li class="INSPECTHTML"><wbr>&lt;pre&nbsp;id="code0177"&nbsp;class="ELEMENT&nbsp;CODE&nbsp;EDITABLE"&nbsp;contenteditable="false"&gt;//&nbsp;this&nbsp;is&nbsp;the&nbsp;code&nbsp;0177<wbr>&lt;/pre&gt;<br></li></ol></div></div></div>
+
+<div id="sect0009" class="SECTION ELEMENT" sizset="45" sizcache="1">
+
+<h2 class="SECTIONTITLE EDITABLE" contenteditable="false">1.5 jc helpers</h2>
+
+<div sizset="45" sizcache="1" container="sectionContent">
+
+<div id="sect0007" class="SECTION ELEMENT" sizset="45" sizcache="1">
+
+<h3 class="SECTIONTITLE EDITABLE" contenteditable="false">1.5.1 jc.inspect</h3>
+
+<div sizset="45" sizcache="1" container="sectionContent"><pre id="code0129" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.inspect(123)</pre>
+
+<div id="out0129" class="OUTPUT SUCCESS">123</div>
+
+<div id="test0129" class="TEST SUCCESS">123</div><pre id="code0130" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.inspect('toto')</pre>
+
+<div id="out0130" class="OUTPUT SUCCESS"><span class="INSPECT">"toto"</span></div>
+
+<div id="test0130" class="TEST SUCCESS"><span class="INSPECT">"toto"</span></div><pre id="code0136" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.inspect(null)</pre>
+
+<div id="out0136" class="OUTPUT SUCCESS"><span class="INSPECT META">null</span></div>
+
+<div id="test0136" class="TEST SUCCESS"><span class="INSPECT META">null</span></div><pre id="code0138" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.inspect(undefined)</pre>
+
+<div id="out0138" class="OUTPUT SUCCESS"><span class="INSPECT META">undefined</span></div>
+
+<div id="test0138" class="TEST SUCCESS"><span class="INSPECT META">undefined</span></div><pre id="code0139" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.inspect('')</pre>
+
+<div id="out0139" class="OUTPUT SUCCESS"><span class="INSPECT META">empty string</span></div>
+
+<div id="test0139" class="TEST SUCCESS"><span class="INSPECT META">empty string</span></div><pre id="code0140" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.inspect(new Date('2018/1/1'))</pre>
+
+<div id="out0140" class="OUTPUT SUCCESS"><span class="INSPECT META">Mon Jan 01 2018 00:00:00 GMT+0100 (heure normale d’Europe centrale) (ms:1514761200000)</span></div>
+
+<div id="test0140" class="TEST SUCCESS"><span class="INSPECT META">Mon Jan 01 2018 00:00:00 GMT+0100 (heure normale d’Europe centrale) (ms:1514761200000)</span></div><pre id="code0008" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.inspect({one:1,two:2},1,'my label')</pre>
+
+<div id="out0008" class="OUTPUT SUCCESS"><div class="INSPECT"><fieldset><legend>{} my label</legend><table><tbody><tr><th valign="top">one</th><td valign="top" style="text-align:left;">1</td></tr><tr><th valign="top">two</th><td valign="top" style="text-align:left;">2</td></tr></tbody></table></fieldset></div></div>
+
+<div id="test0008" class="TEST SUCCESS"><div class="INSPECT"><fieldset><legend>{} my label</legend><table><tbody><tr><th valign="top">one</th><td valign="top" style="text-align:left;">1</td></tr><tr><th valign="top">two</th><td valign="top" style="text-align:left;">2</td></tr></tbody></table></fieldset></div></div><pre id="code0132" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.inspect(123).toString()</pre>
+
+<div id="out0132" class="OUTPUT SUCCESS">123</div>
+
+<div id="test0132" class="TEST SUCCESS">123</div><pre id="code0134" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.inspect("toto").toString()</pre>
+
+<div id="out0134" class="OUTPUT SUCCESS">"toto"</div>
+
+<div id="test0134" class="TEST SUCCESS">"toto"</div><pre id="code0141" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.inspect('').toString()</pre>
+
+<div id="out0141" class="OUTPUT SUCCESS">empty&nbsp;string</div>
+
+<div id="test0141" class="TEST SUCCESS">empty&nbsp;string</div><pre id="code0142" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.inspect(null).toString()</pre>
+
+<div id="out0142" class="OUTPUT SUCCESS">null</div>
+
+<div id="test0142" class="TEST SUCCESS">null</div><pre id="code0135" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.inspect({one:1,two:2}).toString()</pre>
+
+<div id="out0135" class="OUTPUT SUCCESS">{}&nbsp;<br>one:&nbsp;&nbsp;1<br>two:&nbsp;&nbsp;2<br></div>
+
+<div id="test0135" class="TEST SUCCESS">{}&nbsp;<br>one:&nbsp;&nbsp;1<br>two:&nbsp;&nbsp;2<br></div></div></div>
+
+<div id="sect0099" class="SECTION ELEMENT" sizset="57" sizcache="1">
+
+<h3 class="SECTIONTITLE EDITABLE" contenteditable="false">1.5.2 jc.heir</h3>
+
+<div sizset="57" sizcache="1" container="sectionContent"><pre id="code0100" class="CODE ELEMENT EDITABLE" contenteditable="false"><p>tb.vars.parent = {firstName:'Ma',name:'Dalton'}</p><p>tb.vars.child1 = tb.heir(parent);</p><p>child1.firstName='Avrel';</p><p>tb.inspect(child1)</p><p>&nbsp;</p></pre>
+
+<div id="out0100" class="OUTPUT SUCCESS"><div class="INSPECT"><fieldset><legend>[object Object] </legend><table><tbody><tr><th valign="top">firstName</th><td valign="top" style="text-align:left;">Avrel</td></tr><tr><th valign="top">name</th><td valign="top" style="text-align:left;">Dalton</td></tr></tbody></table></fieldset></div></div><pre id="code0107" class="CODE ELEMENT EDITABLE" contenteditable="false"><p>&nbsp;</p></pre>
+
+<div id="out0107" class="OUTPUT SUCCESS"><span style="color:red;">undefined</span></div></div></div>
+
+<div id="sect0102" class="SECTION ELEMENT" sizset="59" sizcache="1">
+
+<h3 class="SECTIONTITLE EDITABLE" contenteditable="false">1.5.3 jc.makeInheritFrom</h3>
+
+<div sizset="59" sizcache="1" container="sectionContent"><pre id="code0105" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.inspect(Function.constructor)</pre>
+
+<div id="out0105" class="OUTPUT SUCCESS"><div class="INSPECT"><fieldset><legend>function Function() </legend><table></table></fieldset></div></div><pre id="code0113" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.inspect(Function.prototype.constructor)</pre>
+
+<div id="out0113" class="OUTPUT SUCCESS"><div class="INSPECT"><fieldset><legend>function Function() </legend><table></table></fieldset></div></div><pre id="code0103" class="CODE ELEMENT EDITABLE" contenteditable="false"><p>tb.vars.Ancestor = function Ancestor(name){</p><p>this.name = name;</p><p>}</p><p>Ancestor.prototype.beep = function(){</p><p>return 'beep';</p><p>}</p><p>tb.vars.ancestor = new Ancestor('old guy')</p><p>ancestor.beep()</p></pre>
+
+<div id="out0103" class="OUTPUT SUCCESS">beep</div><pre id="code0112" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.inspect(Ancestor.constructor)</pre>
+
+<div id="out0112" class="OUTPUT SUCCESS"><div class="INSPECT"><fieldset><legend>function Function() </legend><table></table></fieldset></div></div><pre id="code0114" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.inspect(Ancestor.prototype)</pre>
+
+<div id="out0114" class="OUTPUT SUCCESS"><div class="INSPECT"><fieldset><legend>{} </legend><table><tbody><tr><th valign="top">beep</th><td valign="top" style="text-align:left;"><span class="HELP"><b>function()</b><br></span></td></tr></tbody></table></fieldset></div></div><pre id="code0115" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.inspect(Ancestor.prototype.constructor)</pre>
+
+<div id="out0115" class="OUTPUT SUCCESS"><div class="INSPECT"><fieldset><legend>function Ancestor(name) </legend><table></table></fieldset></div></div><pre id="code0111" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.inspect(ancestor.constructor)</pre>
+
+<div id="out0111" class="OUTPUT SUCCESS"><div class="INSPECT"><fieldset><legend>function Ancestor(name) </legend><table></table></fieldset></div></div><pre id="code0116" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.inspect(ancestor.beep.constructor)</pre>
+
+<div id="out0116" class="OUTPUT SUCCESS"><div class="INSPECT"><fieldset><legend>function Function() </legend><table></table></fieldset></div></div><pre id="code0109" class="CODE ELEMENT EDITABLE" contenteditable="false">ancestor.constructor.prototype</pre>
+
+<div id="out0109" class="OUTPUT SUCCESS">[object&nbsp;Object]</div><pre id="code0118" class="CODE ELEMENT EDITABLE" contenteditable="false">ancestor instanceof Ancestor</pre>
+
+<div id="out0118" class="OUTPUT SUCCESS">true</div><pre id="code0119" class="CODE ELEMENT EDITABLE" contenteditable="false">ancestor instanceof Object</pre>
+
+<div id="out0119" class="OUTPUT SUCCESS">true</div><pre id="code0104" class="CODE ELEMENT EDITABLE" contenteditable="false"><p>trace.on()</p><p>tb.vars.Child = function Child() {}</p></pre>
+
+<div id="out0104" class="OUTPUT SUCCESS"></div><pre id="code0120" class="CODE ELEMENT EDITABLE" contenteditable="false"><p>tb.<strong>makeInheritFrom</strong>(Child,Ancestor);</p><p>child = new Child();&nbsp;</p></pre>
+
+<div id="out0120" class="OUTPUT SUCCESS">[object&nbsp;Object]</div><pre id="code0122" class="CODE ELEMENT EDITABLE" contenteditable="false"></pre>
+
+<div id="out0122" class="OUTPUT SUCCESS"><span style="color:red;">undefined</span></div><pre id="code0121" class="CODE ELEMENT EDITABLE" contenteditable="false">child instanceof Ancestor</pre>
+
+<div id="out0121" class="OUTPUT SUCCESS">true</div></div></div>
+
+<div id="sect0081" class="SECTION ELEMENT" sizset="74" sizcache="1">
+
+<h3 class="SECTIONTITLE EDITABLE" contenteditable="false">1.5.4 jc.constructorName</h3>
+
+<div sizset="74" sizcache="1" container="sectionContent"><pre id="code0082" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.constructorName('toto')</pre>
+
+<div id="out0082" class="OUTPUT SUCCESS">false</div>
+
+<div id="test0082" class="TEST SUCCESS">false</div><pre id="code0085" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.constructorName('aToto')</pre>
+
+<div id="out0085" class="OUTPUT SUCCESS">false</div>
+
+<div id="test0085" class="TEST SUCCESS">false</div><pre id="code0083" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.constructorName('Toto')</pre>
+
+<div id="out0083" class="OUTPUT SUCCESS">true</div>
+
+<div id="test0083" class="TEST SUCCESS">true</div></div></div>
+
+<div id="sect0097" class="SECTION ELEMENT" sizset="77" sizcache="1">
+
+<h3 class="SECTIONTITLE EDITABLE" contenteditable="false">1.5.5 jc.keys</h3>
+
+<div sizset="77" sizcache="1" container="sectionContent"><pre id="code0010" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.keys({one:1,two:2})</pre>
+
+<div id="out0010" class="OUTPUT SUCCESS">one,two</div>
+
+<div id="test0010" class="TEST SUCCESS">one,two</div></div></div>
+
+<div id="sect0098" class="SECTION ELEMENT" sizset="78" sizcache="1">
+
+<h3 class="SECTIONTITLE EDITABLE" contenteditable="false">1.5.6 jc.pad</h3>
+
+<div sizset="78" sizcache="1" container="sectionContent"><pre id="code0012" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.pad(15,5)</pre>
+
+<div id="out0012" class="OUTPUT SUCCESS">00015</div>
+
+<div id="test0012" class="TEST SUCCESS">00015</div></div></div>
+
+<div id="sect0151" class="ELEMENT SECTION" sizset="79" sizcache="1">
+
+<h3 class="SECTIONTITLE EDITABLE" contenteditable="false">1.5.7 jc.urlComponents</h3>
+
+<div class="CONTAINER" sizset="79" sizcache="1" container="sectionContent"><pre id="code0152" class="ELEMENT CODE EDITABLE" contenteditable="false"><p>tb.inspect(tb.urlComponents('http://user:password@www.monserveur.com:8080/path/subpath/filename.ext#tag?searchstring&amp;toto=2&amp;tutu=bidule'),2)</p></pre>
+
+<div id="out0152" class="OUTPUT SUCCESS"><div class="INSPECT"><fieldset><legend>{} </legend><table><tbody><tr><th valign="top">protocol</th><td valign="top" style="text-align:left;"><span class="INSPECT">"http"</span></td></tr><tr><th valign="top">user</th><td valign="top" style="text-align:left;"><span class="INSPECT">"user"</span></td></tr><tr><th valign="top">password</th><td valign="top" style="text-align:left;"><span class="INSPECT">"password"</span></td></tr><tr><th valign="top">domain</th><td valign="top" style="text-align:left;"><span class="INSPECT">"www.monserveur.com"</span></td></tr><tr><th valign="top">port</th><td valign="top" style="text-align:left;"><span class="INSPECT">"8080"</span></td></tr><tr><th valign="top">drive</th><td valign="top" style="text-align:left;"><span class="INSPECT META">undefined</span></td></tr><tr><th valign="top">path</th><td valign="top" style="text-align:left;"><span class="INSPECT">"/path/subpath/"</span></td></tr><tr><th valign="top">fullFileName</th><td valign="top" style="text-align:left;"><span class="INSPECT">"filename.ext"</span></td></tr><tr><th valign="top">search</th><td valign="top" style="text-align:left;"><span class="INSPECT META">empty string</span></td></tr><tr><th valign="top">tag</th><td valign="top" style="text-align:left;"><span class="INSPECT">"tag"</span></td></tr><tr><th valign="top">fileName</th><td valign="top" style="text-align:left;"><span class="INSPECT">"filename"</span></td></tr><tr><th valign="top">ext</th><td valign="top" style="text-align:left;"><span class="INSPECT">"ext"</span></td></tr><tr><th valign="top">absolutePath</th><td valign="top" style="text-align:left;"><span class="INSPECT">"http://www.monserveur.com/path/subpath/"</span></td></tr><tr><th valign="top">arguments</th><td valign="top" style="text-align:left;"><div class="INSPECT"><fieldset><legend>{} </legend><table></table></fieldset></div></td></tr></tbody></table></fieldset></div></div>
+
+
+
+<pre id="code0157" class="ELEMENT CODE EDITABLE" contenteditable="false"><p>tb.inspect(tb.urlComponents('d:\\path\\file.txt'),2)</p></pre>
+
+<div id="out0157" class="OUTPUT SUCCESS"><div class="INSPECT"><fieldset><legend>{} </legend><table><tbody><tr><th valign="top">protocol</th><td valign="top" style="text-align:left;"><span class="INSPECT">"file"</span></td></tr><tr><th valign="top">user</th><td valign="top" style="text-align:left;"><span class="INSPECT META">undefined</span></td></tr><tr><th valign="top">password</th><td valign="top" style="text-align:left;"><span class="INSPECT META">undefined</span></td></tr><tr><th valign="top">domain</th><td valign="top" style="text-align:left;"><span class="INSPECT META">undefined</span></td></tr><tr><th valign="top">port</th><td valign="top" style="text-align:left;"><span class="INSPECT META">undefined</span></td></tr><tr><th valign="top">drive</th><td valign="top" style="text-align:left;"><span class="INSPECT">"d:"</span></td></tr><tr><th valign="top">path</th><td valign="top" style="text-align:left;"><span class="INSPECT">"/path/"</span></td></tr><tr><th valign="top">fullFileName</th><td valign="top" style="text-align:left;"><span class="INSPECT">"file.txt"</span></td></tr><tr><th valign="top">search</th><td valign="top" style="text-align:left;"><span class="INSPECT META">empty string</span></td></tr><tr><th valign="top">tag</th><td valign="top" style="text-align:left;"><span class="INSPECT META">empty string</span></td></tr><tr><th valign="top">fileName</th><td valign="top" style="text-align:left;"><span class="INSPECT">"file"</span></td></tr><tr><th valign="top">ext</th><td valign="top" style="text-align:left;"><span class="INSPECT">"txt"</span></td></tr><tr><th valign="top">absolutePath</th><td valign="top" style="text-align:left;"><span class="INSPECT">"d:/path/"</span></td></tr><tr><th valign="top">arguments</th><td valign="top" style="text-align:left;"><div class="INSPECT"><fieldset><legend>{} </legend><table></table></fieldset></div></td></tr></tbody></table></fieldset></div></div>
+
+<div id="test0157" class="TEST SUCCESS"><div class="INSPECT"><fieldset><legend>{} </legend><table><tbody><tr><th valign="top">protocol</th><td valign="top" style="text-align:left;"><span class="INSPECT">"file"</span></td></tr><tr><th valign="top">user</th><td valign="top" style="text-align:left;"><span class="INSPECT META">undefined</span></td></tr><tr><th valign="top">password</th><td valign="top" style="text-align:left;"><span class="INSPECT META">undefined</span></td></tr><tr><th valign="top">domain</th><td valign="top" style="text-align:left;"><span class="INSPECT META">undefined</span></td></tr><tr><th valign="top">port</th><td valign="top" style="text-align:left;"><span class="INSPECT META">undefined</span></td></tr><tr><th valign="top">drive</th><td valign="top" style="text-align:left;"><span class="INSPECT">"d:"</span></td></tr><tr><th valign="top">path</th><td valign="top" style="text-align:left;"><span class="INSPECT">"/path/"</span></td></tr><tr><th valign="top">fullFileName</th><td valign="top" style="text-align:left;"><span class="INSPECT">"file.txt"</span></td></tr><tr><th valign="top">search</th><td valign="top" style="text-align:left;"><span class="INSPECT META">empty string</span></td></tr><tr><th valign="top">tag</th><td valign="top" style="text-align:left;"><span class="INSPECT META">empty string</span></td></tr><tr><th valign="top">fileName</th><td valign="top" style="text-align:left;"><span class="INSPECT">"file"</span></td></tr><tr><th valign="top">ext</th><td valign="top" style="text-align:left;"><span class="INSPECT">"txt"</span></td></tr><tr><th valign="top">absolutePath</th><td valign="top" style="text-align:left;"><span class="INSPECT">"d:/path/"</span></td></tr><tr><th valign="top">arguments</th><td valign="top" style="text-align:left;"><div class="INSPECT"><fieldset><legend>{} </legend><table></table></fieldset></div></td></tr></tbody></table></fieldset></div></div></div></div>
+
+<div id="sect0169" class="ELEMENT SECTION" sizset="82" sizcache="1">
+
+<h3 class="SECTIONTITLE EDITABLE" contenteditable="false">1.5.8 jc.fileName</h3>
+
+<div sizset="82" sizcache="1" container="sectionContent"><pre id="code0170" class="ELEMENT CODE EDITABLE" contenteditable="false">tb.fileName('d:\\path\\path\\fileName.ext')</pre>
+
+<div id="out0170" class="OUTPUT SUCCESS">fileName.ext</div>
+
+<div id="test0170" class="TEST SUCCESS">fileName.ext</div></div></div>
+
+<div id="sect0096" class="SECTION ELEMENT" sizset="83" sizcache="1">
+
+<h3 class="SECTIONTITLE EDITABLE" contenteditable="false">1.5.9 Helpers for functions</h3>
+
+<div sizset="83" sizcache="1" container="sectionContent"><pre id="code0091" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.signature(tb.Scene)</pre>
+
+<div id="out0091" class="OUTPUT SUCCESS">function&nbsp;Scene(name,css,html)</div>
+
+<div id="test0091" class="TEST SUCCESS">function&nbsp;Scene(name,css,html)</div><pre id="code0092" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.functionName(tb.Scene)</pre>
+
+<div id="out0092" class="OUTPUT SUCCESS">Scene</div>
+
+<div id="test0092" class="TEST SUCCESS">Scene</div><pre id="code0094" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.functionName(tb.functionName)</pre>
+
+<div id="out0094" class="OUTPUT SUCCESS"><span style="color:red;">empty string</span></div>
+
+<div id="test0094" class="TEST SUCCESS"><span style="color:red;">empty string</span></div><pre id="code0079" class="CODE ELEMENT EDITABLE" contenteditable="false"><p>// if the function is a constructor (= has a name that Starts with an Uppercase)</p><p>// the methods of that class are also displayed</p><p>tb.help(tb.Inspector)</p></pre>
+
+<div id="out0079" class="OUTPUT SUCCESS"><span class="HELP"><b>function Inspector(obj,depth,name)</b><br>constructor for tb.Inspector objects<br><br> Inspector object are made to have both .toString and .span methods<br> so they can be displayed either in an html or plain text context<br><dt><span class="PARAMETER">obj</span></dt><dd> the object to be inspected<br></dd><dt><span class="PARAMETER">depth</span></dt><dd> (default 1) give at what <span class="PARAMETER">depth</span> object properties are also inspected<br></dd><dt><span class="PARAMETER">name</span></dt><dd> (optional) gives a <span class="PARAMETER">name</span> to be shown in the display<br><fieldset><legend>methods</legend><table><tbody><tr><th valign="top">legend</th><td valign="top" style="text-align:left;"><span class="HELP"><b>function()</b><br> returns the legend for a given object<br></span></td></tr><tr><th valign="top">toString</th><td valign="top" style="text-align:left;"><span class="HELP"><b>function ()</b><br> display the object hold by the inspector as a string<br></span></td></tr><tr><th valign="top">span</th><td valign="top" style="text-align:left;"><span class="HELP"><b>function (depth)</b><br> return a HTML object to display the content of the inspector<br> <span class="PARAMETER">depth</span> specify at what <span class="PARAMETER">depth</span> an object property is also inspected<br></span></td></tr></tbody></table></fieldset><fieldset><legend>static methods</legend><table></table></fieldset></dd></span></div>
+
+<div id="test0079" class="TEST SUCCESS"><span class="HELP"><b>function Inspector(obj,depth,name)</b><br>constructor for tb.Inspector objects<br><br> Inspector object are made to have both .toString and .span methods<br> so they can be displayed either in an html or plain text context<br><dt><span class="PARAMETER">obj</span></dt><dd> the object to be inspected<br></dd><dt><span class="PARAMETER">depth</span></dt><dd> (default 1) give at what <span class="PARAMETER">depth</span> object properties are also inspected<br></dd><dt><span class="PARAMETER">name</span></dt><dd> (optional) gives a <span class="PARAMETER">name</span> to be shown in the display<br><fieldset><legend>methods</legend><table><tbody><tr><th valign="top">legend</th><td valign="top" style="text-align:left;"><span class="HELP"><b>function()</b><br> returns the legend for a given object<br></span></td></tr><tr><th valign="top">toString</th><td valign="top" style="text-align:left;"><span class="HELP"><b>function ()</b><br> display the object hold by the inspector as a string<br></span></td></tr><tr><th valign="top">span</th><td valign="top" style="text-align:left;"><span class="HELP"><b>function (depth)</b><br> return a HTML object to display the content of the inspector<br> <span class="PARAMETER">depth</span> specify at what <span class="PARAMETER">depth</span> an object property is also inspected<br></span></td></tr></tbody></table></fieldset><fieldset><legend>static methods</legend><table></table></fieldset></dd></span></div><pre id="code0087" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.help(tb.Inspector.prototype.legend)</pre>
+
+<div id="out0087" class="OUTPUT SUCCESS"><span class="HELP"><b>function()</b><br> returns the legend for a given object<br></span></div>
+
+<div id="test0087" class="TEST SUCCESS"><span class="HELP"><b>function()</b><br>returns the legend for a given object <br></span></div></div></div>
+
+<div id="sect0144" class="ELEMENT SECTION" sizset="88" sizcache="1">
+
+<h3 class="SECTIONTITLE EDITABLE" contenteditable="false">1.5.10 helpers to write code</h3>
+
+<div class="CONTAINER" sizset="88" sizcache="1" container="sectionContent"><pre id="code0145" class="ELEMENT CODE EDITABLE" contenteditable="false">tb.isJSid('Toto_123$')</pre>
+
+<div id="out0145" class="OUTPUT SUCCESS">true</div><pre id="code0146" class="ELEMENT CODE EDITABLE" contenteditable="false">tb.isJSid('toto%')</pre>
+
+<div id="out0146" class="OUTPUT SUCCESS">false</div><pre id="code0148" class="ELEMENT CODE EDITABLE" contenteditable="false">tb.toJSCode('{toto:3,tutu:"three",titi:[1,2,3,{tyty:4}]}')</pre>
+
+<div id="out0148" class="OUTPUT SUCCESS">'{toto:3,tutu:"three",titi:[1,2,3,{tyty:4}]}'</div><pre id="code0149" class="ELEMENT CODE EDITABLE" contenteditable="false">tb.toJSCode('{toto:3,tutu:"three",titi:[1,2,3,{tyty:4}]}','"')</pre>
+
+<div id="out0149" class="OUTPUT SUCCESS">"{toto:3,tutu:\"three\",titi:[1,2,3,{tyty:4}]}"</div></div></div>
+
+<div id="sect0159" class="ELEMENT SECTION" sizset="92" sizcache="1">
+
+<h3 class="SECTIONTITLE EDITABLE" contenteditable="false">1.5.11 helper to match object and find objects in arrays</h3>
+
+<div sizset="92" sizcache="1" container="sectionContent"><pre id="code0160" class="ELEMENT CODE EDITABLE" contenteditable="false">tb.objMatchCriteria({toto:1,tutu:0},{toto:1})</pre>
+
+<div id="out0160" class="OUTPUT SUCCESS">true</div><pre id="code0161" class="ELEMENT CODE EDITABLE" contenteditable="false">tb.objMatchCriteria({toto:1,tutu:0},{toto:4})</pre>
+
+<div id="out0161" class="OUTPUT SUCCESS">false</div><pre id="code0162" class="ELEMENT CODE EDITABLE" contenteditable="false">tb.findInArrayOfObject({toto:2},[{toto:1},{toto:2,tutu:2},{toto:3}])</pre>
+
+<div id="out0162" class="OUTPUT SUCCESS">1</div><pre id="code0163" class="ELEMENT CODE EDITABLE" contenteditable="false">tb.findInArrayOfObject({toto:5},[{toto:1},{toto:2,tutu:2},{toto:3}])</pre>
+
+<div id="out0163" class="OUTPUT SUCCESS">-1</div></div></div>
+
+<div id="sect0099" class="SECTION ELEMENT" sizset="96" sizcache="1">
+
+<h3 class="SECTIONTITLE EDITABLE" contenteditable="false">1.5.12 helpers for html</h3>
+
+<div sizset="96" sizcache="1" container="sectionContent">
+
+<div id="sect0100" class="SECTION ELEMENT" sizset="96" sizcache="1">
+
+<h4 class="SECTIONTITLE EDITABLE" contenteditable="false">1.5.12.1 jc.toString</h4>
+
+<div sizset="96" sizcache="1" container="sectionContent"><pre id="code0013" class="CODE ELEMENT EDITABLE" contenteditable="false">tb.htmlToText('&lt;pre&gt;one paragraph&lt;P&gt;one &lt;b&gt;line&lt;/b&gt; break&lt;BR&gt;3&amp;lt;5 8&amp;gt;5 guns &amp;amp; roses&lt;/pre&gt;');</pre>
+
+<div id="out0013" class="OUTPUT SUCCESS">one&nbsp;paragraph<br><br>one&nbsp;line&nbsp;break<br>3<wbr>&lt;5&nbsp;8&gt;5&nbsp;guns&nbsp;&amp;&nbsp;roses</div>
+
+<div id="test0013" class="TEST SUCCESS">one&nbsp;paragraph<br><br>one&nbsp;line&nbsp;break<br>3<wbr>&lt;5&nbsp;8&gt;5&nbsp;guns&nbsp;&amp;&nbsp;roses</div></div></div></div></div></div></div>
+
+<div id="sect0043" class="SECTION ELEMENT" sizset="97" sizcache="1">
+
+<h2 class="SECTIONTITLE EDITABLE" contenteditable="false">1.6 trace</h2>
+
+<div sizset="97" sizcache="1" container="sectionContent"><pre id="code0046" class="CODE ELEMENT EDITABLE" contenteditable="false"><p>trace.on();</p><p>for (var i = 0;i&lt;=5;i++) {</p><p>trace(i,'string ');</p><p>}</p><p>trace.messages // normally never use like this,</p><p>// just a convinient way to test traces since traces are NOT part of the result</p></pre>
+
+
+
+<div class="TRACE">6 traces:<table class="DEBUG"><tbody><tr><td class="TRACE">0<span class="INSPECT">"string&nbsp;"</span></td></tr><tr><td class="TRACE">1<span class="INSPECT">"string&nbsp;"</span></td></tr><tr><td class="TRACE">2<span class="INSPECT">"string&nbsp;"</span></td></tr><tr><td class="TRACE">3<span class="INSPECT">"string&nbsp;"</span></td></tr><tr><td class="TRACE">4<span class="INSPECT">"string&nbsp;"</span></td></tr><tr><td class="TRACE">5<span class="INSPECT">"string&nbsp;"</span></td></tr></tbody></table></div><div id="out0046" class="OUTPUT SUCCESS">0<span class="INSPECT">"string&nbsp;"</span>,1<span class="INSPECT">"string&nbsp;"</span>,2<span class="INSPECT">"string&nbsp;"</span>,3<span class="INSPECT">"string&nbsp;"</span>,4<span class="INSPECT">"string&nbsp;"</span>,5<span class="INSPECT">"string&nbsp;"</span></div>
+
+<div id="test0046" class="TEST SUCCESS">0<span class="INSPECT">"string&nbsp;"</span>,1<span class="INSPECT">"string&nbsp;"</span>,2<span class="INSPECT">"string&nbsp;"</span>,3<span class="INSPECT">"string&nbsp;"</span>,4<span class="INSPECT">"string&nbsp;"</span>,5<span class="INSPECT">"string&nbsp;"</span></div></div></div>
+
+<div id="sect0074" class="SECTION ELEMENT" sizset="98" sizcache="1">
+
+<h2 class="SECTIONTITLE EDITABLE" contenteditable="false">1.7 Interactive and animation</h2>
+
+<div sizset="98" sizcache="1" container="sectionContent"><pre id="code0075" class="CODE ELEMENT EDITABLE" contenteditable="false"><p>trace.on()</p><p>tb.scene('scene1',{height:400,width:600,border:'solid black 2px'})</p><p>.div('square',{width:50,height:50,border:'solid red 5px',top:100,left:150})</p><p>.div('follower1',{width:50,height:50,top:10,border:'solid purple 5px'}).addForces({square:tb.spring(10,1)})</p><p>.div('follower2',{width:50,height:50,border:'solid blue 5px'}).addForces({square:tb.spring(10,2)})</p><p>.div('alone',{left:100,top:100,width:50,height:50,border:'solid yellow 5px'})</p><p>.end()</p><p>&nbsp;</p></pre>
+
+<div id="out0075" class="OUTPUT SUCCESS"><div class="SCENE" style="height: 400px; width: 600px; border: 2px solid black;"><div class="SCENECONTAINER"><div class="IELEMENT" style="width: 50px; height: 50px; border: 5px solid red; top: 70.5909px; left: 32.598px;"></div><div class="IELEMENT" style="width: 50px; height: 50px; top: 66.6275px; border: 5px solid purple; left: 41.0721px;"></div><div class="IELEMENT" style="width: 50px; height: 50px; border: 5px solid blue; left: 37.4898px; top: 73.379px;"></div><div class="IELEMENT" style="left: 105px; top: 105px; width: 50px; height: 50px; border: 5px solid yellow;"></div></div></div></div><pre id="code0124" class="CODE ELEMENT EDITABLE" contenteditable="false">scene1.square.$</pre>
+
+<div id="out0124" class="OUTPUT SUCCESS">JQuery of 1 elements<br><ol start="0"><br><li class="INSPECTHTML"><wbr>&lt;div&nbsp;class="IELEMENT"&nbsp;style="width:&nbsp;50px;&nbsp;height:&nbsp;50px;&nbsp;border:&nbsp;5px&nbsp;solid&nbsp;red;&nbsp;top:&nbsp;100px;&nbsp;left:&nbsp;150px;"&gt;<wbr>&lt;/div&gt;<br></li></ol></div><pre id="code0126" class="CODE ELEMENT EDITABLE" contenteditable="false">scene1.follower1.$.position()</pre>
+
+<div id="out0126" class="OUTPUT SUCCESS"><div class="INSPECT"><fieldset><legend>{} </legend><table><tbody><tr><th valign="top">top</th><td valign="top" style="text-align:left;">10</td></tr><tr><th valign="top">left</th><td valign="top" style="text-align:left;">0</td></tr></tbody></table></fieldset></div></div><pre id="code0076" class="CODE ELEMENT EDITABLE INANIMATION" contenteditable="false"><p>scene1.square.p.x =(tb.limit(scene1.square.p.x+ Math.random()*10-5,0,400));</p><p>scene1.square.p.y =(tb.limit(scene1.square.p.y+ Math.random()*10-5,0,400));</p><p>scene1.animate(100);</p><p>tb.animate(100);</p><p>scene1.square.$.position()</p></pre>
+
+
+
+<div id="out0076" class="OUTPUT SUCCESS"><div class="INSPECT"><fieldset><legend>{} </legend><table><tbody><tr><th valign="top">top</th><td valign="top" style="text-align:left;">70.5875244140625</td></tr><tr><th valign="top">left</th><td valign="top" style="text-align:left;">32.587493896484375</td></tr></tbody></table></fieldset></div></div></div></div>
+
+<div id="sect0165" class="ELEMENT SECTION" sizset="102" sizcache="1">
+
+<h2 class="SECTIONTITLE EDITABLE" contenteditable="false">1.8 help system</h2>
+
+<div sizset="102" sizcache="1" container="sectionContent"><pre id="code0167" class="ELEMENT CODE EDITABLE" contenteditable="false"><p>tb.inspect(tb.help.index.undocumentedClasses(),3)</p></pre>
+
+<div id="out0167" class="OUTPUT SUCCESS"><div class="INSPECT"><fieldset><legend>[] </legend><table><tbody><tr><th valign="top">0</th><td valign="top" style="text-align:left;"><div class="INSPECT"><fieldset><legend>{} </legend><table><tbody><tr><th valign="top">prop</th><td valign="top" style="text-align:left;"><span class="INSPECT">"Callbacks"</span></td></tr><tr><th valign="top">path</th><td valign="top" style="text-align:left;"><span class="INSPECT">"$."</span></td></tr><tr><th valign="top">func</th><td valign="top" style="text-align:left;"><span class="HELP"><b>function(e)</b><br></span></td></tr></tbody></table></fieldset></div></td></tr><tr><th valign="top">1</th><td valign="top" style="text-align:left;"><div class="INSPECT"><fieldset><legend>{} </legend><table><tbody><tr><th valign="top">prop</th><td valign="top" style="text-align:left;"><span class="INSPECT">"Deferred"</span></td></tr><tr><th valign="top">path</th><td valign="top" style="text-align:left;"><span class="INSPECT">"$."</span></td></tr><tr><th valign="top">func</th><td valign="top" style="text-align:left;"><span class="HELP"><b>function(t)</b><br></span></td></tr></tbody></table></fieldset></div></td></tr><tr><th valign="top">2</th><td valign="top" style="text-align:left;"><div class="INSPECT"><fieldset><legend>{} </legend><table><tbody><tr><th valign="top">prop</th><td valign="top" style="text-align:left;"><span class="INSPECT">"Event"</span></td></tr><tr><th valign="top">path</th><td valign="top" style="text-align:left;"><span class="INSPECT">"$."</span></td></tr><tr><th valign="top">func</th><td valign="top" style="text-align:left;"><span class="HELP"><b>function(e,t)</b><br></span></td></tr></tbody></table></fieldset></div></td></tr><tr><th valign="top">3</th><td valign="top" style="text-align:left;"><div class="INSPECT"><fieldset><legend>{} </legend><table><tbody><tr><th valign="top">prop</th><td valign="top" style="text-align:left;"><span class="INSPECT">"Tween"</span></td></tr><tr><th valign="top">path</th><td valign="top" style="text-align:left;"><span class="INSPECT">"$."</span></td></tr><tr><th valign="top">func</th><td valign="top" style="text-align:left;"><span class="HELP"><b>function tt(e,t,n,r,i)</b><br></span></td></tr></tbody></table></fieldset></div></td></tr><tr><th valign="top">4</th><td valign="top" style="text-align:left;"><div class="INSPECT"><fieldset><legend>{} </legend><table><tbody><tr><th valign="top">prop</th><td valign="top" style="text-align:left;"><span class="INSPECT">"Animation"</span></td></tr><tr><th valign="top">path</th><td valign="top" style="text-align:left;"><span class="INSPECT">"$."</span></td></tr><tr><th valign="top">func</th><td valign="top" style="text-align:left;"><span class="HELP"><b>function pt(e,t,n)</b><br></span></td></tr></tbody></table></fieldset></div></td></tr><tr><th valign="top">5</th><td valign="top" style="text-align:left;"><div class="INSPECT"><fieldset><legend>{} </legend><table><tbody><tr><th valign="top">prop</th><td valign="top" style="text-align:left;"><span class="INSPECT">"GraphNode"</span></td></tr><tr><th valign="top">path</th><td valign="top" style="text-align:left;"><span class="INSPECT">"tb."</span></td></tr><tr><th valign="top">func</th><td valign="top" style="text-align:left;"><span class="HELP"><b>function GraphNode(type,name,object,graph)</b><br> constructor of a new node<br> <span class="PARAMETER">name</span> is a unique id within <span class="PARAMETER">type</span> and the new <span class="PARAMETER">object</span> will be linked to graph<br> <span class="PARAMETER">object</span> is the original <span class="PARAMETER">object</span> used to create this GraphNode if any<br></span></td></tr></tbody></table></fieldset></div></td></tr><tr><th valign="top">6</th><td valign="top" style="text-align:left;"><div class="INSPECT"><fieldset><legend>{} </legend><table><tbody><tr><th valign="top">prop</th><td valign="top" style="text-align:left;"><span class="INSPECT">"Graph"</span></td></tr><tr><th valign="top">path</th><td valign="top" style="text-align:left;"><span class="INSPECT">"tb."</span></td></tr><tr><th valign="top">func</th><td valign="top" style="text-align:left;"><span class="HELP"><b>function Graph(name)</b><br> constructor for Graph objects<br></span></td></tr></tbody></table></fieldset></div></td></tr></tbody></table></fieldset></div></div>
+
+<div id="test0167" class="TEST SUCCESS"><div class="INSPECT"><fieldset><legend>[] </legend><table><tbody><tr><th valign="top">0</th><td valign="top" style="text-align:left;"><div class="INSPECT"><fieldset><legend>{} </legend><table><tbody><tr><th valign="top">prop</th><td valign="top" style="text-align:left;"><span class="INSPECT">"Callbacks"</span></td></tr><tr><th valign="top">path</th><td valign="top" style="text-align:left;"><span class="INSPECT">"$."</span></td></tr><tr><th valign="top">func</th><td valign="top" style="text-align:left;"><span class="HELP"><b>function(e)</b><br></span></td></tr></tbody></table></fieldset></div></td></tr><tr><th valign="top">1</th><td valign="top" style="text-align:left;"><div class="INSPECT"><fieldset><legend>{} </legend><table><tbody><tr><th valign="top">prop</th><td valign="top" style="text-align:left;"><span class="INSPECT">"Deferred"</span></td></tr><tr><th valign="top">path</th><td valign="top" style="text-align:left;"><span class="INSPECT">"$."</span></td></tr><tr><th valign="top">func</th><td valign="top" style="text-align:left;"><span class="HELP"><b>function(t)</b><br></span></td></tr></tbody></table></fieldset></div></td></tr><tr><th valign="top">2</th><td valign="top" style="text-align:left;"><div class="INSPECT"><fieldset><legend>{} </legend><table><tbody><tr><th valign="top">prop</th><td valign="top" style="text-align:left;"><span class="INSPECT">"Event"</span></td></tr><tr><th valign="top">path</th><td valign="top" style="text-align:left;"><span class="INSPECT">"$."</span></td></tr><tr><th valign="top">func</th><td valign="top" style="text-align:left;"><span class="HELP"><b>function(e,t)</b><br></span></td></tr></tbody></table></fieldset></div></td></tr><tr><th valign="top">3</th><td valign="top" style="text-align:left;"><div class="INSPECT"><fieldset><legend>{} </legend><table><tbody><tr><th valign="top">prop</th><td valign="top" style="text-align:left;"><span class="INSPECT">"Tween"</span></td></tr><tr><th valign="top">path</th><td valign="top" style="text-align:left;"><span class="INSPECT">"$."</span></td></tr><tr><th valign="top">func</th><td valign="top" style="text-align:left;"><span class="HELP"><b>function tt(e,t,n,r,i)</b><br></span></td></tr></tbody></table></fieldset></div></td></tr><tr><th valign="top">4</th><td valign="top" style="text-align:left;"><div class="INSPECT"><fieldset><legend>{} </legend><table><tbody><tr><th valign="top">prop</th><td valign="top" style="text-align:left;"><span class="INSPECT">"Animation"</span></td></tr><tr><th valign="top">path</th><td valign="top" style="text-align:left;"><span class="INSPECT">"$."</span></td></tr><tr><th valign="top">func</th><td valign="top" style="text-align:left;"><span class="HELP"><b>function pt(e,t,n)</b><br></span></td></tr></tbody></table></fieldset></div></td></tr><tr><th valign="top">5</th><td valign="top" style="text-align:left;"><div class="INSPECT"><fieldset><legend>{} </legend><table><tbody><tr><th valign="top">prop</th><td valign="top" style="text-align:left;"><span class="INSPECT">"GraphNode"</span></td></tr><tr><th valign="top">path</th><td valign="top" style="text-align:left;"><span class="INSPECT">"tb."</span></td></tr><tr><th valign="top">func</th><td valign="top" style="text-align:left;"><span class="HELP"><b>function GraphNode(type,name,object,graph)</b><br> constructor of a new node<br> <span class="PARAMETER">name</span> is a unique id within <span class="PARAMETER">type</span> and the new <span class="PARAMETER">object</span> will be linked to graph<br> <span class="PARAMETER">object</span> is the original <span class="PARAMETER">object</span> used to create this GraphNode if any<br></span></td></tr></tbody></table></fieldset></div></td></tr><tr><th valign="top">6</th><td valign="top" style="text-align:left;"><div class="INSPECT"><fieldset><legend>{} </legend><table><tbody><tr><th valign="top">prop</th><td valign="top" style="text-align:left;"><span class="INSPECT">"Graph"</span></td></tr><tr><th valign="top">path</th><td valign="top" style="text-align:left;"><span class="INSPECT">"tb."</span></td></tr><tr><th valign="top">func</th><td valign="top" style="text-align:left;"><span class="HELP"><b>function Graph(name)</b><br> constructor for Graph objects<br></span></td></tr></tbody></table></fieldset></div></td></tr></tbody></table></fieldset></div></div></div></div>
+
+<div id="sect0166" class="ELEMENT SECTION" sizset="103" sizcache="1">
+
+<h2 class="SECTIONTITLE EDITABLE" contenteditable="false">1.9 test results</h2>
+
+<div sizset="103" sizcache="1" container="sectionContent"><pre id="code0155" class="ELEMENT CODE EDITABLE" contenteditable="false"><p>tb.updateResultsTestStatus();</p><p>tb.inspect(tb.results,2);</p><p>tb.pushTestResults();</p></pre>
+
+<div id="out0155" class="OUTPUT SUCCESS"><span style="color:red;">undefined</span></div></div></div></div></div>
