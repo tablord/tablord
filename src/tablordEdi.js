@@ -2642,6 +2642,20 @@
     tb.writeResults();
     window.close();
   }
+  
+  tb.pushTestResults = function() {
+    // send the test result to the server
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    $.post(window.location,
+            {csrfmiddlewaretoken:csrftoken,
+             passed:tb.results.testStatus.nbPassed,
+             failed:tb.results.testStatus.nbFailed,
+             testTime:tb.results.testStatus.dateTime.toISOString()},
+            function(data){
+                tb.debug$.html(data);
+            })
+    .fail(function(data){tb.debug$.html(data)})
+  }
 
 
   tb.beforeUnload = function(event) {  //TODO avec hta, ne fonctionne pas bien
