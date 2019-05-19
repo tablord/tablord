@@ -7,6 +7,7 @@
   --bgerror : var(--danger);
   --bgdanger : #f8d7da;
 }
+
 body {
   font-family: Arial;
   color: black;
@@ -146,6 +147,7 @@ p {
   background-color: var(--bgcode);
   border: none;
   margin: 0px;
+  padding-left:3px;
 }
 .CODE {
   font-size: 0.85rem;
@@ -236,6 +238,11 @@ p {
    border-left:3px solid black;
    padding-left:6px;
 }
+
+.ADDRESS {
+    margin-left: 11cm;
+}
+
 
 .INFO  {
   background-color: var(--bginfo);
@@ -450,9 +457,8 @@ td.RICHTEXT {
 
 
 #tbContent {
-  padding-left:0px;  /*tbContent is a [container] but overrides everything that makes intentation */
   border-left: none;
-  margin-top:1em;
+  padding:0;
 }
 
 #menu {
@@ -470,46 +476,7 @@ td.RICHTEXT {
     font-size:1em;
 }
 
-@media print {
-  .NO_PRINT,
-  .no_print {
-    display:none;
-  }
-  .PAGEBREAK,
-  .A3,
-  .A4,
-  .A5 {
-    page-break-before:always;
-    border:none;
-    color:white;
-  }
 
-       .A3.landscape { width: 420mm }
-  .A3, .A4.landscape { width: 297mm }
-  .A4, .A5.landscape { width: 210mm }
-  .A5                { width: 148mm }
-
-  .landscape {
-    transform: rotate(90deg);
-  }
-
-
-}
-
-body {
-  margin:0;
-  background: white;
-}
-
-@page { margin: 0 }
-
-.sheet {
-  margin: 0;
-  overflow: hidden;
-  position: relative;
-  box-sizing: border-box;
-  page-break-after: always;
-}
 
 /** Paper sizes **/
      .A3.landscape { width: 420mm }
@@ -522,28 +489,55 @@ body {
 .A4.sheet, .A5.landscape.sheet { height: 148mm }
 .A5.sheet                      { height: 104mm }
 
+
+@media print {
+  .NO_PRINT,
+  .no_print {
+    display:none;
+  }
+  .PAGEBREAK,
+  .A3,
+  .A4,
+  .A5 {
+    page-break-before:always;
+    background-color:cyan;
+    color:black;
+  }
+
+  .landscape {
+    transform: rotate(90deg);
+  }
+}
+
+@page { 
+  margin-top:   15mm; 
+  margin-bottom:15mm;
+}
+
+.sheet {
+  margin: 0;
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+  page-break-after: always;
+}
+
 @media screen {
-
-
   .A3,.A4,.A5 {
     background: white;
     color: black;
     box-shadow: 0 .5mm 2mm rgba(0,0,0,.3);
-    margin: 5mm;
+    margin-left:  5mm;
+    margin-right: 5mm;
+    margin-bottom:5mm;
   }
   .A4:before {
     display:block;
+    padding:0;
     color  :grey;
     background: #e0e0e0;
     content:'A4';
     title:
   }
 }
-
-/** Padding area **/
-.sheet.padding-10mm { padding: 10mm }
-.sheet.padding-15mm { padding: 15mm }
-.sheet.padding-20mm { padding: 20mm }
-.sheet.padding-25mm { padding: 25mm }
-
 

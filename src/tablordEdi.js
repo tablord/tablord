@@ -72,12 +72,12 @@
                 else {
                   var code = tb.errorHandler.code || '';
                   var faults = message.match(/« (.+?) »/);
-                  if (faults != null) {
+                  if (faults !== null) {
                     var fault = faults[1];
                     code = tb.output.codeElement.innerHTML
                              .replace(/ /g,'&nbsp;')
                              .replace(new RegExp(fault,'g'),'<SPAN class="WRONG">'+fault+'</SPAN>');
-                    tb.output.codeElement.innerHTML = code
+                    tb.output.codeElement.innerHTML = code;
                     tb.selectElement(tb.output.codeElement);
                   }
                   out.innerHTML = trace.span()+message;
@@ -102,7 +102,7 @@
     this.index = [];
     this.history = [];
     this.historyPos = -1;
-  }
+  };
   tb.HelpIndex.className = 'tb.HelpIndex';
 
   tb.HelpIndex.prototype.update = function (object,path) {
@@ -119,7 +119,7 @@
       }
     }
     return this;
-  }
+  };
 
   tb.HelpIndex.prototype.add = function(prop,path,markDownLines) {
     // adds a new entry in the help index with a markDown description
@@ -128,19 +128,20 @@
     // - markDownLines: an array of lines in markDown
     if (markDownLines.length === undefined) throw new Error('HelpIndex.add: markDownLines must be an array like of line');
     this.index.push({prop:prop,path:path,desc:markDownLines});
-  }
+  };
 
   tb.HelpIndex.prototype.find = function(name) {
     // return all entry corresponding to `name`: name can be partial
     // if name is a full path (ie. tb.help) the result is an exact match
     // if not (ie no . notation) any entry having name inside is valid
     var res = [];
+    var i;
     var m = name.match(/^(.+\.)(.*)$/i);
 
     if (m) { // fully specified search ==> only one result
       var path = m[1];
       var prop = m[2];
-      for (var i=0;i<this.index.length;i++) {
+      for (i=0;i<this.index.length;i++) {
         if ((this.index[i].prop === prop) && (this.index[i].path === path)) {
           res.push(this.index[i]);
           return res;
@@ -150,13 +151,13 @@
     else { // free search
       var regExp = new RegExp('^(.*)('+name+')(.*)$','i');
       // first priority is find in prop
-      for (var i=0;i<this.index.length;i++) {
+      for (i=0;i<this.index.length;i++) {
         if ((this.index[i].prop.search(regExp)!==-1) ||
             (this.index[i].path.search(regExp)!==-1)) res.push(this.index[i]);
       }
     }
     return res;
-  }
+  };
 
   tb.HelpIndex.prototype.show =function(name) {
     // show in the help Panel the help on `name`
@@ -164,7 +165,7 @@
     this.history.length = this.historyPos+1;
     tb.helpSearch$.val(name);
     tb.helpOutput$.html(tb.help.index.help$(name)).show(500);
-  }
+  };
 
   tb.HelpIndex.prototype.back = function() {
     // return on the previous search
@@ -173,7 +174,7 @@
       tb.helpSearch$.val(name);
       tb.helpOutput$.html(tb.help.index.help$(name));
     }
-  }
+  };
 
   tb.HelpIndex.prototype.help$ = function(name) {
     // return the jquery in order to display the result of the search of `name`
@@ -522,7 +523,6 @@
     var hhh = (t - min) / 60;
     return hhh.toString()+'h '+tb.pad(min,2)+'m';
   }
-
 
   //JQuery extentions /////////////////////////////////////////////////
 
@@ -877,8 +877,12 @@
   }
 
   // functions for reduce /////////////////////////////////////////////
+  // those function also work on moment and duration
   tb.reduce = {};
-  tb.reduce.sum = function(a,b) {return a+b};
+  tb.reduce.sum = function(a,b) {
+    if (moment.isMoment(a) || moment.isDuration(a)) return a.add(b);
+    return a+b;
+  };
   tb.reduce.min = Math.min;
   tb.reduce.max = Math.max;
   tb.reduce.sumCount = function(sc,b) {sc.count++;sc.sum+=b;return sc};
@@ -1284,7 +1288,7 @@
     // - ext
     // - tag
     // - search
-    //   - arguments (object param=values of search)
+    // - arguments (object param=values of search)
     // if url is an ordinary file name it is first transformed to an url with file:///
     var url = urlOrFileName.replace(/\\/g,'/');
     if (/file:|http[s]?:|mailto:|ftp:/i.test(url)==false) url='file:///'+url;
@@ -2062,6 +2066,11 @@
     return tb.getItems$(this.url()).getData(criteria,fields,this.remap);
   }
 
+  tb.Template.prototype.table = function(criteria,fields) {
+    // return a table of all data matching the optional criteria containing only the specified fields
+    return table().addRows(tb.getItems$(this.url()).getData(criteria,fields,this.remap));
+  }
+
   tb.Template.microdataToData = function(microdata) {
     // transforms the microdata structure where all properties are array into a structure
     // closer to mongoBD.
@@ -2248,13 +2257,13 @@
         $('[itemprop=duration]',element).text('NaN');
       }
       else {
-        $('[itemprop=duration]',element).text(data.duration.hhh_mm());
+        $('[itemprop=duration]',element).text(data.duration.format('hh[h]mm'));
       }
     },
     remap: function(data){
-      var from = new Date(data.fromDate +' '+ data.fromTime);
-      var to   = new Date(data.toDate + ' '+ data.toTime);
-      var duration = new Date(to-from);
+      var from = moment(data.fromDate +' '+ data.fromTime);
+      var to   = moment(data.toDate + ' '+ data.toTime);
+      var duration = moment.duration(to-from);
       return {from:from,to:to,duration:duration,title:data.title,_id:data._id}
     }
   });
@@ -2442,6 +2451,7 @@
                 '<input type="radio" name="severity" value="DANGER">DANGER '+
                 '<input type="radio" name="severity" value="">--<br>'+
                 '<input type="checkbox" value="NOTE">NOTE<br>'+
+                '<input type="checkbox" value="ADDRESS">ADDRESS<br>'+
               '</div>'+
               '<button type="button" class="btn btn-dark" onclick="tb.moveSelectedElement(-1);" >&#8593;</button>'+
               '<button type="button" class="btn btn-dark" onclick="tb.moveSelectedElement(1);" >&#8595;</button>'+
@@ -2652,6 +2662,9 @@
              failed:tb.results.testStatus.nbFailed,
              testTime:tb.results.testStatus.dateTime.toISOString()},
             function(data){
+                if (tb.url.arguments.test_close) {
+                    tb.canClose=true; // this will be polled by the test laucher
+                }
                 tb.debug$.html(data);
             })
     .fail(function(data){tb.debug$.html(data)})

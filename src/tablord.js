@@ -2,6 +2,7 @@
   // tablord library /////////////////////////////////////////////////////
 
 
+
   // calcul ///////////////////
   tb.Var = function(name,value) {
     //rarely use it directly, but use the v() function instead that also register the variable
@@ -15,11 +16,11 @@
     // for internal use only
     // changes the name of the variable and also
     // updates .label and .unit
-    if (name == undefined) return;
+    if (name === undefined) return;
 
     this.name =name;
     var lu = name.match(/(^.+)\$(.+)/)
-    if (lu != null) {
+    if (lu !== null) {
       this.label = lu[1];
       this.unit  = lu[2];
     }
@@ -115,7 +116,7 @@
   function v(name,value) {
     // v(name) returns the variable name: rarely used since name alone will represent the same as well as tb.vars[name]
     // v(name,value) creates a new variable if it does not already exists and sets a new value
-    if (value != undefined) {
+    if (value !== undefined) {
       if (value.toUTCString) { // a Date: v stors a Date as this
         return tb.vars[name]=value;
       }
@@ -235,28 +236,28 @@
 
   tb.Row.prototype.sum = function(criteria) {
     // return the sum of the row
-    return this.reduce(function(a,b){return a+b},criteria)
+    return this.reduce(tb.reduce.sum,criteria)
   }
 
   tb.Row.prototype.min = function(criteria) {
     // return the min of the row
-    return this.reduce(Math.min,criteria);
+    return this.reduce(tb.reduce.min,criteria);
   }
 
   tb.Row.prototype.max = function(criteria) {
     // return the min of the row
-    return this.reduce(Math.max,criteria);
+    return this.reduce(tb.reduce.max,criteria);
   }
 
   tb.Row.prototype.average = function(criteria) {
     // return the average of the row
-    var sc = this.reduce(colName,function(r,b){r.count++;r.sum+=b;return r},criteria,{count:0,sum:0});
+    var sc = this.reduce(colName,tb.reduce.sumCount,criteria,{sum:0,count:0});
     return sc.sum/sc.count;
   }
 
   tb.Row.prototype.rms = function(colName,criteria) {
     // return the root mean square of the row
-    var sc = this.reduce(function(r,b){r.count++;r.sum+=b*b;return r},criteria,{count:0,sum:0});
+    var sc = this.reduce(colName,tb.reduce.sumCount,criteria,{sum:0,count:0});
     return Math.sqrt(sc.sum/sc.count);
   }
 
@@ -520,6 +521,7 @@
     // return the VALUE of the cell: if a function, this function is calculated first
     var c=this.cell(row,col);
     if (c===undefined) return undefined;
+    if (moment.isMoment(c) || moment.isDuration(c)) return c; // don't touch otherwise converted to number
     return c.valueOf();
   }
 
@@ -549,28 +551,28 @@
 
   tb.Table.prototype.sum = function(colName,criteria) {
     // return the sum of the column
-    return this.reduce(colName,function(a,b){return a+b},criteria)
+    return this.reduce(colName,tb.reduce.sum,criteria)
   }
 
   tb.Table.prototype.min = function(colName,criteria) {
     // return the min of the column
-    return this.reduce(colName,Math.min,criteria);
+    return this.reduce(colName,tb.reduce.min,criteria);
   }
 
   tb.Table.prototype.max = function(colName,criteria) {
     // return the min of the column
-    return this.reduce(colName,Math.max,criteria);
+    return this.reduce(colName,tb.reduce.max,criteria);
   }
 
   tb.Table.prototype.average = function(colName,criteria) {
     // return the average of the column
-    var sc = this.reduce(colName,function(r,b){r.count++;r.sum+=b;return r},criteria,{count:0,sum:0});
+    var sc = this.reduce(colName,tb.reduce.sumCount,criteria,{count:0,sum:0});
     return sc.sum/sc.count;
   }
 
   tb.Table.prototype.rms = function(colName,criteria) {
     // return the root mean square of the column
-    var sc = this.reduce(colName,function(r,b){r.count++;r.sum+=b*b;return r},criteria,{count:0,sum:0});
+    var sc = this.reduce(colName,tb.reduce.sumCount,criteria,{count:0,sum:0});
     return Math.sqrt(sc.sum/sc.count);
   }
 
