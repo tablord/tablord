@@ -183,7 +183,10 @@
   }
 
   tb.Row.prototype.val = function(col) {
-    return this._[col] && this._[col].valueOf();
+    var c = this._[col];
+    if (c===undefined) return undefined;
+    if ((c instanceof Date) || moment.isMoment(c) || moment.isDuration(c)) return this._[col];
+    return this._[col].valueOf();
   }
 
   tb.Row.prototype.setCell = function (col,value) {

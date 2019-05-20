@@ -57,6 +57,8 @@
                 domElement:function(element){return 'DOM Element<SPAN class="INSPECTHTML">'+tb.toHtml(tb.trimHtml(tb.purgeJQueryAttr(element.outerHTML)))+'</SPAN>'},
                 obj:function(obj){return tb.inspect(obj).span().toString()},
                 date:function(date){return date.yyyymmdd()},
+                moment:function(moment){return moment.format()},
+                duration:function(duration){return duration.format()},
                 number:function(n){return n.toString()},
                 string:function(s){return s}
               }
@@ -664,8 +666,15 @@
           set(itemprop,e$.getItemValue());
         }
       }
-      else {  // this node is not an itemprop, look if its children have data
-        $.extend(true,data,e$.getItemscopeData());
+      else {  
+        if (e$.attr('itemscope') === undefined) {
+          // this node is not an itemprop nor an itemscope, look if its children have data
+          // (that are considered at the same level seen from microdata persective)
+          $.extend(true,data,e$.getItemscopeData());
+        }
+        else { // it should have an itemprop as it is a itemscope included in another
+          set('items[]',e$.getItemscopeData()); // store the content in a items array
+        }
       }
 
     });
@@ -2264,7 +2273,12 @@
       var from = moment(data.fromDate +' '+ data.fromTime);
       var to   = moment(data.toDate + ' '+ data.toTime);
       var duration = moment.duration(to-from);
-      return {from:from,to:to,duration:duration,title:data.title,_id:data._id}
+      $.extend(data,{from:from,to:to,duration:duration,title:data.title,_id:data._id});
+      delete data.fromDate;
+      delete data.fromTime;
+      delete data.toDate;
+      delete data.toTime;
+      return data;
     }
   });
 
@@ -2452,6 +2466,7 @@
                 '<input type="radio" name="severity" value="">--<br>'+
                 '<input type="checkbox" value="NOTE">NOTE<br>'+
                 '<input type="checkbox" value="ADDRESS">ADDRESS<br>'+
+                '<input id="inpItemprop" type="text" placeholder="itemprop"><input id="inpItemtype" placeholder="itemtype">'+
               '</div>'+
               '<button type="button" class="btn btn-dark" onclick="tb.moveSelectedElement(-1);" >&#8593;</button>'+
               '<button type="button" class="btn btn-dark" onclick="tb.moveSelectedElement(1);" >&#8595;</button>'+
@@ -2760,6 +2775,8 @@
         checkbox$.prop('checked',$(element).hasClass(c));
       };
     });
+    $('#inpItemprop').val($(element).attr('itemprop'));
+    $('#inpItemtype').val($(element).attr('itemtype'));
 
     $(element).addClass('SELECTED');
     tb.updateTemplateChoice();
@@ -2888,8 +2905,14 @@
     if (obj.outerHTML) { // an Element
       return format.domElement(obj);
     }
+    if (moment.isMoment(obj)) {
+      return format.moment(obj);
+    }
+    if (moment.isDuration(obj)) {
+      return format.duration(obj);
+    }
     if (obj.getUTCDate) {
-      return format.date(obj)
+      return format.date(obj);
     }
     if (obj.constructor == Object) {
       return format.obj(obj);
