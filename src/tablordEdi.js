@@ -640,7 +640,7 @@
 
   $.fn.getItemscopeData = function(remap) {
     // jquery must be a single itemscope element
-    // - remap: an optionnal function that remaps the found itemprop in an object
+    // - remap: an optional function that remaps the found itemprop in an object
     //
     var data = {};
 
@@ -1973,23 +1973,22 @@
 
   // Template //////////////////////////////////////////////////////////////////////////
 
-  tb.Template = function Template(name){
+  tb.Template = function Template(url){
     // Template objects are generators of DOM ELEMENT
     // there is one single instance for any number of DOM instances
-    // for example Template('code') is the Template object of all CODE Elements
+    // for example Template('https://tablord.com/templates/code') is the Template object of all CODE Elements
     // normally users create template through the [[tb.template]] function
-    // - name: set the name field of the Template
-    this.name = name;
+    // - url: set the url field of the Template
+    this.url = url;
   };
 
   tb.Template.className = 'tb.Template';
 
-  tb.Template.urlBase = 'http://tablord.com/templates/';
-
-  tb.Template.prototype.url = function(){
-    // return the url base on the template name
-    return tb.Template.urlBase + this.name;
-  }
+  Object.defineProperty(tb.Template.prototype,'name',{
+    // get the default name. a template can replace the name by supplying it in the tb.template function
+    // name is just more convenient for the user, but only the url is the identified
+    get: function() {return tb.Template.urlToName(this.url)} // the name is just the last part after /
+  })
 
   tb.Template.prototype.insertBefore = function(element,itemprop) {
     // insert this Template before element as an itemprop
@@ -2088,9 +2087,23 @@
     // - properties which names do not end with [] will be transformed as the value of the first element
     //   of the array. if the array has more than one element, an Error will be raised.
     a('TODO not yet implemented')
-
   }
 
+  tb.Template.getData = function(element$) {
+    // get the Data (the simplified version of microdata) of element$
+    // - element$: a jquery of 1 element that must have an itemscope attribute
+    // - criteria: a [[criteria]] or undefined (= take all)
+    // - fields: a [[fields]] selector object or undefined (all fields)
+    // return the data of that element, possibly remaped, if itemtype correspond to 
+    // a registered remplate
+    var itemtype = element$.attr('itemtype');
+    var remap;
+    if (itemtype) {
+      var t = tb.templates[itemtype];
+      remap = t && t.remap;
+    }
+    return element$.getItemscopeData(remap);
+  }
 
   tb.Template.urlToName = function(url) {
     // return the name from the url
@@ -2196,22 +2209,22 @@
       }
       newT.html = h + '</TABLE></DIV>';
     }
-    tb.templates[newT.name] = newT;
+    tb.templates[newT.url] = newT;
     tb.updateTemplateChoice();
-    var elementsToConvert$ = $('[itemtype="'+newT.url()+'"]');
+    var elementsToConvert$ = $('[itemtype="'+newT.url+'"]');  //TODO not sure it's a good idea to always convert
     elementsToConvert$.each(function(idx,e){newT.convert(e,e.itemprop || 'items')});
     return newT;
   }
 
   tb.template({
-    name : 'paste',
+    url : 'https://tablord.com/templates/paste',
     element$: function() {
       return $('.CUT').detach().removeClass('CUT');
     }
   });
 
   tb.template({
-    name : 'code',
+    url : 'https://tablord.com/templates/code',
     element$: function() {
       return $('<PRE class="ELEMENT CODE EDITABLE" id='+tb.blockId('code')+'>');
     },
@@ -2219,7 +2232,7 @@
   });
 
   tb.template({
-    name : 'section',
+    url : 'https://tablord.com/templates/section',
     element$ : function() {
       var n$ = $('<DIV  class="ELEMENT SECTION" id='+tb.blockId('sect')+'></DIV>')
                .append('<H1 class="SECTIONTITLE EDITABLE"></H1>')
@@ -2229,14 +2242,14 @@
   });
 
   tb.template({
-    name : 'richText',
+    url : 'https://tablord.com/templates/richText',
     element$: function() {
       return $('<DIV  class="ELEMENT RICHTEXT EDITABLE" id='+tb.blockId('rich')+'>');
     }
   });
 
   tb.template({
-    name : 'page break',
+    url : 'https://tablord.com/templates/page break',
     element$ : function() {
       var n$ = $('<DIV  class="ELEMENT PAGEBREAK" id='+tb.blockId('page')+'></DIV>');
       return n$;
@@ -2245,7 +2258,7 @@
 
 
   tb.template({
-    name : 'time_frame',
+    url : 'https://tablord.com/templates/time_frame',
     element$ : function() {
       return $('<div class="ELEMENT" id="'+tb.blockId('tfrm')+'" itemscope itemtype="'+this.url()+'">'+
                '<div>Du <input type="date" itemprop="fromDate"> <input type="time" itemprop="fromTime"> '+
@@ -2399,12 +2412,12 @@
     for (var i=0;i<acceptedTemplates.length;i++) {
       var template = tb.templates[acceptedTemplates[i]];
       if (template) tb.templateChoice$.append(
-        '<button class="dropdown-item" template="'+acceptedTemplates[i]+'">'+acceptedTemplates[i]+'</button>'
+        '<button class="dropdown-item" template="'+acceptedTemplates[i]+'">'+template.name+'</button>'
       );
     }
     if (tb.selectedElement &&
         $(tb.selectedElement).attr('itemtype')) {
-      var name = tb.Template.urlToName($(tb.selectedElement).attr('itemtype'));
+      var name = tb.templates[$(tb.selectedElement).attr('itemtype')].name;
       if (name && ($.inArray(name,acceptedTemplates)!=-1)) {
         tb.templateChoice$.val(name);
         return;
@@ -2454,10 +2467,10 @@
               '<button type="button" class="btn btn-outline-dark" id="codeId">no selection</button>'+
               '<a href="javascript:tb.cutBlock(tb.selectedElement);" class="btn btn-dark" id="cutBtn">'+
                 '<img src="/static/images/cut_white.png" style="height:1.5em;width:1.5em;"></a>'+
-              '<a href="#" onclick="javascript:tb.templateButtonClick(event);" class="btn btn-dark" where="after" template="paste" >'+
-                '<img src="/static/images/paste_white.png" template="paste" style="height:1.5em;width:1.5em;"></a>'+
+              '<a href="#" onclick="javascript:tb.templateButtonClick(event);" class="btn btn-dark" where="after" template="https://tablord.com/templates/paste" >'+
+                '<img src="/static/images/paste_white.png" style="height:1.5em;width:1.5em;"></a>'+
               '<a href="#" onclick="javascript:tb.templateButtonClick(event);" class="btn btn-dark dropdwon-toggle" data-toggle="dropdown">'+
-                '<img src="/static/images/pallete_white.png" template="paste" style="height:1.5em;width:1.5em;"></a>'+
+                '<img src="/static/images/pallete_white.png" template="https://tablord.com/templates/paste" style="height:1.5em;width:1.5em;"></a>'+
               '<div id="class_options" class="dropdown-menu">'+
                 '<input type="radio" name="severity" value="INFO">INFO '+
                 '<input type="radio" name="severity" value="OK">OK '+
@@ -2475,9 +2488,9 @@
             '</div>')
     .append($('<div class="btn-group btn-group-sm mr-2" role="group" where="after">')
         .click(tb.templateButtonClick)
-        .append('<button type="button" class="btn btn-dark" title="Text" template="richText">§</button>'+
-                '<button type="button" class="btn btn-dark" title="section" template="section">1.</button>'+
-                '<button type="button" class="btn btn-dark" title="code" template="code">{}</button>'+
+        .append('<button type="button" class="btn btn-dark" title="Text" template="https://tablord.com/templates/richText">§</button>'+
+                '<button type="button" class="btn btn-dark" title="section" template="https://tablord.com/templates/section">1.</button>'+
+                '<button type="button" class="btn btn-dark" title="code" template="https://tablord.com/templates/code">{}</button>'+
                 '<button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">...</button>')
         .append($('<div class="dropdown-menu" where="after">')
                 .click(tb.templateButtonClick)
@@ -3106,11 +3119,43 @@
   }
 
   tb.updateContainers = function() {
-    // make sure that containers are never empty (= have a fake [[EMPTY]] [[ELEMENT]])
+    // make sure that containers are never empty (= at least have a RICHTEXT ELEMENT)
     // and that no fake element remains if there is another element inside the container
     $('.ELEMENT.EMPTY:not(:only-child)').remove();
     var c$ = $('[container]:not(:has(> *))');
     c$.append('<DIV class="ELEMENT EDITABLE RICHTEXT" id='+tb.blockId('rich')+'></DIV>');
+  }
+  
+  tb.createVarFromItemprop = function(i,element) {
+    // create an instance of tb.Var or tb.Table depending on the type of element
+    var e$ = $(element);
+    var itemprop = e$.attr('itemprop');
+    if (e$.attr('itemscope') !== undefined) {  // itemscope is represented by a tb.Table with one or more line
+      table(itemprop).add(tb.Template.getData(e$));
+    }
+    else {
+      var variable = tb.vars[itemprop];
+      if (variable) { 
+        throw Error('global itemprop as array not yet implemented'); // TODO
+      }
+      else {
+        v(itemprop,e$.text()) // TODO implement different types (number moment duration) depending on class ???
+      }
+    }
+  }
+  
+  tb.createVars = function() {
+    // look in the DOM for itemprops that have no itemscope ancestor
+    // for each create a tb.vars.<that itemprop> with the itemprop name with the content of that itemprop
+    // 1) if the itemprop ends with [], it is forced to an array (but the name of the array has not the []) 
+    //    and the value is pushed into it
+    // 2) if the itemprop has the same name of an already existing tb.vars that is not an array,
+    //    the var is first converted to an array with the already existing var as [0]
+    //    the new itemprop is pushed into it
+    // 3) the content of the variable depends on the itemprop tag according to 
+    //    [tb.createVarFromItemprop]
+    var globalItemprops = $('[itemprop]').filter(function(){return $(this).parents('[itemscope]').length === 0});
+    globalItemprops.each(tb.createVarFromItemprop)
   }
 
   tb.prepareExec = function() {
@@ -3126,6 +3171,7 @@
     $('.OUTPUT').add('.TEST').removeClass('SUCCESS').removeClass('ERROR')
     tb.finalizations = [];
     tb.vars = {}; // run from fresh
+    tb.createVars();
     tb.IElement.idNumber = 0;
     for (var i=0; i<tb.features.length; i++) tb.features[i].update && tb.features[i].update();
     tb.simulation = new tb.Simulation('tb.simulation');

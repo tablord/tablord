@@ -164,7 +164,7 @@
 
   // Row //////////////////////////////////////////////
 
-  tb.Row = function Row(obj,table) {
+  tb.Row = function (obj,table) {
     // create a Row from an object or a Row.
     // only ownProperties (not inherited) are used is the Row
     this._ = {};
@@ -304,7 +304,7 @@
 
 
 // Col   //////////////////////////////////////////////////////////////
-  tb.Col = function Col(name,table) {
+  tb.Col = function (name,table) {
     // Col objects represent a column of a Table
     // internal use only
     this.name = name;
@@ -319,7 +319,7 @@
 
 // Table //////////////////////////////////////////////////////////////
 
-  tb.Table = function Table(name) {
+  tb.Table = function (name) {
     // constructor of a new Table instance
     this.name = name;
     this.length = 0;
@@ -448,12 +448,12 @@
     return this;
   }
 
-  tb.Table.prototype.add = function(row) {
+  tb.Table.prototype.add = function(rowData) {
     // add a row
     // row can be either a simple object or a Row object
     // return the table for method chaining
 
-    row = new tb.Row($.extend(true,{},this.options.defValues,row),this);
+    row = new tb.Row($.extend(true,{},this.options.defValues,rowData),this);
     row.index = this.length;
     this[this.length++] = row;
     this.registerPk(row);
@@ -852,7 +852,7 @@
     // returns an already existing table or creates a new table
     // - name is the name of the instance
     // - if local=true, the instance is not registered in v
-    if (tb.vars[name] && tb.vars[name].constructor == Table){
+    if (tb.vars[name] && tb.vars[name].constructor == tb.Table){
       return tb.vars[name];
     }
 
@@ -864,7 +864,7 @@
 
 // View  //////////////////////////////////////////////////////////////
 
-  tb.View = function View(parent) {
+  tb.View = function (parent) {
     this.parent = parent;
     this.length = 0;
 
@@ -921,7 +921,45 @@
   tb.View.prototype.toJSON = tb.Table.prototype.toJSON;
   tb.View.prototype.node$ = tb.Table.prototype.node$;
 
+  // tb.Array /////////////////////////////////////////////
+  tb.Array = function(name) {
+    // tb.Array class is an Array like, but has more methods than Array
+    // also it has a name like tb.Var and tb.Table and is normaly registred as a global
+    // var in tb.vars
+    this.name = name;
+    Array.call(this)
+  }
+  tb.Array.className = 'tb.Array';
 
+  tb.Array.prototype = Object.create(Array.prototype);
+  tb.Array.prototype.constructor = tb.Array;
+/*
+  tb.Array.prototype.push = Array.prototype.push;
+  tb.Array.prototype.pop = Array.prototype.pop;
+  tb.Array.prototype.shift = Array.prototype.shift;
+  tb.Array.prototype.unshift = Array.prototype.unshift;
+  tb.Array.prototype.splice = Array.prototype.splice;
+  tb.Array.prototype.concat = Array.prototype.concat;
+  tb.Array.prototype.reverse = Array.prototype.reverse;
+  tb.Array.prototype.sort = Array.prototype.sort;
+  tb.Array.prototype.forEach = Array.prototype.forEach;
+  tb.Array.prototype.map = Array.prototype.map;
+  tb.Array.prototype.filter = Array.prototype.filter;
+  tb.Array.prototype.reduce = Array.prototype.reduce;
+  tb.Array.prototype.reduceRight = Array.prototype.reduceRight;
+  tb.Array.prototype.every = Array.prototype.every;
+  tb.Array.prototype.some = Array.prototype.some;
+  tb.Array.prototype.join = Array.prototype.join;
+*/ 
+  
+  tb.Array.prototype.toString = function() {
+      return '[object Array '+this.name+' ['+this.join(',')+']]';
+  }
+  
+  tb.Array.prototype.sum = function() {
+      return this.reduce(tb.reduce.sum);
+  }
+  
   // Output ///////////////////////////////////////////////
 
   function newOutput (codeElement,outputElement) {
