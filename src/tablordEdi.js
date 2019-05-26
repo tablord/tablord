@@ -605,7 +605,7 @@
     return result;
   }
 
-  $.fn.getItemValue = function(){
+  $.fn.getItempropValue = function(){
     // return the value of an element handling all specifications of microdata of the getter of itemValue
     var tag = this.prop('tagName');
     if (this.attr('itemprop') === undefined) return null;
@@ -614,9 +614,17 @@
     if ($.inArray(tag,['AUDIO','EMBED','IFRAME','IMG','SOURCE','TRACK','VIDEO'])!=-1) return this.attr('src');
     if ($.inArray(tag,['A','AREA','LINK'])!=-1) return this.attr('href');
     if (tag === 'OBJECT') return this.attr('data');
-    if ($.inArray(tag,['DATA','METER','SELECT','INPUT'])!=-1) return this.val();
-    if (tag === 'TIME') return this.attr('datetime') || this.text();
-    return this.text();
+    if (tag === 'TIME') return moment(this.attr('datetime') || this.text());
+    
+    // simple values can be converted to numbers or moment
+    var value; 
+    if ($.inArray(tag,['DATA','METER','SELECT','INPUT'])!=-1) value = this.val();
+    //--- this is not microdata but only valid in Tablord where the class number or date or duration can force
+    else value = this.text();
+    if (this.hasClass('date')) return moment(value);
+    if (this.hasClass('duration')) return moment(value);
+    if (this.hasClass('number')) return Number(value);
+    return value;
   }
 
   $.fn.setItemValue = function(value){
@@ -663,7 +671,7 @@
           set(itemprop,e$.getItemscopeData());
         }
         else {
-          set(itemprop,e$.getItemValue());
+          set(itemprop,e$.getItempropValue());
         }
       }
       else {  
@@ -734,7 +742,7 @@
           result[itemprop].push(e$.getItemscopeMicrodata());
         }
         else {
-          result[itemprop].push(e$.getItemValue());
+          result[itemprop].push(e$.getItempropValue());
         }
       }
       else if (e$.attr('itemscope') !== undefined) {
@@ -3136,10 +3144,18 @@
     else {
       var variable = tb.vars[itemprop];
       if (variable) { 
-        throw Error('global itemprop as array not yet implemented'); // TODO
+        if (variable instanceof tb.Var) {
+          var _var = variable;
+          variable = new tb.Array(variable.name);
+          variable.push(_var);
+          tb.vars[itemprop] = variable;
+        }
+        _var = new tb.Var(itemprop);
+        _var.setValue(e$.getItempropValue())
+        variable.push(_var) //TODO implement different types
       }
       else {
-        v(itemprop,e$.text()) // TODO implement different types (number moment duration) depending on class ???
+        v(itemprop,e$.getItempropValue()) // TODO implement different types (number moment duration) depending on class ???
       }
     }
   }
