@@ -621,6 +621,13 @@
     if ($.inArray(tag,['DATA','METER','SELECT','INPUT'])!=-1) value = this.val();
     //--- this is not microdata but only valid in Tablord where the class number or date or duration can force
     else value = this.text();
+    if (this.attr('func')) {
+      var tbVar = new tb.Var(undefined,f(this.attr('func')));
+      tbVar.sourceElement = this[0];
+      this.prop('tbVar',tbVar); // store a direct link to the tb.Var object that contains the function
+                                // so it will be easy to update the content at the end of calculation
+      return tbVar;
+    }
     if (this.hasClass('date')) return moment(value);
     if (this.hasClass('duration')) return moment(value);
     if (this.hasClass('number')) return Number(value);
@@ -2068,12 +2075,12 @@
 
   tb.Template.prototype.toString = function() {
     // return a string for a template
-    return 'template '+this.name+' created ['+this.url()+']';
+    return 'template '+this.name+' created ['+this.url+']';
   }
 
   tb.Template.prototype.span = function() {
     // return an html object representing the this Template
-    return tb.html('template '+this.name+' created [<a href="'+this.url()+'">'+this.url()+'</a>]');
+    return tb.html('template '+this.name+' created [<a href="'+this.url+'">'+this.url+'</a>]');
   }
 
   tb.Template.prototype.find = function(criteria,fields) {
@@ -2480,6 +2487,20 @@
               '<a href="#" onclick="javascript:tb.templateButtonClick(event);" class="btn btn-dark dropdwon-toggle" data-toggle="dropdown">'+
                 '<img src="/static/images/pallete_white.png" template="https://tablord.com/templates/paste" style="height:1.5em;width:1.5em;"></a>'+
               '<div id="class_options" class="dropdown-menu">'+
+                '<input id="itemprop" type="text" placeholder="itemprop">'+
+                '<input id="itemtype" placeholder="itemtype">'+
+                '<input id="func" placeholder="function code"><br>'+
+                
+                '<input type="radio" name="type" value="number">number '+
+                '<input type="radio" name="type" value="string">string '+
+                '<input type="radio" name="type" value="date">date<br> '+
+
+                '<input type="radio" name="layout" value="col-1">col-1 '+
+                '<input type="radio" name="layout" value="col-1">col-2 '+
+                '<input type="radio" name="layout" value="col-1">col-3 '+
+                '<input type="radio" name="layout" value="col-1">col-4 '+
+                '<input type="radio" name="layout" value="col-1">col-5 <br>'+
+                
                 '<input type="radio" name="severity" value="INFO">INFO '+
                 '<input type="radio" name="severity" value="OK">OK '+
                 '<input type="radio" name="severity" value="WARNING">WARNING '+
@@ -2487,7 +2508,6 @@
                 '<input type="radio" name="severity" value="">--<br>'+
                 '<input type="checkbox" value="NOTE">NOTE<br>'+
                 '<input type="checkbox" value="ADDRESS">ADDRESS<br>'+
-                '<input id="inpItemprop" type="text" placeholder="itemprop"><input id="inpItemtype" placeholder="itemtype">'+
               '</div>'+
               '<button type="button" class="btn btn-dark" onclick="tb.moveSelectedElement(-1);" >&#8593;</button>'+
               '<button type="button" class="btn btn-dark" onclick="tb.moveSelectedElement(1);" >&#8595;</button>'+
@@ -2605,6 +2625,16 @@
            $(tb.selectedElement).toggleClass(className,$(this).prop('checked'))
         }
       })
+      tb.setModified(true);
+    })
+    .change(function(event){
+      var e$ = $(tb.selectedElement);
+      if ($('#itemprop').val()) e$.attr('itemprop',$('#itemprop').val())
+      else e$.removeAttr('itemprop');
+      if ($('#itemtype').val()) e$.attr('itemitype',$('#itemtype').val())
+      else e$.removeAttr('itemtype');
+      if ($('#func').val()) e$.attr('func',$('#func').val())
+      else e$.removeAttr('func');
       tb.setModified(true);
     })
   }
@@ -2796,8 +2826,9 @@
         checkbox$.prop('checked',$(element).hasClass(c));
       };
     });
-    $('#inpItemprop').val($(element).attr('itemprop'));
-    $('#inpItemtype').val($(element).attr('itemtype'));
+    $('#itemprop').val($(element).attr('itemprop'));
+    $('#itemtype').val($(element).attr('itemtype'));
+    $('#func').val($(element).attr('func'));
 
     $(element).addClass('SELECTED');
     tb.updateTemplateChoice();
@@ -3150,9 +3181,12 @@
           variable.push(_var);
           tb.vars[itemprop] = variable;
         }
-        _var = new tb.Var(itemprop);
-        _var.setValue(e$.getItempropValue())
-        variable.push(_var) //TODO implement different types
+        else if (variable instanceof tb.Array) {
+          _var = new tb.Var(itemprop);
+          _var.setValue(e$.getItempropValue())
+          variable.push(_var)
+        }
+        else throw Error('internal error: unexpected class '+variable.toString()+'while createVarFromItemprop of'+element.outerHTML);
       }
       else {
         v(itemprop,e$.getItempropValue()) // TODO implement different types (number moment duration) depending on class ???
@@ -3172,6 +3206,14 @@
     //    [tb.createVarFromItemprop]
     var globalItemprops = $('[itemprop]').filter(function(){return $(this).parents('[itemscope]').length === 0});
     globalItemprops.each(tb.createVarFromItemprop)
+  }
+  
+  tb.updateFunctionElements = function() {
+    // update every element that has an itemprop and a func attribute
+    $('[func]').each(function(){
+      e$ = $(this);
+      e$.text(e$.prop('tbVar').valueOf())
+    })
   }
 
   tb.prepareExec = function() {
@@ -3202,6 +3244,7 @@
     tb.updateContainers();
     tb.finalize();
     tb.results.execStat.execAll$ms=Date.now()-tb.results.execStat.start;
+    tb.updateFunctionElements();
     tb.writeResults();
     tb.setUpToDate(true);
   }

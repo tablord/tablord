@@ -50,7 +50,16 @@
     }
     return this.value;
   }
-
+  
+  Object.defineProperty(tb.Var.prototype, "sourceElement", {
+    get : function () {
+      // get the source element (if any) that is attached to the Var or the function embedded in the var
+      // if a property sourceElement is attached directly to the tb.Var object, it will override this getter
+      if (this.func) return this.func.sourceElement;
+      return undefined;
+    }
+  });
+  
   tb.Var.prototype.toJSCode = function () {
     // return a string that can be interpreted by eval and will give the same result as the value
     return this.code()?'f('+tb.toJSCode(this.code())+')':tb.toJSCode(this.value);
@@ -191,11 +200,11 @@
 
   tb.Row.prototype.setCell = function (col,value) {
     if (typeof value == "function") {
-      var f = new tb.Var(undefined,value);  //wrap the function into a V
-      f.row = this;       //and assign the _row,_col
-      f.col = col;
-      this._[col] = f;
-      return this;
+      var value = new tb.Var(undefined,value);  //wrap the function into a V
+    }
+    if (value instanceof tb.Var) {
+      value.row = this;       //and assign the _row,_col
+      value.col = col;
     }
     this._[col] = value;
     return this;
@@ -848,7 +857,7 @@
 
 
   // factory ////////////////////////////////////////////////
-  table = function(name,local) {
+  tb.table = function(name,local) {
     // returns an already existing table or creates a new table
     // - name is the name of the instance
     // - if local=true, the instance is not registered in v
@@ -861,6 +870,8 @@
     }
     return tb.vars[name] = new tb.Table(name);
   }
+  
+  table = tb.table; // for compatibility TODO rethink accessibility of very common functions
 
 // View  //////////////////////////////////////////////////////////////
 
