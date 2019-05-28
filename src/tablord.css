@@ -108,6 +108,11 @@ p {
   border: 3px solid grey;
 }
 
+.ELEMENT.ITEMSCOPE {
+  padding:0px;
+  border: 3px solid orange;
+}
+
 .FIELD.EDITABLE {
   border-bottom: solid grey 1px;
   display:inline-block;

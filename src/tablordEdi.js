@@ -59,7 +59,10 @@
                 date:function(date){return date.yyyymmdd()},
                 moment:function(moment){return moment.format()},
                 duration:function(duration){return duration.format()},
-                number:function(n){return n.toString()},
+                number:function(n,fmtStr){
+                  if (fmtStr) return numeral(n).format(fmtStr);
+                  else return n.toString()
+                },
                 string:function(s){return s}
               }
             },
@@ -2490,6 +2493,7 @@
                 '<input id="itemprop" type="text" placeholder="itemprop">'+
                 '<input id="itemtype" placeholder="itemtype">'+
                 '<input id="func" placeholder="function code"><br>'+
+                '<input id="format" placeholder="format"><br>'+
                 
                 '<input type="radio" name="type" value="number">number '+
                 '<input type="radio" name="type" value="string">string '+
@@ -2635,6 +2639,8 @@
       else e$.removeAttr('itemtype');
       if ($('#func').val()) e$.attr('func',$('#func').val())
       else e$.removeAttr('func');
+      if ($('#format').val()) e$.attr('format',$('#format').val())
+      else e$.removeAttr('format');
       tb.setModified(true);
     })
   }
@@ -2804,6 +2810,7 @@
 
       // remove the old selection
       $(e).removeClass('SELECTED');
+      $('.ITEMSCOPE').removeClass('ITEMSCOPE');
       tb.editables$(e)
         .attr('contentEditable',false)
         .each(function(i,e){tb.reformatRichText(e)});
@@ -2811,6 +2818,7 @@
 
     // set the new selection
     tb.selectedElement = element;
+    e$ = $(element);
     if (element == undefined){
       $('#codeId').text('no selection');
       tb.selectionToolBar$.hide();
@@ -2823,14 +2831,19 @@
       var checkbox$ = $(this);
       var c = checkbox$.val();
       if (c) {
-        checkbox$.prop('checked',$(element).hasClass(c));
+        checkbox$.prop('checked',e$.hasClass(c));
       };
     });
-    $('#itemprop').val($(element).attr('itemprop'));
-    $('#itemtype').val($(element).attr('itemtype'));
-    $('#func').val($(element).attr('func'));
+    var itemprop = e$.attr('itemprop')
+    $('#itemprop').val(itemprop);
+    $('#itemtype').val(e$.attr('itemtype'));
+    $('#func').val(e$.attr('func'));
+    $('#format').val(e$.attr('format'));
 
-    $(element).addClass('SELECTED');
+    e$.addClass('SELECTED');
+    if (itemprop) {
+      e$.parent().closest('[itemscope]').addClass('ITEMSCOPE')
+    }
     tb.updateTemplateChoice();
     tb.editables$(element).attr('contentEditable',true);
     element.focus();
@@ -2934,7 +2947,7 @@
       var format = tb.defaults.format;
     }
     if (typeof obj === 'number') {
-      return format.number(obj)
+      return format.number(obj,format.fmtStr)
     }
     if (obj === undefined) {
       return format.undef();
@@ -3212,7 +3225,7 @@
     // update every element that has an itemprop and a func attribute
     $('[func]').each(function(){
       e$ = $(this);
-      e$.text(e$.prop('tbVar').valueOf())
+      e$.text(tb.format(e$.prop('tbVar').valueOf(),{format:{fmtStr:e$.attr('format')}}))
     })
   }
 
