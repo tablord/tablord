@@ -907,6 +907,8 @@
   // those function also work on moment and duration
   tb.reduce = {};
   tb.reduce.sum = function(a,b) {
+    // make the sum of all values != undefined
+    if (b === undefined) return a;
     if (moment.isMoment(a) || moment.isDuration(a)) return a.add(b);
     return a+b;
   };
@@ -2120,7 +2122,12 @@
       var t = tb.templates[itemtype];
       remap = t && t.remap;
     }
-    return element$.getItemscopeData(remap);
+    var data = element$.getItemscopeData(remap);
+    var section = element$.parent().closest('.SECTION')
+    if (section.length === 1) {
+      data._section = section.attr('id');
+    }
+    return data;
   }
 
   tb.Template.urlToName = function(url) {
@@ -2346,7 +2353,12 @@
   tb.blockId = function(prefix) {
     // increment tb.blockNumber and
     // return the block id using prefix which must be a 4 characters prefix
+    if (prefix.length !== 4) throw new Error('Element Id must hace a 4 char prefix for the id')
     return prefix+tb.pad(tb.blockNumber++,4);
+  }
+  
+  tb.blockPrefix = function(id) {
+    return id.slice(0,4);
   }
 
   tb.outputElement = function(element) {
@@ -2484,11 +2496,13 @@
     .append('<div class="btn-group btn-group-sm mr-2" role="group">'+
               '<button type="button" class="btn btn-outline-dark" id="codeId">no selection</button>'+
               '<a href="javascript:tb.cutBlock(tb.selectedElement);" class="btn btn-dark" id="cutBtn">'+
-                '<img src="/static/images/cut_white.png" style="height:1.5em;width:1.5em;"></a>'+
+                '<i class="fas fa-cut"></i></a>'+
+              '<a href="javascript:tb.cloneBlocks();" class="btn btn-dark" id="cloneBtn">'+
+                '<i class="far fa-clone"></i></a>'+
               '<a href="#" onclick="javascript:tb.templateButtonClick(event);" class="btn btn-dark" where="after" template="https://tablord.com/templates/paste" >'+
-                '<img src="/static/images/paste_white.png" style="height:1.5em;width:1.5em;"></a>'+
+                '<i class="fas fa-paste"></i></a>'+
               '<a href="#" onclick="javascript:tb.templateButtonClick(event);" class="btn btn-dark dropdwon-toggle" data-toggle="dropdown">'+
-                '<img src="/static/images/pallete_white.png" template="https://tablord.com/templates/paste" style="height:1.5em;width:1.5em;"></a>'+
+                '<i class="fas fa-palette"></i></a>'+
               '<div id="class_options" class="dropdown-menu">'+
                 '<input id="itemprop" type="text" placeholder="itemprop">'+
                 '<input id="itemtype" placeholder="itemtype">'+
@@ -2499,17 +2513,25 @@
                 '<input type="radio" name="type" value="string">string '+
                 '<input type="radio" name="type" value="date">date<br> '+
 
-                '<input type="radio" name="layout" value="col-1">col-1 '+
-                '<input type="radio" name="layout" value="col-1">col-2 '+
-                '<input type="radio" name="layout" value="col-1">col-3 '+
-                '<input type="radio" name="layout" value="col-1">col-4 '+
-                '<input type="radio" name="layout" value="col-1">col-5 <br>'+
+                'c-<input type="radio" name="layout" value="c-1">1 '+
+                '<input type="radio" name="layout" value="c-2">2 '+
+                '<input type="radio" name="layout" value="c-3">3 '+
+                '<input type="radio" name="layout" value="c-4">4 '+
+                '<input type="radio" name="layout" value="c-5">5 '+
+                '<input type="radio" name="layout" value="c-6">6 '+
+                '<input type="radio" name="layout" value="c-7">7 '+
+                '<input type="radio" name="layout" value="c-8">8 '+
+                '<input type="radio" name="layout" value="c-9">9 '+
+                '<input type="radio" name="layout" value="c-10">10 '+
+                '<input type="radio" name="layout" value="c-11">11 '+
+                '<input type="radio" name="layout" value="c-12">12 '+
                 
                 '<input type="radio" name="severity" value="INFO">INFO '+
                 '<input type="radio" name="severity" value="OK">OK '+
                 '<input type="radio" name="severity" value="WARNING">WARNING '+
                 '<input type="radio" name="severity" value="DANGER">DANGER '+
                 '<input type="radio" name="severity" value="">--<br>'+
+                '<input type="checkbox" value="FLEX">FLEX<br>'+
                 '<input type="checkbox" value="NOTE">NOTE<br>'+
                 '<input type="checkbox" value="ADDRESS">ADDRESS<br>'+
               '</div>'+
@@ -2520,8 +2542,8 @@
             '</div>')
     .append($('<div class="btn-group btn-group-sm mr-2" role="group" where="after">')
         .click(tb.templateButtonClick)
-        .append('<button type="button" class="btn btn-dark" title="Text" template="https://tablord.com/templates/richText">§</button>'+
-                '<button type="button" class="btn btn-dark" title="section" template="https://tablord.com/templates/section">1.</button>'+
+        .append('<button type="button" class="btn btn-dark" title="Text" template="https://tablord.com/templates/richText"><i class="fas fa-paragraph"></i></button>'+
+                '<button type="button" class="btn btn-dark" title="section" template="https://tablord.com/templates/section"><i class="fas fa-heading"></i></button>'+
                 '<button type="button" class="btn btn-dark" title="code" template="https://tablord.com/templates/code">{}</button>'+
                 '<button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">...</button>')
         .append($('<div class="dropdown-menu" where="after">')
@@ -2789,6 +2811,27 @@
     $('.CUT').remove();
   }
 
+  tb.cloneBlocks = function(empty) {
+    // clone the selected element
+    // if empty, clone the elements but remove any text
+    // TODO: do that with marked elements in the future
+    function prepare(clones$,empty) {
+      // renumber the ids found
+      // and clear text if empty is true
+      if (clones$.length === 0) return;
+      clones$.filter('[id]').attr('id',function(i,id){
+        return tb.blockId(tb.blockPrefix(id));
+      });
+      if (empty) clones$.text('');
+      prepare(clones$.children());
+    }
+    var elements$ = $(tb.selectedElement); //TODO add marked
+    var newElements$ = elements$.clone().removeClass('SELECTED');
+    prepare(newElements$);
+    newElements$.insertAfter(tb.selectedElement);
+    tb.selectElement(newElements$[0]);
+    tb.setUpToDate(false);
+  }
 
   tb.editables$ = function(element) {
     // returns a JQuery of the tags that are editable in element (JQuery can be .length==0 if nothing is editable)
@@ -3172,10 +3215,8 @@
 
   tb.updateContainers = function() {
     // make sure that containers are never empty (= at least have a RICHTEXT ELEMENT)
-    // and that no fake element remains if there is another element inside the container
-    $('.ELEMENT.EMPTY:not(:only-child)').remove();
     var c$ = $('[container]:not(:has(> *))');
-    c$.append('<DIV class="ELEMENT EDITABLE RICHTEXT" id='+tb.blockId('rich')+'></DIV>');
+    c$.append('<DIV class="ELEMENT EDITABLE RICHTEXT c-12" id='+tb.blockId('rich')+'></DIV>');
   }
   
   tb.createVarFromItemprop = function(i,element) {
@@ -3225,7 +3266,7 @@
     // update every element that has an itemprop and a func attribute
     $('[func]').each(function(){
       e$ = $(this);
-      e$.text(tb.format(e$.prop('tbVar').valueOf(),{format:{fmtStr:e$.attr('format')}}))
+      e$.html(tb.format(e$.prop('tbVar').valueOf(),{format:{fmtStr:e$.attr('format')}}))
     })
   }
 
@@ -3354,6 +3395,12 @@
     $('.EMBEDDED').css('display','');
     $('.EMBEDDED[style=""]').removeAttr('style');
 
+    // EMPTY element are not longer in use but might still be present in existing sheets
+    $('.ELEMENT.EMPTY:not(:only-child)').remove();
+    tb.updateContainers();
+
+    // add an INDENT class to indent where is needed and no longer to any container
+    $('[container=sectionContent]').addClass('IDENT');
 
   }
 

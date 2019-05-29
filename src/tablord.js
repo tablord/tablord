@@ -224,7 +224,8 @@
 
   tb.Row.prototype.reduce = function(reduceF,criteria,initialValue) {
     // apply a reduce function on a column
-    // criteria is an optional f(tbFunc) that process only row that return true
+    // criteria is an optional object that list all fields that have to be processed
+    // {field1:1,field2:1....}
     var first = true;
     var r;
     if (initialValue !== undefined) {
@@ -233,7 +234,7 @@
     }
     for (var colName in this._) {
       var value = this.val(colName);
-      if ((criteria===undefined)||(criteria.call(this,this._,colName,value))) {
+      if ((criteria===undefined)|| (colName in criteria)) {
         if (first) {
           r = value;
           first = false;
@@ -548,7 +549,7 @@
     }
     for (var i=0;i<this.length;i++) {
       var value = this.val(i,colName);
-      if ((criteria===undefined)||(criteria.call(this[i],this[i]._,colName,value))) {
+      if ((criteria===undefined)||tb.objMatchCriteria(this[i]._,criteria)) {
         if (first) {
           r = value;
           first = false;
@@ -563,7 +564,7 @@
 
   tb.Table.prototype.sum = function(colName,criteria) {
     // return the sum of the column
-    return this.reduce(colName,tb.reduce.sum,criteria)
+    return this.reduce(colName,tb.reduce.sum,criteria,0)
   }
 
   tb.Table.prototype.min = function(colName,criteria) {
