@@ -377,7 +377,7 @@
                                       'an ELEMENT can also be [[CODE]], [[RICHTEXT]] or [[SECTION]].',
                                       'for other templates:',
                                       '[[itemtype]] specifies the template,',
-                                      '[[itemprop]] comes from the [[container]] attribute of the parent container or is "items"',
+                                      '[[itemprop]] comes from the [[container]] attribute of the parent container or is "item"',
                                       '[[itemscope]] is also set to be complient with microData (cf [[getMicroData]])']);
   tb.help.add('SELECTED','DOM class=',['an SELECTED [[ELEMENT]] is the DOM element of the document that is currently SELECTED']);
   tb.help.add('CODE','DOM class=',['a CODE [[ELEMENT]] is a DOM element of the document that contains JavaScript CODE. It can also have the [[EMBEDDED]]']);
@@ -567,6 +567,16 @@
     return {node$:function() {return query}}
   }
 
+  $.fn.itemscopeOrThis = function() {
+    // return the wrapping itemscope of this if any or this otherwise
+    // this must be a one element jQuery
+    if (this.length !== 1) throw Error('must be a jquery of one element');
+    var c = this.closest('[itemscope]');
+    if (c.length===1) return c;
+    return this;
+  }
+  
+  
   $.fn.getItems = function(url) {
     // get the matching itemtypes that are descendent of the jquery
     // please note that if an itemtype is embeeded in another instance of itemtype, both will be part of the result
@@ -691,7 +701,7 @@
           $.extend(true,data,e$.getItemscopeData());
         }
         else { // it should have an itemprop as it is a itemscope included in another
-          set('items[]',e$.getItemscopeData()); // store the content in a items array
+          set('item[]',e$.getItemscopeData()); // store the content in a item array
         }
       }
 
@@ -777,7 +787,7 @@
     this.each(function(i,e){
       var e$ = $(e);
       if (e$.attr('itemscope') !== undefined)  {
-        var itemprop = e$.attr('itemprop') || 'items';
+        var itemprop = e$.attr('itemprop') || 'item';
         var subData = data && data[itemprop] && data[itemprop].shift();
         if (subData !== undefined) {
           e$.children().setMicrodata(subData.properties);
@@ -2010,24 +2020,34 @@
     get: function() {return tb.Template.urlToName(this.url)} // the name is just the last part after /
   })
 
-  tb.Template.prototype.insertBefore = function(element,itemprop) {
-    // insert this Template before element as an itemprop
-    var newElement$ = this.element$(itemprop);
-    newElement$.insertBefore(element);
-    tb.selectElement(newElement$[0]);
-    tb.setModified(true);
-    tb.run();
-  }
 
-  tb.Template.prototype.insertAfter  = function(element,itemprop) {
-    // insert this Template after element as an itemprop
+  tb.Template.prototype.insertNew = function(element,where,itemprop) {
+    // insert this Template close to element as an itemprop
+    // - element where to calculate the insertion
+    // - where: 'after', 'afterItemscope', 'before' or 'beforeItemscope'
+    //   (that can be element itself) as insert point
+    // - itemprop if not '' or undefined will force the itemprop of the template
+
     var element$ = $(element);
-    if (element$.hasClass('CODE')) {
-      if (element$.next().hasClass('OUTPUT')) element$=element$.next();
-      if (element$.next().hasClass('TEST')) element$=element$.next();
+    var after = where==='after' || where==='afterItemscope';
+    if (where==='beforeItemscope' || where==='afterItemscope') {
+      element$ = element$.closest('[itemscope]');
+      if (element$.length == 0) element$=$(element); // if no itemscope then take element
     }
-    var newElement$ = this.element$(itemprop);
-    newElement$.insertAfter(element$);
+    if (element$.hasClass('CODE')) {
+      if (after) {
+        if (element$.next().hasClass('OUTPUT')) element$=element$.next();
+        if (element$.next().hasClass('TEST')) element$=element$.next();
+      }
+      else {
+        if (element$.prev().hasClass('OUTPUT')) element$=element$.prev();
+        if (element$.prev().hasClass('TEST')) element$=element$.prev();
+      }
+    }
+    var newElement$ = this.element$()
+    if (itemprop) newElement$.attr('itemprop',itemprop)
+    if (after) newElement$.insertAfter(element$)
+    else       newElement$.insertBefore(element$);
     tb.selectElement(newElement$[0]);
     tb.setModified(true);
     tb.run();
@@ -2043,7 +2063,7 @@
     var k = tb.keys(microdata);
     if (k.length > 1) throw new Error('element.convert error: microdata has more than 1 head key\n'+tb.toJSCode(microdata));
     var newData = {};
-    newData[itemprop || 'items'] = microdata[k[0]] || {};
+    newData[itemprop || 'item'] = microdata[k[0]] || {};
     var new$ = this.element$(itemprop,id);
     if (this.convertData) {
       this.convertData(microdata,new$);
@@ -2069,10 +2089,7 @@
   tb.Template.prototype.element$ = function(itemprop,id) {
     // return a jQuery containing a new instance of this Template as itemprop and setting its id
     if (this.html === undefined) throw new Error('in order to define a template at least define .fields, .html or .element$()');
-    if (id === undefined) {
-      tb.blockNumber++;
-      id = 'item'+tb.pad(tb.blockNumber,4);
-    }
+    id = id || tb.blockId('item');
     var new$ = $(this.html).attr('id',id);
     if (itemprop) new$.attr('itemprop',itemprop);
     return new$;
@@ -2202,7 +2219,7 @@
     //          - string:{}                     the field is a string:  default if nothing is specified
     //          - func:function(data){...}  the field is calculated (=> readonly) and the html is the result of this function
     //          - select:{choice1:val1,choice2:val2...) the field is a SELECT
-    //          - container:"template1 template2"
+    //          - container:"template1 template2"    
     //                 a container that accepts the specified template names and how the itemprop . if "", accepts anything
     //
     //          formating
@@ -2212,9 +2229,8 @@
     //    so do not define .fields if you want to define .html
     // .html: a string representing the html code of the template
     // .element$: a function() returning a DOM Element; normally not defined and inherited form tb.Template
-    // .insertBefore:
-    // .insertAfter:  function(element) that can override the default behaviour to insert before or after another element
-    //                those function can help to create complex html (instead of .element$) depending on the context of where to insert the template
+    // .insertNew:  function(element,where,itemprop) that can override the default behaviour to insert before or after another element
+    //              those function can help to create complex html (instead of .element$) depending on the context of where to insert the template
     // .remap: a function(data) that will return a new object based on data (that is the object collecting all itemprop of one template instance)
     //         this can be used to have for example native Date object instead of a string or combining two fields in one etc..
 
@@ -2237,7 +2253,7 @@
     tb.templates[newT.url] = newT;
     tb.updateTemplateChoice();
     var elementsToConvert$ = $('[itemtype="'+newT.url+'"]');  //TODO not sure it's a good idea to always convert
-    elementsToConvert$.each(function(idx,e){newT.convert(e,e.itemprop || 'items')});
+    elementsToConvert$.each(function(idx,e){newT.convert(e,e.itemprop || 'item')});
     return newT;
   }
 
@@ -2261,7 +2277,7 @@
     element$ : function() {
       var n$ = $('<DIV  class="ELEMENT SECTION" id='+tb.blockId('sect')+'></DIV>')
                .append('<H1 class="SECTIONTITLE EDITABLE"></H1>')
-               .append('<DIV container="sectionContent"><DIV  class="ELEMENT RICHTEXT EDITABLE" id='+tb.blockId('rich')+'></DIV>');
+               .append('<DIV class="INDENT" container=""><DIV  class="ELEMENT RICHTEXT EDITABLE" id='+tb.blockId('rich')+'></DIV>');
       return n$;
     }
   });
@@ -2274,7 +2290,7 @@
   });
 
   tb.template({
-    url : 'https://tablord.com/templates/page break',
+    url : 'https://tablord.com/templates/page_break',
     element$ : function() {
       var n$ = $('<DIV  class="ELEMENT PAGEBREAK" id='+tb.blockId('page')+'></DIV>');
       return n$;
@@ -2290,7 +2306,7 @@
                     'au <input type="date" itemprop="toDate"> <input type="time" itemprop="toTime"> '+
                     '(durée :<time itemprop="duration"></time>)</div>'+
                 '<h2 class="EDITABLE" itemprop="title">&nbsp;</h2>'+
-                '<div container="items[]"></div>');
+                '<div container="item[]"></div>');
     },
     exec: function(element) {
       var data = $(element).getItemscopeData()
@@ -2318,6 +2334,34 @@
       delete data.toTime;
       return data;
     }
+  });
+    
+  tb.template({
+    url:'https://tablord.com/templates/quoteHead',
+    html:'<div class="ELEMENT FLEX" itemscope>'+
+           '<div class="ELEMENT EDITABLE c-9">description</div>'+
+           '<div class="ELEMENT EDITABLE RIGHT c-1">Quantity</div>'+
+           '<div class="ELEMENT EDITABLE RIGHT c-1">price/unit</div>'+
+           '<div class="ELEMENT VIEW     RIGHT c-1">total</div>'+
+         '</div>'
+  });
+  
+  tb.template({
+    url:'https://tablord.com/templates/quoteLine',
+    html:'<div class="ELEMENT FLEX" itemprop="quote" itemscope>'+
+           '<div class="ELEMENT EDITABLE c-9" itemprop="description"></div>'+
+           '<div class="ELEMENT EDITABLE number c-1" itemprop="quantity"></div>'+
+           '<div class="ELEMENT EDITABLE number c-1" itemprop="pricePerUnit"></div>'+
+           '<div class="ELEMENT VIEW     number c-1" itemprop="totalLine" func="quantity*pricePerUnit"></div>'+
+         '</div>'
+  });
+  
+  tb.template({
+    url:'https://tablord.com/templates/quoteTotal',
+    html:'<div class="ELEMENT FLEX" itemprop="quote" itemscope>'+
+           '<div class="ELEMENT EDITABLE c-11" itemprop="description">Total</div>'+
+           '<div class="ELEMENT VIEW     number c-1" itemprop="total" func="item.sum(\'totalLine\')"></div>'+
+         '</div>'
   });
 
   //////////////////////////////////////////////////////////////////////////////////////
@@ -2380,6 +2424,7 @@
     if ((element == undefined) || (element.id.slice(0,4) !== 'code')) return;
     return window.document.getElementById(element.id.replace(/code/,"test"));
   }
+  
 
   tb.showCode = function(event) {
     // click event handler for the show Code checkbox
@@ -2465,14 +2510,7 @@
     var where = $(event.currentTarget).attr('where');
     var template = $(event.target).attr('template');
     if (where===undefined || template === undefined) return;
-    switch (where) {
-    case 'before':
-      tb.templates[template].insertBefore(tb.selectedElement,tb.currentContainer$.attr('container'));
-      break;
-    case 'after':
-      tb.templates[template].insertAfter (tb.selectedElement,tb.currentContainer$.attr('container'));
-      break;
-    }
+    tb.templates[template].insertNew(tb.selectedElement,where,tb.currentContainer$.attr('container'));
     event.stopPropagation(); // in order to have embedded buttons like the drop down menu
                              // otherwise the event will be treated twice issue #13
   }
@@ -2495,11 +2533,23 @@
     tb.selectionToolBar$ = $('<div class="btn-toolbar" role="toolbar">')
     .append('<div class="btn-group btn-group-sm mr-2" role="group">'+
               '<button type="button" class="btn btn-outline-dark" id="codeId">no selection</button>'+
+              '<a href="#" class="btn btn-dark" id="markBtn">'+
+                '<i class="far fa-check-square"></i></a>'+
               '<a href="javascript:tb.cutBlock(tb.selectedElement);" class="btn btn-dark" id="cutBtn">'+
                 '<i class="fas fa-cut"></i></a>'+
-              '<a href="javascript:tb.cloneBlocks();" class="btn btn-dark" id="cloneBtn">'+
+              '<a href="#" class="btn btn-dark" id="deleteBtn">'+
+                '<i class="fas fa-copy"></i></a>'+
+              '<a href="#" class="btn btn-dark" id="deleteBtn">'+
+                '<i class="fas fa-trash"></i></a>'+
+              '<a href="#" class="btn btn-dark" id="cutBtn">'+
+                '<i class="fas fa-trash-restore"></i></a>'+
+              '<a href="javascript:tb.cloneItemscope();" class="btn btn-dark" id="cloneBtn">'+
                 '<i class="far fa-clone"></i></a>'+
-              '<a href="#" onclick="javascript:tb.templateButtonClick(event);" class="btn btn-dark" where="after" template="https://tablord.com/templates/paste" >'+
+              '<a href="javascript:tb.cloneItemscope(true);" class="btn btn-dark" id="cloneEmptyBtn">'+
+                '<i class="fas fa-clone"></i></a>'+
+
+
+              '<a href="#" onclick="javascript:tb.templateButtonClick(event);" class="btn btn-dark" where="afterItemscope" template="https://tablord.com/templates/paste" >'+
                 '<i class="fas fa-paste"></i></a>'+
               '<a href="#" onclick="javascript:tb.templateButtonClick(event);" class="btn btn-dark dropdwon-toggle" data-toggle="dropdown">'+
                 '<i class="fas fa-palette"></i></a>'+
@@ -2535,18 +2585,18 @@
                 '<input type="checkbox" value="NOTE">NOTE<br>'+
                 '<input type="checkbox" value="ADDRESS">ADDRESS<br>'+
               '</div>'+
-              '<button type="button" class="btn btn-dark" onclick="tb.moveSelectedElement(-1);" >&#8593;</button>'+
-              '<button type="button" class="btn btn-dark" onclick="tb.moveSelectedElement(1);" >&#8595;</button>'+
+              '<button type="button" class="btn btn-dark" onclick="tb.moveSelectedElement(-1);" ><i class="fas fa-arrow-up"></i></button>'+
+              '<button type="button" class="btn btn-dark" onclick="tb.moveSelectedElement(1);" ><i class="fas fa-arrow-down"></i></button>'+
               '<button type="button" class="btn btn-dark" id="showHtmlBtn" onclick=tb.showOutputHtml(this); >&#8594;html</button>'+
               '<button type="button" class="btn btn-dark" id="toTestBtn" onclick=tb.copyOutputToTest(this); >&#8594;test</button>'+
             '</div>')
-    .append($('<div class="btn-group btn-group-sm mr-2" role="group" where="after">')
+    .append($('<div class="btn-group btn-group-sm mr-2" role="group" where="afterItemscope">')
         .click(tb.templateButtonClick)
         .append('<button type="button" class="btn btn-dark" title="Text" template="https://tablord.com/templates/richText"><i class="fas fa-paragraph"></i></button>'+
                 '<button type="button" class="btn btn-dark" title="section" template="https://tablord.com/templates/section"><i class="fas fa-heading"></i></button>'+
                 '<button type="button" class="btn btn-dark" title="code" template="https://tablord.com/templates/code">{}</button>'+
                 '<button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">...</button>')
-        .append($('<div class="dropdown-menu" where="after">')
+        .append($('<div class="dropdown-menu" where="afterItemscope">')
                 .click(tb.templateButtonClick)
                 .append(tb.templateChoice$)
         )
@@ -2568,15 +2618,15 @@
     '<DIV id=menu class="TOOLBAR no_print" style="float:right;max-width:50%;">'+
         '<div class="btn-toolbar mb-1" role="toolbar" aria-label="main buttons">'+
             '<div class="btn-group btn-group-sm mr-2" role="group" aria-label="run btns">'+
-                '<button type="button" class="btn btn-dark" id=runUntilSelectedBtn onclick=tb.execUntilSelected(); style="color: #8dff60;" >&#9658;|</button>'+
-                '<button type="button" class="btn btn-dark" id=runAllBtn onclick=tb.execAll(); style="color: #8dff60;" >&#9658;&#9658;</button>'+
-                '<button type="button" class="btn btn-dark" id=stopAnimation onclick=tb.clearTimers(); style="color: red" disabled=true >&#9632;</button>'+
+                '<button type="button" class="btn btn-dark" id=runUntilSelectedBtn onclick=tb.execUntilSelected(); style="color: #8dff60;" ><i class="fas fa-step-forward"></i></button>'+
+                '<button type="button" class="btn btn-dark" id=runAllBtn onclick=tb.execAll(); style="color: #8dff60;" ><i class="fas fa-play"></i></button>'+
+                '<button type="button" class="btn btn-dark" id=stopAnimation onclick=tb.clearTimers(); style="color: red" disabled=true ><i class="fas fa-stop"></i></button>'+
             '</div>'+
             '<div class="btn-group btn-group-sm mr-2" role="group" aria-label="actions on sheet">'+
-                '<button type="button" class="btn btn-dark" id="saveBtn" onclick="tb.save();" >save</button>'+
-                '<button type="button" class="btn btn-dark" onclick="tb.print();" >print</button>'+
-                '<button type="button" class="btn btn-dark" onclick="tb.helpPanel$.toggle(100);" >help</button>'+
-                '<button id="btnGroupDrop1" type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">options</button>'+
+                '<button type="button" class="btn btn-dark" id="saveBtn" onclick="tb.save();" ><i class="fas fa-cloud-upload-alt"></i></button>'+
+                '<button type="button" class="btn btn-dark" onclick="tb.print();" ><i class="fas fa-print"></i></button>'+
+                '<button type="button" class="btn btn-dark" onclick="tb.helpPanel$.toggle(100);" ><i class="fas fa-question-circle"></i></button>'+
+                '<button id="btnGroupDrop1" type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cog"></i></button>'+
                 '<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">'+
                     '<a class="dropdown-item" id="clearOutputsBtn" onclick="tb.clearOutputs();" >clear outputs</a>'+
                     '<INPUT onclick="tb.showCode(event)"'+(b$.attr('showCode')=="true"?' checked':'')+' type=checkbox>codes<br/>'+
@@ -2811,11 +2861,11 @@
     $('.CUT').remove();
   }
 
-  tb.cloneBlocks = function(empty) {
-    // clone the selected element
-    // if empty, clone the elements but remove any text
+  tb.cloneItemscope = function(empty) {
+    // clone the selected itemscope (or element)
+    // - empty: if true, clone the elements but remove any text
     // TODO: do that with marked elements in the future
-    function prepare(clones$,empty) {
+    function prepare(clones$) {
       // renumber the ids found
       // and clear text if empty is true
       if (clones$.length === 0) return;
@@ -2823,13 +2873,15 @@
         return tb.blockId(tb.blockPrefix(id));
       });
       if (empty) clones$.text('');
+      clones$.removeClass('SELECTED');
       prepare(clones$.children());
     }
-    var elements$ = $(tb.selectedElement); //TODO add marked
-    var newElements$ = elements$.clone().removeClass('SELECTED');
-    prepare(newElements$);
-    newElements$.insertAfter(tb.selectedElement);
-    tb.selectElement(newElements$[0]);
+    
+    var element$ = $(tb.selectedElement).itemscopeOrThis(); //TODO add marked
+    var newElement$ = element$.clone();
+    prepare(newElement$);
+    newElement$.insertAfter(element$);
+    tb.selectElement(newElement$[0]);
     tb.setUpToDate(false);
   }
 
@@ -3400,7 +3452,7 @@
     tb.updateContainers();
 
     // add an INDENT class to indent where is needed and no longer to any container
-    $('[container=sectionContent]').addClass('IDENT');
+    $('[container=sectionContent]').addClass('INDENT'); // container=sectionContent was the former definition
 
   }
 

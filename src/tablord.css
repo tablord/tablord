@@ -132,6 +132,17 @@ p {
   content:attr(itemprop);
 }
 
+.ELEMENT:empty::before {
+  content:"empty";
+  font-style:italic;
+  color:grey;
+}
+.ELEMENT[itemprop]:empty::before {
+  content:attr(itemprop);
+  font-style:italic;
+  color:grey;
+}
+
 .ELEMENT.c-1 {
   width:calc(100%/12);
 }
@@ -427,7 +438,7 @@ td.RICHTEXT {
   display:flex;
 }
 
-.IDENT {
+.INDENT {
   padding-left: 25px;
   border-left: grey solid 1px;
 }
