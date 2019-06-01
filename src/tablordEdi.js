@@ -2556,7 +2556,25 @@
                 '<i class="fas fa-paste"></i></a>'+
               '<a href="#" onclick="javascript:tb.templateButtonClick(event);" class="btn btn-dark dropdwon-toggle" data-toggle="dropdown">'+
                 '<i class="fas fa-palette"></i></a>'+
-              '<div id="class_options" class="dropdown-menu">'+
+              '<button type="button" class="btn btn-dark" onclick="tb.moveSelectedElement(-1);" ><i class="fas fa-arrow-up"></i></button>'+
+              '<button type="button" class="btn btn-dark" onclick="tb.moveSelectedElement(1);" ><i class="fas fa-arrow-down"></i></button>'+
+              '<button type="button" class="btn btn-dark" id="showHtmlBtn" onclick=tb.showOutputHtml(this); >&#8594;html</button>'+
+              '<button type="button" class="btn btn-dark" id="toTestBtn" onclick=tb.copyOutputToTest(this); >&#8594;test</button>'+
+            '</div>')
+    .append($('<div class="btn-group btn-group-sm mr-2" role="group" where="afterItemscope">')
+        .click(tb.templateButtonClick)
+        .append('<button type="button" class="btn btn-dark" title="Text" template="https://tablord.com/templates/richText"><i class="fas fa-paragraph"></i></button>'+
+                '<button type="button" class="btn btn-dark" title="section" template="https://tablord.com/templates/section"><i class="fas fa-heading"></i></button>'+
+                '<button type="button" class="btn btn-dark" title="code" template="https://tablord.com/templates/code">{}</button>'+
+                '<button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">...</button>')
+        .append($('<div class="dropdown-menu" where="afterItemscope">')
+                .click(tb.templateButtonClick)
+                .append(tb.templateChoice$)
+        )
+
+    )
+    .append('<div>'+
+              '<details id="properties"><summary>properties</summary>'+
                 '<input id="itemprop" type="text" placeholder="itemprop">'+
                 '<input id="itemtype" placeholder="itemtype">'+
                 '<input id="func" placeholder="function code"><br>'+
@@ -2587,23 +2605,8 @@
                 '<input type="checkbox" value="FLEX">FLEX<br>'+
                 '<input type="checkbox" value="NOTE">NOTE<br>'+
                 '<input type="checkbox" value="ADDRESS">ADDRESS<br>'+
-              '</div>'+
-              '<button type="button" class="btn btn-dark" onclick="tb.moveSelectedElement(-1);" ><i class="fas fa-arrow-up"></i></button>'+
-              '<button type="button" class="btn btn-dark" onclick="tb.moveSelectedElement(1);" ><i class="fas fa-arrow-down"></i></button>'+
-              '<button type="button" class="btn btn-dark" id="showHtmlBtn" onclick=tb.showOutputHtml(this); >&#8594;html</button>'+
-              '<button type="button" class="btn btn-dark" id="toTestBtn" onclick=tb.copyOutputToTest(this); >&#8594;test</button>'+
-            '</div>')
-    .append($('<div class="btn-group btn-group-sm mr-2" role="group" where="afterItemscope">')
-        .click(tb.templateButtonClick)
-        .append('<button type="button" class="btn btn-dark" title="Text" template="https://tablord.com/templates/richText"><i class="fas fa-paragraph"></i></button>'+
-                '<button type="button" class="btn btn-dark" title="section" template="https://tablord.com/templates/section"><i class="fas fa-heading"></i></button>'+
-                '<button type="button" class="btn btn-dark" title="code" template="https://tablord.com/templates/code">{}</button>'+
-                '<button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">...</button>')
-        .append($('<div class="dropdown-menu" where="afterItemscope">')
-                .click(tb.templateButtonClick)
-                .append(tb.templateChoice$)
-        )
-
+              '</details>'+
+            '</div>'
     )
     .append(tb.objectToolBar$)
     .hide();
@@ -2697,7 +2700,7 @@
     .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.ul(); >&#8226;</button>')
     .append('<button type="button" class="btn btn-dark btn-sm" onclick=tb.richedit.pre(); >{}</button>')
 
-    $('#class_options').click(function(event){
+    $('#properties').click(function(event){
       $(event.currentTarget).children().each(function(){
         var className = $(this).val()
         if (className) {
@@ -2931,7 +2934,7 @@
     tb.menu$.show();
     tb.selectionToolBar$.show(500);
     $('#codeId').html(element.id+'<SPAN style="color:red;cursor:pointer;" onclick="tb.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
-    $('#class_options').children().each(function(){
+    $('#properties').children().each(function(){
       var checkbox$ = $(this);
       var c = checkbox$.val();
       if (c) {
