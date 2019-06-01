@@ -17,7 +17,12 @@
             version:'1.0',
             authors:['Marc Nicole'],
             rights:'CC-BY-SA 2018',
-            selectedElement:undefined,
+            selected: {   // is updated by selectElement 
+              element:undefined,
+              element$:$(),    // element as a jQuery of 0 or 1 element
+              itemscope$:$(),  // the containing itemscope (can be the element itself)
+              container$:$(),  // the containing container (always a parent if any)
+            },
             output: undefined,
                         //a new Output is created for each code.
                         //it hold both the code and output Elements as well as the htlm
@@ -1834,7 +1839,7 @@
     if (obj == undefined) throw new Error('event on a editor linked to a non existing object '+$(event.target).attr('tbObject'));
     switch (event.type) {
       case 'click':
-        if (obj.codeElement !== tb.selectedElement) {
+        if (obj.codeElement !== tb.selected.element) {
           tb.selectElement(obj.codeElement);
         }
         tb.editor.setCurrentEditor(event.target);
@@ -1888,7 +1893,7 @@
         currentNumbers.length = level+1;
         var number = currentNumbers.join('.');
         var t = title.innerHTML.replace(/^[\d\.]*(\s|\&nbsp;)*/,'');
-        title.outerHTML = '<H'+(level+1)+' class="SECTIONTITLE EDITABLE" contentEditable='+(e===tb.selectedElement)+'>'+number+' '+t+'</H'+(level+1)+'>';
+        title.outerHTML = '<H'+(level+1)+' class="SECTIONTITLE EDITABLE" contentEditable='+(e===tb.selected.element)+'>'+number+' '+t+'</H'+(level+1)+'>';
         tb.tableOfContent.toc.push({number:number,level:level,title:tb.textContent(t),sectionId:e.id});
       });
     },
@@ -2031,8 +2036,7 @@
     var element$ = $(element);
     var after = where==='after' || where==='afterItemscope';
     if (where==='beforeItemscope' || where==='afterItemscope') {
-      element$ = element$.closest('[itemscope]');
-      if (element$.length == 0) element$=$(element); // if no itemscope then take element
+      element$ = element$.itemscopeOrThis();
     }
     if (element$.hasClass('CODE')) {
       if (after) {
@@ -2076,7 +2080,7 @@
     .data('itemData',newData) // keep data in a element property so it can retrieve lost data in case of a convertion mistake (not handling all fields)
     .data('containers',containers);
 
-    if (tb.selectedElement===element) {
+    if (tb.selected.element===element) {
       e$.replaceWith(new$);
       tb.selectElement(new$[0]);
     }
@@ -2476,8 +2480,7 @@
     // update the template selection box according to the context i.e. the acceptedTemplate of the current container
     var currentValue = tb.templateChoice$.val();
     tb.templateChoice$.empty();
-    tb.currentContainer$ = $(tb.selectedElement).closest('[container]')
-    var acceptedTemplates = tb.currentContainer$.attr('templates');
+    var acceptedTemplates = tb.selected.container$.attr('templates');
     if (acceptedTemplates) {
       acceptedTemplates = acceptedTemplates.split(' ');
     }
@@ -2490,9 +2493,9 @@
         '<button class="dropdown-item" template="'+acceptedTemplates[i]+'">'+template.name+'</button>'
       );
     }
-    if (tb.selectedElement &&
-        $(tb.selectedElement).attr('itemtype')) {
-      var name = tb.templates[$(tb.selectedElement).attr('itemtype')].name;
+    var itemtype = tb.selected.element$.attr('itemtype');
+    if (itemtype) {
+      var name = tb.templates[itemtype].name;
       if (name && ($.inArray(name,acceptedTemplates)!=-1)) {
         tb.templateChoice$.val(name);
         return;
@@ -2510,7 +2513,7 @@
     var where = $(event.currentTarget).attr('where');
     var template = $(event.target).attr('template');
     if (where===undefined || template === undefined) return;
-    tb.templates[template].insertNew(tb.selectedElement,where,tb.currentContainer$.attr('container'));
+    tb.templates[template].insertNew(tb.selected.element,where,tb.selected.container$.attr('container'));
     event.stopPropagation(); // in order to have embedded buttons like the drop down menu
                              // otherwise the event will be treated twice issue #13
   }
@@ -2535,7 +2538,7 @@
               '<button type="button" class="btn btn-outline-dark" id="codeId">no selection</button>'+
               '<a href="#" class="btn btn-dark" id="markBtn">'+
                 '<i class="far fa-check-square"></i></a>'+
-              '<a href="javascript:tb.cutBlock(tb.selectedElement);" class="btn btn-dark" id="cutBtn">'+
+              '<a href="javascript:tb.cutBlock(tb.selected.element);" class="btn btn-dark" id="cutBtn">'+
                 '<i class="fas fa-cut"></i></a>'+
               '<a href="#" class="btn btn-dark" id="deleteBtn">'+
                 '<i class="fas fa-copy"></i></a>'+
@@ -2543,9 +2546,9 @@
                 '<i class="fas fa-trash"></i></a>'+
               '<a href="#" class="btn btn-dark" id="cutBtn">'+
                 '<i class="fas fa-trash-restore"></i></a>'+
-              '<a href="javascript:tb.cloneItemscope();" class="btn btn-dark" id="cloneBtn">'+
-                '<i class="far fa-clone"></i></a>'+
               '<a href="javascript:tb.cloneItemscope(true);" class="btn btn-dark" id="cloneEmptyBtn">'+
+                '<i class="far fa-clone"></i></a>'+
+              '<a href="javascript:tb.cloneItemscope();" class="btn btn-dark" id="cloneFullBtn">'+
                 '<i class="fas fa-clone"></i></a>'+
 
 
@@ -2698,13 +2701,13 @@
       $(event.currentTarget).children().each(function(){
         var className = $(this).val()
         if (className) {
-           $(tb.selectedElement).toggleClass(className,$(this).prop('checked'))
+           tb.selected.element$.toggleClass(className,$(this).prop('checked'))
         }
       })
       tb.setModified(true);
     })
     .change(function(event){
-      var e$ = $(tb.selectedElement);
+      var e$ = tb.selected.element$;
       if ($('#itemprop').val()) e$.attr('itemprop',$('#itemprop').val())
       else e$.removeAttr('itemprop');
       if ($('#itemtype').val()) e$.attr('itemitype',$('#itemtype').val())
@@ -2826,12 +2829,12 @@
   tb.copyOutputToTest = function() {
     // set the current element's output as the test element if no test element existed or if it failed
     // if a SUCCESS test existed, remove the test
-    if (tb.selectedElement == undefined) return;
+    if (tb.selected.element == undefined) return;
 
-    var out = tb.outputElement(tb.selectedElement);
-    var test = tb.testElement(tb.selectedElement);
+    var out = tb.outputElement(tb.selected.element);
+    var test = tb.testElement(tb.selected.element);
     if (test == undefined) {
-      $(out).after($('<DIV id="'+tb.selectedElement.id.replace(/code/,"test")+'" class="TEST SUCCESS">'+out.innerHTML+'</DIV>'));
+      $(out).after($('<DIV id="'+tb.selected.element.id.replace(/code/,"test")+'" class="TEST SUCCESS">'+out.innerHTML+'</DIV>'));
     }
     else if (!$(test).hasClass('SUCCESS')) {
       test.innerHTML = out.innerHTML;
@@ -2872,12 +2875,15 @@
       clones$.filter('[id]').attr('id',function(i,id){
         return tb.blockId(tb.blockPrefix(id));
       });
-      if (empty) clones$.text('');
+      if (empty) {clones$.contents().filter(function() {
+          return this.nodeType == 3; //Node.TEXT_NODE
+        }).remove();
+      }
       clones$.removeClass('SELECTED');
       prepare(clones$.children());
     }
     
-    var element$ = $(tb.selectedElement).itemscopeOrThis(); //TODO add marked
+    var element$ = tb.selected.element$.itemscopeOrThis(); //TODO add marked
     var newElement$ = element$.clone();
     prepare(newElement$);
     newElement$.insertAfter(element$);
@@ -2894,9 +2900,9 @@
 
 
   tb.selectElement = function(element) {
-    // select element as tb.selectedElement and update the EDI accordingly
+    // select element as tb.selected.element and update the EDI accordingly
     tb.editor.setCurrentEditor(undefined);
-    var e = tb.selectedElement;
+    var e = tb.selected.element;
     if (e) {
       if (element && (e === element)) { // if already selected nothing to do but give focus again
         e.focus();
@@ -2912,8 +2918,11 @@
     }
 
     // set the new selection
-    tb.selectedElement = element;
-    e$ = $(element);
+    tb.selected.element = element;
+    tb.selected.element$ = $(element);
+    e$ = tb.selected.element$;
+    tb.selected.itemscope$ = e$.closest('[itemscope]');
+    tb.selected.container$ = e$.parent().closest('[container]');
     if (element == undefined){
       $('#codeId').text('no selection');
       tb.selectionToolBar$.hide();
@@ -2945,19 +2954,19 @@
   }
 
   tb.moveSelectedElement = function(dist) {
-    // moves the selectedElement (if any) before the previous ELEMENT
+    // moves the selected.element (if any) before the previous ELEMENT
     // - dist: if negative move up by dist
     //         if positive move down by dist
-    if (tb.selectedElement===undefined) return;
+    if (tb.selected.element===undefined) return;
     var elements$ = $('.ELEMENT').not('.EMBEDDED');
-    var index = elements$.index(tb.selectedElement)+dist;
+    var index = elements$.index(tb.selected.element)+dist;
     if (dist<0) {
       if (index < 0) index = 0;
-      $(elements$[index]).before(tb.selectedElement);
+      $(elements$[index]).before(tb.selected.element);
     }
     else {
       if (index > elements$.length) index = elements$.length;
-      $(elements$[index]).after(tb.selectedElement);
+      $(elements$[index]).after(tb.selected.element);
     }
   }
 
@@ -3256,7 +3265,7 @@
   }
 
   tb.run = function() {
-    // run either all CODE ELEMENT or the CODE ELEMENT from the first to the SelectedElement
+    // run either all CODE ELEMENT or the CODE ELEMENT from the first to the selected.element
     if (tb.autoRun) {
       tb.execAll();
     }
@@ -3339,7 +3348,7 @@
     tb.IElement.idNumber = 0;
     for (var i=0; i<tb.features.length; i++) tb.features[i].update && tb.features[i].update();
     tb.simulation = new tb.Simulation('tb.simulation');
-    tb.editables$(tb.selectedElement).each(function(i,e){tb.reformatRichText(e)});
+    tb.editables$(tb.selected.element).each(function(i,e){tb.reformatRichText(e)});
     tb.results.execStat.prepare$ms=Date.now()-tb.results.execStat.start;
   }
 
@@ -3359,14 +3368,14 @@
     // execute all [[CODE]] [[ELEMENT]] until the selected Element
     tb.prepareExec();
     var $codes = $('.CODE');
-    if ($(tb.selectedElement).hasClass('CODE')){
-      var lastI = $codes.index(tb.selectedElement);
+    if (tb.selected.element$.hasClass('CODE')){
+      var lastI = $codes.index(tb.selected.element);
     }
     else {
-      var $last = $('.CODE',tb.selectedElement).last();
+      var $last = $('.CODE',tb.selected.element).last();
       if ($last.length === 0) { // selected element is a section or rich text that has no internal CODE element
-        $codes.add(tb.selectedElement); // we add this element (even if not a code) just to know where to stop
-        var lastI = $codes.index(tb.selectedElement)-1;
+        $codes.add(tb.selected.element); // we add this element (even if not a code) just to know where to stop
+        var lastI = $codes.index(tb.selected.element)-1;
       }
       else {
         var lastI = $codes.index($last);
@@ -3405,19 +3414,19 @@
   }
 
   tb.showOutputHtml = function(checkBox) {
-    if ($(tb.selectedElement).hasClass('CODE')) {
-      var out = tb.outputElement(tb.selectedElement) || {id:'no output',innerHTML:''};
-      var test = tb.testElement(tb.selectedElement) || {id:'no test',innerHTML:''};
+    if (tb.selected.element$.hasClass('CODE')) {
+      var out = tb.outputElement(tb.selected.element) || {id:'no output',innerHTML:''};
+      var test = tb.testElement(tb.selected.element) || {id:'no test',innerHTML:''};
       var hout  = out.innerHTML;
       var htest = test.innerHTML;
       diff = tb.diff(hout,htest).span().toString();
       $('#showHtmlBody').html(
-        '<fieldset><legend>'+tb.selectedElement.id+'</div></legend><div  class=CODEEXAMPLE>'+tb.toHtml(tb.selectedElement.outerHTML)+'</fieldset>'+
+        '<fieldset><legend>'+tb.selected.element.id+'</div></legend><div  class=CODEEXAMPLE>'+tb.toHtml(tb.selected.element.outerHTML)+'</fieldset>'+
         '<fieldset><legend>diff <span class="DIFF DEL">output</span> vs <span class="DIFF ADD">test</legend>'+diff+'</fieldset>')
     }
     else {
       $('#showHtmlBody').html(
-        '<fieldset><legend>'+tb.selectedElement.id+'</legend>'+tb.toHtml(tb.selectedElement.outerHTML)+'</fieldset>')
+        '<fieldset><legend>'+tb.selected.element.id+'</legend>'+tb.toHtml(tb.selected.element.outerHTML)+'</fieldset>')
     }
     $('#showHtml').modal()
   }
