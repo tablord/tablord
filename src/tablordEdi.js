@@ -48,6 +48,18 @@
             vars:{},              // where all user variables are stored
 
             autoRun:true,
+            sheetOptions: {
+              get showCode() {tb.tbContent$.attr('showCode') || true},
+              set showCode(value) {tb.tbContent$.attr('showCode',value)},
+              get showCut() {tb.tbContent$.attr('showCut') || true},
+              set showCut(value) {tb.tbContent$.attr('showCut',value)},
+              get showDeleted() {tb.tbContent$.attr('showCode') || true},
+              set showDeleted(value) {tb.tbContent$.attr('showCode',value)},
+              get showTest() {tb.tbContent$.attr('showTest') || true},
+              set showTest(value) {tb.tbContent$.attr('showTest',value)},
+              get showTrace() {tb.tbContent$.attr('showTrace') || true},
+              set showTrace(value) {tb.tbContent$.attr('showTrace',value)},
+            },
             features:[],          // list of Features. cf tb.Features for more informations
             url:{},               // the url of the sheet decomposed in protocol {host user password domain path fileName ext tag search arguments}
             results:{},           // if != {}, when the sheet is closed a file with the same name .jres will be written and its content is JSON.stringify(tb.results)
@@ -100,6 +112,7 @@
             }
            };
 
+  window.onerror = tb.errorHandler;
 
   tb.credits = {name:tb.name,version:tb.version,authors:tb.authors,rights:tb.rights};
 
@@ -855,6 +868,31 @@
     return this;
   }
 
+  $.fn.neighbour$ = function(where) {
+    // jQuery should be of 1 element and return the neighbour that corresponds 
+    // to where.
+    // in case, this is a CODE,OUTPUT or TEST, takes also into account
+    // those elements to skip them properly
+    //  - where: 'after', 'afterItemscope', 'before' or 'beforeItemscope'
+    if (this.length !== 1) throw new Error('neighbourg$ needs a 1 element jQuery'+this.toString())
+    
+    var element$ = this;
+    var after = where==='after' || where==='afterItemscope';
+    if (where==='beforeItemscope' || where==='afterItemscope') {
+      element$ = element$.itemscopeOrThis();
+    }
+    if (element$.hasClass('CODE')) {
+      if (after) {
+        if (element$.next().hasClass('OUTPUT')) element$=element$.next();
+        if (element$.next().hasClass('TEST')) element$=element$.next();
+      }
+      else {
+        if (element$.prev().hasClass('OUTPUT')) element$=element$.prev();
+        if (element$.prev().hasClass('TEST')) element$=element$.prev();
+      }
+    }
+    return element$;
+  }
 
 
   tb.help.update($,'$.');
@@ -1619,7 +1657,7 @@
 
   // Editor ////////////////////////////////////////////////////////////////////////////
   tb.EditableObject = function (){
-  // tb.TbEditableObject is an interface that must be implemented by any object that want to be editable within the sheet
+  // tb.EditableObject is an interface that must be implemented by any object that want to be editable within the sheet
   // [[tb.Table]] and [[tb.Var]] are typical class that implement the *EditableObject* interface
   // all methods of this class are empty: the declarations are here only for documentation
   //   .codeElement property that must be created by .edit() and must containt the [[CODE]] [[ELEMENT]] that contains the .edit() function
@@ -1700,7 +1738,7 @@
       .append(this.funcCode$=$('<input type="text"  name="funcCode" value="" onchange="tb.editor.funcCodeChange();" onclick="tb.editor.funcCodeClick();">'))
       .append('<input type="radio" name="type" value="undefined" autocomplete="off" onclick="tb.editor.force(\'undefined\')">undefined')
       .hide();
-    tb.objectToolBar$.append(this.toolBar$);
+    tb.menu.objectToolBar$.append(this.toolBar$);
   }
   tb.Editor.className = 'tb.Editor';
 
@@ -2033,23 +2071,10 @@
     //   (that can be element itself) as insert point
     // - itemprop if not '' or undefined will force the itemprop of the template
 
-    var element$ = $(element);
-    var after = where==='after' || where==='afterItemscope';
-    if (where==='beforeItemscope' || where==='afterItemscope') {
-      element$ = element$.itemscopeOrThis();
-    }
-    if (element$.hasClass('CODE')) {
-      if (after) {
-        if (element$.next().hasClass('OUTPUT')) element$=element$.next();
-        if (element$.next().hasClass('TEST')) element$=element$.next();
-      }
-      else {
-        if (element$.prev().hasClass('OUTPUT')) element$=element$.prev();
-        if (element$.prev().hasClass('TEST')) element$=element$.prev();
-      }
-    }
+    var element$ = $(element).neighbour$(where);
     var newElement$ = this.element$()
     if (itemprop) newElement$.attr('itemprop',itemprop)
+    var after = (where==='after' || where === 'afterItemscope');
     if (after) newElement$.insertAfter(element$)
     else       newElement$.insertBefore(element$);
     tb.selectElement(newElement$[0]);
@@ -2090,12 +2115,12 @@
     return this;
   }
 
-  tb.Template.prototype.element$ = function(itemprop,id) {
+  tb.Template.prototype.element$ = function(itemprop) {
     // return a jQuery containing a new instance of this Template as itemprop and setting its id
     if (this.html === undefined) throw new Error('in order to define a template at least define .fields, .html or .element$()');
-    id = id || tb.blockId('item');
-    var new$ = $(this.html).attr('id',id);
+    var new$ = $(this.html).attr('id',tb.blockId('item'));
     if (itemprop) new$.attr('itemprop',itemprop);
+    new$.attr('itemscope','').attr('itemtype',this.url);
     return new$;
   }
 
@@ -2430,47 +2455,64 @@
   }
   
 
-  tb.showCode = function(event) {
+  tb.showCodeClick = function(event) {
     // click event handler for the show Code checkbox
     var button = event.target || window.event.srcElement; //IE7 compatibility
     $('.CODE').toggleClass('HIDDEN',!button.checked);
-    $('body').attr('showCode',button.checked);
+    tb.sheetOptions.showCode = button.checked;
   }
 
-  tb.showCut = function(event) {
+  tb.showCutClick = function(event) {
     // click event handler for the show cut checkbox
     var button = event.target || window.event.srcElement; //IE7 compatibility
     $('.CUT').toggleClass('HIDDEN',!button.checked);
-    $('body').attr('showCut',button.checked);
+    tb.sheetOptions.showCut = button.checked;
   }
 
-  tb.showTest = function(event) {
+  tb.showDeletedClick = function(event) {
+    // click event handler for the show cut checkbox
+    var button = event.target || window.event.srcElement; //IE7 compatibility
+    $('.CUT').toggleClass('HIDDEN',!button.checked);
+    tb.sheetOptions.showCut = button.checked;
+  }
+  
+  tb.showTestClick = function(event) {
     // click event handler for the show test checkbox
     var button = event.target || window.event.srcElement; //IE7 compatibility
     $('.TEST').toggleClass('HIDDEN',!button.checked);
-    $('body').attr('showTest',button.checked);
+    tb.sheetOptions.showTest = button.checked;
   }
 
-  tb.showTrace = function(event) {
+  tb.showTraceClick = function(event) {
     // click event handler for the show trace checkbox
     var button = event.target || window.event.srcElement; //IE7 compatibility
     $('.TRACE').toggleClass('HIDDEN',!button.checked);
-    $('body').attr('showTrace',button.checked);
+    tb.sheetOptions.showTrace = button.checked;
   }
 
-  tb.setAutoRun = function(event) {
+  tb.setAutoRunClick = function(event) {
     // click event handler for the auto run checkbox
     var button = event.target || window.event.srcElement; //IE7 compatibility
     tb.autoRun = button.checked;
     $('body').attr('autoRun',tb.autoRun);
   }
 
-  tb.print = function() {
+  tb.printBtnClick = function() {
     // click event handler for the print button
     tb.selectElement(undefined);
     window.print();
   }
 
+  tb.moveUpBtnClick = function(event) {
+    // simple version: at itemscope boundaries
+    tb.moveElement(tb.selected.element$.itemscopeOrThis(),'before');
+  }
+  
+  tb.moveDownBtnClick = function(event) {
+    // simple version: at itemscope boundaries
+    tb.moveElement(tb.selected.element$.itemscopeOrThis(),'after');
+  }
+  
   tb.helpSearchChange = function(event) {
     // event handler for the help search box
     tb.helpOutput$.html(tb.help.index.help$(event.currentTarget.value));
@@ -2478,8 +2520,7 @@
 
   tb.updateTemplateChoice = function() {
     // update the template selection box according to the context i.e. the acceptedTemplate of the current container
-    var currentValue = tb.templateChoice$.val();
-    tb.templateChoice$.empty();
+    tb.menu.templateChoice$.empty();
     var acceptedTemplates = tb.selected.container$.attr('templates');
     if (acceptedTemplates) {
       acceptedTemplates = acceptedTemplates.split(' ');
@@ -2489,42 +2530,196 @@
     }
     for (var i=0;i<acceptedTemplates.length;i++) {
       var template = tb.templates[acceptedTemplates[i]];
-      if (template) tb.templateChoice$.append(
-        '<button class="dropdown-item" template="'+acceptedTemplates[i]+'">'+template.name+'</button>'
+      if (template) tb.menu.templateChoice$.append(
+        '<button class="dropdown-item" template="'+template.url+'">'+template.name+'</button>'
       );
     }
-    var itemtype = tb.selected.element$.attr('itemtype');
-    if (itemtype) {
-      var name = tb.templates[itemtype].name;
-      if (name && ($.inArray(name,acceptedTemplates)!=-1)) {
-        tb.templateChoice$.val(name);
-        return;
-      }
-    }
-    if ($.inArray(currentValue,acceptedTemplates)!=-1) {
-      tb.templateChoice$.val(currentValue);
-      return;
-    }
-    tb.templateChoice$.val(acceptedTemplates[0]);
   }
 
 
   tb.templateButtonClick = function(event) {
-    var where = $(event.currentTarget).attr('where');
-    var template = $(event.target).attr('template');
+    var where = $(event.target).closest('[where]').attr('where');
+    var template = $(event.target).closest('[template]').attr('template');
     if (where===undefined || template === undefined) return;
     tb.templates[template].insertNew(tb.selected.element,where,tb.selected.container$.attr('container'));
     event.stopPropagation(); // in order to have embedded buttons like the drop down menu
                              // otherwise the event will be treated twice issue #13
   }
 
+  tb.initMenu = function() {
+    tb.dialogs = {};
+    tb.dialogs.showHtml$ = $(
+    	'<div id="showHtml" class="modal fade no_print" role="dialog">'+
+    	  '<div class="modal-dialog" role="document">'+
+    		'<div class="modal-content">'+
+    		  '<div class="modal-header">'+
+    			'<h5 class="modal-title" id="showHtmlTitle">Show Html</h5>'+
+    			'<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
+    			  '<span aria-hidden="true">&times;</span>'+
+    			'</button>'+
+    		  '</div>'+
+    		  '<div class="modal-body" id="showHtmlBody"></div>'+
+    		'</div>'+
+    	  '</div>'+
+    	'</div>'
+    );
+    
+    tb.menu = {};
+    tb.menu.$ = $(
+    	'<div id="menu" class="TOOLBAR no_print" style="float:right;max-width:50%;">'+
+            '<div class="btn-toolbar mb-1" role="toolbar" aria-label="main buttons">'+
+                '<div class="btn-group btn-group-sm mr-2" role="group" aria-label="run btns">'+
+                    '<button id="runUntilSelectedBtn" type="button" class="btn btn-dark"  onclick=tb.execUntilSelected(); style="color: #8dff60;" ><i class="fas fa-step-forward"></i></button>'+
+                    '<button id="runAllBtn" type="button" class="btn btn-dark" onclick=tb.execAll(); style="color: #8dff60;" ><i class="fas fa-play"></i></button>'+
+                    '<button id="stopAnimation" type="button" class="btn btn-dark" onclick=tb.clearTimers(); style="color: red" disabled=true ><i class="fas fa-stop"></i></button>'+
+                '</div>'+
+                '<div class="btn-group btn-group-sm mr-2" role="group" aria-label="actions on sheet">'+
+                    '<button id="saveBtn" type="button" class="btn btn-dark"><i class="fas fa-cloud-upload-alt"></i></button>'+
+                    '<button id="printBtn" type="button" class="btn btn-dark"><i class="fas fa-print"></i></button>'+
+                    '<button id="helpBtn" type="button" class="btn btn-dark"><i class="fas fa-question-circle"></i></button>'+
+                    '<button id="btnGroupDrop1" type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cog"></i></button>'+
+                    '<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">'+
+                        '<a class="dropdown-item" id="clearOutputsBtn" onclick="tb.clearOutputs();" >clear outputs</a>'+
+                        '<input id="showCode" type=checkbox>code<br/>'+
+                        '<input id="showCut" type=checkbox>cut<br/>'+
+                        '<input id="showDeleted" type=checkbox>deleted<br/>'+
+                        '<input id="showTest" type=checkbox>test<br/>'+
+                        '<input id="showTrace" type=checkbox>trace<br/>'+
+                        '<input id="autoRun" type=checkbox>auto run'+
+                    '</div>'+
+                '</div>'+
+            '</div>'+
+            '<div id="selectionToolBar">'+
+        		'<div class="btn-toolbar" role="toolbar">'+
+        			'<div class="btn-group btn-group-sm mr-2" role="group">'+
+        				'<button id="codeId" type="button" class="btn btn-outline-dark">no selection</button>'+
+        				'<button id="markBtn" class="btn btn-dark" title="mark the selected element"><i class="far fa-check-square"></i></button>'+
+        				'<button id="cutBtn" class="btn btn-dark" title="cut marked elements"><i class="fas fa-cut"></i></button>'+
+        				'<button id="copyBtn" class="btn btn-dark" title="copy cut/marked/selected element"><i class="fas fa-copy"></i></button>'+
+        				'<button id="deleteBtn" class="btn btn-dark" title="delete marked/selected element"><i class="fas fa-trash"></i></button>'+
+        				'<button id="restoreBtn" class="btn btn-dark" title="show deleted elements to undelete"><i class="fas fa-trash-restore"></i></button>'+
+        				'<button id="pasteBtn" class="btn btn-dark title="paste cut elements" where="afterItemscope" template="https://tablord.com/templates/paste" >'+
+        					'<i class="fas fa-paste"></i></button>'+
+        				'<button id="moveUpBtn" class="btn btn-dark" title="move selected before previous element"><i class="fas fa-arrow-up"></i></button>'+
+        				'<button id="moveDownBtn" class="btn btn-dark" title="move selected after previous element"><i class="fas fa-arrow-down"></i></button>'+
+        				'<button id="showHtmlBtn" class="btn btn-dark">&#8594;html</button>'+
+        				'<button id="toTestBtn">&#8594;test</button>'+
+                    '</div>'+
+        			'<div id="insertAfter" class="btn-group btn-group-sm mr-2" role="group" where="afterItemscope">'+
+                        '<button id="insertSectionBtn" class="btn btn-dark" title="section" template="https://tablord.com/templates/section">'+
+        					'<i class="fas fa-heading"></i></button>'+
+        				'<button id="insertText" class="btn btn-dark" title="Text" template="https://tablord.com/templates/richText">'+
+        					'<i class="fas fa-paragraph"></i></button>'+
+        				'<button id="cloneEmptyBtn" class="btn btn-dark" title="empty copy of selected element"><i class="far fa-clone"></i></button>'+
+                        '<button id="insertCodeBtn" class="btn btn-dark" title="code" template="https://tablord.com/templates/code">{}</button>'+
+                        '<button id="insertTemplateBtn" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">...</button>'+
+        				'<div id="templateChoice" class="dropdown-menu"></div>'+
+        			'</div>'+
+        		'</div>'+
+        		'<div id="objectToolBar"></div>'+
+    			'<div>'+
+                  '<details id="properties"><summary>properties</summary>'+
+                    '<input id="itemprop" type="text" placeholder="itemprop">'+
+                    '<input id="itemtype" placeholder="itemtype"><br>'+
+                    '<input id="func" placeholder="function code">'+
+                    '<input id="format" placeholder="format"><br>'+
+                    
+                    '<input type="radio" name="type" value="number">number '+
+                    '<input type="radio" name="type" value="string">string '+
+                    '<input type="radio" name="type" value="date">date<br> '+
+    
+                    'c-<input type="radio" name="layout" value="c-1">1 '+
+                    '<input type="radio" name="layout" value="c-2">2 '+
+                    '<input type="radio" name="layout" value="c-3">3 '+
+                    '<input type="radio" name="layout" value="c-4">4 '+
+                    '<input type="radio" name="layout" value="c-5">5 '+
+                    '<input type="radio" name="layout" value="c-6">6 '+
+                    '<input type="radio" name="layout" value="c-7">7 '+
+                    '<input type="radio" name="layout" value="c-8">8 '+
+                    '<input type="radio" name="layout" value="c-9">9 '+
+                    '<input type="radio" name="layout" value="c-10">10 '+
+                    '<input type="radio" name="layout" value="c-11">11 '+
+                    '<input type="radio" name="layout" value="c-12">12 '+
+                    
+                    '<input type="radio" name="severity" value="INFO">INFO '+
+                    '<input type="radio" name="severity" value="OK">OK '+
+                    '<input type="radio" name="severity" value="WARNING">WARNING '+
+                    '<input type="radio" name="severity" value="DANGER">DANGER '+
+                    '<input type="radio" name="severity" value="">--<br>'+
+                    '<input type="checkbox" value="FLEX">FLEX<br>'+
+                    '<input type="checkbox" value="NOTE">NOTE<br>'+
+                    '<input type="checkbox" value="ADDRESS">ADDRESS<br>'+
+                  '</details>'+
+                '</div>'+
+            '</div>'+
+			'<div id="helpPanel">'+
+				'<button id="hideHelpBtn" style="color:red;cursor:pointer;">&nbsp;&#215;&nbsp;</button>'+
+				'<input id="helpSearchInp" placeholder="help search"/>'+
+			    '<div id="helpOutput" style="overflow:auto;max-height:400px;"></div>'+
+			'</div>'+
+			'<div id="debug" style="overflow:auto;max-height:400px;"></div>'+
+		'</div>'+
+        ''
+    );
+    // create in tb.menu one xxxx$ jquery having the button, input... that has an id
+    $('body').prepend(tb.menu.$);
+    // for easier access and better perf
+    $('[id]',tb.menu.$).each(function(){
+      var e$ = $(this);
+      if (tb[this.id+'Click']) e$.click(tb[this.id+'Click']); // if a corresponding function bind it
+      if (tb[this.id+'Change']) e$.click(tb[this.id+'Change']); // if a corresponding function bind it
+      
+      tb.menu[this.id+'$'] = e$;
+    });
+    tb.menu.runUntilSelectedBtn$.click(tb.execUntilSelected);
+    tb.menu.runAllBtn$.click(tb.execAll);
+    tb.menu.stopAnimation$.click(tb.clearTimers);
+    tb.menu.saveBtn$.click(tb.save);
+    tb.menu.helpBtn$.click(function(){tb.menu.helpPanel$.toggle(100)});
+
+    tb.menu.showCode$.prop('checked',tb.sheetOptions.showCode);
+    tb.menu.showCut$.prop('checked',tb.sheetOptions.showCut);
+    tb.menu.showDeleted$.prop('checked',tb.sheetOptions.showDeleted);
+    tb.menu.showTest$.prop('checked',tb.sheetOptions.showTest);
+    tb.menu.showTrace$.prop('checked',tb.sheetOptions.showTrace);
+    tb.menu.autoRun$.prop('checked',tb.autoRun);
+    
+    tb.menu.insertAfter$.click(tb.templateButtonClick);
+    
+    tb.menu.selectionToolBar$.hide();
+    
+    tb.menu.properties$.click(function(event){
+      $(event.currentTarget).children().each(function(){
+        var className = $(this).val()
+        if (className) {
+           tb.selected.element$.toggleClass(className,$(this).prop('checked'))
+        }
+      })
+      tb.setModified(true);
+    })
+    .change(function(event){
+      var e$ = tb.selected.element$;
+      if (tb.menu.itemprop$.val()) e$.attr('itemprop',tb.menu.itemprop$.val())
+      else e$.removeAttr('itemprop');
+      if (tb.menu.itemtype$.val()) e$.attr('itemitype',tb.menu.itemtype$.val())
+      else e$.removeAttr('itemtype');
+      if (tb.menu.func$.val()) e$.attr('func',tb.menu.func$.val())
+      else e$.removeAttr('func');
+      if (tb.menu.format$.val()) e$.attr('format',tb.menu.format$.val())
+      else e$.removeAttr('format');
+      tb.run();
+      tb.setModified(true);
+    })
+ 
+    tb.updateTemplateChoice();
+ }
 
   tb.initToolBars = function() {
     // creates the tools bars
     $('#menu').remove();
     var b$ = $('BODY');
 
-    tb.objectToolBar$ = $(
+    tb.menu.objectToolBar$ = $(
       '<DIV id=objectToolBar></DIV>'
     );
 
@@ -2608,7 +2803,7 @@
               '</details>'+
             '</div>'
     )
-    .append(tb.objectToolBar$)
+    .append(tb.menu.objectToolBar$)
     .hide();
 
     tb.helpSearch$ = $('<input placeholder="help search"/>').keyup(tb.helpSearchChange);
@@ -2618,7 +2813,7 @@
                     .append('<span style="color:#8dff60;cursor:pointer;" onclick="tb.help.index.back()">&#9668;</span>')
                     .append(tb.helpOutput$)
                     //.hide();
-    tb.debug$ = $('<div style="overflow:auto;max-height:400px;">');
+    tb.menu.debug$ = $('<div style="overflow:auto;max-height:400px;">');
 
     tb.menu$ =  $(
     '<DIV id=menu class="TOOLBAR no_print" style="float:right;max-width:50%;">'+
@@ -2646,7 +2841,7 @@
     '</DIV>')
     .append(tb.selectionToolBar$)
     .append(tb.helpPanel$)
-    .append(tb.debug$);
+    .append(tb.menu.debug$);
 
 
     $('BODY')
@@ -2772,10 +2967,10 @@
             {csrfmiddlewaretoken:csrftoken,
              toBeSaved:$('#tbContent').html()},
             function(data){
-                tb.debug$.html(data);
+                tb.menu.debug$.html(data);
                 tb.setModified(false);
             })
-    .fail(function(data){tb.debug$.html(data)})
+    .fail(function(data){tb.menu.debug$.html(data)})
   }
 
   if (tb.fso) {
@@ -2792,7 +2987,7 @@
       tb.fso.writeFile(resFileName,JSON.stringify(tb.results));
     }
     else {
-      //tb.debug$.html("can't write results if not .hta or connected to tablord.com").addClass('WARNING');
+      //tb.menu.debug$.html("can't write results if not .hta or connected to tablord.com").addClass('WARNING');
     }
   }
 
@@ -2815,9 +3010,9 @@
                 if (tb.url.arguments.test_close) {
                     tb.canClose=true; // this will be polled by the test laucher
                 }
-                tb.debug$.html(data);
+                tb.menu.debug$.html(data);
             })
-    .fail(function(data){tb.debug$.html(data)})
+    .fail(function(data){tb.menu.debug$.html(data)})
   }
 
 
@@ -2849,6 +3044,32 @@
     tb.setModified(true);
   }
 
+  tb.markBtnClick = function(event) {
+    // simple version marks only Selected Element
+    tb.selected.element$.toggleClass('MARKED');
+  }
+  
+  tb.cutBtnClick = function(event) {
+    // simple version
+    // TODO choose if itemscope / element etc... taking shift keys into consideration
+    tb.cutBlock(tb.selected.element$.itemscopeOrThis());
+  }
+
+  tb.deleteBtnClick = function(event) {
+    // look for MARKED elements or if none for SELECTED element
+    // and add the DELETED class
+    var e$ = $('.MARKED')
+    if (e$.length === 0) {
+      e$ = $('.SELECTED');
+    }
+    if (e$.hasClass('DELETED')) {
+      e$.removeClass('DELETED');
+      return;
+    }
+    if (e$.hasClass('SELECTED')) tb.selectElement(undefined);
+    e$.removeClass('MARKED').addClass('DELETED');
+  }
+  
   tb.cutBlock = function(element,cut) {
     // cut or "uncut" element
     // if cut is true or false, set the cut state
@@ -2928,13 +3149,13 @@
     tb.selected.container$ = e$.parent().closest('[container]');
     if (element == undefined){
       $('#codeId').text('no selection');
-      tb.selectionToolBar$.hide();
+      tb.menu.selectionToolBar$.hide();
       return;
     }
-    tb.menu$.show();
-    tb.selectionToolBar$.show(500);
-    $('#codeId').html(element.id+'<SPAN style="color:red;cursor:pointer;" onclick="tb.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
-    $('#properties').children().each(function(){
+    tb.menu.$.show();
+    tb.menu.selectionToolBar$.show(500);
+    tb.menu.codeId$.html(element.id+'<SPAN style="color:red;cursor:pointer;" onclick="tb.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
+    tb.menu.properties$.children().each(function(){
       var checkbox$ = $(this);
       var c = checkbox$.val();
       if (c) {
@@ -2942,10 +3163,10 @@
       };
     });
     var itemprop = e$.attr('itemprop')
-    $('#itemprop').val(itemprop);
-    $('#itemtype').val(e$.attr('itemtype'));
-    $('#func').val(e$.attr('func'));
-    $('#format').val(e$.attr('format'));
+    tb.menu.itemprop$.val(itemprop);
+    tb.menu.itemtype$.val(e$.attr('itemtype'));
+    tb.menu.func$.val(e$.attr('func'));
+    tb.menu.format$.val(e$.attr('format'));
 
     e$.addClass('SELECTED');
     if (itemprop) {
@@ -2956,21 +3177,25 @@
     element.focus();
   }
 
-  tb.moveSelectedElement = function(dist) {
-    // moves the selected.element (if any) before the previous ELEMENT
-    // - dist: if negative move up by dist
-    //         if positive move down by dist
-    if (tb.selected.element===undefined) return;
-    var elements$ = $('.ELEMENT').not('.EMBEDDED');
-    var index = elements$.index(tb.selected.element)+dist;
-    if (dist<0) {
-      if (index < 0) index = 0;
-      $(elements$[index]).before(tb.selected.element);
+  tb.moveElement = function(element$,where) {
+    // moves element$ at a position defined by where
+    // -element$: the element to move
+    // - where : cf [$.fn.neighbour]
+    if (element$.length!==1) return;
+    var whereToInsert$ = element$;
+    if (where==='before' || where=='beforeItemscope') {
+      do {
+        whereToInsert$ = whereToInsert$.prev();
+      } while (whereToInsert$.length && !whereToInsert$.hasClass('ELEMENT')); // also skip OUTPUT TEST.. and decorative tags
+      element$.insertBefore(whereToInsert$);
     }
     else {
-      if (index > elements$.length) index = elements$.length;
-      $(elements$[index]).after(tb.selected.element);
+      whereToInsert$ = whereToInsert$.next();
+      var traillingTags$ = whereToInsert$.nextUntil('.ELEMENT'); 
+      if (traillingTags$.length) whereToInsert$ = traillingTags$.last();
+      element$.insertAfter(whereToInsert$);
     }
+    tb.setModified(true);
   }
 
   // EDI eventHandlers ///////////////////////////////////////////////////////////////
@@ -3002,7 +3227,7 @@
   }
 
   tb.bodyKeyUp = function(event) {
-    tb.debug$.html(tb.inspect(window.document.selection).span().toString())
+    tb.menu.debug$.html(tb.inspect(window.document.selection).span().toString())
   }
 
 
@@ -3479,6 +3704,7 @@
       }
       // prepare the sheet ///////////////////////////////////////////
       tb.url = tb.urlComponents(window.document.location.href);
+      tb.tbContent$ = $('#tbContent');
       $('.SELECTED').removeClass('SELECTED');
       $(document)
       .on("click",'.ELEMENT',tb.elementClick)
@@ -3499,7 +3725,8 @@
 
 
       tb.findblockNumber();
-      tb.initToolBars();
+      //tb.initToolBars();
+      tb.initMenu();
       tb.editor = new tb.Editor();
       $(window).bind('beforeunload',tb.beforeUnload);
       $('body').keydown(tb.bodyKeyDown)//.keyup(tb.bodyKeyUp);
@@ -3508,9 +3735,9 @@
       tb.updateContainers();
     }
     catch (e) {
-      window.alert(e.message);
+      window.alert(e.toString());
     }
     if (tb.autoRun) tb.execAll();
   });
 
-  window.onerror = tb.errorHandler;
+
