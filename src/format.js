@@ -88,7 +88,7 @@
     if (obj.valueOf) {
       var val = obj.valueOf();   // typicall the case of v() where valueOf return whatever has been stored in the V object
       if (val !== obj) {         // if the valueOf is not itself
-        return tb.fmt(val,options);   // format the result of valueOf
+        return tb.format(val,options);   // format the result of valueOf
       }
     }
     if (obj.toString) {
