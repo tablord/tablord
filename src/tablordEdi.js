@@ -2381,7 +2381,7 @@
            '<div class="ELEMENT EDITABLE c-9" itemprop="description"></div>'+
            '<div class="ELEMENT EDITABLE number c-1" itemprop="quantity"></div>'+
            '<div class="ELEMENT EDITABLE number c-1" itemprop="pricePerUnit"></div>'+
-           '<div class="ELEMENT VIEW     number c-1" itemprop="totalLine" func="quantity*pricePerUnit"></div>'+
+           '<div class="ELEMENT VIEW     number c-1" itemprop="totalLine" func="quantity*pricePerUnit" format="0,000.00"></div>'+
          '</div>'
   });
   
@@ -2389,7 +2389,15 @@
     url:'https://tablord.com/templates/quoteTotal',
     html:'<div class="ELEMENT FLEX" itemprop="quote" itemscope>'+
            '<div class="ELEMENT EDITABLE c-11" itemprop="description">Total</div>'+
-           '<div class="ELEMENT VIEW     number c-1" itemprop="total" func="item.sum(\'totalLine\')"></div>'+
+           '<div class="ELEMENT VIEW     number c-1" itemprop="total" func="item.sum(\'totalLine\')" format="0,000.00"></div>'+
+         '</div>'
+  });
+  
+  tb.template({
+    url:'https://tablord.com/templates/quoteSectionTotal',
+    html:'<div class="ELEMENT FLEX" itemprop="quote" itemscope>'+
+           '<div class="ELEMENT EDITABLE c-11" itemprop="description">Total</div>'+
+           '<div class="ELEMENT VIEW     number c-1" itemprop="total" func="item.sum(\'totalLine\',{_section:\'change here\')" format="0,000.00"></div>'+
          '</div>'
   });
 
@@ -2639,7 +2647,7 @@
                     '<input type="radio" name="layout" value="c-9">9 '+
                     '<input type="radio" name="layout" value="c-10">10 '+
                     '<input type="radio" name="layout" value="c-11">11 '+
-                    '<input type="radio" name="layout" value="c-12">12 '+
+                    '<input type="radio" name="layout" value="c-12">12<br>'+
                     
                     '<input type="radio" name="severity" value="INFO">INFO '+
                     '<input type="radio" name="severity" value="OK">OK '+
@@ -3070,14 +3078,14 @@
     e$.removeClass('MARKED').addClass('DELETED');
   }
   
-  tb.cutBlock = function(element,cut) {
+  tb.cutBlock = function(element$,cut) {
     // cut or "uncut" element
     // if cut is true or false, set the cut state
     // if cut is undefined, toggle the cut state
-    cut = cut || !$(element).hasClass('CUT');
-    $(element)
-    .add(tb.outputElement(element))
-    .add(tb.testElement(element))
+    cut = cut || !element$.hasClass('CUT');
+    element$
+    .add(tb.outputElement(element$[0]))  // TODO: all those function should have JQuery as parameter
+    .add(tb.testElement(element$[0]))
     .toggleClass('CUT',cut);
     tb.setModified(true);
     tb.setUpToDate(false);
