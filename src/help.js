@@ -138,20 +138,13 @@
 
   tb.helps = {'tb.credits':tb.credits};
 
+  
   tb.help = function(func) {
   // returns the signature of the function and the first comment in a pretty html
   //         followed by the content of the .[[help]]() static method of func if any
   // func: the function to be inspected
-
-    if (func == undefined) {
-      var h = '';
-      for (var module in tb.helps) {
-        h += tb.inspect(tb.helps[module],module).span();
-      }
-      return new tb.HTML(h);
-    }
     var source = func.toString().split('\n');
-    var comments = []
+    var comments = [];
     var signature = tb.signature(func);
     var parameters = signature.replace(/(\/\*.*?\*\/)/g,'')   // remove comments /*...*/
                               .replace(/\s+/,'')              // remove any spaces
@@ -175,21 +168,22 @@
     if (func.className) {
       methods = '<fieldset><legend>methods</legend><table>';
       for (var m in func.prototype) {
-        if (typeof func.prototype[m] === 'function'){
-          methods += '<tr><th valign="top">'+m+'</th><td valign="top" style="text-align:left;">'+tb.help(func.prototype[m])+'</td></tr>';
+        if ((m !== 'constructor') && (typeof func.prototype[m] === 'function')){
+          methods += '<tr><th valign="top">'+m+'</th><td valign="top" style="text-align:left;">'+tb.help(func.prototype[m],true)+'</td></tr>';
         }
       }
       methods += '</table></fieldset><fieldset><legend>static methods</legend><table>';
       for (var m in func) {
         if (typeof func[m] === 'function'){
-          methods += '<tr><th valign="top">'+m+'</th><td valign="top" style="text-align:left;">'+tb.help(func[m])+'</td></tr>';
+          methods += '<tr><th valign="top">'+m+'</th><td valign="top" style="text-align:left;">'+tb.help(func[m],true)+'</td></tr>';
         }
       }
       methods += '</table></fieldset>';
     };
-    return new tb.HTML('<SPAN class=HELP><b>'+signature+'</b><br/>'+tb.help.markDownToHtml(comments,parameters)+(func.help?func.help():'')+methods+'</SPAN>');
+    var h = new tb.HTML('<SPAN class=HELP><b>'+signature+'</b><br/>'+tb.help.markDownToHtml(comments,parameters)+(func.help?func.help():'')+methods+'</SPAN>');
+    return h;
   }
-
+  tb.help.level = 0;
   // Markdown //// simplified version: TODO replace with better implementation
   tb.help.markDownToHtml = function(markDownLines,parameters) {
     // convert markDown to HTML with link for the help

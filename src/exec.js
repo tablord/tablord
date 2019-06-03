@@ -668,7 +668,7 @@
     if ((element === undefined) || (element.id.slice(0,4) !== 'code')) return;
     var outId = element.id.replace(/code/,"out");
     var out = window.document.getElementById(outId);
-    if (out === undefined) {
+    if (!out) {
       var tag = (element.tagName=='SPAN'?'SPAN':'DIV');
       out = $('<'+tag+' class=OUTPUT id='+outId+'>no output</'+tag+'>').insertAfter(element)[0];
     }

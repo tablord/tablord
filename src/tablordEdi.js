@@ -192,6 +192,8 @@
     })
  
     tb.updateTemplateChoice();
+    
+    tb.menu.helpSearch$.keyup(tb.helpSearchKeyup);
   }
   //////////////////////////////////////////////////////////////////////////////
   // event handler for button input etc ////////////////////////////////////////
@@ -262,12 +264,12 @@
   }
   
   tb.hideHelpBtnClick = function(event) {
-    tb.menu.hideHelpBtn$.hide(300);
+    tb.menu.helpPanel$.hide(300);
   }
   
-  tb.helpSearchChange = function(event) {
+  tb.helpSearchKeyup = function(event) {
     // event handler for the help search box
-    tb.helpOutput$.html(tb.help.index.help$(event.currentTarget.value));
+    tb.menu.helpOutput$.html(tb.help.index.help$(event.currentTarget.value));
   }
 
   tb.markBtnClick = function(event) {
