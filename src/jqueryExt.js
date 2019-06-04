@@ -43,13 +43,14 @@
     return {node$:function() {return query}}
   }
 
-  $.fn.itemscopeOrThis = function() {
+  $.fn.itemscopeOrThis$ = function() {
     // return the wrapping itemscope of this if any or this otherwise
     // this must be a one element jQuery
+    // it also handles the case of code that comes with output and potentially test
     if (this.length !== 1) throw Error('must be a jquery of one element');
-    var c = this.closest('[itemscope]');
-    if (c.length===1) return c;
-    return this;
+    var c$ = this.closest('[itemscope]');
+    if (c$.length===1) return c$;
+    return this.add(tb.outputElement$(this)).add(tb.testElement$(this));
   }
   
   
@@ -337,7 +338,7 @@
     var element$ = this;
     var after = where==='after' || where==='afterItemscope';
     if (where==='beforeItemscope' || where==='afterItemscope') {
-      element$ = element$.itemscopeOrThis();
+      element$ = element$.itemscopeOrThis$();
     }
     if (element$.hasClass('CODE')) {
       if (after) {

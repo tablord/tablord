@@ -251,12 +251,12 @@
 
   tb.moveUpBtnClick = function(event) {
     // simple version: at itemscope boundaries
-    tb.moveElement(tb.selected.element$.itemscopeOrThis(),'before');
+    tb.moveElement(tb.selected.element$.itemscopeOrThis$(),'before');
   }
   
   tb.moveDownBtnClick = function(event) {
     // simple version: at itemscope boundaries
-    tb.moveElement(tb.selected.element$.itemscopeOrThis(),'after');
+    tb.moveElement(tb.selected.element$.itemscopeOrThis$(),'after');
   }
   
   tb.toTestBtnClick = function(event) {
@@ -274,14 +274,16 @@
 
   tb.markBtnClick = function(event) {
     // simple version marks only Selected Element
-    var target$ = event.shiftKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis();
-    target$.toggleClass('MARKED');
+    var target$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
+    tb.mark(target$);
   }
   
   tb.cutBtnClick = function(event) {
     // simple version
     // TODO choose if itemscope / element etc... taking shift keys into consideration
-    tb.cutBlock(tb.selected.element$.itemscopeOrThis());
+    var target$ = $('.MARKED');
+    if (target$.length ===0) target$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
+    tb.cutBlock(target$);
   }
 
   tb.deleteBtnClick = function(event) {
@@ -289,7 +291,7 @@
     // and add the DELETED class
     var e$ = $('.MARKED')
     if (e$.length === 0) {
-      e$ = event.shiftKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis();
+      e$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
     }
     if (e$.hasClass('DELETED')) {
       e$.removeClass('DELETED');
@@ -297,6 +299,40 @@
     }
     if (e$.hasClass('SELECTED')) tb.selectElement(undefined);
     e$.removeClass('MARKED').addClass('DELETED');
+  }
+
+  tb.cloneEmptyBtnClick = function(event) {
+    // clone MARKED or the selected.element$
+    tb.cloneElements(event,true);
+  }
+  
+  tb.cloneElements = function(event,empty) {
+  // clone the selected itemscope (or element)
+  // - empty: if true, clone the elements but remove any text
+  // TODO: do that with marked elements in the future
+    function prepare(clones$) {
+      // renumber the ids found
+      // and clear text if empty is true
+      if (clones$.length === 0) return;
+      clones$.filter('[id]').attr('id',function(i,id){
+        return tb.blockId(tb.blockPrefix(id));
+      });
+      if (empty) {clones$.contents().filter(function() {
+          return this.nodeType == 3; //Node.TEXT_NODE
+        }).remove();
+      }
+      clones$.removeClass('SELECTED');
+      prepare(clones$.children());
+    }
+    var element$;
+    if (event.altKey) element$ = tb.selected.element$; 
+    else element$ = tb.selected.element$.itemscopeOrThis$();
+    
+    var newElement$ = element$.clone();
+    prepare(newElement$);
+    newElement$.insertAfter(element$);
+    tb.selectElement(newElement$);
+    tb.setUpToDate(false);
   }
 
   tb.templateButtonClick = function(event) {
@@ -326,7 +362,63 @@
     $('#showHtml').modal()
   }
 
+
+  tb.bodyKeyDown = function(event) {
+    // special keys at EDI level
+    switch (event.keyCode) {
+      case 112:
+        tb.help.index.show(window.document.selection.createRange().text); //TODO: works only with IE7
+        break;
+    }
+    return true;
+  }
+
+  tb.bodyKeyUp = function(event) {
+    tb.menu.debug$.html(tb.inspect(window.document.selection).span().toString())
+  }
+
+
+  tb.elementClick = function(event) {
+    // event handler for click on an ELEMENT
+    var element$ = $(event.currentTarget); // not target, since target can be an child element, not the div itself
+    if (element$.hasClass('EMBEDDED')) {
+      return true; //EMBEDDED code is ruled by its container (richText / section...) so let the event bubble
+    }
+    if (event.ctrlKey) {
+      tb.mark(event.altKey?element$:element$.itemscopeOrThis$());
+      return false;
+    }
+    else if (event.shiftKey){
+      return false;
+    }
+    tb.selectElement(element$);
+    return false;  // prevent bubbling
+  }
+
+  tb.editableKeyDown = function(event) {
+    // keyDown event handler for EDITABLE ELEMENT in order to see if the ELEMENT is modified and so the sheet
+    // also treat ctrl-enter as a run key
+    if ($.inArray(event.keyCode,[16,17,18,20,27,33,34,35,36,37,38,39,40,45,91,92,93]) != -1) return; // non modifying keys like shift..
+    tb.setModified(true);
+    tb.setUpToDate(false);
+    if ((event.keyCode==13) && event.ctrlKey) {
+      event.stopPropagation();
+      tb.run();
+    }
+  }
+
+  tb.elementEditor = function(event) {
+    // generic editor event handler for click and keypress
+    // assumes that the DOM element that has a class=EDITOR also has an id="name of the corresponding Tablord element"
+    // this handler just dispatch the event at the right object eventHandler
+    var element = event.currentTarget;
+    var tbObject = tb.vars[element.tbObject]
+    return tbObject.editorEvent(event);
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
   // method to manipulate the document /////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
   
   tb.updateTemplateChoice = function() {
     // update the template selection box according to the context i.e. the acceptedTemplate of the current container
@@ -373,7 +465,7 @@
   tb.saveRemote = function() {
     // save to a remote server
     var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
-    tb.removeCutBlocks();
+    tb.removeDeletedBlocks();
     tb.selectElement(undefined);
     $.post(window.location,
             {csrfmiddlewaretoken:csrftoken,
@@ -406,14 +498,6 @@
   }
 
 
-  tb.beforeUnload = function(event) {  //TODO avec hta, ne fonctionne pas bien
-    // event handler before closing check if a save is needed and desired
-    if (tb.modified) {
-      event.returnValue='ouups?';
-      return 'ouups?'
-    }
-  }
-
   tb.copyOutputToTest = function() {
     // set the current element's output as the test element if no test element existed or if it failed
     // if a SUCCESS test existed, remove the test
@@ -433,51 +517,26 @@
     tb.setModified(true);
   }
 
-  
+  tb.mark = function(elements$){
+    // mark all elements$
+    elements$.toggleClass('MARKED');
+  }
+
   tb.cutBlock = function(element$,cut) {
     // cut or "uncut" element
     // if cut is true or false, set the cut state
     // if cut is undefined, toggle the cut state
     cut = cut || !element$.hasClass('CUT');
-    element$
-    .add(tb.outputElement$(element$))  // TODO: all those function should have JQuery as parameter
-    .add(tb.testElement$(element$))
-    .toggleClass('CUT',cut);
+    element$.toggleClass('CUT',cut).removeClass('MARKED');
     tb.setModified(true);
     tb.setUpToDate(false);
   }
 
-  tb.removeCutBlocks = function() {
-    // remove all CUT elements
-    $('.CUT').remove();
+  tb.removeDeletedBlocks = function() {
+    // remove all DELETED elements
+    $('.DELETED').remove();
   }
 
-  tb.cloneItemscope = function(empty) {
-    // clone the selected itemscope (or element)
-    // - empty: if true, clone the elements but remove any text
-    // TODO: do that with marked elements in the future
-    function prepare(clones$) {
-      // renumber the ids found
-      // and clear text if empty is true
-      if (clones$.length === 0) return;
-      clones$.filter('[id]').attr('id',function(i,id){
-        return tb.blockId(tb.blockPrefix(id));
-      });
-      if (empty) {clones$.contents().filter(function() {
-          return this.nodeType == 3; //Node.TEXT_NODE
-        }).remove();
-      }
-      clones$.removeClass('SELECTED');
-      prepare(clones$.children());
-    }
-    
-    var element$ = tb.selected.element$.itemscopeOrThis(); //TODO add marked
-    var newElement$ = element$.clone();
-    prepare(newElement$);
-    newElement$.insertAfter(element$);
-    tb.selectElement(newElement$[0]);
-    tb.setUpToDate(false);
-  }
 
   tb.editables$ = function(element) {
     // returns a JQuery of the tags that are editable in element (JQuery can be .length==0 if nothing is editable)
@@ -489,6 +548,8 @@
 
   tb.selectElement = function(element) {
     // select element as tb.selected.element and update the EDI accordingly
+    // element can either be a DOM element or a jQuery of 1 element
+    if (element instanceof $) element = element[0];
     tb.editor.setCurrentEditor(undefined);
     var e = tb.selected.element;
     if (e) {
@@ -545,8 +606,8 @@
     // moves element$ at a position defined by where
     // -element$: the element to move
     // - where : cf [$.fn.neighbour]
-    if (element$.length!==1) return;
-    var whereToInsert$ = element$;
+    if (element$.length===0) return;
+    var whereToInsert$;
     if (where==='before' || where=='beforeItemscope') {
       do {
         whereToInsert$ = whereToInsert$.prev();
@@ -554,7 +615,7 @@
       element$.insertBefore(whereToInsert$);
     }
     else {
-      whereToInsert$ = whereToInsert$.next();
+      whereToInsert$ = whereToInsert$.last().next();
       var traillingTags$ = whereToInsert$.nextUntil('.ELEMENT'); 
       if (traillingTags$.length) whereToInsert$ = traillingTags$.last();
       element$.insertAfter(whereToInsert$);
@@ -564,51 +625,6 @@
 
   // EDI eventHandlers ///////////////////////////////////////////////////////////////
 
-  tb.bodyKeyDown = function(event) {
-    // special keys at EDI level
-    switch (event.keyCode) {
-      case 112:
-        tb.help.index.show(window.document.selection.createRange().text); //TODO: works only with IE7
-        break;
-    }
-    return true;
-  }
-
-  tb.bodyKeyUp = function(event) {
-    tb.menu.debug$.html(tb.inspect(window.document.selection).span().toString())
-  }
-
-
-  tb.elementClick = function(event) {
-    // event handler for click on an ELEMENT
-    var element = event.currentTarget; // not target, since target can be an child element, not the div itself
-    if ($(element).hasClass('EMBEDDED')) {
-      return true; //EMBEDDED code is ruled by its container (richText / section...) so let the event bubble
-    }
-    tb.selectElement(element);
-    return false;  // prevent bubbling
-  }
-
-  tb.editableKeyDown = function(event) {
-    // keyDown event handler for EDITABLE ELEMENT in order to see if the ELEMENT is modified and so the sheet
-    // also treat ctrl-enter as a run key
-    if ($.inArray(event.keyCode,[16,17,18,20,27,33,34,35,36,37,38,39,40,45,91,92,93]) != -1) return; // non modifying keys like shift..
-    tb.setModified(true);
-    tb.setUpToDate(false);
-    if ((event.keyCode==13) && event.ctrlKey) {
-      event.stopPropagation();
-      tb.run();
-    }
-  }
-
-  tb.elementEditor = function(event) {
-    // generic editor event handler for click and keypress
-    // assumes that the DOM element that has a class=EDITOR also has an id="name of the corresponding Tablord element"
-    // this handler just dispatch the event at the right object eventHandler
-    var element = event.currentTarget;
-    var tbObject = tb.vars[element.tbObject]
-    return tbObject.editorEvent(event);
-  }
 
 
   //  display / execution ////////////////////////////////////////////////////
@@ -988,17 +1004,13 @@
       .on("click",'.BOXLINK',tb.openCloseBox)                              // open or close Box and cancel bubbling of click since it is only to open close
       .on("click",'.BOX',function(event){event.stopPropagation()});    // cancel bubbling of click
 
-
       $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR');
       $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
-
-
 
       tb.findblockNumber();
       //tb.initToolBars();
       tb.initMenu();
       tb.editor = new tb.Editor();
-      $(window).bind('beforeunload',tb.beforeUnload);
       $('body').keydown(tb.bodyKeyDown)//.keyup(tb.bodyKeyUp);
       tb.autoRun = $('body').attr('autoRun')!==false;
       tb.help.update(tb,'tb.');

@@ -417,9 +417,8 @@ p {
   box-shadow:0 0 0.5em 10px red inset;
 }
 
-.MARKED::before {
-  content:"\2611";
-  color:green;
+.MARKED {
+  box-shadow:0 0 0.5em 10px LightSkyBlue inset;
 }
 
 .SECTION {
