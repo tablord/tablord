@@ -974,7 +974,7 @@
   
   // Output ///////////////////////////////////////////////
 
-  function newOutput (codeElement,outputElement) {
+  tb.newOutput = function(codeElement,outputElement) {
     // outputElement is, if specified, the Element where HTML will be dumped
     //         element is essential if HTML uses the finalize() method
     h = new tb.HTML();

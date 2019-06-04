@@ -662,22 +662,24 @@
     return id.slice(0,4);
   }
 
-  tb.outputElement = function(element) {
-    // return the output element associated with element if any
-    // if applied on another element than id=codexxxx return undefined;
-    if ((element === undefined) || (element.id.slice(0,4) !== 'code')) return;
-    var outId = element.id.replace(/code/,"out");
-    var out = window.document.getElementById(outId);
-    if (!out) {
-      var tag = (element.tagName=='SPAN'?'SPAN':'DIV');
-      out = $('<'+tag+' class=OUTPUT id='+outId+'>no output</'+tag+'>').insertAfter(element)[0];
+  tb.outputElement$ = function(element$) {
+    // return the output element associated with element$ if any
+    // if applied on another element than id=codexxxx return an empty jquery;
+    var id = element$.attr('id');
+    if (!id || id.slice(0,4) !== 'code') return $();
+    var outId = id.replace(/code/,"out");
+    var out$ = $('#'+outId);
+    if (out$.length === 0) {
+      var tag = (element$.attr('tagName')==='SPAN')?'SPAN':'DIV';
+      out$ = $('<'+tag+' class=OUTPUT id='+outId+'>no output</'+tag+'>').insertAfter(element$);
     }
-    return out;
+    return out$;
   }
 
-  tb.testElement = function(element) {
+  tb.testElement$ = function(element$) {
     // returns the test element if any
-    // if applied on another element than id=codexxxx return undefined;
-    if ((element == undefined) || (element.id.slice(0,4) !== 'code')) return;
-    return window.document.getElementById(element.id.replace(/code/,"test"));
+    // if applied on another element than id=codexxxx return an empty jquery;
+    var id = element$.attr('id');
+    if (!id || id.slice(0,4) !== 'code') return $();
+    return $('#'+id.replace(/code/,"test"));
   }

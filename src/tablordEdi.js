@@ -274,7 +274,8 @@
 
   tb.markBtnClick = function(event) {
     // simple version marks only Selected Element
-    tb.selected.element$.toggleClass('MARKED');
+    var target$ = event.shiftKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis();
+    target$.toggleClass('MARKED');
   }
   
   tb.cutBtnClick = function(event) {
@@ -288,7 +289,7 @@
     // and add the DELETED class
     var e$ = $('.MARKED')
     if (e$.length === 0) {
-      e$ = $('.SELECTED');
+      e$ = event.shiftKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis();
     }
     if (e$.hasClass('DELETED')) {
       e$.removeClass('DELETED');
@@ -309,8 +310,8 @@
 
   tb.showHtmlBtnClick = function(event) {
     if (tb.selected.element$.hasClass('CODE')) {
-      var out = tb.outputElement(tb.selected.element) || {id:'no output',innerHTML:''};
-      var test = tb.testElement(tb.selected.element) || {id:'no test',innerHTML:''};
+      var out = tb.outputElement$(tb.selected.element$)[0] || {id:'no output',innerHTML:''};
+      var test = tb.testElement$(tb.selected.element$)[0] || {id:'no test',innerHTML:''};
       var hout  = out.innerHTML;
       var htest = test.innerHTML;
       diff = tb.diff(hout,htest).span().toString();
@@ -418,17 +419,16 @@
     // if a SUCCESS test existed, remove the test
     if (tb.selected.element == undefined) return;
 
-    var out = tb.outputElement(tb.selected.element);
-    var test = tb.testElement(tb.selected.element);
-    if (test == undefined) {
-      $(out).after($('<DIV id="'+tb.selected.element.id.replace(/code/,"test")+'" class="TEST SUCCESS">'+out.innerHTML+'</DIV>'));
+    var out$ = tb.outputElement(tb.selected.element);
+    var test$ = tb.testElement(tb.selected.element);
+    if (test$.length === 0) {
+      out$.after($('<DIV id="'+tb.selected.element.id.replace(/code/,"test")+'" class="TEST SUCCESS">'+out.innerHTML+'</DIV>'));
     }
-    else if (!$(test).hasClass('SUCCESS')) {
-      test.innerHTML = out.innerHTML;
-      $(test).removeClass('ERROR').addClass('SUCCESS');
+    else if (!test$.hasClass('SUCCESS')) {
+      test$.html(out$.html()).removeClass('ERROR').addClass('SUCCESS');
     }
     else {
-      $(test).remove();
+      test$.remove();
     }
     tb.setModified(true);
   }
@@ -440,8 +440,8 @@
     // if cut is undefined, toggle the cut state
     cut = cut || !element$.hasClass('CUT');
     element$
-    .add(tb.outputElement(element$[0]))  // TODO: all those function should have JQuery as parameter
-    .add(tb.testElement(element$[0]))
+    .add(tb.outputElement$(element$))  // TODO: all those function should have JQuery as parameter
+    .add(tb.testElement$(element$))
     .toggleClass('CUT',cut);
     tb.setModified(true);
     tb.setUpToDate(false);
@@ -646,18 +646,18 @@
     var wrong$ = $('.WRONG',element).add('font',element);  //TODO: check in future: IE7 had a tendency to add FONT instead of the SPAN if the text is edited
     if (wrong$.length > 0) wrong$.replaceWith(function(i,c){return c});
 
-    var out  = tb.outputElement(element);
-    var test = tb.testElement(element)
-    tb.output = newOutput(element,out);
+    var out$  = tb.outputElement$(element$);
+    var test$ = tb.testElement$(element$)
+    tb.output = tb.newOutput(element$[0],out$[0]);
     var res = tb.securedEval(tb.htmlToText(element.innerHTML));
     tb.displayResult(res,tb.output);
     // test
-    if (test != undefined) {
-      if (out && (tb.trimHtml(out.innerHTML) == tb.trimHtml(test.innerHTML))) {   //TODO rethink how to compare
-        $(test).removeClass('ERROR').addClass('SUCCESS');
+    if (test$.length) {
+      if ((tb.trimHtml(out$.html()) == tb.trimHtml(test$.html()))) {   //TODO rethink how to compare
+        test$.removeClass('ERROR').addClass('SUCCESS');
       }
       else {
-        $(test).removeClass('SUCCESS').addClass('ERROR');
+        test$.removeClass('SUCCESS').addClass('ERROR');
       }
     }
     tb.output = undefined;  // so that any errors from the EDI will be reported in a dialog, not in the last outputElement.
