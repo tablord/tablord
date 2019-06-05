@@ -50,7 +50,16 @@
     }
     return this.value;
   }
-
+  
+  Object.defineProperty(tb.Var.prototype, "sourceElement", {
+    get : function () {
+      // get the source element (if any) that is attached to the Var or the function embedded in the var
+      // if a property sourceElement is attached directly to the tb.Var object, it will override this getter
+      if (this.func) return this.func.sourceElement;
+      return undefined;
+    }
+  });
+  
   tb.Var.prototype.toJSCode = function () {
     // return a string that can be interpreted by eval and will give the same result as the value
     return this.code()?'f('+tb.toJSCode(this.code())+')':tb.toJSCode(this.value);
@@ -164,7 +173,7 @@
 
   // Row //////////////////////////////////////////////
 
-  tb.Row = function Row(obj,table) {
+  tb.Row = function (obj,table) {
     // create a Row from an object or a Row.
     // only ownProperties (not inherited) are used is the Row
     this._ = {};
@@ -183,16 +192,19 @@
   }
 
   tb.Row.prototype.val = function(col) {
-    return this._[col] && this._[col].valueOf();
+    var c = this._[col];
+    if (c===undefined) return undefined;
+    if ((c instanceof Date) || moment.isMoment(c) || moment.isDuration(c)) return this._[col];
+    return this._[col].valueOf();
   }
 
   tb.Row.prototype.setCell = function (col,value) {
     if (typeof value == "function") {
-      var f = new tb.Var(undefined,value);  //wrap the function into a V
-      f.row = this;       //and assign the _row,_col
-      f.col = col;
-      this._[col] = f;
-      return this;
+      var value = new tb.Var(undefined,value);  //wrap the function into a V
+    }
+    if (value instanceof tb.Var) {
+      value.row = this;       //and assign the _row,_col
+      value.col = col;
     }
     this._[col] = value;
     return this;
@@ -212,7 +224,8 @@
 
   tb.Row.prototype.reduce = function(reduceF,criteria,initialValue) {
     // apply a reduce function on a column
-    // criteria is an optional f(tbFunc) that process only row that return true
+    // criteria is an optional object that list all fields that have to be processed
+    // {field1:1,field2:1....}
     var first = true;
     var r;
     if (initialValue !== undefined) {
@@ -221,7 +234,7 @@
     }
     for (var colName in this._) {
       var value = this.val(colName);
-      if ((criteria===undefined)||(criteria.call(this,this._,colName,value))) {
+      if ((criteria===undefined)|| (colName in criteria)) {
         if (first) {
           r = value;
           first = false;
@@ -301,7 +314,7 @@
 
 
 // Col   //////////////////////////////////////////////////////////////
-  tb.Col = function Col(name,table) {
+  tb.Col = function (name,table) {
     // Col objects represent a column of a Table
     // internal use only
     this.name = name;
@@ -316,7 +329,7 @@
 
 // Table //////////////////////////////////////////////////////////////
 
-  tb.Table = function Table(name) {
+  tb.Table = function (name) {
     // constructor of a new Table instance
     this.name = name;
     this.length = 0;
@@ -445,12 +458,12 @@
     return this;
   }
 
-  tb.Table.prototype.add = function(row) {
+  tb.Table.prototype.add = function(rowData) {
     // add a row
     // row can be either a simple object or a Row object
     // return the table for method chaining
 
-    row = new tb.Row($.extend(true,{},this.options.defValues,row),this);
+    row = new tb.Row($.extend(true,{},this.options.defValues,rowData),this);
     row.index = this.length;
     this[this.length++] = row;
     this.registerPk(row);
@@ -536,7 +549,7 @@
     }
     for (var i=0;i<this.length;i++) {
       var value = this.val(i,colName);
-      if ((criteria===undefined)||(criteria.call(this[i],this[i]._,colName,value))) {
+      if ((criteria===undefined)||tb.objMatchCriteria(this[i]._,criteria)) {
         if (first) {
           r = value;
           first = false;
@@ -551,7 +564,7 @@
 
   tb.Table.prototype.sum = function(colName,criteria) {
     // return the sum of the column
-    return this.reduce(colName,tb.reduce.sum,criteria)
+    return this.reduce(colName,tb.reduce.sum,criteria,0)
   }
 
   tb.Table.prototype.min = function(colName,criteria) {
@@ -845,11 +858,11 @@
 
 
   // factory ////////////////////////////////////////////////
-  table = function(name,local) {
+  tb.table = function(name,local) {
     // returns an already existing table or creates a new table
     // - name is the name of the instance
     // - if local=true, the instance is not registered in v
-    if (tb.vars[name] && tb.vars[name].constructor == Table){
+    if (tb.vars[name] && tb.vars[name].constructor == tb.Table){
       return tb.vars[name];
     }
 
@@ -858,10 +871,12 @@
     }
     return tb.vars[name] = new tb.Table(name);
   }
+  
+  table = tb.table; // for compatibility TODO rethink accessibility of very common functions
 
 // View  //////////////////////////////////////////////////////////////
 
-  tb.View = function View(parent) {
+  tb.View = function (parent) {
     this.parent = parent;
     this.length = 0;
 
@@ -918,10 +933,48 @@
   tb.View.prototype.toJSON = tb.Table.prototype.toJSON;
   tb.View.prototype.node$ = tb.Table.prototype.node$;
 
+  // tb.Array /////////////////////////////////////////////
+  tb.Array = function(name) {
+    // tb.Array class is an Array like, but has more methods than Array
+    // also it has a name like tb.Var and tb.Table and is normaly registred as a global
+    // var in tb.vars
+    this.name = name;
+    Array.call(this)
+  }
+  tb.Array.className = 'tb.Array';
 
+  tb.Array.prototype = Object.create(Array.prototype);
+  tb.Array.prototype.constructor = tb.Array;
+/*
+  tb.Array.prototype.push = Array.prototype.push;
+  tb.Array.prototype.pop = Array.prototype.pop;
+  tb.Array.prototype.shift = Array.prototype.shift;
+  tb.Array.prototype.unshift = Array.prototype.unshift;
+  tb.Array.prototype.splice = Array.prototype.splice;
+  tb.Array.prototype.concat = Array.prototype.concat;
+  tb.Array.prototype.reverse = Array.prototype.reverse;
+  tb.Array.prototype.sort = Array.prototype.sort;
+  tb.Array.prototype.forEach = Array.prototype.forEach;
+  tb.Array.prototype.map = Array.prototype.map;
+  tb.Array.prototype.filter = Array.prototype.filter;
+  tb.Array.prototype.reduce = Array.prototype.reduce;
+  tb.Array.prototype.reduceRight = Array.prototype.reduceRight;
+  tb.Array.prototype.every = Array.prototype.every;
+  tb.Array.prototype.some = Array.prototype.some;
+  tb.Array.prototype.join = Array.prototype.join;
+*/ 
+  
+  tb.Array.prototype.toString = function() {
+      return '[object Array '+this.name+' ['+this.join(',')+']]';
+  }
+  
+  tb.Array.prototype.sum = function() {
+      return this.reduce(tb.reduce.sum);
+  }
+  
   // Output ///////////////////////////////////////////////
 
-  function newOutput (codeElement,outputElement) {
+  tb.newOutput = function(codeElement,outputElement) {
     // outputElement is, if specified, the Element where HTML will be dumped
     //         element is essential if HTML uses the finalize() method
     h = new tb.HTML();

@@ -104,9 +104,82 @@ p {
   color: grey;
 }
 .ELEMENT.SELECTED {
+  position:relative;
   padding:0px;
   border: 3px solid grey;
 }
+.ELEMENT.SELECTED::after {
+  position:absolute;
+  top:-2em;
+  right:0;
+  outline:none;
+  color:white;
+  background-color:grey;
+  padding:3px;
+  content:attr(itemprop);
+}
+
+.ELEMENT.ITEMSCOPE {
+  padding:0;
+  border: 3px solid orange;
+}
+.ELEMENT.ITEMSCOPE::after {
+  position:relative;
+  width:0;
+  left:6px;
+  outline:none;
+  color:orange;
+  content:attr(itemprop);
+}
+
+.ELEMENT:empty::before {
+  content:"empty";
+  font-style:italic;
+  color:grey;
+}
+.ELEMENT[itemprop]:empty::before {
+  content:attr(itemprop);
+  font-style:italic;
+  color:grey;
+}
+
+.ELEMENT.c-1 {
+  width:calc(100%/12);
+}
+.ELEMENT.c-2 {
+  width:calc(100%/12*2);
+}
+.ELEMENT.c-3 {
+  width:calc(100%/12*3);
+}
+.ELEMENT.c-4 {
+  width:calc(100%/12*4);
+}
+.ELEMENT.c-5 {
+  width:calc(100%/12*5);
+}
+.ELEMENT.c-6 {
+  width:calc(100%/12*6);
+}
+.ELEMENT.c-7 {
+  width:calc(100%/12*7);
+}
+.ELEMENT.c-8 {
+  width:calc(100%/12*8);
+}
+.ELEMENT.c-9 {
+  width:calc(100%/12*9);
+}
+.ELEMENT.c-10 {
+  width:calc(100%/12*10);
+}
+.ELEMENT.c-11 {
+  width:calc(100%/12*11);
+}
+.ELEMENT.c-12 {
+  width:100%;
+}
+
 
 .FIELD.EDITABLE {
   border-bottom: solid grey 1px;
@@ -337,7 +410,15 @@ p {
 }
 
 .CUT {
-  filter:blur(5px);
+  box-shadow:0 0 0.5em 10px orange inset;
+}
+
+.DELETED {
+  box-shadow:0 0 0.5em 10px red inset;
+}
+
+.MARKED {
+  box-shadow:0 0 0.5em 10px LightSkyBlue inset;
 }
 
 .SECTION {
@@ -361,14 +442,18 @@ td.RICHTEXT {
   background-color: white;
 }
 
-[container] {
+.FLEX {
+  display:flex;
+}
+
+.INDENT {
   padding-left: 25px;
   border-left: grey solid 1px;
 }
 
 @media print {
-  [container] {
-      border:none;
+  .INDENT {
+    border:none;
   }
 }
 
