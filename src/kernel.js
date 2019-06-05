@@ -41,15 +41,15 @@
 
             autoRun:true,
             sheetOptions: {
-              get showCode() {tb.tbContent$.attr('showCode') || true},
+              get showCode() {return tb.tbContent$.attr('showCode') || true},
               set showCode(value) {tb.tbContent$.attr('showCode',value)},
-              get showCut() {tb.tbContent$.attr('showCut') || true},
+              get showCut() {return tb.tbContent$.attr('showCut') || true},
               set showCut(value) {tb.tbContent$.attr('showCut',value)},
-              get showDeleted() {tb.tbContent$.attr('showCode') || true},
+              get showDeleted() {return tb.tbContent$.attr('showCode') || false},
               set showDeleted(value) {tb.tbContent$.attr('showCode',value)},
-              get showTest() {tb.tbContent$.attr('showTest') || true},
+              get showTest() {return tb.tbContent$.attr('showTest') || true},
               set showTest(value) {tb.tbContent$.attr('showTest',value)},
-              get showTrace() {tb.tbContent$.attr('showTrace') || true},
+              get showTrace() {return tb.tbContent$.attr('showTrace') || true},
               set showTrace(value) {tb.tbContent$.attr('showTrace',value)},
             },
             features:[],          // list of Features. cf tb.Features for more informations

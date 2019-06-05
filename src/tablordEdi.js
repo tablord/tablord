@@ -75,17 +75,14 @@
         				'<button id="codeId" type="button" class="btn btn-outline-dark">no selection</button>'+
         				'<button id="markBtn" class="btn btn-dark" title="mark the selected element"><i class="far fa-check-square"></i></button>'+
         				'<button id="cutBtn" class="btn btn-dark" title="cut marked elements"><i class="fas fa-cut"></i></button>'+
-        				'<button id="copyBtn" class="btn btn-dark" title="copy cut/marked/selected element"><i class="fas fa-copy"></i></button>'+
+        				'<button id="pasteBtn" class="btn btn-dark title="paste cut/marked elements" where="after"><i class="fas fa-paste"></i></button>'+
         				'<button id="deleteBtn" class="btn btn-dark" title="delete marked/selected element"><i class="fas fa-trash"></i></button>'+
-        				'<button id="restoreBtn" class="btn btn-dark" title="show deleted elements to undelete"><i class="fas fa-trash-restore"></i></button>'+
-        				'<button id="pasteBtn" class="btn btn-dark title="paste cut elements" where="afterItemscope" template="https://tablord.com/templates/paste" >'+
-        					'<i class="fas fa-paste"></i></button>'+
         				'<button id="moveUpBtn" class="btn btn-dark" title="move selected before previous element"><i class="fas fa-arrow-up"></i></button>'+
         				'<button id="moveDownBtn" class="btn btn-dark" title="move selected after previous element"><i class="fas fa-arrow-down"></i></button>'+
         				'<button id="showHtmlBtn" class="btn btn-dark">&#8594;html</button>'+
-        				'<button id="toTestBtn">&#8594;test</button>'+
+        				'<button id="toTestBtn" class="btn btn-dark">&#8594;test</button>'+
                     '</div>'+
-        			'<div id="insertAfter" class="btn-group btn-group-sm mr-2" role="group" where="afterItemscope">'+
+        			'<div id="insertAfter" class="btn-group btn-group-sm mr-2" role="group" where="after">'+
                         '<button id="insertSectionBtn" class="btn btn-dark" title="section" template="https://tablord.com/templates/section">'+
         					'<i class="fas fa-heading"></i></button>'+
         				'<button id="insertText" class="btn btn-dark" title="Text" template="https://tablord.com/templates/richText">'+
@@ -203,42 +200,43 @@
   
   tb.showCodeClick = function(event) {
     // click event handler for the show Code checkbox
-    var button = event.target || window.event.srcElement; //IE7 compatibility
+    var button = event.target;
     $('.CODE').toggleClass('HIDDEN',!button.checked);
     tb.sheetOptions.showCode = button.checked;
   }
 
   tb.showCutClick = function(event) {
     // click event handler for the show cut checkbox
-    var button = event.target || window.event.srcElement; //IE7 compatibility
+    var button = event.target;
     $('.CUT').toggleClass('HIDDEN',!button.checked);
     tb.sheetOptions.showCut = button.checked;
   }
 
   tb.showDeletedClick = function(event) {
     // click event handler for the show cut checkbox
-    var button = event.target || window.event.srcElement; //IE7 compatibility
-    $('.CUT').toggleClass('HIDDEN',!button.checked);
-    tb.sheetOptions.showCut = button.checked;
+    var checkbox = event.target;
+    if (checkbox.checked) $('.DELETED').show(300);
+    else $('.DELETED').hide(300);
+    tb.sheetOptions.showDeleted = checkbox.checked;
   }
   
   tb.showTestClick = function(event) {
     // click event handler for the show test checkbox
-    var button = event.target || window.event.srcElement; //IE7 compatibility
+    var button = event.target;
     $('.TEST').toggleClass('HIDDEN',!button.checked);
     tb.sheetOptions.showTest = button.checked;
   }
 
   tb.showTraceClick = function(event) {
     // click event handler for the show trace checkbox
-    var button = event.target || window.event.srcElement; //IE7 compatibility
+    var button = event.target;
     $('.TRACE').toggleClass('HIDDEN',!button.checked);
     tb.sheetOptions.showTrace = button.checked;
   }
 
   tb.setAutoRunClick = function(event) {
     // click event handler for the auto run checkbox
-    var button = event.target || window.event.srcElement; //IE7 compatibility
+    var button = event.target;
     tb.autoRun = button.checked;
     $('body').attr('autoRun',tb.autoRun);
   }
@@ -247,6 +245,14 @@
     // click event handler for the print button
     tb.selectElement(undefined);
     window.print();
+  }
+  
+  tb.pasteBtnClick = function(event) {
+    // paste 
+    var elements$ = $('.CUT').removeClass('CUT');
+    if (elements$.length === 0) elements$ = tb.cloneElements$($('.MARKED').removeClass('MARKED'));
+    var target$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$().last();
+    elements$.insertAfter(target$);
   }
 
   tb.moveUpBtnClick = function(event) {
@@ -281,62 +287,38 @@
   tb.cutBtnClick = function(event) {
     // simple version
     // TODO choose if itemscope / element etc... taking shift keys into consideration
-    var target$ = $('.MARKED');
-    if (target$.length ===0) target$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
-    tb.cutBlock(target$);
+    var elements$ = $('.MARKED');
+    if (elements$.length ===0) elements$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
+    tb.cutBlock(elements$);
   }
 
   tb.deleteBtnClick = function(event) {
     // look for MARKED elements or if none for SELECTED element
     // and add the DELETED class
-    var e$ = $('.MARKED')
-    if (e$.length === 0) {
-      e$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
-    }
-    if (e$.hasClass('DELETED')) {
-      e$.removeClass('DELETED');
+    var elements$ = $('.MARKED')
+    if (elements$.length === 0) elements$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
+    var deleted$ = elements$.find('.DELETED').addBack('.DELETED'); // search for deleted elements including itself
+    if (deleted$.length) { // some elements in the selection are deleted, so undelete those
+      deleted$.removeClass('DELETED').show(500);
       return;
     }
-    if (e$.hasClass('SELECTED')) tb.selectElement(undefined);
-    e$.removeClass('MARKED').addClass('DELETED');
+    if ($('.SELECTED',elements$).length) tb.selectElement(undefined);
+    elements$.removeClass('MARKED').addClass('DELETED');
+    if (!tb.sheetOptions.showDeleted) elements$.hide(500)
   }
 
   tb.cloneEmptyBtnClick = function(event) {
     // clone MARKED or the selected.element$
-    tb.cloneElements(event,true);
+    var elements$ = $('.MARKED')
+    if (elements$.length === 0) elements$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
+    var target$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
+    tb.cloneElements$(event,true).insertAfter(target$);
   }
   
-  tb.cloneElements = function(event,empty) {
-  // clone the selected itemscope (or element)
-  // - empty: if true, clone the elements but remove any text
-  // TODO: do that with marked elements in the future
-    function prepare(clones$) {
-      // renumber the ids found
-      // and clear text if empty is true
-      if (clones$.length === 0) return;
-      clones$.filter('[id]').attr('id',function(i,id){
-        return tb.blockId(tb.blockPrefix(id));
-      });
-      if (empty) {clones$.contents().filter(function() {
-          return this.nodeType == 3; //Node.TEXT_NODE
-        }).remove();
-      }
-      clones$.removeClass('SELECTED');
-      prepare(clones$.children());
-    }
-    var element$;
-    if (event.altKey) element$ = tb.selected.element$; 
-    else element$ = tb.selected.element$.itemscopeOrThis$();
-    
-    var newElement$ = element$.clone();
-    prepare(newElement$);
-    newElement$.insertAfter(element$);
-    tb.selectElement(newElement$);
-    tb.setUpToDate(false);
-  }
 
   tb.templateButtonClick = function(event) {
     var where = $(event.target).closest('[where]').attr('where');
+    if (!event.altKey) where += 'Itemscope';
     var template = $(event.target).closest('[template]').attr('template');
     if (where===undefined || template === undefined) return;
     tb.templates[template].insertNew(tb.selected.element,where,tb.selected.container$.attr('container'));
@@ -535,6 +517,28 @@
   tb.removeDeletedBlocks = function() {
     // remove all DELETED elements
     $('.DELETED').remove();
+  }
+
+  tb.cloneElements$ = function(elements$,empty) {
+  // clone the elements$ making sure the ids are renamed properly
+  // - empty: if true, clone the elements but remove any text
+    function prepare(clones$) {
+      // renumber the ids found
+      // and clear text if empty is true
+      if (clones$.length === 0) return;
+      clones$.filter('[id]').attr('id',function(i,id){
+        return tb.blockId(tb.blockPrefix(id));
+      });
+      if (empty) {clones$.contents().filter(function() {
+          return this.nodeType == 3; //Node.TEXT_NODE
+        }).remove();
+      }
+      clones$.removeClass('SELECTED');
+      prepare(clones$.children());
+    }
+    var newElements$ = elements$.clone();
+    tb.setUpToDate(false);
+    return newElements$;
   }
 
 
