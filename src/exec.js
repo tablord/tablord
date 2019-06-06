@@ -403,7 +403,7 @@
     if (editor) {
       this.tbObject = tb.vars[$(editor).attr('tbObject')];
       this.value = this.tbObject.getEditableValue(this);
-      this.type = (this.value && this.value.isV)?'function':typeof this.value;
+      this.type = (this.value && this.value.isVar)?'function':typeof this.value;
       var radio$ = $('[value='+this.type+']',this.toolBar$);
       radio$.prop('checked',true);
       this.toolBar$.show();
@@ -435,7 +435,7 @@
     // params : an object that at least has tbObject:nameOfTheObject in tb.vars
 
     var type = typeof value;
-    if (value && value.isV && value.code()) {
+    if (value && value.isVar && value.code()) {
       type = 'function ';
       value = value.valueOf();
       type += (typeof value == 'number')?'RIGHT':'LEFT';
@@ -683,3 +683,304 @@
     if (!id || id.slice(0,4) !== 'code') return $();
     return $('#'+id.replace(/code/,"test"));
   }
+  
+  
+  //  display / execution ////////////////////////////////////////////////////
+
+
+  tb.displayResult = function(result,output) {
+    // display result in output (that must be a tb.Output object
+    $(output.outputElement)
+    .empty().removeClass('ERROR').addClass('SUCCESS')
+    .append(((result !== undefined) && (result !== null) && (typeof result.node$ === 'function') && result.node$() )
+            || tb.format(result)
+           )
+    .prepend(output.toString())
+    .before(trace.span().toString()) // traces are not part of the result
+  }
+
+  tb.execCode = function(element) {
+    // execute the code of element
+    // skip all CUT element
+    var element$ = $(element);
+    if (element$.hasClass('CUT')) return;
+
+    // if template, lauch exec method if any
+    if (element$.attr('itemtype')) {
+      var t = tb.templates[tb.Template.urlToName(element$.attr('itemtype'))];
+      if (t && t.exec) {
+        t.exec(element$);
+      }
+      tb.output = undefined;  // so that any errors from the EDI will be reported in a dialog, not in the last outputElement.
+      return
+    }
+
+    // Execute CODE ELEMENT
+    // clear if any previous WRONG marker
+    var wrong$ = $('.WRONG',element).add('font',element);  //TODO: check in future: IE7 had a tendency to add FONT instead of the SPAN if the text is edited
+    if (wrong$.length > 0) wrong$.replaceWith(function(i,c){return c});
+
+    var out$  = tb.outputElement$(element$);
+    var test$ = tb.testElement$(element$)
+    tb.output = tb.newOutput(element$[0],out$[0]);
+    var res = tb.securedEval(tb.htmlToText(element.innerHTML));
+    tb.displayResult(res,tb.output);
+    // test
+    if (test$.length) {
+      if ((tb.trimHtml(out$.html()) == tb.trimHtml(test$.html()))) {   //TODO rethink how to compare
+        test$.removeClass('ERROR').addClass('SUCCESS');
+      }
+      else {
+        test$.removeClass('SUCCESS').addClass('ERROR');
+      }
+    }
+    tb.output = undefined;  // so that any errors from the EDI will be reported in a dialog, not in the last outputElement.
+  }
+
+  tb.execCodes = function(fromCodeId,toCodeId) {
+    // execute CODE element starting from fromCodeId and ending with toCodeId
+    // it does not clean the environement first, since this function is intended to be used
+    // by the user in order to execute some codes repeatidly
+    // nor it will perform any finalization (but it will register output.finalize functions
+    // that will be executed at the end of the sheet execution
+    // please note that it is POSSIBLE to run the code containing the tb.execCodes() allowing
+    // some recursivity. Of course this can also result in an never ending loop if not used properly
+
+    var code$ = $('.CODE');
+    fromCodeId = fromCodeId || code$.first().attr('id');
+    toCodeId = toCodeId || code$.last().attr('id');
+    code$.filterFromToId(fromCodeId,toCodeId).each(function(i,e) {
+      tb.execCode(e);
+    });
+  }
+
+  tb.runHtaFile = function(fileName,noWait,parameters) {
+    // run an other file
+    // if noWait is false or undefined, just open the file and returns without waiting
+    //           is true run the file with ?runonce. it is the file responsibility to behave in this manner
+    //                   this function will return the result object produced by the .hta file
+    // parameters is encoded for uri and added to the searchstring
+    var params = [];
+    if (noWait) {
+      runOnce=false;
+    }
+    else {
+      runOnce=true;
+      params.push('runonce')
+    }
+    if (parameters) {
+      for (var p in parameters) {
+        params.push(encodeURIComponent(p)+'='+encodeURIComponent(parameters[p]));
+      }
+    }
+
+
+    fileName = tb.absoluteFileName(fileName,tb.url.absolutePath);
+    var resultFileName = fileName.replace(/\.hta/i,'.jres');
+    if (params.length > 0) {
+      var cmd = 'mshta.exe '+fileName+'?'+params.join('&');
+    }
+    else {
+      var cmd = fileName;
+    }
+    var errCode = tb.shell.Run(cmd,1,runOnce);
+    if (runOnce) {
+      var res = {};
+      try {
+        var json = tb.fso.readFile(resultFileName);
+        res = JSON.parse(json);
+        res.cmd = cmd;
+        res.errCode = errCode;
+      }
+      catch (e) {
+        res.errCode = e.message;
+      }
+      return res;
+    }
+  }
+
+  tb.runTests = function(/*files...*/) {
+    // run every specified files as test files and return a table with all results
+    var results = [];
+    for (var i=0; i<arguments.length; i++) {
+      var res = tb.runHtaFile(arguments[i]);
+      results.push({file:arguments[i],
+                    errCode:res.errCode,
+                    nbPassed:res.testStatus&&res.testStatus.nbPassed,
+                    nbFailed:res.testStatus&&res.testStatus.nbFailed,
+                    dateTime:res.testStatus&&res.testStatus.dateTime,
+                    exec$ms :res.execStat.execAll$ms});
+    }
+    return table().addRows(results).colStyle(function(r,c,value){return (value !== 0)?{backgroundColor:'red'}:{}},'nbFailed');
+  }
+
+  tb.animate = function (interval,fromCodeId,toCodeId,endCondition) {
+    // run every "interval" all codes between fromCodeId to toCodeId
+    // if fromCodeId is undefined, the CODE element where this function is called will be used
+    fromCodeId = fromCodeId || tb.output.codeElement.id;
+    toCodeId = toCodeId || fromCodeId;
+    if (tb.inAnimation == false) {
+      $('#stopAnimation').attr('disabled',false);
+      $('.CODE').filterFromToId(fromCodeId,toCodeId).addClass('INANIMATION');
+      tb.intervalTimers.push(window.setInterval(function() {
+        tb.inAnimation = true;
+        tb.execCodes(fromCodeId,toCodeId);
+        tb.inAnimation = false;
+      }
+      ,interval));
+    }
+    return new Date().toString();
+  }
+
+  tb.clearTimers = function () {
+    // clear all existing intervalTimers used by [[tb.animate]]
+    for (var i = 0;i<tb.intervalTimers.length;i++) {
+      window.clearInterval(tb.intervalTimers[i]);
+    };
+    tb.intervalTimers = [];
+    tb.inAnimation = false;
+    $('#stopAnimation').attr('disabled',true);
+    $('.INANIMATION').removeClass('INANIMATION');
+  }
+
+  tb.finalize = function() {
+    // execute all finalization code
+    for (var i=0;i<tb.finalizations.length;i++) {
+      var out = tb.finalizations[i];
+      tb.errorHandler.code = out.finalizationFunc.toString();
+      out.finalizationFunc();
+      out.finalizationFunc = undefined;  // so that displayResult will not show ... to be finalized...
+      tb.displayResult(out,out);
+    }
+  }
+
+  tb.run = function() {
+    // run either all CODE ELEMENT or the CODE ELEMENT from the first to the selected.element
+    if (tb.autoRun) {
+      tb.execAll();
+    }
+    else {
+      tb.execUntilSelected();
+    }
+  }
+
+  tb.updateContainers = function() {
+    // make sure that containers are never empty (= at least have a RICHTEXT ELEMENT)
+    var c$ = $('[container]:not(:has(> *))');
+    c$.append('<DIV class="ELEMENT EDITABLE RICHTEXT c-12" id='+tb.blockId('rich')+'></DIV>');
+  }
+  
+  tb.createVarFromItemprop = function(i,element) {
+    // create an instance of tb.Var or tb.Table depending on the type of element
+    var e$ = $(element);
+    var itemprop = e$.attr('itemprop');
+    if (e$.attr('itemscope')) {  // itemscope is represented by a tb.Table with one or more line
+      table(itemprop).add(tb.Template.getData(e$));
+    }
+    else {
+      var variable = tb.vars[itemprop];
+      if (variable) { 
+        if (variable instanceof tb.Var) {
+          var _var = variable;
+          variable = new tb.Array(variable.name);
+          variable.push(_var);
+          tb.vars[itemprop] = variable;
+        }
+        if (variable instanceof tb.Array) {
+          _var = new tb.Var(itemprop);
+          _var.setValue(e$.getItempropValue())
+          variable.push(_var)
+        }
+        else throw Error('internal error: unexpected class '+variable.toString()+'while createVarFromItemprop of'+element.outerHTML);
+      }
+      else {
+        _var = e$.getItempropValue();
+        if (_var.isVar) {
+          _var.name = itemprop;
+          tb.vars[itemprop] = _var;
+        }
+        else v(itemprop,_var);
+      }
+    }
+  }
+  
+  tb.createVars = function() {
+    // look in the DOM for itemprops that have no itemscope ancestor
+    // for each create a tb.vars.<that itemprop> with the itemprop name with the content of that itemprop
+    // 1) if the itemprop ends with [], it is forced to an array (but the name of the array has not the []) 
+    //    and the value is pushed into it
+    // 2) if the itemprop has the same name of an already existing tb.vars that is not an array,
+    //    the var is first converted to an array with the already existing var as [0]
+    //    the new itemprop is pushed into it
+    // 3) the content of the variable depends on the itemprop tag according to 
+    //    [tb.createVarFromItemprop]
+    var globalItemprops = $('[itemprop]').filter(function(){return $(this).parents('[itemscope]').length === 0});
+    globalItemprops.each(tb.createVarFromItemprop)
+  }
+  
+  tb.updateFunctionElements = function() {
+    // update every element that has an itemprop and a func attribute
+    $('[func]').each(function(){
+      e$ = $(this);
+      e$.html(tb.format(e$.prop('tbVar').valueOf(),{format:{fmtStr:e$.attr('format')}}))
+    })
+  }
+
+  tb.prepareExec = function() {
+    // reset the environement before so that no side effect
+    // let [[Feature]]s object collect data on the document
+    tb.results = {execStat:{start: new Date()}};
+
+    for (var i=0; i<tb.features.length; i++) tb.features[i].reset();
+    trace.off();
+    tb.clearTimers();
+    $('.TRACE').remove();
+    $('.BOX').remove();
+    $('.OUTPUT').add('.TEST').removeClass('SUCCESS').removeClass('ERROR')
+    tb.finalizations = [];
+    tb.vars = {}; // run from fresh
+    tb.createVars();
+    tb.IElement.idNumber = 0;
+    for (var i=0; i<tb.features.length; i++) tb.features[i].update && tb.features[i].update();
+    tb.simulation = new tb.Simulation('tb.simulation');
+    tb.editables$(tb.selected.element).each(function(i,e){tb.reformatRichText(e)});
+    tb.results.execStat.prepare$ms=Date.now()-tb.results.execStat.start;
+  }
+
+  tb.execAll = function() {
+    // execute all [[CODE]] [[ELEMENT]]
+    tb.prepareExec();
+    $('.CODE').add('[itemtype]').each(function(i,e) {tb.execCode(e);});
+    tb.updateContainers();
+    tb.finalize();
+    tb.results.execStat.execAll$ms=Date.now()-tb.results.execStat.start;
+    tb.updateFunctionElements();
+    tb.setUpToDate(true);
+  }
+
+  tb.execUntilSelected = function() {
+    // execute all [[CODE]] [[ELEMENT]] until the selected Element
+    tb.prepareExec();
+    var $codes = $('.CODE');
+    if (tb.selected.element$.hasClass('CODE')){
+      var lastI = $codes.index(tb.selected.element);
+    }
+    else {
+      var $last = $('.CODE',tb.selected.element).last();
+      if ($last.length === 0) { // selected element is a section or rich text that has no internal CODE element
+        $codes.add(tb.selected.element); // we add this element (even if not a code) just to know where to stop
+        var lastI = $codes.index(tb.selected.element)-1;
+      }
+      else {
+        var lastI = $codes.index($last);
+      }
+    }
+    $('.CODE').each(function(i,e) {
+      if (i>lastI) return false;
+      tb.execCode(e);
+    });
+    // no finalization since not all code is run, so some element will not exist
+    tb.setUpToDate(false);
+  }
+
+

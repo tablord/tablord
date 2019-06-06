@@ -120,7 +120,7 @@
   }
 
 
-  tb.Var.prototype.isV = true;
+  tb.Var.prototype.isVar = true;
 
   function v(name,value) {
     // v(name) returns the variable name: rarely used since name alone will represent the same as well as tb.vars[name]

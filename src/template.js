@@ -254,6 +254,13 @@
     },
     convertData: function(data,element$) {element$.html('Object('+tb.toJSCode(data)+')')}
   });
+  
+  tb.template({
+    url : 'https://tablord.com/template/function',
+    element$: function() {
+      return $('<div class="ELEMENT FUNC" id="'+tb.blockId('func')+'" func="return">');
+    }
+  });
 
   tb.template({
     url : 'https://tablord.com/templates/section',

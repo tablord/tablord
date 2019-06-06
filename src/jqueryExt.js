@@ -97,6 +97,7 @@
 
   $.fn.getItempropValue = function(){
     // return the value of an element handling all specifications of microdata of the getter of itemValue
+    // if the element is a standard tag (not AUDIO...) and has a [[func]] attribute the return value is a tb.Var instance without name
     var tag = this.prop('tagName');
     if (this.attr('itemprop') === undefined) return null;
     if (this.attr('itemscope')) return this[0];
