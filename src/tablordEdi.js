@@ -401,7 +401,7 @@
   //////////////////////////////////////////////////////////////////////////////
   // method to manipulate the document /////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
-  
+
   tb.updateTemplateChoice = function() {
     // update the template selection box according to the context i.e. the acceptedTemplate of the current container
     tb.menu.templateChoice$.empty();
@@ -485,10 +485,10 @@
     // if a SUCCESS test existed, remove the test
     if (tb.selected.element == undefined) return;
 
-    var out$ = tb.outputElement(tb.selected.element);
-    var test$ = tb.testElement(tb.selected.element);
+    var out$ = tb.outputElement$(tb.selected.element$);
+    var test$ = tb.testElement$(tb.selected.element$);
     if (test$.length === 0) {
-      out$.after($('<DIV id="'+tb.selected.element.id.replace(/code/,"test")+'" class="TEST SUCCESS">'+out.innerHTML+'</DIV>'));
+      out$.after($('<DIV id="'+tb.selected.element.id.replace(/code/,"test")+'" class="TEST SUCCESS">'+out$.html()+'</DIV>'));
     }
     else if (!test$.hasClass('SUCCESS')) {
       test$.html(out$.html()).removeClass('ERROR').addClass('SUCCESS');
@@ -629,6 +629,14 @@
 
   // EDI eventHandlers ///////////////////////////////////////////////////////////////
 
+  tb.beforeUnload = function(event) {  //TODO avec hta, ne fonctionne pas bien
+    // event handler before closing check if a save is needed and desired
+    if (tb.modified) {
+      event.returnValue='ouups?';
+      return 'ouups?'
+    }
+  }
+
 
   tb.reformatRichText = function(element) {
     // reformat a [[RICHTEXT]] [[ELEMENT]] in order to find potential [[EMBEDDED]] [[CODE]]
@@ -721,6 +729,7 @@
       //tb.initToolBars();
       tb.initMenu();
       tb.editor = new tb.Editor();
+      $(window).bind('beforeunload',tb.beforeUnload);      
       $('body').keydown(tb.bodyKeyDown)//.keyup(tb.bodyKeyUp);
       tb.autoRun = $('body').attr('autoRun')!==false;
       tb.help.update(tb,'tb.');
