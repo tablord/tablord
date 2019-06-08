@@ -45,21 +45,19 @@
     // if the variable is in fact a function, executes the function and return its value
     if (this.func) {
       var row = this.row && this.row._;
-      var res = this.func(row,this.col);
+      try {
+        var res = this.func(row,this.col);
+      }
+      catch (err) {
+        if (this.sourceElement) tb.showError(this.sourceElement,err);
+        var table = this.row && this.row.table;
+        throw Error('error in evaluation of '+this.fullName()+': '+err.message);
+      }
       return res
     }
     return this.value;
   }
-  
-  Object.defineProperty(tb.Var.prototype, "sourceElement", {
-    get : function () {
-      // get the source element (if any) that is attached to the Var or the function embedded in the var
-      // if a property sourceElement is attached directly to the tb.Var object, it will override this getter
-      if (this.func) return this.func.sourceElement;
-      return undefined;
-    }
-  });
-  
+
   tb.Var.prototype.toJSCode = function () {
     // return a string that can be interpreted by eval and will give the same result as the value
     return this.code()?'f('+tb.toJSCode(this.code())+')':tb.toJSCode(this.value);
@@ -77,9 +75,17 @@
     return tb.Units.convert(this.valueOf(),this.unit,unit);
   }
 
+  tb.Var.prototype.fullName = function() {
+    // return the most explicit name either as a global variable
+    // or as a cell of a table
+    if (this.name) return this.name;
+    var table = this.row && this.row.table;
+    return (table.name?table.name:anonymous_table)+'['+this.row.index+','+this.col+']';
+  }
+  
   tb.Var.prototype.toString = function() {
     // return the summary of the variable
-    return '[object tb.Var('+this.name+'):'+(this.func?this.toJSCode()+'==>':'')+this.valueOf()+']';
+    return '[object tb.Var('+this.fullName()+'):'+(this.func?this.toJSCode()+'==>':'')+this.valueOf()+']';
   }
 
   tb.Var.prototype.view = function(options) {
@@ -202,7 +208,7 @@
     if (typeof value == "function") {
       var value = new tb.Var(undefined,value);  //wrap the function into a V
     }
-    if (value instanceof tb.Var) {
+    if (value.isVar) {
       value.row = this;       //and assign the _row,_col
       value.col = col;
     }

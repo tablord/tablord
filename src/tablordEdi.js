@@ -97,9 +97,10 @@
     			'<div>'+
                   '<details id="properties"><summary>properties</summary>'+
                     '<input id="itemprop" type="text" placeholder="itemprop">'+
-                    '<input id="itemtype" placeholder="itemtype"><br>'+
-                    '<input id="func" placeholder="function code">'+
+                    '<input id="itemtype" placeholder="itemtype">'+
                     '<input id="format" placeholder="format"><br>'+
+                    '<div id="func" style="height:200px;"></div>'+
+                    '<div id="error" class="alert alert-danger"></div>'+
                     
                     '<input type="radio" name="type" value="number">number '+
                     '<input type="radio" name="type" value="string">string '+
@@ -165,6 +166,14 @@
     
     tb.menu.selectionToolBar$.hide();
     
+    tb.menu.error$.hide();
+    tb.menu.funcEditor = ace.edit('func');
+    tb.menu.funcEditor.session.setMode("ace/mode/javascript");
+    tb.menu.funcEditor.session.on('change',function(delta){
+      var code = tb.menu.funcEditor.getValue();
+      if (code) e$.attr('func',code);
+      else e$.removeAttr('func');
+    });
     tb.menu.properties$.click(function(event){
       $(event.currentTarget).children().each(function(){
         var className = $(this).val()
@@ -180,8 +189,6 @@
       else e$.removeAttr('itemprop');
       if (tb.menu.itemtype$.val()) e$.attr('itemitype',tb.menu.itemtype$.val())
       else e$.removeAttr('itemtype');
-      if (tb.menu.func$.val()) e$.attr('func',tb.menu.func$.val())
-      else e$.removeAttr('func');
       if (tb.menu.format$.val()) e$.attr('format',tb.menu.format$.val())
       else e$.removeAttr('format');
       tb.run();
@@ -312,7 +319,7 @@
     var elements$ = $('.MARKED')
     if (elements$.length === 0) elements$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
     var target$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
-    tb.cloneElements$(event,true).insertAfter(target$);
+    tb.cloneElements$(elements$,true).insertAfter(target$);
   }
   
 
@@ -536,8 +543,11 @@
       clones$.removeClass('SELECTED');
       prepare(clones$.children());
     }
+    
     var newElements$ = elements$.clone();
+    prepare(newElements$);
     tb.setUpToDate(false);
+    tb.setModified(true);
     return newElements$;
   }
 
@@ -594,7 +604,10 @@
     var itemprop = e$.attr('itemprop')
     tb.menu.itemprop$.val(itemprop);
     tb.menu.itemtype$.val(e$.attr('itemtype'));
-    tb.menu.func$.val(e$.attr('func'));
+    tb.menu.funcEditor.setValue(e$.attr('func'));
+    var error = e$.attr('error');
+    if (error) tb.menu.error$.text(error).show();
+    else tb.menu.error$.hide();
     tb.menu.format$.val(e$.attr('format'));
 
     e$.addClass('SELECTED');
@@ -648,9 +661,9 @@
                            function(s,command,code) {
                              change = true;  // if called, this function will change the document
                              switch (command) {
-                               case ''   : return '<SPAN class="CODE EMBEDDED ELEMENT" id='+ tb.blockId('code')+'">&nbsp;'+code+'</SPAN>';
-                               case '##' : return '<SPAN class="CODE EMBEDDED ELEMENT" id='+ tb.blockId('code')+'">&nbsp;tb.elementBox("'+code+'")</SPAN>';
-                               case '#'  : return '<SPAN class="CODE EMBEDDED ELEMENT" id='+ tb.blockId('code')+'">&nbsp;tb.link("'+code+'")</SPAN>';
+                               case ''   : return '<SPAN class="CODE EMBEDDED ELEMENT" id="'+ tb.blockId('code')+'">&nbsp;'+code+'</SPAN>';
+                               case '##' : return '<SPAN class="CODE EMBEDDED ELEMENT" id="'+ tb.blockId('code')+'">&nbsp;tb.elementBox("'+code+'")</SPAN>';
+                               case '#'  : return '<SPAN class="CODE EMBEDDED ELEMENT" id="'+ tb.blockId('code')+'">&nbsp;tb.link("'+code+'")</SPAN>';
                              }
                            },
                            function(e) {  //replace in any tag except those having CODE or OUTPUT class

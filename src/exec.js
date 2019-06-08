@@ -670,8 +670,8 @@
     var outId = id.replace(/code/,"out");
     var out$ = $('#'+outId);
     if (out$.length === 0) {
-      var tag = (element$.attr('tagName')==='SPAN')?'SPAN':'DIV';
-      out$ = $('<'+tag+' class=OUTPUT id='+outId+'>no output</'+tag+'>').insertAfter(element$);
+      var tag = (element$.prop('tagName')==='SPAN')?'SPAN':'DIV';
+      out$ = $('<'+tag+' class=OUTPUT id="'+outId+'">no output</'+tag+'>').insertAfter(element$);
     }
     return out$;
   }
@@ -687,6 +687,12 @@
   
   //  display / execution ////////////////////////////////////////////////////
 
+  tb.showError = function(element,error) {
+    // show an error reported in a tb.Var that is linked to an Element 
+    // - element: the element where to display the error
+    // - error: the error
+    $(element).addClass('ERROR').attr('error',error.message+'\n'+error.stack);
+  }
 
   tb.displayResult = function(result,output) {
     // display result in output (that must be a tb.Output object
@@ -703,7 +709,7 @@
     // execute the code of element
     // skip all CUT element
     var element$ = $(element);
-    if (element$.hasClass('CUT')) return;
+    if (element$.hasClass('DELETED')) return;
 
     // if template, lauch exec method if any
     if (element$.attr('itemtype')) {
@@ -874,33 +880,20 @@
     // create an instance of tb.Var or tb.Table depending on the type of element
     var e$ = $(element);
     var itemprop = e$.attr('itemprop');
-    if (e$.attr('itemscope')) {  // itemscope is represented by a tb.Table with one or more line
-      table(itemprop).add(tb.Template.getData(e$));
+    var variable = tb.vars[itemprop];
+    if (e$.attr('itemscope')!==undefined) {  // itemscope is represented by a tb.Table with one or more line
+      if (variable && !(variable instanceof tb.Table)) throw Error(itemprop+' is already declared and is not a table ');
+      var data = tb.Template.getData(e$)
+      table(itemprop).add(data);
     }
-    else {
-      var variable = tb.vars[itemprop];
-      if (variable) { 
-        if (variable instanceof tb.Var) {
-          var _var = variable;
-          variable = new tb.Array(variable.name);
-          variable.push(_var);
-          tb.vars[itemprop] = variable;
-        }
-        if (variable instanceof tb.Array) {
-          _var = new tb.Var(itemprop);
-          _var.setValue(e$.getItempropValue())
-          variable.push(_var)
-        }
-        else throw Error('internal error: unexpected class '+variable.toString()+'while createVarFromItemprop of'+element.outerHTML);
+    else {// this is a simple tb.Var
+      if (variable) throw Error(itemprop+' is already declared '); 
+      _var = e$.getItempropValue();
+      if (_var.isVar) {
+        _var.name = itemprop;
+        tb.vars[itemprop] = _var;
       }
-      else {
-        _var = e$.getItempropValue();
-        if (_var.isVar) {
-          _var.name = itemprop;
-          tb.vars[itemprop] = _var;
-        }
-        else v(itemprop,_var);
-      }
+      else v(itemprop,_var);
     }
   }
   
@@ -920,9 +913,17 @@
   
   tb.updateFunctionElements = function() {
     // update every element that has an itemprop and a func attribute
-    $('[func]').each(function(){
+    var elements$ = $('[func]');
+    elements$.each(function(){
       e$ = $(this);
-      e$.html(tb.format(e$.prop('tbVar').valueOf(),{format:{fmtStr:e$.attr('format')}}))
+      try {
+        var tbVar = e$.prop('tbVar')
+        var value = tbVar.valueOf();
+      }
+      catch (err) {
+        e$.addClass('ERROR').attr('error',err.message);
+      }
+      e$.html(tb.format(value,{format:{fmtStr:e$.attr('format')}}))
     })
   }
 
@@ -936,7 +937,8 @@
     tb.clearTimers();
     $('.TRACE').remove();
     $('.BOX').remove();
-    $('.OUTPUT').add('.TEST').removeClass('SUCCESS').removeClass('ERROR')
+    $('.OUTPUT').add('.TEST').removeClass('SUCCESS').removeClass('ERROR');
+    $('[func]').removeProp('tbVar').removeAttr('error').removeClass('ERROR');
     tb.finalizations = [];
     tb.vars = {}; // run from fresh
     tb.createVars();

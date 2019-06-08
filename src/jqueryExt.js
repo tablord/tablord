@@ -98,6 +98,8 @@
   $.fn.getItempropValue = function(){
     // return the value of an element handling all specifications of microdata of the getter of itemValue
     // if the element is a standard tag (not AUDIO...) and has a [[func]] attribute the return value is a tb.Var instance without name
+    //   in that case this tb.Var is cached in the tbVar property of the element
+    //   this is the responsibility of the application to destroy the cache when needed (typically tb.prepareExec)
     var tag = this.prop('tagName');
     if (this.attr('itemprop') === undefined) return null;
     if (this.attr('itemscope')) return this[0];
@@ -113,7 +115,9 @@
     //--- this is not microdata but only valid in Tablord where the class number or date or duration can force
     else value = this.text();
     if (this.attr('func')) {
-      var tbVar = new tb.Var(undefined,f(this.attr('func')));
+      var tbVar = this.prop('tbVar');
+      if (tbVar) return tbVar;
+      tbVar = new tb.Var(undefined,f(this.attr('func')));
       tbVar.sourceElement = this[0];
       this.prop('tbVar',tbVar); // store a direct link to the tb.Var object that contains the function
                                 // so it will be easy to update the content at the end of calculation
@@ -337,21 +341,11 @@
     if (this.length !== 1) throw new Error('neighbourg$ needs a 1 element jQuery'+this.toString())
     
     var element$ = this;
-    var after = where==='after' || where==='afterItemscope';
     if (where==='beforeItemscope' || where==='afterItemscope') {
       element$ = element$.itemscopeOrThis$();
     }
-    if (element$.hasClass('CODE')) {
-      if (after) {
-        if (element$.next().hasClass('OUTPUT')) element$=element$.next();
-        if (element$.next().hasClass('TEST')) element$=element$.next();
-      }
-      else {
-        if (element$.prev().hasClass('OUTPUT')) element$=element$.prev();
-        if (element$.prev().hasClass('TEST')) element$=element$.prev();
-      }
-    }
-    return element$;
+    if (where==='after' || where==='afterItemscope') return element$.last();
+    return element$.first();
   }
 
 
