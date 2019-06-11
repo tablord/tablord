@@ -404,7 +404,34 @@
     var tbObject = tb.vars[element.tbObject]
     return tbObject.editorEvent(event);
   }
+  
+  //////////////////////////////////////////////////////////////////////////////
+  // method to display changes
+  //////////////////////////////////////////////////////////////////////////////
 
+
+  tb.setModified = function(state) {
+    // set the modified state and modify the save button accordingly
+    tb.modified = state;
+    tb.menu.saveBtn$.toggleClass('btn-warning',state).toggleClass('btn-dark',!state);
+  }
+
+  tb.setUpToDate = function(state) {
+    // set if the sheet is up to date or not (has to be re-run)
+    if (state === tb.setUpToDate.state) return;
+    if (state) {
+      tb.menu.runAllBtn$.removeClass('btn-warning').addClass('btn-dark');
+    }
+    else {
+      tb.menu.runAllBtn$.removeClass('btn-dark').addClass('btn-warning');
+      $('.OUTPUT').add('.TEST').removeClass('SUCCESS ERROR');
+    }
+    tb.setUpToDate.state = state;
+  }
+
+  tb.showInternalError = function(html) {
+    tb.menu.debug$.html(html).show();
+  }
   //////////////////////////////////////////////////////////////////////////////
   // method to manipulate the document /////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -425,25 +452,6 @@
         '<button class="dropdown-item" template="'+template.url+'">'+template.name+'</button>'
       );
     }
-  }
-
-  tb.setModified = function(state) {
-    // set the modified state and modify the save button accordingly
-    tb.modified = state;
-    tb.menu.saveBtn$.toggleClass('btn-warning',state).toggleClass('btn-dark',!state);
-  }
-
-  tb.setUpToDate = function(state) {
-    // set if the sheet is up to date or not (has to be re-run)
-    if (state === tb.setUpToDate.state) return;
-    if (state) {
-      tb.menu.runAllBtn$.removeClass('btn-warning').addClass('btn-dark');
-    }
-    else {
-      tb.menu.runAllBtn$.removeClass('btn-dark').addClass('btn-warning');
-      $('.OUTPUT').add('.TEST').removeClass('SUCCESS ERROR');
-    }
-    tb.setUpToDate.state = state;
   }
 
   tb.clearOutputs = function() {
@@ -604,7 +612,7 @@
     var itemprop = e$.attr('itemprop')
     tb.menu.itemprop$.val(itemprop);
     tb.menu.itemtype$.val(e$.attr('itemtype'));
-    tb.menu.funcEditor.setValue(e$.attr('func'));
+    tb.menu.funcEditor.setValue(e$.attr('func') || '');
     var error = e$.attr('error');
     if (error) tb.menu.error$.text(error).show();
     else tb.menu.error$.hide();
@@ -754,4 +762,4 @@
     if (tb.autoRun) tb.execAll();
   });
 
-
+  //window.onerror = tb.errorHandler;

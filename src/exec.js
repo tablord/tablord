@@ -687,12 +687,48 @@
   
   //  display / execution ////////////////////////////////////////////////////
 
-  tb.showError = function(element,error) {
-    // show an error reported in a tb.Var that is linked to an Element 
-    // - element: the element where to display the error
-    // - error: the error
-    $(element).addClass('ERROR').attr('error',error.message+'\n'+error.stack);
-  }
+
+  errorHandlerOld = function(message,url,line) {
+    // the default handler called by JavaScript giving the message, the url of the page or script and the faulty line
+    var out  = tb.output && tb.output.outputElement;
+    if (out) {
+      if (url) {
+        out.innerHTML = message+'<br>'+url+' line:'+line+'<br>'+trace.span();
+      }
+      else {
+        var code = tb.errorHandler.code || '';
+        var faults = message.match(/« (.+?) »/);
+        if (faults !== null) {
+          var fault = faults[1];
+          code = tb.output.codeElement.innerHTML
+                   .replace(/ /g,'&nbsp;')
+                   .replace(new RegExp(fault,'g'),'<SPAN class="WRONG">'+fault+'</SPAN>');
+          tb.output.codeElement.innerHTML = code;
+          tb.selectElement(tb.output.codeElement);
+        }
+        out.innerHTML = trace.span()+message;
+      }
+      $(out).removeClass('SUCCESS').addClass('ERROR');
+      out.scrollIntoView();
+      return true;
+    }
+    return false;
+  };
+  
+  tb.errorHandler = function(e) {
+    var out$ = $(tb.output && tb.output.outputElement);
+    var message = e.message+'<br>'+ e.filename+' line:'+e.line+'col:'+e.colno+'<br>'+e.stack+''+tb.inspect(e).span();
+    if (out$.length) {
+      out$
+      .html(trace.span()+message)
+      .removeClass('SUCCESS').addClass('ERROR');
+    }
+    else {
+      tb.menu.error$.html(message);
+    }
+  };
+  
+  window.addEventListener('error', tb.errorHandler);
 
   tb.displayResult = function(result,output) {
     // display result in output (that must be a tb.Output object
@@ -907,8 +943,11 @@
     //    the new itemprop is pushed into it
     // 3) the content of the variable depends on the itemprop tag according to 
     //    [tb.createVarFromItemprop]
-    var globalItemprops = $('[itemprop]').filter(function(){return $(this).parents('[itemscope]').length === 0});
-    globalItemprops.each(tb.createVarFromItemprop)
+    var globalItemprops = $('[itemprop]').filter(function(){
+      return $(this).parents('[itemscope]').length === 0 && // must not be inside a itemscope
+             $(this).closest('.DELETED').length === 0;  // nor be deleted or having a deleted parent
+    });
+    globalItemprops.each(tb.createVarFromItemprop);
   }
   
   tb.updateFunctionElements = function() {
