@@ -429,6 +429,22 @@
     tb.setUpToDate.state = state;
   }
 
+  tb.showElementError = function(element,error) {
+    // report an error that occured inside an element
+    // like getting the valueof a tb.Var
+    $(element).addClass('ERROR').removeClass('SUCCESS').html('<span class="badge badge-pill badge-warning">'+(error.cascade || 'error')+'</span>')
+    .prop('error',{message:error.message,
+                   stack:error.stack,
+                   lineNumber:error.lineNumber,
+                   columnNumber:error.columnNumber,
+                   cascade:error.cascade
+    });
+    if (!error.cascade) {
+      tb.selectElement(element);
+      tb.menu.properties$.prop('open',true);
+    }
+  }
+  
   tb.showInternalError = function(html) {
     tb.menu.debug$.html(html).show();
   }
@@ -599,8 +615,6 @@
       tb.menu.selectionToolBar$.hide();
       return;
     }
-    tb.menu.$.show();
-    tb.menu.selectionToolBar$.show(500);
     tb.menu.codeId$.html(element.id+'<SPAN style="color:red;cursor:pointer;" onclick="tb.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
     tb.menu.properties$.children().each(function(){
       var checkbox$ = $(this);
@@ -612,9 +626,22 @@
     var itemprop = e$.attr('itemprop')
     tb.menu.itemprop$.val(itemprop);
     tb.menu.itemtype$.val(e$.attr('itemtype'));
-    tb.menu.funcEditor.setValue(e$.attr('func') || '');
-    var error = e$.attr('error');
-    if (error) tb.menu.error$.text(error).show();
+    tb.menu.funcEditor.setValue(e$.attr('func') || '')
+    var error = e$.prop('error');
+    if (error) {
+      var line = error.lineNumber;
+      var col = error.columnNumber;
+      tb.menu.error$.html('<details><summary>'+error.message+' line:'+line+' col:'+col+'</summary>'+error.stack.replace('/\n/g','<br>').replace(/ at /g,'<br>at ')+'</details>').show();
+      /*
+      tb.menu.funcEditor.getSession().setAnnotations([{
+        row:line-1,
+        column:col,
+        text:error.message,
+        type:'error'
+      }]);
+      */
+      tb.menu.funcEditor.gotoLine(line,col-1);
+    }
     else tb.menu.error$.hide();
     tb.menu.format$.val(e$.attr('format'));
 
@@ -624,7 +651,10 @@
     }
     tb.updateTemplateChoice();
     tb.editables$(element).attr('contentEditable',true);
-    element.focus();
+    tb.menu.$.show();
+    tb.menu.selectionToolBar$.show(500,function(){tb.menu.funcEditor.resize()});
+    if (error) tb.menu.funcEditor.focus();
+    else element.focus();
   }
 
   tb.moveElement = function(element$,where) {
@@ -721,45 +751,45 @@
 
   $(function () {
     // upgrades ////////////////////////////////////////////////////
-    try {
-      //tb.upgradeModules();
-      tb.upgradeFramework();
-      if (window.document.compatMode != 'CSS1Compat') {
-        window.alert('your document must have <!DOCTYPE html> as first line in order to run properly: please save and re-run it');
-      }
-      // prepare the sheet ///////////////////////////////////////////
-      tb.url = tb.urlComponents(window.document.location.href);
-      tb.tbContent$ = $('#tbContent');
-      $('.SELECTED').removeClass('SELECTED');
-      $(document)
-      .on("click",'.ELEMENT',tb.elementClick)
-      .on("keydown",'.EDITABLE',tb.editableKeyDown)
-      .on("change",'.EDITOR',tb.editorEventHandler)
-      .on("click",'.EDITOR',tb.editorEventHandler)
-      .on("click",'.SCENE',function(event){event.stopPropagation()})       // cancel bubbling of click to let the user control clicks
-      .on("click",'.INTERACTIVE',function(event){event.stopPropagation()}) // cancel bubbling of click to let the user control clicks
-      .on("click",'.LINK',function(event){event.stopPropagation()})        // cancel bubbling of click to let the user control clicks
-      .on("click",'.HELPLINK',function(event){tb.help.index.show(event.target.innerHTML)})
-      .on("click",'.BOXLINK',tb.openCloseBox)                              // open or close Box and cancel bubbling of click since it is only to open close
-      .on("click",'.BOX',function(event){event.stopPropagation()});    // cancel bubbling of click
+    tb.tbContent$ = $('#tbContent');
+    tb.initMenu();
+    window.onerror = function(message,url,lineNo,colNo,error) {
+      tb.showInternalError('Internal Error :'+message+'<br>'+error.stack);
+    };
 
-      $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR');
-      $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
+    //tb.upgradeModules();
+    tb.upgradeFramework();
+    if (window.document.compatMode != 'CSS1Compat') {
+      window.alert('your document must have <!DOCTYPE html> as first line in order to run properly: please save and re-run it');
+    }
+    // prepare the sheet ///////////////////////////////////////////
+    tb.url = tb.urlComponents(window.document.location.href);
 
-      tb.findblockNumber();
-      //tb.initToolBars();
-      tb.initMenu();
-      tb.editor = new tb.Editor();
-      $(window).bind('beforeunload',tb.beforeUnload);      
-      $('body').keydown(tb.bodyKeyDown)//.keyup(tb.bodyKeyUp);
-      tb.autoRun = $('body').attr('autoRun')!==false;
-      tb.help.update(tb,'tb.');
-      tb.updateContainers();
-    }
-    catch (e) {
-      window.alert(e.toString());
-    }
+    $('.SELECTED').removeClass('SELECTED');
+    $(document)
+    .on("click",'.ELEMENT',tb.elementClick)
+    .on("keydown",'.EDITABLE',tb.editableKeyDown)
+    .on("change",'.EDITOR',tb.editorEventHandler)
+    .on("click",'.EDITOR',tb.editorEventHandler)
+    .on("click",'.SCENE',function(event){event.stopPropagation()})       // cancel bubbling of click to let the user control clicks
+    .on("click",'.INTERACTIVE',function(event){event.stopPropagation()}) // cancel bubbling of click to let the user control clicks
+    .on("click",'.LINK',function(event){event.stopPropagation()})        // cancel bubbling of click to let the user control clicks
+    .on("click",'.HELPLINK',function(event){tb.help.index.show(event.target.innerHTML)})
+    .on("click",'.BOXLINK',tb.openCloseBox)                              // open or close Box and cancel bubbling of click since it is only to open close
+    .on("click",'.BOX',function(event){event.stopPropagation()});    // cancel bubbling of click
+
+    $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR');
+    $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
+
+    tb.findblockNumber();
+    
+    tb.editor = new tb.Editor();
+    $(window).bind('beforeunload',tb.beforeUnload);      
+    $('body').keydown(tb.bodyKeyDown)//.keyup(tb.bodyKeyUp);
+    tb.autoRun = $('body').attr('autoRun')!==false;
+    tb.help.update(tb,'tb.');
+    tb.updateContainers();
+
     if (tb.autoRun) tb.execAll();
   });
 
-  //window.onerror = tb.errorHandler;

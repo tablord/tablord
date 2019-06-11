@@ -17,7 +17,6 @@
   // to be checked what could be done to improve
     code.replace(/^\s*\{(.*)\}\s*$/,'({$1})');  // if the code is just a litteral object {..} add brakets in order to deal with the with(tb.vars){ } statement
 
-    tb.errorHandler.code = code;
     code = 'var output = tb.output; with (tb.vars) {\n'+code+'\n};';   //output becomes a closure, so finalize function can use it during finalizations
     return geval(code)
   }
@@ -688,48 +687,6 @@
   //  display / execution ////////////////////////////////////////////////////
 
 
-  errorHandlerOld = function(message,url,line) {
-    // the default handler called by JavaScript giving the message, the url of the page or script and the faulty line
-    var out  = tb.output && tb.output.outputElement;
-    if (out) {
-      if (url) {
-        out.innerHTML = message+'<br>'+url+' line:'+line+'<br>'+trace.span();
-      }
-      else {
-        var code = tb.errorHandler.code || '';
-        var faults = message.match(/« (.+?) »/);
-        if (faults !== null) {
-          var fault = faults[1];
-          code = tb.output.codeElement.innerHTML
-                   .replace(/ /g,'&nbsp;')
-                   .replace(new RegExp(fault,'g'),'<SPAN class="WRONG">'+fault+'</SPAN>');
-          tb.output.codeElement.innerHTML = code;
-          tb.selectElement(tb.output.codeElement);
-        }
-        out.innerHTML = trace.span()+message;
-      }
-      $(out).removeClass('SUCCESS').addClass('ERROR');
-      out.scrollIntoView();
-      return true;
-    }
-    return false;
-  };
-  
-  tb.errorHandler = function(e) {
-    var out$ = $(tb.output && tb.output.outputElement);
-    var message = e.message+'<br>'+ e.filename+' line:'+e.line+'col:'+e.colno+'<br>'+e.stack+''+tb.inspect(e).span();
-    if (out$.length) {
-      out$
-      .html(trace.span()+message)
-      .removeClass('SUCCESS').addClass('ERROR');
-    }
-    else {
-      tb.menu.error$.html(message);
-    }
-  };
-  
-  window.addEventListener('error', tb.errorHandler);
-
   tb.displayResult = function(result,output) {
     // display result in output (that must be a tb.Output object
     $(output.outputElement)
@@ -765,8 +722,16 @@
     var out$  = tb.outputElement$(element$);
     var test$ = tb.testElement$(element$)
     tb.output = tb.newOutput(element$[0],out$[0]);
-    var res = tb.securedEval(tb.htmlToText(element.innerHTML));
-    tb.displayResult(res,tb.output);
+    try {
+      var res = tb.securedEval(tb.htmlToText(element.innerHTML));
+      tb.displayResult(res,tb.output);
+    }
+    catch (err) {
+      $(tb.output.outputElement)
+      .html(trace.span()+'<br><span class="badge badge-pill badge-warning">'+err.cascade+'</span>'+err.message)
+      .removeClass('SUCCESS').addClass('ERROR');
+      return false;  // will break the each loop
+    }
     // test
     if (test$.length) {
       if ((tb.trimHtml(out$.html()) == tb.trimHtml(test$.html()))) {   //TODO rethink how to compare
@@ -792,54 +757,10 @@
     fromCodeId = fromCodeId || code$.first().attr('id');
     toCodeId = toCodeId || code$.last().attr('id');
     code$.filterFromToId(fromCodeId,toCodeId).each(function(i,e) {
-      tb.execCode(e);
+      return tb.execCode(e);
     });
   }
 
-  tb.runHtaFile = function(fileName,noWait,parameters) {
-    // run an other file
-    // if noWait is false or undefined, just open the file and returns without waiting
-    //           is true run the file with ?runonce. it is the file responsibility to behave in this manner
-    //                   this function will return the result object produced by the .hta file
-    // parameters is encoded for uri and added to the searchstring
-    var params = [];
-    if (noWait) {
-      runOnce=false;
-    }
-    else {
-      runOnce=true;
-      params.push('runonce')
-    }
-    if (parameters) {
-      for (var p in parameters) {
-        params.push(encodeURIComponent(p)+'='+encodeURIComponent(parameters[p]));
-      }
-    }
-
-
-    fileName = tb.absoluteFileName(fileName,tb.url.absolutePath);
-    var resultFileName = fileName.replace(/\.hta/i,'.jres');
-    if (params.length > 0) {
-      var cmd = 'mshta.exe '+fileName+'?'+params.join('&');
-    }
-    else {
-      var cmd = fileName;
-    }
-    var errCode = tb.shell.Run(cmd,1,runOnce);
-    if (runOnce) {
-      var res = {};
-      try {
-        var json = tb.fso.readFile(resultFileName);
-        res = JSON.parse(json);
-        res.cmd = cmd;
-        res.errCode = errCode;
-      }
-      catch (e) {
-        res.errCode = e.message;
-      }
-      return res;
-    }
-  }
 
   tb.runTests = function(/*files...*/) {
     // run every specified files as test files and return a table with all results
@@ -958,11 +879,11 @@
       try {
         var tbVar = e$.prop('tbVar')
         var value = tbVar.valueOf();
+        e$.html(tb.format(value,{format:{fmtStr:e$.attr('format')}}))
       }
       catch (err) {
-        e$.addClass('ERROR').attr('error',err.message);
+        // do nothing, since the error has already been registred 
       }
-      e$.html(tb.format(value,{format:{fmtStr:e$.attr('format')}}))
     })
   }
 
@@ -977,7 +898,7 @@
     $('.TRACE').remove();
     $('.BOX').remove();
     $('.OUTPUT').add('.TEST').removeClass('SUCCESS').removeClass('ERROR');
-    $('[func]').removeProp('tbVar').removeAttr('error').removeClass('ERROR');
+    $('[func]').removeProp('tbVar').removeProp('error').removeClass('ERROR');
     tb.finalizations = [];
     tb.vars = {}; // run from fresh
     tb.createVars();
@@ -991,7 +912,7 @@
   tb.execAll = function() {
     // execute all [[CODE]] [[ELEMENT]]
     tb.prepareExec();
-    $('.CODE').add('[itemtype]').each(function(i,e) {tb.execCode(e);});
+    $('.CODE').add('[itemtype]').each(function(i,e) {return tb.execCode(e);});
     tb.updateContainers();
     tb.finalize();
     tb.results.execStat.execAll$ms=Date.now()-tb.results.execStat.start;

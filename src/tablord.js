@@ -49,9 +49,12 @@
         var res = this.func(row,this.col);
       }
       catch (err) {
-        if (this.sourceElement) tb.showError(this.sourceElement,err);
-        var table = this.row && this.row.table;
-        throw Error('error in evaluation of '+this.fullName()+': '+err.message);
+        err.lineNumber = tb.errorLine(err)-this.func.lineOffset;
+        err.columnNumber = tb.errorCol(err)-this.func.colOffset;
+        if (this.sourceElement) tb.showElementError(this.sourceElement,err);
+        var cascadeError = new Error('error in evaluation of '+this.fullName());
+        cascadeError.cascade = (err.cascade || 0)+1;
+        throw cascadeError;
       }
       return res
     }
@@ -159,10 +162,12 @@
           tbFunc.replace(/^\s*\{(.*)\}\s*$/,'({$1})');
           code = 'return '+tbFunc;
         }
-        var f = new Function('rowData','col','value','with (tb.vars){with(rowData||{}) {'+code+'}}');
+        var f = new Function('rowData','col','value','with (tb.vars){with(rowData||{}) {\n'+code+'\n}}');
         f.userCode = tbFunc;
         f.toString = function(){return this.userCode};
         f.toJson = function(){return 'f('+JSON.stringify(this.userCode)+')'};
+        f.lineOffset = 3;
+        f.colOffset = 0;
         return f;
       }
       catch (e) {
