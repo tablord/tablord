@@ -101,32 +101,33 @@
                     '<input id="format" placeholder="format"><br>'+
                     '<div id="func" style="height:200px;"></div>'+
                     '<div id="error" class="alert alert-danger"></div>'+
-                    
-                    '<input type="radio" name="type" value="number">number '+
-                    '<input type="radio" name="type" value="string">string '+
-                    '<input type="radio" name="type" value="date">date<br> '+
-    
-                    'c-<input type="radio" name="layout" value="c-1">1 '+
-                    '<input type="radio" name="layout" value="c-2">2 '+
-                    '<input type="radio" name="layout" value="c-3">3 '+
-                    '<input type="radio" name="layout" value="c-4">4 '+
-                    '<input type="radio" name="layout" value="c-5">5 '+
-                    '<input type="radio" name="layout" value="c-6">6 '+
-                    '<input type="radio" name="layout" value="c-7">7 '+
-                    '<input type="radio" name="layout" value="c-8">8 '+
-                    '<input type="radio" name="layout" value="c-9">9 '+
-                    '<input type="radio" name="layout" value="c-10">10 '+
-                    '<input type="radio" name="layout" value="c-11">11 '+
-                    '<input type="radio" name="layout" value="c-12">12<br>'+
-                    
-                    '<input type="radio" name="severity" value="INFO">INFO '+
-                    '<input type="radio" name="severity" value="OK">OK '+
-                    '<input type="radio" name="severity" value="WARNING">WARNING '+
-                    '<input type="radio" name="severity" value="DANGER">DANGER '+
-                    '<input type="radio" name="severity" value="">--<br>'+
-                    '<input type="checkbox" value="FLEX">FLEX<br>'+
-                    '<input type="checkbox" value="NOTE">NOTE<br>'+
-                    '<input type="checkbox" value="ADDRESS">ADDRESS<br>'+
+                    '<div id="classes">'+
+                        '<input type="radio" name="type" value="number">number '+
+                        '<input type="radio" name="type" value="string">string '+
+                        '<input type="radio" name="type" value="date">date<br> '+
+        
+                        'c-<input type="radio" name="layout" value="c-1">1 '+
+                        '<input type="radio" name="layout" value="c-2">2 '+
+                        '<input type="radio" name="layout" value="c-3">3 '+
+                        '<input type="radio" name="layout" value="c-4">4 '+
+                        '<input type="radio" name="layout" value="c-5">5 '+
+                        '<input type="radio" name="layout" value="c-6">6 '+
+                        '<input type="radio" name="layout" value="c-7">7 '+
+                        '<input type="radio" name="layout" value="c-8">8 '+
+                        '<input type="radio" name="layout" value="c-9">9 '+
+                        '<input type="radio" name="layout" value="c-10">10 '+
+                        '<input type="radio" name="layout" value="c-11">11 '+
+                        '<input type="radio" name="layout" value="c-12">12<br>'+
+                        
+                        '<input type="radio" name="severity" value="INFO">INFO '+
+                        '<input type="radio" name="severity" value="OK">OK '+
+                        '<input type="radio" name="severity" value="WARNING">WARNING '+
+                        '<input type="radio" name="severity" value="DANGER">DANGER '+
+                        '<input type="radio" name="severity" value="">--<br>'+
+                        '<input type="checkbox" value="FLEX">FLEX<br>'+
+                        '<input type="checkbox" value="NOTE">NOTE<br>'+
+                        '<input type="checkbox" value="ADDRESS">ADDRESS<br>'+
+                    '</div>'+
                   '</details>'+
                 '</div>'+
             '</div>'+
@@ -169,12 +170,15 @@
     tb.menu.error$.hide();
     tb.menu.funcEditor = ace.edit('func');
     tb.menu.funcEditor.session.setMode("ace/mode/javascript");
-    tb.menu.funcEditor.session.on('change',function(delta){
+    tb.menu.funcEditor.on('blur',function(){
+      console.info('funcEditor.blur')
       var code = tb.menu.funcEditor.getValue();
       if (code) e$.attr('func',code);
       else e$.removeAttr('func');
+      tb.run();
+      tb.setModified(true);
     });
-    tb.menu.properties$.click(function(event){
+    tb.menu.classes$.click(function(event){
       $(event.currentTarget).children().each(function(){
         var className = $(this).val()
         if (className) {
@@ -182,8 +186,9 @@
         }
       })
       tb.setModified(true);
-    })
-    .change(function(event){
+    });
+    tb.menu.properties$.blur(function(event){
+      console.info('properties$.blur');
       var e$ = tb.selected.element$;
       if (tb.menu.itemprop$.val()) e$.attr('itemprop',tb.menu.itemprop$.val())
       else e$.removeAttr('itemprop');
@@ -369,6 +374,7 @@
 
   tb.elementClick = function(event) {
     // event handler for click on an ELEMENT
+    console.info('elementClick')
     var element$ = $(event.currentTarget); // not target, since target can be an child element, not the div itself
     if (element$.hasClass('EMBEDDED')) {
       return true; //EMBEDDED code is ruled by its container (richText / section...) so let the event bubble
@@ -591,7 +597,7 @@
     tb.editor.setCurrentEditor(undefined);
     var e = tb.selected.element;
     if (e) {
-      if (element && (e === element)) { // if already selected nothing to do but give focus again
+      if (element && (e === element) && !e.error) { // if already selected nothing to do but give focus again
         e.focus();
         return;
       }
@@ -631,15 +637,7 @@
     if (error) {
       var line = error.lineNumber;
       var col = error.columnNumber;
-      tb.menu.error$.html('<details><summary>'+error.message+' line:'+line+' col:'+col+'</summary>'+error.stack.replace('/\n/g','<br>').replace(/ at /g,'<br>at ')+'</details>').show();
-      /*
-      tb.menu.funcEditor.getSession().setAnnotations([{
-        row:line-1,
-        column:col,
-        text:error.message,
-        type:'error'
-      }]);
-      */
+      tb.menu.error$.html('<details><summary>'+error.message+'</summary>'+error.stack.replace('/\n/g','<br>').replace(/ at /g,'<br>at ')+'</details>').show();
       tb.menu.funcEditor.gotoLine(line,col-1);
     }
     else tb.menu.error$.hide();
