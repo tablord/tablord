@@ -114,7 +114,8 @@ p {
   right:0;
   outline:none;
   color:white;
-  background-color:grey;
+  background-color: rgba(169, 169, 169,0.6);
+  font-size:0.6em;
   padding:3px;
   content:attr(itemprop);
 }

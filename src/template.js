@@ -256,9 +256,41 @@
   });
   
   tb.template({
-    url : 'https://tablord.com/template/function',
+    url : 'https://tablord.com/template/exec',
     element$: function() {
-      return $('<div class="ELEMENT FUNC" id="'+tb.blockId('func')+'" func="return">');
+      return $('<div class="ELEMENT EXEC" id="'+tb.blockId('exec')+'" itemtype="'+this.url+'" func=""></div>');
+    },
+    exec: function(element){
+      var element$ = $(element);
+      var code = element$.attr('func');
+      var out$ = element$.children('.OUTPUT');
+      var test$ = element$.children('.TEST');
+      var output = tb.newOutput(null,out$[0])
+      if (out$.length===0) {
+        out$ = $('<div class="OUTPUT">no output</div>');
+        element$.prepend(out$);
+      }
+      try {
+        var res = tb.securedEval(code);
+        tb.displayResult(res,output);
+        if (test$.length) {
+          if ((tb.trimHtml(out$.html()) == tb.trimHtml(test$.html()))) {   //TODO rethink how to compare
+            test$.removeClass('ERROR').addClass('SUCCESS');
+          }
+          else {
+            test$.removeClass('SUCCESS').addClass('ERROR');
+          }
+        }
+        tb.output = undefined;
+        return true;
+      }
+      catch (err) {
+        out$
+        .html(trace.span()+'<br><span class="badge badge-pill badge-warning">'+err.cascade+'</span>'+err.message)
+        .removeClass('SUCCESS').addClass('ERROR');
+        tb.output = undefined;
+        return false;  // will break the each loop
+      }
     }
   });
 

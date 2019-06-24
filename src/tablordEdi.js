@@ -102,10 +102,12 @@
                     '<div id="func" style="height:200px;"></div>'+
                     '<div id="error" class="alert alert-danger"></div>'+
                     '<div id="classes">'+
+                        '<input type="checkbox" value="EXEC">EXEC<br> '+
+
                         '<input type="radio" name="type" value="number">number '+
                         '<input type="radio" name="type" value="string">string '+
                         '<input type="radio" name="type" value="date">date<br> '+
-        
+                        
                         'c-<input type="radio" name="layout" value="c-1">1 '+
                         '<input type="radio" name="layout" value="c-2">2 '+
                         '<input type="radio" name="layout" value="c-3">3 '+
@@ -173,8 +175,8 @@
     tb.menu.funcEditor.on('blur',function(){
       console.info('funcEditor.blur')
       var code = tb.menu.funcEditor.getValue();
-      if (code) e$.attr('func',code);
-      else e$.removeAttr('func');
+      if (code) tb.selected.element$.attr('func',code);
+      else tb.selected.element$.removeAttr('func');
       tb.run();
       tb.setModified(true);
     });
@@ -187,15 +189,14 @@
       })
       tb.setModified(true);
     });
-    tb.menu.properties$.blur(function(event){
-      console.info('properties$.blur');
-      var e$ = tb.selected.element$;
-      if (tb.menu.itemprop$.val()) e$.attr('itemprop',tb.menu.itemprop$.val())
-      else e$.removeAttr('itemprop');
-      if (tb.menu.itemtype$.val()) e$.attr('itemitype',tb.menu.itemtype$.val())
-      else e$.removeAttr('itemtype');
-      if (tb.menu.format$.val()) e$.attr('format',tb.menu.format$.val())
-      else e$.removeAttr('format');
+    tb.menu.properties$.focusout(function(event){
+      console.info('properties$.focusout');
+      if (tb.menu.itemprop$.val()) tb.selected.element$.attr('itemprop',tb.menu.itemprop$.val())
+      else tb.selected.element$.removeAttr('itemprop');
+      if (tb.menu.itemtype$.val()) tb.selected.element$.attr('itemtype',tb.menu.itemtype$.val())
+      else tb.selected.element$.removeAttr('itemtype');
+      if (tb.menu.format$.val()) tb.selected.element$.attr('format',tb.menu.format$.val())
+      else tb.selected.element$.removeAttr('format');
       tb.run();
       tb.setModified(true);
     })
@@ -520,6 +521,8 @@
   tb.copyOutputToTest = function() {
     // set the current element's output as the test element if no test element existed or if it failed
     // if a SUCCESS test existed, remove the test
+    
+/*    
     if (tb.selected.element == undefined) return;
 
     var out$ = tb.outputElement$(tb.selected.element$);
@@ -534,6 +537,22 @@
       test$.remove();
     }
     tb.setModified(true);
+*/
+    if (tb.selected.element == undefined) return;
+
+    var out$ = tb.selected.element$.children('.OUTPUT');
+    var test$ = tb.selected.element$.children('.TEST');
+    if (test$.length === 0) {
+      out$.after($('<div class="TEST SUCCESS">'+out$.html()+'</div>'));
+    }
+    else if (!test$.hasClass('SUCCESS')) {
+      test$.html(out$.html()).removeClass('ERROR').addClass('SUCCESS');
+    }
+    else {
+      test$.remove();
+    }
+    tb.setModified(true);
+    
   }
 
   tb.mark = function(elements$){
@@ -613,27 +632,25 @@
     // set the new selection
     tb.selected.element = element;
     tb.selected.element$ = $(element);
-    e$ = tb.selected.element$;
-    tb.selected.itemscope$ = e$.closest('[itemscope]');
-    tb.selected.container$ = e$.parent().closest('[container]');
+    tb.selected.itemscope$ =  tb.selected.element$.closest('[itemscope]');
+    tb.selected.container$ =  tb.selected.element$.parent().closest('[container]');
     if (element == undefined){
       $('#codeId').text('no selection');
       tb.menu.selectionToolBar$.hide();
       return;
     }
     tb.menu.codeId$.html(element.id+'<SPAN style="color:red;cursor:pointer;" onclick="tb.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
-    tb.menu.properties$.children().each(function(){
+    tb.menu.classes$.children().each(function(){
       var checkbox$ = $(this);
       var c = checkbox$.val();
       if (c) {
-        checkbox$.prop('checked',e$.hasClass(c));
+        checkbox$.prop('checked',tb.selected.element$.hasClass(c));
       };
     });
-    var itemprop = e$.attr('itemprop')
-    tb.menu.itemprop$.val(itemprop);
-    tb.menu.itemtype$.val(e$.attr('itemtype'));
-    tb.menu.funcEditor.setValue(e$.attr('func') || '')
-    var error = e$.prop('error');
+    tb.menu.itemprop$.val(tb.selected.element$.attr('itemprop'));
+    tb.menu.itemtype$.val(tb.selected.element$.attr('itemtype'));
+    tb.menu.funcEditor.setValue(tb.selected.element$.attr('func') || '')
+    var error = tb.selected.element$.prop('error');
     if (error) {
       var line = error.lineNumber;
       var col = error.columnNumber;
@@ -641,11 +658,11 @@
       tb.menu.funcEditor.gotoLine(line,col-1);
     }
     else tb.menu.error$.hide();
-    tb.menu.format$.val(e$.attr('format'));
+    tb.menu.format$.val(tb.selected.element$.attr('format'));
 
-    e$.addClass('SELECTED');
+    tb.selected.element$.addClass('SELECTED');
     if (itemprop) {
-      e$.parent().closest('[itemscope]').addClass('ITEMSCOPE')
+      tb.selected.element$.parent().closest('[itemscope]').addClass('ITEMSCOPE')
     }
     tb.updateTemplateChoice();
     tb.editables$(element).attr('contentEditable',true);

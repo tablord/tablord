@@ -700,20 +700,21 @@
 
   tb.execCode = function(element) {
     // execute the code of element
-    // skip all CUT element
+    // skip all DELETED element
     var element$ = $(element);
-    if (element$.hasClass('DELETED')) return;
+    if (element$.hasClass('DELETED')) throw new Error('should not call DELETED ELEMENT')
 
     // if template, lauch exec method if any
     if (element$.attr('itemtype')) {
-      var t = tb.templates[tb.Template.urlToName(element$.attr('itemtype'))];
+      var t = tb.templates[element$.attr('itemtype')];
       if (t && t.exec) {
         t.exec(element$);
       }
       tb.output = undefined;  // so that any errors from the EDI will be reported in a dialog, not in the last outputElement.
       return
     }
-
+    
+    if (!element$.hasClass('CODE')) throw new Error('should be a CODE ELEMENT')
     // Execute CODE ELEMENT
     // clear if any previous WRONG marker
     var wrong$ = $('.WRONG',element).add('font',element);  //TODO: check in future: IE7 had a tendency to add FONT instead of the SPAN if the text is edited
@@ -846,7 +847,7 @@
     else {// this is a simple tb.Var
       if (variable) throw Error(itemprop+' is already declared '); 
       _var = e$.getItempropValue();
-      if (_var.isVar) {
+      if (_var.isVar) { // this is a function
         _var.name = itemprop;
         tb.vars[itemprop] = _var;
       }
@@ -875,11 +876,11 @@
     // update every element that has an itemprop and a func attribute
     var elements$ = $('[func]');
     elements$.each(function(){
-      e$ = $(this);
       try {
-        var tbVar = e$.prop('tbVar')
+        var this$ = $(this);
+        var tbVar = this$.prop('tbVar')
         var value = tbVar.valueOf();
-        e$.html(tb.format(value,{format:{fmtStr:e$.attr('format')}}))
+        this$.html(tb.format(value,{format:{fmtStr:this$.attr('format')}})).addClass('SUCCESS');
       }
       catch (err) {
         // do nothing, since the error has already been registred 
@@ -895,10 +896,11 @@
     for (var i=0; i<tb.features.length; i++) tb.features[i].reset();
     trace.off();
     tb.clearTimers();
+    $('.SUCCESS').removeClass('SUCCESS');
+    $('.ERROR').removeClass('ERROR');
     $('.TRACE').remove();
     $('.BOX').remove();
-    $('.OUTPUT').add('.TEST').removeClass('SUCCESS').removeClass('ERROR');
-    $('[func]').removeProp('tbVar').removeProp('error').removeClass('ERROR');
+    $('[func]').removeProp('tbVar').removeProp('error');
     tb.finalizations = [];
     tb.vars = {}; // run from fresh
     tb.createVars();
@@ -912,7 +914,8 @@
   tb.execAll = function() {
     // execute all [[CODE]] [[ELEMENT]]
     tb.prepareExec();
-    $('.CODE').add('[itemtype]').each(function(i,e) {return tb.execCode(e);});
+    var elements$ = $('.CODE').add('[itemtype]').not('.DELETED');
+    elements$.each(function(i,e) {return tb.execCode(e);});
     tb.updateContainers();
     tb.finalize();
     tb.results.execStat.execAll$ms=Date.now()-tb.results.execStat.start;
