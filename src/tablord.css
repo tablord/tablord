@@ -217,7 +217,6 @@ p {
 
 .CODEEXAMPLE,
 .CODE {
-  font-family: courier;
   background-color: var(--bgcode);
   border: none;
   margin: 0px;

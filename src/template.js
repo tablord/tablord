@@ -247,25 +247,17 @@
     }
   });
 
+
   tb.template({
-    url : 'https://tablord.com/templates/code',
+    url : 'https://tablord.com/template/code',
     element$: function() {
-      return $('<PRE class="ELEMENT CODE EDITABLE" id='+tb.blockId('code')+'>');
+      return $('<div class="ELEMENT CODE" id="'+tb.blockId('code')+'" itemtype="'+this.url+'" func=""></div>');
     },
-    convertData: function(data,element$) {element$.html('Object('+tb.toJSCode(data)+')')}
-  });
-  
-  tb.template({
-    url : 'https://tablord.com/template/exec',
-    element$: function() {
-      return $('<div class="ELEMENT EXEC" id="'+tb.blockId('exec')+'" itemtype="'+this.url+'" func=""></div>');
-    },
-    exec: function(element){
-      var element$ = $(element);
+    exec: function(element$){
       var code = element$.attr('func');
       var out$ = element$.children('.OUTPUT');
       var test$ = element$.children('.TEST');
-      var output = tb.newOutput(null,out$[0])
+      tb.output = tb.newOutput(element$[0],out$[0])
       if (out$.length===0) {
         out$ = $('<div class="OUTPUT">no output</div>');
         element$.prepend(out$);
@@ -285,9 +277,7 @@
         return true;
       }
       catch (err) {
-        out$
-        .html(trace.span()+'<br><span class="badge badge-pill badge-warning">'+err.cascade+'</span>'+err.message)
-        .removeClass('SUCCESS').addClass('ERROR');
+        tb.showElementError(element$[0],err);
         tb.output = undefined;
         return false;  // will break the each loop
       }
@@ -330,19 +320,19 @@
                 '<h2 class="EDITABLE" itemprop="title">&nbsp;</h2>'+
                 '<div container="item[]"></div>');
     },
-    exec: function(element) {
-      var data = $(element).getItemscopeData()
+    exec: function(element$) {
+      var data = element$.getItemscopeData()
       // to ensure the data persistance when saved, set the value attr with the current value
-      $('[itemprop=fromDate]',element).attr('value',data.fromDate);
-      $('[itemprop=fromTime]',element).attr('value',data.fromTime);
-      $('[itemprop=toDate]',element).attr('value',data.toDate);
-      $('[itemprop=toTime]',element).attr('value',data.toTime);
+      $('[itemprop=fromDate]',element$).attr('value',data.fromDate);
+      $('[itemprop=fromTime]',element$).attr('value',data.fromTime);
+      $('[itemprop=toDate]',element$).attr('value',data.toDate);
+      $('[itemprop=toTime]',element$).attr('value',data.toTime);
       data = this.remap(data)
       if (isNaN(data.duration)) {
-        $('[itemprop=duration]',element).text('NaN');
+        $('[itemprop=duration]',element$).text('NaN');
       }
       else {
-        $('[itemprop=duration]',element).text(data.duration.format('hh[h]mm'));
+        $('[itemprop=duration]',element$).text(data.duration.format('hh[h]mm'));
       }
     },
     remap: function(data){

@@ -96,9 +96,11 @@
         		'<div id="objectToolBar"></div>'+
     			'<div>'+
                   '<details id="properties"><summary>properties</summary>'+
-                    '<input id="itemprop" type="text" placeholder="itemprop">'+
-                    '<input id="itemtype" placeholder="itemtype">'+
-                    '<input id="format" placeholder="format"><br>'+
+                    '<div id="item">'+
+                      '<input id="itemprop" type="text" placeholder="itemprop">'+
+                      '<input id="itemtype" placeholder="itemtype">'+
+                      '<input id="format" placeholder="format">'+
+                    '</div>'+
                     '<div id="func" style="height:200px;"></div>'+
                     '<div id="error" class="alert alert-danger"></div>'+
                     '<div id="classes">'+
@@ -173,38 +175,40 @@
     tb.menu.funcEditor = ace.edit('func');
     tb.menu.funcEditor.session.setMode("ace/mode/javascript");
     tb.menu.funcEditor.on('blur',function(){
-      console.info('funcEditor.blur')
+      console.info('funcEditor.blur');
       var code = tb.menu.funcEditor.getValue();
-      if (code) tb.selected.element$.attr('func',code);
-      else tb.selected.element$.removeAttr('func');
-      tb.run();
-      tb.setModified(true);
+      if (code != tb.selected.element$.attr('func')) {
+        if (code) tb.selected.element$.attr('func',code);
+        else tb.selected.element$.removeAttr('func');
+        tb.run();
+        tb.setModified(true);
+      }
     });
     tb.menu.classes$.click(function(event){
       $(event.currentTarget).children().each(function(){
-        var className = $(this).val()
+        var className = $(this).val();
         if (className) {
-           tb.selected.element$.toggleClass(className,$(this).prop('checked'))
+           tb.selected.element$.toggleClass(className,$(this).prop('checked'));
         }
-      })
+      });
       tb.setModified(true);
     });
-    tb.menu.properties$.focusout(function(event){
-      console.info('properties$.focusout');
-      if (tb.menu.itemprop$.val()) tb.selected.element$.attr('itemprop',tb.menu.itemprop$.val())
+    tb.menu.item$.focusout(function(event){
+      console.info('item$.focusout');
+      if (tb.menu.itemprop$.val()) tb.selected.element$.attr('itemprop',tb.menu.itemprop$.val());
       else tb.selected.element$.removeAttr('itemprop');
-      if (tb.menu.itemtype$.val()) tb.selected.element$.attr('itemtype',tb.menu.itemtype$.val())
+      if (tb.menu.itemtype$.val()) tb.selected.element$.attr('itemtype',tb.menu.itemtype$.val());
       else tb.selected.element$.removeAttr('itemtype');
-      if (tb.menu.format$.val()) tb.selected.element$.attr('format',tb.menu.format$.val())
+      if (tb.menu.format$.val()) tb.selected.element$.attr('format',tb.menu.format$.val());
       else tb.selected.element$.removeAttr('format');
       tb.run();
       tb.setModified(true);
-    })
+    });
  
     tb.updateTemplateChoice();
     
     tb.menu.helpSearch$.keyup(tb.helpSearchKeyup);
-  }
+  };
   //////////////////////////////////////////////////////////////////////////////
   // event handler for button input etc ////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -216,7 +220,7 @@
     var button = event.target;
     $('.CODE').toggleClass('HIDDEN',!button.checked);
     tb.sheetOptions.showCode = button.checked;
-  }
+  };
 
   tb.showCutClick = function(event) {
     // click event handler for the show cut checkbox
@@ -436,15 +440,19 @@
     tb.setUpToDate.state = state;
   }
 
+  
   tb.showElementError = function(element,error) {
     // report an error that occured inside an element
     // like getting the valueof a tb.Var
-    $(element).addClass('ERROR').removeClass('SUCCESS').html('<span class="badge badge-pill badge-warning">'+(error.cascade || 'error')+'</span>')
-    .prop('error',{message:error.message,
-                   stack:error.stack,
-                   lineNumber:error.lineNumber,
-                   columnNumber:error.columnNumber,
-                   cascade:error.cascade
+    var element$ = $(element);
+    var output$ = element$;
+    if (element$.hasClass('EXEC')) output$ = $('.OUTPUT',element);
+    output$.addClass('ERROR').removeClass('SUCCESS').html('<span class="badge badge-pill badge-warning">'+(error.cascade || 'error')+'</span>');
+    element$.prop('error',{message:error.message,
+                           stack:error.stack,
+                           lineNumber:error.lineNumber,
+                           columnNumber:error.columnNumber,
+                           cascade:error.cascade
     });
     if (!error.cascade) {
       tb.selectElement(element);
@@ -761,6 +769,19 @@
     // add an INDENT class to indent where is needed and no longer to any container
     $('[container=sectionContent]').addClass('INDENT'); // container=sectionContent was the former definition
 
+    // since 1ba0c957100f7f3712b903f6a9ebc9c95a176662, [[CODE]] is has a [func] and contains the [[OUTPUT]] and [[TEST]] (templates/exec)
+    var codes = $('.CODE').not('[func]');
+    codes.each(function(i,e){
+      var code$ =$(e);
+      var codeId = code$.attr('id');
+      var func = tb.htmlToText(code$.html());
+      var newCode$ = tb.templates['https://tablord.com/template/code'].element$();
+      newCode$.attr('func',func).attr('id',codeId);
+      var out$ = $('#'+codeId.replace(/code/,'out')).removeAttr('id');
+      var test$ = $('#'+codeId.replace(/code/,'test')).removeAttr('id');
+      code$.replaceWith(newCode$);
+      newCode$.prepend(out$).append(test$);
+    });
   }
 
 

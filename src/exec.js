@@ -661,28 +661,23 @@
     return id.slice(0,4);
   }
 
+/* TODO remove
   tb.outputElement$ = function(element$) {
     // return the output element associated with element$ if any
-    // if applied on another element than id=codexxxx return an empty jquery;
-    var id = element$.attr('id');
-    if (!id || id.slice(0,4) !== 'code') return $();
-    var outId = id.replace(/code/,"out");
-    var out$ = $('#'+outId);
-    if (out$.length === 0) {
-      var tag = (element$.prop('tagName')==='SPAN')?'SPAN':'DIV';
-      out$ = $('<'+tag+' class=OUTPUT id="'+outId+'">no output</'+tag+'>').insertAfter(element$);
-    }
+    // if applied on another element than [[CODE]] return an empty jquery;
+    if (!element$.hasClass('CODE')) return $();
+    out$ = $('.OUTPUT',element$);
+    if (out$.length===0) out$ = $('<div class="OUTPUT">no output</div>').prependTo(element$);
     return out$;
   }
 
   tb.testElement$ = function(element$) {
     // returns the test element if any
-    // if applied on another element than id=codexxxx return an empty jquery;
-    var id = element$.attr('id');
-    if (!id || id.slice(0,4) !== 'code') return $();
-    return $('#'+id.replace(/code/,"test"));
+    // if applied on another element than [[CODE]]return an empty jquery;
+    if (!element$.hasClass('CODE')) return $();
+    return $('.TEST',element$);
   }
-  
+*/
   
   //  display / execution ////////////////////////////////////////////////////
 
@@ -714,6 +709,8 @@
       return
     }
     
+    throw new Error('all executable should be handled through itemtypes')
+    /*TODO remove ols code
     if (!element$.hasClass('CODE')) throw new Error('should be a CODE ELEMENT')
     // Execute CODE ELEMENT
     // clear if any previous WRONG marker
@@ -728,9 +725,7 @@
       tb.displayResult(res,tb.output);
     }
     catch (err) {
-      $(tb.output.outputElement)
-      .html(trace.span()+'<br><span class="badge badge-pill badge-warning">'+err.cascade+'</span>'+err.message)
-      .removeClass('SUCCESS').addClass('ERROR');
+      tb.showElementError(tb.output.outputElement,err);
       return false;  // will break the each loop
     }
     // test
@@ -743,6 +738,7 @@
       }
     }
     tb.output = undefined;  // so that any errors from the EDI will be reported in a dialog, not in the last outputElement.
+    */
   }
 
   tb.execCodes = function(fromCodeId,toCodeId) {
@@ -811,7 +807,7 @@
     // execute all finalization code
     for (var i=0;i<tb.finalizations.length;i++) {
       var out = tb.finalizations[i];
-      tb.errorHandler.code = out.finalizationFunc.toString();
+//todo suppress      tb.errorHandler.code = out.finalizationFunc.toString();
       out.finalizationFunc();
       out.finalizationFunc = undefined;  // so that displayResult will not show ... to be finalized...
       tb.displayResult(out,out);
@@ -874,7 +870,7 @@
   
   tb.updateFunctionElements = function() {
     // update every element that has an itemprop and a func attribute
-    var elements$ = $('[func]');
+    var elements$ = $('[func]').not('.CODE'); //todo à voir si c'est la bonne solution où si on met une class FUNC aux fonctions
     elements$.each(function(){
       try {
         var this$ = $(this);
