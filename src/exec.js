@@ -661,26 +661,7 @@
     return id.slice(0,4);
   }
 
-/* TODO remove
-  tb.outputElement$ = function(element$) {
-    // return the output element associated with element$ if any
-    // if applied on another element than [[CODE]] return an empty jquery;
-    if (!element$.hasClass('CODE')) return $();
-    out$ = $('.OUTPUT',element$);
-    if (out$.length===0) out$ = $('<div class="OUTPUT">no output</div>').prependTo(element$);
-    return out$;
-  }
-
-  tb.testElement$ = function(element$) {
-    // returns the test element if any
-    // if applied on another element than [[CODE]]return an empty jquery;
-    if (!element$.hasClass('CODE')) return $();
-    return $('.TEST',element$);
-  }
-*/
-  
   //  display / execution ////////////////////////////////////////////////////
-
 
   tb.displayResult = function(result,output) {
     // display result in output (that must be a tb.Output object
@@ -711,35 +692,6 @@
     }
     
     throw new Error('all executable should be handled through itemtypes')
-    /*TODO remove ols code
-    if (!element$.hasClass('CODE')) throw new Error('should be a CODE ELEMENT')
-    // Execute CODE ELEMENT
-    // clear if any previous WRONG marker
-    var wrong$ = $('.WRONG',element).add('font',element);  //TODO: check in future: IE7 had a tendency to add FONT instead of the SPAN if the text is edited
-    if (wrong$.length > 0) wrong$.replaceWith(function(i,c){return c});
-
-    var out$  = tb.outputElement$(element$);
-    var test$ = tb.testElement$(element$)
-    tb.output = tb.newOutput(element$[0],out$[0]);
-    try {
-      var res = tb.securedEval(tb.htmlToText(element.innerHTML));
-      tb.displayResult(res,tb.output);
-    }
-    catch (err) {
-      tb.showElementError(tb.output.outputElement,err);
-      return false;  // will break the each loop
-    }
-    // test
-    if (test$.length) {
-      if ((tb.trimHtml(out$.html()) == tb.trimHtml(test$.html()))) {   //TODO rethink how to compare
-        test$.removeClass('ERROR').addClass('SUCCESS');
-      }
-      else {
-        test$.removeClass('SUCCESS').addClass('ERROR');
-      }
-    }
-    tb.output = undefined;  // so that any errors from the EDI will be reported in a dialog, not in the last outputElement.
-    */
   }
 
   tb.execCodes = function(fromCodeId,toCodeId) {
@@ -918,6 +870,7 @@
     tb.results.execStat.execAll$ms=Date.now()-tb.results.execStat.start;
     tb.updateFunctionElements();
     tb.setUpToDate(true);
+    tb.selectElement(tb.selected.element); // update properties / error...
   }
 
   tb.execUntilSelected = function() {

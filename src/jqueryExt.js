@@ -18,17 +18,17 @@
           s.push('<li class="INSPECTHTML">textNode: "'+this[i].nodeValue+'"');
           break;
         default:
-          s.push('<li class="INSPECTHTML">node type '+this.nodeType)
+          s.push('<li class="INSPECTHTML">node type '+this.nodeType);
           break;
       }
     }
     s.push('</ol>');
     return new tb.HTML('JQuery of '+this.length+' elements<br>'+s.join('<br>'));
-  }
+  };
 
   $.fn.toString = function(){
     return '[object JQuery] length:'+ this.length;
-  }
+  };
 
   $.fn.inspectString = function(){
     var r = this.toString()+'\n';
@@ -36,12 +36,12 @@
       r += i+') '+this[i].outerHTML+'\n';
     }
     return r;
-  }
+  };
 
   $.fn.asNode = function() {
     var query = this;
-    return {node$:function() {return query}}
-  }
+    return {node$:function() {return query}};
+  };
 
   $.fn.itemscopeOrThis$ = function() {
     // return the wrapping itemscope of this if any or this otherwise
@@ -50,27 +50,27 @@
     if (this.length !== 1) throw Error('must be a jquery of one element');
     var c$ = this.closest('[itemscope]');
     if (c$.length===1) return c$;
-    return this;
-  }
+    return this.add(tb.outputElement$(this)).add(tb.testElement$(this));
+  };
   
   
   $.fn.getItems = function(url) {
     // get the matching itemtypes that are descendent of the jquery
     // please note that if an itemtype is embeeded in another instance of itemtype, both will be part of the result
     return this.find('[itemtype~="'+url+'"]');
-  }
+  };
 
   $.getItems = function(url) {
     // get all itemtype = url of the document.
     return $('[itemtype~="'+url+'"]');
-  }
+  };
 
   $.fn.getItemProp = function(itemprop) {
     // get the first matching itemprop of the first elements of the jquery
     // all elements should be itemscope
     var e = this[0];
     return this.find('[itemprop='+itemprop+']').filter(function(){return $(this).closest('[itemscope=""]')[0] == e}).first().html();
-  }
+  };
 
   $.fn.setItemProp = function(itemprop,html) {
     // set the itemprop of the elements of the jquery
@@ -79,7 +79,7 @@
       $(e).find('[itemprop='+itemprop+']').filter(function(){return $(this).closest('[itemscope=""]')[0] == e}).html(html);
     });
     return this;
-  }
+  };
 
   $.fn.getItemscopeMicrodata = function() {
     // this must be a single itemscope element jQuery
@@ -91,9 +91,9 @@
     if (! this.is('[itemscope=""]')) throw new Error('getItemscopeMicrodata must be called on a jquery having a itemscope');
     var result={id:this.attr('id') || undefined,
                 type:this.attr('itemtype') || '',
-                properties:this.children().getMicrodata()}
+                properties:this.children().getMicrodata()};
     return result;
-  }
+  };
 
   $.fn.getItempropValue = function(){
     // return the value of an element handling all specifications of microdata of the getter of itemValue
@@ -335,6 +335,8 @@
   $.fn.neighbour$ = function(where) {
     // jQuery should be of 1 element and return the neighbour that corresponds 
     // to where.
+    // in case, this is a CODE,OUTPUT or TEST, takes also into account
+    // those elements to skip them properly
     //  - where: 'after', 'afterItemscope', 'before' or 'beforeItemscope'
     if (this.length !== 1) throw new Error('neighbourg$ needs a 1 element jQuery'+this.toString())
     
@@ -342,8 +344,8 @@
     if (where==='beforeItemscope' || where==='afterItemscope') {
       element$ = element$.itemscopeOrThis$();
     }
-//TODO REMOVE    if (where==='after' || where==='afterItemscope') return element$.last();
-    return element$;//.first();
+    if (where==='after' || where==='afterItemscope') return element$.last();
+    return element$.first();
   }
 
 

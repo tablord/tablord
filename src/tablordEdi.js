@@ -303,7 +303,9 @@
   
   tb.cutBtnClick = function(event) {
     // simple version
-    // TODO choose if itemscope / element etc... taking shift keys into consideration
+    // if there are [[MARKED]] [[ELEMENT]], will cut them
+    // if element is inside an [[itemscope]], will cut the entire itemscope
+    // except if the Alt Key is pressed where it will only take the ELEMENT
     var elements$ = $('.MARKED');
     if (elements$.length ===0) elements$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
     tb.cutBlock(elements$);
@@ -446,7 +448,7 @@
     // like getting the valueof a tb.Var
     var element$ = $(element);
     var output$ = element$;
-    if (element$.hasClass('EXEC')) output$ = $('.OUTPUT',element);
+    if (element$.hasClass('CODE')) output$ = $('.OUTPUT',element);
     output$.addClass('ERROR').removeClass('SUCCESS').html('<span class="badge badge-pill badge-warning">'+(error.cascade || 'error')+'</span>');
     element$.prop('error',{message:error.message,
                            stack:error.stack,
@@ -624,7 +626,8 @@
     tb.editor.setCurrentEditor(undefined);
     var e = tb.selected.element;
     if (e) {
-      if (element && (e === element) && !e.error) { // if already selected nothing to do but give focus again
+      if (element && (e === element) && !e.error) { // if already selected nothing to do but make sure it is visible
+        tb.menu.error$.hide();
         e.focus();
         return;
       }
@@ -676,8 +679,13 @@
     tb.editables$(element).attr('contentEditable',true);
     tb.menu.$.show();
     tb.menu.selectionToolBar$.show(500,function(){tb.menu.funcEditor.resize()});
-    if (error) tb.menu.funcEditor.focus();
-    else element.focus();
+    if (error) {
+      element.scrollIntoView();
+      tb.menu.funcEditor.focus();
+    }
+    else {
+      element.focus();
+    };
   }
 
   tb.moveElement = function(element$,where) {
