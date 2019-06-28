@@ -50,7 +50,7 @@
     if (this.length !== 1) throw Error('must be a jquery of one element');
     var c$ = this.closest('[itemscope]');
     if (c$.length===1) return c$;
-    return this.add(tb.outputElement$(this)).add(tb.testElement$(this));
+    return this;
   }
   
   
@@ -335,8 +335,6 @@
   $.fn.neighbour$ = function(where) {
     // jQuery should be of 1 element and return the neighbour that corresponds 
     // to where.
-    // in case, this is a CODE,OUTPUT or TEST, takes also into account
-    // those elements to skip them properly
     //  - where: 'after', 'afterItemscope', 'before' or 'beforeItemscope'
     if (this.length !== 1) throw new Error('neighbourg$ needs a 1 element jQuery'+this.toString())
     
@@ -344,8 +342,8 @@
     if (where==='beforeItemscope' || where==='afterItemscope') {
       element$ = element$.itemscopeOrThis$();
     }
-    if (where==='after' || where==='afterItemscope') return element$.last();
-    return element$.first();
+//TODO REMOVE    if (where==='after' || where==='afterItemscope') return element$.last();
+    return element$;//.first();
   }
 
 

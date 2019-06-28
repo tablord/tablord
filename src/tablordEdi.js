@@ -104,7 +104,7 @@
                     '<div id="func" style="height:200px;"></div>'+
                     '<div id="error" class="alert alert-danger"></div>'+
                     '<div id="classes">'+
-                        '<input type="checkbox" value="EXEC">EXEC<br> '+
+                        '<input type="checkbox" value="SHOW">SHOW<br> '+
 
                         '<input type="radio" name="type" value="number">number '+
                         '<input type="radio" name="type" value="string">string '+
@@ -776,13 +776,14 @@
       var codeId = code$.attr('id');
       var func = tb.htmlToText(code$.html());
       var newCode$ = tb.templates['https://tablord.com/template/code'].element$();
-      newCode$.attr('func',func).attr('id',codeId);
+      newCode$.attr('func',func).attr('id',codeId).addClass('SHOW');
       var out$ = $('#'+codeId.replace(/code/,'out')).removeAttr('id');
       var test$ = $('#'+codeId.replace(/code/,'test')).removeAttr('id');
       code$.replaceWith(newCode$);
-      newCode$.prepend(out$).append(test$);
+      newCode$.children('.OUTPUT').replaceWith(out$);
+      newCode$.append(test$);
     });
-  }
+  };
 
 
   $(function () {

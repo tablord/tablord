@@ -251,10 +251,11 @@
   tb.template({
     url : 'https://tablord.com/template/code',
     element$: function() {
-      return $('<div class="ELEMENT CODE" id="'+tb.blockId('code')+'" itemtype="'+this.url+'" func=""></div>');
+      return $('<div class="ELEMENT CODE" id="'+tb.blockId('code')+'" itemtype="'+this.url+'" func=""><pre class="SOURCE"></pre><div class="OUTPUT">no fucking output</div></div>');
     },
     exec: function(element$){
       var code = element$.attr('func');
+      var source$ = element$.children('.SOURCE');
       var out$ = element$.children('.OUTPUT');
       var test$ = element$.children('.TEST');
       tb.output = tb.newOutput(element$[0],out$[0])
@@ -262,6 +263,8 @@
         out$ = $('<div class="OUTPUT">no output</div>');
         element$.prepend(out$);
       }
+      source$.html(element$.hasClass('SHOW')?Prism.highlight(code, Prism.languages.javascript, 'javascript'):'');
+      
       try {
         var res = tb.securedEval(code);
         tb.displayResult(res,output);

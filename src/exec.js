@@ -684,9 +684,10 @@
 
   tb.displayResult = function(result,output) {
     // display result in output (that must be a tb.Output object
+    // if code first show that code
     $(output.outputElement)
     .empty().removeClass('ERROR').addClass('SUCCESS')
-    .append(((result !== undefined) && (result !== null) && (typeof result.node$ === 'function') && result.node$() )
+    .append(((result !== undefined) && (result !== null) && (typeof result.node$ === 'function') && result.node$())
             || tb.format(result)
            )
     .prepend(output.toString())
