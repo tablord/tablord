@@ -143,6 +143,7 @@
   // returns the signature of the function and the first comment in a pretty html
   //         followed by the content of the .[[help]]() static method of func if any
   // func: the function to be inspected
+    if (func===undefined) return new tb.HTML('general help to be implemented');
     var source = func.toString().split('\n');
     var comments = [];
     var signature = tb.signature(func);

@@ -69,10 +69,12 @@
     return this;
   }
 
+  tb.Template.prototype.blockPrefix = 'item';
+  
   tb.Template.prototype.element$ = function(itemprop) {
     // return a jQuery containing a new instance of this Template as itemprop and setting its id
     if (this.html === undefined) throw new Error('in order to define a template at least define .fields, .html or .element$()');
-    var new$ = $(this.html).attr('id',tb.blockId('item'));
+    var new$ = $(this.html).attr('id',tb.blockId(this.blockPrefix));
     if (itemprop) new$.attr('itemprop',itemprop);
     new$.attr('itemscope','').attr('itemtype',this.url);
     return new$;
@@ -221,7 +223,7 @@
     var newT = new tb.Template(newTemplate.name);
     $.extend(newT,newTemplate)
     if (newTemplate.fields) {
-      var h = '<DIV class="ELEMENT" itemprop="'+itemprop+'" itemscope itemtype="'+newT.url()+'"><TABLE width="100%">';
+      var h = '<DIV class="ELEMENT" itemprop="'+itemprop+'" itemscope itemtype="'+newT.url+'"><TABLE width="100%">';
       for (var f in newTemplate.fields) {
         var label = f.label || f;
         if (newTemplate.fields[f].container) {
@@ -249,42 +251,23 @@
 
 
   tb.template({
-    url : 'https://tablord.com/template/code',
-    element$: function() {
-      return $('<div class="ELEMENT CODE" id="'+tb.blockId('code')+'" itemtype="'+this.url+'" func=""><pre class="SOURCE"></pre><div class="OUTPUT">no fucking output</div></div>');
-    },
-    exec: function(element$){
-      var code = element$.attr('func');
-      var source$ = element$.children('.SOURCE');
-      var out$ = element$.children('.OUTPUT');
-      var test$ = element$.children('.TEST');
-      tb.output = tb.newOutput(element$[0],out$[0])
-      if (out$.length===0) {
-        out$ = $('<div class="OUTPUT">no output</div>');
-        element$.prepend(out$);
-      }
-      source$.html(element$.hasClass('SHOW')?Prism.highlight(code, Prism.languages.javascript, 'javascript'):'');
-      
-      try {
-        var res = tb.securedEval(code);
-        tb.displayResult(res,output);
-        if (test$.length) {
-          if ((tb.trimHtml(out$.html()) == tb.trimHtml(test$.html()))) {   //TODO rethink how to compare
-            test$.removeClass('ERROR').addClass('SUCCESS');
-          }
-          else {
-            test$.removeClass('SUCCESS').addClass('ERROR');
-          }
-        }
-        tb.output = undefined;
-        return true;
-      }
-      catch (err) {
-        tb.showElementError(element$[0],err);
-        tb.output = undefined;
-        return false;  // will break the each loop
-      }
-    }
+    url : 'https://tablord.com/templates/code',
+    blockPrefix : 'code',
+    html: '<div class="ELEMENT CODE" func="" contentEditable="false">'+
+             '<pre class="SOURCE"></pre>'+
+             '<div class="OUTPUT">no output</div>'+
+           '</div>',
+    exec: tb.execCodeElement
+  });
+
+  tb.template({
+    url : 'https://tablord.com/templates/codeSpan',
+    blockPrefix : 'code',
+    html: '<span class="ELEMENT EMBEDDED CODE" func="" contentEditable="false">'+
+             '<pre class="SOURCE"></pre>'+
+             '<span class="OUTPUT">no output</span>'+
+           '</span>',
+    exec: tb.execCodeElement
   });
 
   tb.template({

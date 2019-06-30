@@ -175,7 +175,6 @@
     tb.menu.funcEditor = ace.edit('func');
     tb.menu.funcEditor.session.setMode("ace/mode/javascript");
     tb.menu.funcEditor.on('blur',function(){
-      console.info('funcEditor.blur');
       var code = tb.menu.funcEditor.getValue();
       if (code != tb.selected.element$.attr('func')) {
         if (code) tb.selected.element$.attr('func',code);
@@ -194,7 +193,6 @@
       tb.setModified(true);
     });
     tb.menu.item$.focusout(function(event){
-      console.info('item$.focusout');
       if (tb.menu.itemprop$.val()) tb.selected.element$.attr('itemprop',tb.menu.itemprop$.val());
       else tb.selected.element$.removeAttr('itemprop');
       if (tb.menu.itemtype$.val()) tb.selected.element$.attr('itemtype',tb.menu.itemtype$.val());
@@ -381,11 +379,7 @@
 
   tb.elementClick = function(event) {
     // event handler for click on an ELEMENT
-    console.info('elementClick')
     var element$ = $(event.currentTarget); // not target, since target can be an child element, not the div itself
-    if (element$.hasClass('EMBEDDED')) {
-      return true; //EMBEDDED code is ruled by its container (richText / section...) so let the event bubble
-    }
     if (event.ctrlKey) {
       tb.mark(event.altKey?element$:element$.itemscopeOrThis$());
       return false;
@@ -721,7 +715,10 @@
 
 
   tb.reformatRichText = function(element) {
-    // reformat a [[RICHTEXT]] [[ELEMENT]] in order to find potential [[EMBEDDED]] [[CODE]]
+    // reformat a [[RICHTEXT]] [[ELEMENT]] in order to create [[EMBEDDED]] [[CODE]] out of {{ }} pattern
+    // {{code}} will create an ELEMENT EMBEDDED CODE with that code
+    // {{#link}} will create a LINK to a section title
+    // {{##elementBox}} will create an elementBox
 
     if ((element == undefined) || ($(element).hasClass('CODE'))) return;
 
@@ -729,14 +726,15 @@
     $(element).replaceText(/\{\{([#]{0,2})(.*?)\}\}/g,
                            function(s,command,code) {
                              change = true;  // if called, this function will change the document
+                             var code$ = tb.templates['https://tablord.com/templates/codeSpan'].element$();
                              switch (command) {
-                               case ''   : return '<SPAN class="CODE EMBEDDED ELEMENT" id="'+ tb.blockId('code')+'">&nbsp;'+code+'</SPAN>';
-                               case '##' : return '<SPAN class="CODE EMBEDDED ELEMENT" id="'+ tb.blockId('code')+'">&nbsp;tb.elementBox("'+code+'")</SPAN>';
-                               case '#'  : return '<SPAN class="CODE EMBEDDED ELEMENT" id="'+ tb.blockId('code')+'">&nbsp;tb.link("'+code+'")</SPAN>';
+                               case ''   : return code$.attr('func',code)[0].outerHTML;
+                               case '##' : return code$.attr('func',"tb.elementBox('"+code+"');")[0].outerHTML;
+                               case '#'  : return code$.attr('func',"tb.link('"+code+"');")[0].outerHTML;
                              }
                            },
-                           function(e) {  //replace in any tag except those having CODE or OUTPUT class
-                             return e.className.search(/OUTPUT|CODE/)=== -1;
+                           function(e) {  //replace in any tag except those inside CODE
+                             return !$(e).hasClass('CODE');
                            });
     if (change) {
       element.normalize();
@@ -781,16 +779,33 @@
     var codes = $('.CODE').not('[func]');
     codes.each(function(i,e){
       var code$ =$(e);
-      var codeId = code$.attr('id');
       var func = tb.htmlToText(code$.html());
-      var newCode$ = tb.templates['https://tablord.com/template/code'].element$();
-      newCode$.attr('func',func).attr('id',codeId).addClass('SHOW');
+      var codeId = code$.attr('id');
       var out$ = $('#'+codeId.replace(/code/,'out')).removeAttr('id');
       var test$ = $('#'+codeId.replace(/code/,'test')).removeAttr('id');
+      var newCode$;
+      if (code$.hasClass('EMBEDDED')){
+        newCode$ = tb.templates['https://tablord.com/templates/codeSpan'].element$();
+        newCode$.addClass('EMBEDDED');
+      }
+      else {
+        newCode$ = tb.templates['https://tablord.com/templates/code'].element$();
+        newCode$.addClass('SHOW');
+      }
+      newCode$.attr('func',func).attr('id',codeId);
       code$.replaceWith(newCode$);
       newCode$.children('.OUTPUT').replaceWith(out$);
       newCode$.append(test$);
     });
+    
+    var ugglyEmbedded$ = $('div.EMBEDDED');
+    ugglyEmbedded$.replaceTagName('span');
+    
+    $('.CODE').attr('contentEditable',false);
+    
+    $('[itemtype="https://tablord.com/template/codeSpan"]').attr('itemtype','https://tablord.com/templates/codeSpan');
+    $('[itemtype="https://tablord.com/template/code"]').attr('itemtype','https://tablord.com/templates/code');
+    
   };
 
 

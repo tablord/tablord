@@ -46,11 +46,10 @@
   $.fn.itemscopeOrThis$ = function() {
     // return the wrapping itemscope of this if any or this otherwise
     // this must be a one element jQuery
-    // it also handles the case of code that comes with output and potentially test
     if (this.length !== 1) throw Error('must be a jquery of one element');
     var c$ = this.closest('[itemscope]');
     if (c$.length===1) return c$;
-    return this.add(tb.outputElement$(this)).add(tb.testElement$(this));
+    return this;
   };
   
   
@@ -301,8 +300,16 @@
     })
   }
 
+  $.fn.replaceTagName = function(newTagName) {
+    // replace all element of this with a similar element having newTag
+    this.replaceWith(function(){
+      var newHtml = this.outerHTML.replace(/^<\w+([ >].*)<\/\w+>$/,'<'+newTagName+'$1</'+newTagName+'>');
+      return newHtml;
+    });
+  }
+  
   $.fn.replaceText = function(regExp,replacement,accept){
-    // like string.replace(regExp,replacement), but only acts on text of the elements of the jQuery (not on the TAG ot the attributes)
+    // like string.replace(regExp,replacement), but only acts on text of the elements of the jQuery (not on the TAG or the attributes)
     // - accept: function(element) that return true if the text nodes of this element will be replaced
     //                                         undefined if the text nodes of this element will be untouched, but the children will be examined
     //                                         false if the element has to be completely skipped

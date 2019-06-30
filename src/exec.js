@@ -675,6 +675,44 @@
     .before(trace.span().toString()) // traces are not part of the result
   }
 
+  tb.execCodeElement = function(element$){
+    // execute a CODE ELEMENT
+    var code = element$.attr('func');
+    var source$ = element$.children('.SOURCE');
+    var out$ = element$.children('.OUTPUT');
+    var test$ = element$.children('.TEST');
+    tb.output = tb.newOutput(element$[0],out$[0])
+    if (out$.length===0) {
+      out$ = $('<'+element$.prop('tagName')+' class="OUTPUT">');
+      element$.prepend(out$);
+    }
+    if (source$.length===0) {
+      source$ = $('<pre class="SOURCE">');
+      element$.prepend(source$);
+    }
+    source$.html(element$.hasClass('SHOW')?Prism.highlight(code, Prism.languages.javascript, 'javascript'):'');
+      
+    try {
+      var res = tb.securedEval(code);
+      tb.displayResult(res,output);
+      if (test$.length) {
+        if ((tb.trimHtml(out$.html()) == tb.trimHtml(test$.html()))) {   //TODO rethink how to compare
+          test$.removeClass('ERROR').addClass('SUCCESS');
+        }
+        else {
+          test$.removeClass('SUCCESS').addClass('ERROR');
+        }
+      }
+      tb.output = undefined;
+      return true;
+    }
+    catch (err) {
+      tb.showElementError(element$[0],err);
+      tb.output = undefined;
+      return false;  // will break the each loop
+    }
+  };
+
   tb.execCode = function(element) {
     // execute the code of element
     // skip all DELETED element
@@ -827,7 +865,7 @@
     elements$.each(function(){
       try {
         var this$ = $(this);
-        var tbVar = this$.prop('tbVar')
+        var tbVar = this$.prop('tbVar');
         var value = tbVar.valueOf();
         this$.html(tb.format(value,{format:{fmtStr:this$.attr('format')}})).addClass('SUCCESS');
       }
