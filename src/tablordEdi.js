@@ -434,7 +434,7 @@
       $('.OUTPUT').add('.TEST').removeClass('SUCCESS ERROR');
     }
     tb.setUpToDate.state = state;
-  }
+  };
 
   
   tb.showElementError = function(element,error) {
@@ -443,22 +443,33 @@
     var element$ = $(element);
     var output$ = element$;
     if (element$.hasClass('CODE')) output$ = $('.OUTPUT',element);
-    output$.addClass('ERROR').removeClass('SUCCESS').html('<span class="badge badge-pill badge-warning">'+(error.cascade || 'error')+'</span>');
-    element$.prop('error',{message:error.message,
-                           stack:error.stack,
-                           lineNumber:error.lineNumber,
-                           columnNumber:error.columnNumber,
-                           cascade:error.cascade
+    output$.removeClass('SUCCESS').html('<span class="badge badge-pill badge-warning">'+(error.cascade || 'error')+'</span>');
+    element$.addClass('ERROR')
+    .prop('error',{message:error.message,
+                   stack:error.stack,
+                   lineNumber:error.lineNumber,
+                   columnNumber:error.columnNumber,
+                   cascade:error.cascade
     });
     if (!error.cascade) {
       tb.selectElement(element);
       tb.menu.properties$.prop('open',true);
     }
-  }
+  };
+  
+  tb.showItempropError = function(element,error) {
+    // report an error that occured at the variable creation
+    var element$ = $(element);
+    element$.addClass('ERROR')
+    .prop('error',error);
+    tb.selectElement(element);
+    tb.menu.properties$.prop('open',true);
+    tb.menu.itemprop$[0].focus();
+  };
   
   tb.showInternalError = function(html) {
     tb.menu.debug$.html(html).show();
-  }
+  };
   //////////////////////////////////////////////////////////////////////////////
   // method to manipulate the document /////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////

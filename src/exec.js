@@ -823,16 +823,25 @@
   
   tb.createVarFromItemprop = function(i,element) {
     // create an instance of tb.Var or tb.Table depending on the type of element
+    var err;
     var e$ = $(element);
     var itemprop = e$.attr('itemprop');
     var variable = tb.vars[itemprop];
     if (e$.attr('itemscope')!==undefined) {  // itemscope is represented by a tb.Table with one or more line
-      if (variable && !(variable instanceof tb.Table)) throw Error(itemprop+' is already declared and is not a table ');
-      var data = tb.Template.getData(e$)
+      if (variable && !(variable instanceof tb.Table)){
+        err = new Error(itemprop+' is already declared and is not a table ');
+        tb.showItempropError(element,err);
+        throw err;
+      }
+      var data = tb.Template.getData(e$);
       table(itemprop).add(data);
     }
     else {// this is a simple tb.Var
-      if (variable) throw Error(itemprop+' is already declared '); 
+      if (variable) {
+        err = new Error(itemprop+' is already declared '); 
+        tb.showItempropError(element,err);
+        throw err;
+      }
       _var = e$.getItempropValue();
       if (_var.isVar) { // this is a function
         _var.name = itemprop;
@@ -884,10 +893,10 @@
     trace.off();
     tb.clearTimers();
     $('.SUCCESS').removeClass('SUCCESS');
-    $('.ERROR').removeClass('ERROR');
+    $('.ERROR').removeClass('ERROR').removeProp('error');
     $('.TRACE').remove();
     $('.BOX').remove();
-    $('[func]').removeProp('tbVar').removeProp('error');
+    $('[func]').removeProp('tbVar');
     tb.finalizations = [];
     tb.vars = {}; // run from fresh
     tb.createVars();
