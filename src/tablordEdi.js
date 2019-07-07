@@ -46,7 +46,7 @@
     
     tb.menu = {};
     tb.menu.$ = $(
-    	'<div id="menu" class="TOOLBAR no_print" style="float:right;max-width:50%;">'+
+    	'<div id="menu" class="TOOLBAR no_print">'+
             '<div class="btn-toolbar mb-1" role="toolbar" aria-label="main buttons">'+
                 '<div class="btn-group btn-group-sm mr-2" role="group" aria-label="run btns">'+
                     '<button id="runUntilSelectedBtn" type="button" class="btn btn-dark"  onclick=tb.execUntilSelected(); style="color: #8dff60;" ><i class="fas fa-step-forward"></i></button>'+
@@ -77,8 +77,10 @@
         				'<button id="cutBtn" class="btn btn-dark" title="cut marked elements"><i class="fas fa-cut"></i></button>'+
         				'<button id="pasteBtn" class="btn btn-dark title="paste cut/marked elements" where="after"><i class="fas fa-paste"></i></button>'+
         				'<button id="deleteBtn" class="btn btn-dark" title="delete marked/selected element"><i class="fas fa-trash"></i></button>'+
-        				'<button id="moveUpBtn" class="btn btn-dark" title="move selected before previous element"><i class="fas fa-arrow-up"></i></button>'+
-        				'<button id="moveDownBtn" class="btn btn-dark" title="move selected after previous element"><i class="fas fa-arrow-down"></i></button>'+
+        				'<button id="moveUpBtn" class="btn btn-dark" title="move selected before previous block element"><i class="fas fa-arrow-up"></i></button>'+
+        				'<button id="moveDownBtn" class="btn btn-dark" title="move selected after next block element"><i class="fas fa-arrow-down"></i></button>'+
+        				'<button id="moveLeftBtn" class="btn btn-dark" title="move selected before previous element"><i class="fas fa-arrow-left"></i></button>'+
+        				'<button id="moveRightBtn" class="btn btn-dark" title="move selected after next element"><i class="fas fa-arrow-right"></i></button>'+
         				'<button id="showHtmlBtn" class="btn btn-dark">&#8594;html</button>'+
         				'<button id="toTestBtn" class="btn btn-dark">&#8594;test</button>'+
                     '</div>'+
@@ -278,6 +280,16 @@
   tb.moveDownBtnClick = function(event) {
     // simple version: at itemscope boundaries
     tb.moveElement(tb.selected.element$.itemscopeOrThis$(),'after');
+  }
+
+  tb.moveLeftBtnClick = function(event) {
+    // simple version: at element boundaries
+    tb.moveElement(tb.selected.element$,'before');
+  }
+
+  tb.moveRightBtnClick = function(event) {
+    // simple version: at element boundaries
+    tb.moveElement(tb.selected.element$,'after');
   }
   
   tb.toTestBtnClick = function(event) {
@@ -621,12 +633,61 @@
     var e$ = $(element);
     if (e$.hasClass('EDITABLE')) return e$;
     return e$.find('.EDITABLE');
-  }
+  };
 
+  tb.updateMenu = function() {
+    // update the menu with the content of tb.selected.element
+    // which can be undefined and it will hide the selectionToolBar
+    var element = tb.selected.element;
+    if (element == undefined){
+      tb.menu.selectionToolBar$.hide();
+      return;
+    }
+    tb.menu.codeId$.html(element.id+'<SPAN style="color:red;cursor:pointer;" onclick="tb.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
+    var flexParent = tb.selected.element$.parent().hasClass('FLEX');
+    tb.menu.moveLeftBtn$.prop('disabled',!flexParent);
+    tb.menu.moveRightBtn$.prop('disabled',!flexParent);
+    
+    var isCode =tb.selected.element$.hasClass('CODE');
+    tb.menu.showHtmlBtn$.prop('disabled',!isCode);
+    tb.menu.toTestBtn$.prop('disabled',!isCode);
+    
+    tb.menu.classes$.children().each(function(){
+      var checkbox$ = $(this);
+      var c = checkbox$.val();
+      if (c) {
+        checkbox$.prop('checked',tb.selected.element$.hasClass(c));
+      };
+    });
+    tb.menu.itemprop$.val(tb.selected.element$.attr('itemprop'));
+    tb.menu.itemtype$.val(tb.selected.element$.attr('itemtype'));
+    tb.menu.funcEditor.setValue(tb.selected.element$.attr('func') || '')
+    var error = tb.selected.element$.prop('error');
+    if (error) {
+      var line = error.lineNumber;
+      var col = error.columnNumber;
+      tb.menu.error$.html('<details><summary>'+error.message+'</summary>'+error.stack.replace('/\n/g','<br>').replace(/ at /g,'<br>at ')+'</details>').show();
+      tb.menu.funcEditor.gotoLine(line,col-1);
+    }
+    else tb.menu.error$.hide();
+    tb.menu.format$.val(tb.selected.element$.attr('format'));
+    tb.updateTemplateChoice();
+    tb.menu.$.show();
+    tb.menu.selectionToolBar$.show(500,function(){tb.menu.funcEditor.resize()});
+    if (error) {
+      element.scrollIntoView();
+      tb.menu.funcEditor.focus();
+    }
+    else {
+      element.focus();
+    };
+    
+  };
 
   tb.selectElement = function(element) {
     // select element as tb.selected.element and update the EDI accordingly
     // element can either be a DOM element or a jQuery of 1 element
+
     if (element instanceof $) element = element[0];
     tb.editor.setCurrentEditor(undefined);
     var e = tb.selected.element;
@@ -650,47 +711,13 @@
     tb.selected.element$ = $(element);
     tb.selected.itemscope$ =  tb.selected.element$.closest('[itemscope]');
     tb.selected.container$ =  tb.selected.element$.parent().closest('[container]');
-    if (element == undefined){
-      $('#codeId').text('no selection');
-      tb.menu.selectionToolBar$.hide();
-      return;
-    }
-    tb.menu.codeId$.html(element.id+'<SPAN style="color:red;cursor:pointer;" onclick="tb.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
-    tb.menu.classes$.children().each(function(){
-      var checkbox$ = $(this);
-      var c = checkbox$.val();
-      if (c) {
-        checkbox$.prop('checked',tb.selected.element$.hasClass(c));
-      };
-    });
-    tb.menu.itemprop$.val(tb.selected.element$.attr('itemprop'));
-    tb.menu.itemtype$.val(tb.selected.element$.attr('itemtype'));
-    tb.menu.funcEditor.setValue(tb.selected.element$.attr('func') || '')
-    var error = tb.selected.element$.prop('error');
-    if (error) {
-      var line = error.lineNumber;
-      var col = error.columnNumber;
-      tb.menu.error$.html('<details><summary>'+error.message+'</summary>'+error.stack.replace('/\n/g','<br>').replace(/ at /g,'<br>at ')+'</details>').show();
-      tb.menu.funcEditor.gotoLine(line,col-1);
-    }
-    else tb.menu.error$.hide();
-    tb.menu.format$.val(tb.selected.element$.attr('format'));
-
+    
     tb.selected.element$.addClass('SELECTED');
     if (itemprop) {
       tb.selected.element$.parent().closest('[itemscope]').addClass('ITEMSCOPE')
     }
-    tb.updateTemplateChoice();
+    tb.updateMenu();
     tb.editables$(element).attr('contentEditable',true);
-    tb.menu.$.show();
-    tb.menu.selectionToolBar$.show(500,function(){tb.menu.funcEditor.resize()});
-    if (error) {
-      element.scrollIntoView();
-      tb.menu.funcEditor.focus();
-    }
-    else {
-      element.focus();
-    };
   }
 
   tb.moveElement = function(element$,where) {
@@ -698,11 +725,11 @@
     // -element$: the element to move
     // - where : cf [$.fn.neighbour]
     if (element$.length===0) return;
-    var whereToInsert$;
+    var whereToInsert$ = element$;
     if (where==='before' || where=='beforeItemscope') {
       do {
-        whereToInsert$ = whereToInsert$.prev();
-      } while (whereToInsert$.length && !whereToInsert$.hasClass('ELEMENT')); // also skip OUTPUT TEST.. and decorative tags
+        whereToInsert$ = whereToInsert$.first().prev();
+      } while (whereToInsert$.length && !whereToInsert$.hasClass('ELEMENT')); // also skip any decorative tags
       element$.insertBefore(whereToInsert$);
     }
     else {

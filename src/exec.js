@@ -818,7 +818,7 @@
   tb.updateContainers = function() {
     // make sure that containers are never empty (= at least have a RICHTEXT ELEMENT)
     var c$ = $('[container]:not(:has(> *))');
-    c$.append('<DIV class="ELEMENT EDITABLE RICHTEXT c-12" id='+tb.blockId('rich')+'></DIV>');
+    if (c$.length) c$.append('<DIV class="ELEMENT EDITABLE RICHTEXT c-12" id='+tb.blockId('rich')+'></DIV>');
   }
   
   tb.createVarFromItemprop = function(i,element) {

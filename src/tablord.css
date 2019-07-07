@@ -102,17 +102,34 @@ pre {
 }
 
 .ELEMENT {
+  position:relative;    
   padding: 3px;
 }
 .ELEMENT.EMPTY {
   color: grey;
 }
 .ELEMENT.SELECTED {
-  position:relative;
   padding:0px;
   border: 3px solid grey;
 }
-
+.ELEMENT:hover {
+  outline:1px dotted grey;
+}
+.ELEMENT[itemprop]:hover::after {
+  position:absolute;
+  top:-2em;
+  right:0;
+  color:white;
+  background-color: rgba(169, 169, 169,0.6);
+  font-size:0.6em;
+  padding:3px;
+  content:attr(itemprop);
+}
+.ELEMENT[itemprop][itemscope]:hover::before {
+  left:0;
+  right:none;
+  color:orange;
+}
 .ELEMENT.SELECTED::after {
   position:absolute;
   top:-2em;
@@ -129,6 +146,7 @@ pre {
   padding:0;
   border: 3px solid orange;
 }
+
 .ELEMENT.ITEMSCOPE::after {
   position:relative;
   width:0;
