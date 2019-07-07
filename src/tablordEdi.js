@@ -357,8 +357,8 @@
 
   tb.showHtmlBtnClick = function(event) {
     if (tb.selected.element$.hasClass('CODE')) {
-      var out = tb.outputElement$(tb.selected.element$)[0] || {id:'no output',innerHTML:''};
-      var test = tb.testElement$(tb.selected.element$)[0] || {id:'no test',innerHTML:''};
+      var out = tb.selected.element$.children('.OUTPUT')[0] || {id:'no output',innerHTML:''};
+      var test = tb.selected.element$.children('.TEST')[0] || {id:'no test',innerHTML:''};
       var hout  = out.innerHTML;
       var htest = test.innerHTML;
       diff = tb.diff(hout,htest).span().toString();
@@ -549,22 +549,6 @@
     // set the current element's output as the test element if no test element existed or if it failed
     // if a SUCCESS test existed, remove the test
     
-/*    
-    if (tb.selected.element == undefined) return;
-
-    var out$ = tb.outputElement$(tb.selected.element$);
-    var test$ = tb.testElement$(tb.selected.element$);
-    if (test$.length === 0) {
-      out$.after($('<DIV id="'+tb.selected.element.id.replace(/code/,"test")+'" class="TEST SUCCESS">'+out$.html()+'</DIV>'));
-    }
-    else if (!test$.hasClass('SUCCESS')) {
-      test$.html(out$.html()).removeClass('ERROR').addClass('SUCCESS');
-    }
-    else {
-      test$.remove();
-    }
-    tb.setModified(true);
-*/
     if (tb.selected.element == undefined) return;
 
     var out$ = tb.selected.element$.children('.OUTPUT');
