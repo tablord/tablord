@@ -46,7 +46,7 @@
     
     tb.menu = {};
     tb.menu.$ = $(
-    	'<div id="menu" class="TOOLBAR no_print" style="float:right;max-width:50%;">'+
+    	'<div id="menu" class="TOOLBAR no_print">'+
             '<div class="btn-toolbar mb-1" role="toolbar" aria-label="main buttons">'+
                 '<div class="btn-group btn-group-sm mr-2" role="group" aria-label="run btns">'+
                     '<button id="runUntilSelectedBtn" type="button" class="btn btn-dark"  onclick=tb.execUntilSelected(); style="color: #8dff60;" ><i class="fas fa-step-forward"></i></button>'+
@@ -77,8 +77,10 @@
         				'<button id="cutBtn" class="btn btn-dark" title="cut marked elements"><i class="fas fa-cut"></i></button>'+
         				'<button id="pasteBtn" class="btn btn-dark title="paste cut/marked elements" where="after"><i class="fas fa-paste"></i></button>'+
         				'<button id="deleteBtn" class="btn btn-dark" title="delete marked/selected element"><i class="fas fa-trash"></i></button>'+
-        				'<button id="moveUpBtn" class="btn btn-dark" title="move selected before previous element"><i class="fas fa-arrow-up"></i></button>'+
-        				'<button id="moveDownBtn" class="btn btn-dark" title="move selected after previous element"><i class="fas fa-arrow-down"></i></button>'+
+        				'<button id="moveUpBtn" class="btn btn-dark" title="move selected before previous block element"><i class="fas fa-arrow-up"></i></button>'+
+        				'<button id="moveDownBtn" class="btn btn-dark" title="move selected after next block element"><i class="fas fa-arrow-down"></i></button>'+
+        				'<button id="moveLeftBtn" class="btn btn-dark" title="move selected before previous element"><i class="fas fa-arrow-left"></i></button>'+
+        				'<button id="moveRightBtn" class="btn btn-dark" title="move selected after next element"><i class="fas fa-arrow-right"></i></button>'+
         				'<button id="showHtmlBtn" class="btn btn-dark">&#8594;html</button>'+
         				'<button id="toTestBtn" class="btn btn-dark">&#8594;test</button>'+
                     '</div>'+
@@ -96,36 +98,42 @@
         		'<div id="objectToolBar"></div>'+
     			'<div>'+
                   '<details id="properties"><summary>properties</summary>'+
-                    '<input id="itemprop" type="text" placeholder="itemprop">'+
-                    '<input id="itemtype" placeholder="itemtype"><br>'+
-                    '<input id="func" placeholder="function code">'+
-                    '<input id="format" placeholder="format"><br>'+
-                    
-                    '<input type="radio" name="type" value="number">number '+
-                    '<input type="radio" name="type" value="string">string '+
-                    '<input type="radio" name="type" value="date">date<br> '+
-    
-                    'c-<input type="radio" name="layout" value="c-1">1 '+
-                    '<input type="radio" name="layout" value="c-2">2 '+
-                    '<input type="radio" name="layout" value="c-3">3 '+
-                    '<input type="radio" name="layout" value="c-4">4 '+
-                    '<input type="radio" name="layout" value="c-5">5 '+
-                    '<input type="radio" name="layout" value="c-6">6 '+
-                    '<input type="radio" name="layout" value="c-7">7 '+
-                    '<input type="radio" name="layout" value="c-8">8 '+
-                    '<input type="radio" name="layout" value="c-9">9 '+
-                    '<input type="radio" name="layout" value="c-10">10 '+
-                    '<input type="radio" name="layout" value="c-11">11 '+
-                    '<input type="radio" name="layout" value="c-12">12<br>'+
-                    
-                    '<input type="radio" name="severity" value="INFO">INFO '+
-                    '<input type="radio" name="severity" value="OK">OK '+
-                    '<input type="radio" name="severity" value="WARNING">WARNING '+
-                    '<input type="radio" name="severity" value="DANGER">DANGER '+
-                    '<input type="radio" name="severity" value="">--<br>'+
-                    '<input type="checkbox" value="FLEX">FLEX<br>'+
-                    '<input type="checkbox" value="NOTE">NOTE<br>'+
-                    '<input type="checkbox" value="ADDRESS">ADDRESS<br>'+
+                    '<div id="item">'+
+                      '<input id="itemprop" type="text" placeholder="itemprop">'+
+                      '<input id="itemtype" placeholder="itemtype">'+
+                      '<input id="format" placeholder="format">'+
+                    '</div>'+
+                    '<div id="func" style="height:200px;"></div>'+
+                    '<div id="error" class="alert alert-danger"></div>'+
+                    '<div id="classes">'+
+                        '<input type="checkbox" value="SHOW">SHOW<br> '+
+
+                        '<input type="radio" name="type" value="number">number '+
+                        '<input type="radio" name="type" value="string">string '+
+                        '<input type="radio" name="type" value="date">date<br> '+
+                        
+                        'c-<input type="radio" name="layout" value="c-1">1 '+
+                        '<input type="radio" name="layout" value="c-2">2 '+
+                        '<input type="radio" name="layout" value="c-3">3 '+
+                        '<input type="radio" name="layout" value="c-4">4 '+
+                        '<input type="radio" name="layout" value="c-5">5 '+
+                        '<input type="radio" name="layout" value="c-6">6 '+
+                        '<input type="radio" name="layout" value="c-7">7 '+
+                        '<input type="radio" name="layout" value="c-8">8 '+
+                        '<input type="radio" name="layout" value="c-9">9 '+
+                        '<input type="radio" name="layout" value="c-10">10 '+
+                        '<input type="radio" name="layout" value="c-11">11 '+
+                        '<input type="radio" name="layout" value="c-12">12<br>'+
+                        
+                        '<input type="radio" name="severity" value="INFO">INFO '+
+                        '<input type="radio" name="severity" value="OK">OK '+
+                        '<input type="radio" name="severity" value="WARNING">WARNING '+
+                        '<input type="radio" name="severity" value="DANGER">DANGER '+
+                        '<input type="radio" name="severity" value="">--<br>'+
+                        '<input type="checkbox" value="FLEX">FLEX<br>'+
+                        '<input type="checkbox" value="NOTE">NOTE<br>'+
+                        '<input type="checkbox" value="ADDRESS">ADDRESS<br>'+
+                    '</div>'+
                   '</details>'+
                 '</div>'+
             '</div>'+
@@ -165,33 +173,42 @@
     
     tb.menu.selectionToolBar$.hide();
     
-    tb.menu.properties$.click(function(event){
+    tb.menu.error$.hide();
+    tb.menu.funcEditor = ace.edit('func');
+    tb.menu.funcEditor.session.setMode("ace/mode/javascript");
+    tb.menu.funcEditor.on('blur',function(){
+      var code = tb.menu.funcEditor.getValue();
+      if (code != tb.selected.element$.attr('func')) {
+        if (code) tb.selected.element$.attr('func',code);
+        else tb.selected.element$.removeAttr('func');
+        tb.run();
+        tb.setModified(true);
+      }
+    });
+    tb.menu.classes$.click(function(event){
       $(event.currentTarget).children().each(function(){
-        var className = $(this).val()
+        var className = $(this).val();
         if (className) {
-           tb.selected.element$.toggleClass(className,$(this).prop('checked'))
+           tb.selected.element$.toggleClass(className,$(this).prop('checked'));
         }
-      })
+      });
       tb.setModified(true);
-    })
-    .change(function(event){
-      var e$ = tb.selected.element$;
-      if (tb.menu.itemprop$.val()) e$.attr('itemprop',tb.menu.itemprop$.val())
-      else e$.removeAttr('itemprop');
-      if (tb.menu.itemtype$.val()) e$.attr('itemitype',tb.menu.itemtype$.val())
-      else e$.removeAttr('itemtype');
-      if (tb.menu.func$.val()) e$.attr('func',tb.menu.func$.val())
-      else e$.removeAttr('func');
-      if (tb.menu.format$.val()) e$.attr('format',tb.menu.format$.val())
-      else e$.removeAttr('format');
+    });
+    tb.menu.item$.focusout(function(event){
+      if (tb.menu.itemprop$.val()) tb.selected.element$.attr('itemprop',tb.menu.itemprop$.val());
+      else tb.selected.element$.removeAttr('itemprop');
+      if (tb.menu.itemtype$.val()) tb.selected.element$.attr('itemtype',tb.menu.itemtype$.val());
+      else tb.selected.element$.removeAttr('itemtype');
+      if (tb.menu.format$.val()) tb.selected.element$.attr('format',tb.menu.format$.val());
+      else tb.selected.element$.removeAttr('format');
       tb.run();
       tb.setModified(true);
-    })
+    });
  
     tb.updateTemplateChoice();
     
     tb.menu.helpSearch$.keyup(tb.helpSearchKeyup);
-  }
+  };
   //////////////////////////////////////////////////////////////////////////////
   // event handler for button input etc ////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -203,7 +220,7 @@
     var button = event.target;
     $('.CODE').toggleClass('HIDDEN',!button.checked);
     tb.sheetOptions.showCode = button.checked;
-  }
+  };
 
   tb.showCutClick = function(event) {
     // click event handler for the show cut checkbox
@@ -264,6 +281,16 @@
     // simple version: at itemscope boundaries
     tb.moveElement(tb.selected.element$.itemscopeOrThis$(),'after');
   }
+
+  tb.moveLeftBtnClick = function(event) {
+    // simple version: at element boundaries
+    tb.moveElement(tb.selected.element$,'before');
+  }
+
+  tb.moveRightBtnClick = function(event) {
+    // simple version: at element boundaries
+    tb.moveElement(tb.selected.element$,'after');
+  }
   
   tb.toTestBtnClick = function(event) {
     tb.copyOutputToTest();
@@ -286,7 +313,9 @@
   
   tb.cutBtnClick = function(event) {
     // simple version
-    // TODO choose if itemscope / element etc... taking shift keys into consideration
+    // if there are [[MARKED]] [[ELEMENT]], will cut them
+    // if element is inside an [[itemscope]], will cut the entire itemscope
+    // except if the Alt Key is pressed where it will only take the ELEMENT
     var elements$ = $('.MARKED');
     if (elements$.length ===0) elements$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
     tb.cutBlock(elements$);
@@ -312,7 +341,7 @@
     var elements$ = $('.MARKED')
     if (elements$.length === 0) elements$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
     var target$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
-    tb.cloneElements$(event,true).insertAfter(target$);
+    tb.cloneElements$(elements$,true).insertAfter(target$);
   }
   
 
@@ -328,8 +357,8 @@
 
   tb.showHtmlBtnClick = function(event) {
     if (tb.selected.element$.hasClass('CODE')) {
-      var out = tb.outputElement$(tb.selected.element$)[0] || {id:'no output',innerHTML:''};
-      var test = tb.testElement$(tb.selected.element$)[0] || {id:'no test',innerHTML:''};
+      var out = tb.selected.element$.children('.OUTPUT')[0] || {id:'no output',innerHTML:''};
+      var test = tb.selected.element$.children('.TEST')[0] || {id:'no test',innerHTML:''};
       var hout  = out.innerHTML;
       var htest = test.innerHTML;
       diff = tb.diff(hout,htest).span().toString();
@@ -363,9 +392,6 @@
   tb.elementClick = function(event) {
     // event handler for click on an ELEMENT
     var element$ = $(event.currentTarget); // not target, since target can be an child element, not the div itself
-    if (element$.hasClass('EMBEDDED')) {
-      return true; //EMBEDDED code is ruled by its container (richText / section...) so let the event bubble
-    }
     if (event.ctrlKey) {
       tb.mark(event.altKey?element$:element$.itemscopeOrThis$());
       return false;
@@ -397,28 +423,11 @@
     var tbObject = tb.vars[element.tbObject]
     return tbObject.editorEvent(event);
   }
-
-  //////////////////////////////////////////////////////////////////////////////
-  // method to manipulate the document /////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////
   
-  tb.updateTemplateChoice = function() {
-    // update the template selection box according to the context i.e. the acceptedTemplate of the current container
-    tb.menu.templateChoice$.empty();
-    var acceptedTemplates = tb.selected.container$.attr('templates');
-    if (acceptedTemplates) {
-      acceptedTemplates = acceptedTemplates.split(' ');
-    }
-    else {
-      acceptedTemplates = tb.keys(tb.templates);
-    }
-    for (var i=0;i<acceptedTemplates.length;i++) {
-      var template = tb.templates[acceptedTemplates[i]];
-      if (template) tb.menu.templateChoice$.append(
-        '<button class="dropdown-item" template="'+template.url+'">'+template.name+'</button>'
-      );
-    }
-  }
+  //////////////////////////////////////////////////////////////////////////////
+  // method to display changes
+  //////////////////////////////////////////////////////////////////////////////
+
 
   tb.setModified = function(state) {
     // set the modified state and modify the save button accordingly
@@ -437,6 +446,62 @@
       $('.OUTPUT').add('.TEST').removeClass('SUCCESS ERROR');
     }
     tb.setUpToDate.state = state;
+  };
+
+  
+  tb.showElementError = function(element,error) {
+    // report an error that occured inside an element
+    // like getting the valueof a tb.Var
+    var element$ = $(element);
+    var output$ = element$;
+    if (element$.hasClass('CODE')) output$ = $('.OUTPUT',element);
+    output$.removeClass('SUCCESS').html('<span class="badge badge-pill badge-warning">'+(error.cascade || 'error')+'</span>');
+    element$.addClass('ERROR')
+    .prop('error',{message:error.message,
+                   stack:error.stack,
+                   lineNumber:error.lineNumber,
+                   columnNumber:error.columnNumber,
+                   cascade:error.cascade
+    });
+    if (!error.cascade) {
+      tb.selectElement(element);
+      tb.menu.properties$.prop('open',true);
+    }
+  };
+  
+  tb.showItempropError = function(element,error) {
+    // report an error that occured at the variable creation
+    var element$ = $(element);
+    element$.addClass('ERROR')
+    .prop('error',error);
+    tb.selectElement(element);
+    tb.menu.properties$.prop('open',true);
+    tb.menu.itemprop$[0].focus();
+  };
+  
+  tb.showInternalError = function(html) {
+    tb.menu.debug$.html(html).show();
+  };
+  //////////////////////////////////////////////////////////////////////////////
+  // method to manipulate the document /////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+
+  tb.updateTemplateChoice = function() {
+    // update the template selection box according to the context i.e. the acceptedTemplate of the current container
+    tb.menu.templateChoice$.empty();
+    var acceptedTemplates = tb.selected.container$.attr('templates');
+    if (acceptedTemplates) {
+      acceptedTemplates = acceptedTemplates.split(' ');
+    }
+    else {
+      acceptedTemplates = tb.keys(tb.templates);
+    }
+    for (var i=0;i<acceptedTemplates.length;i++) {
+      var template = tb.templates[acceptedTemplates[i]];
+      if (template) tb.menu.templateChoice$.append(
+        '<button class="dropdown-item" template="'+template.url+'">'+template.name+'</button>'
+      );
+    }
   }
 
   tb.clearOutputs = function() {
@@ -483,12 +548,13 @@
   tb.copyOutputToTest = function() {
     // set the current element's output as the test element if no test element existed or if it failed
     // if a SUCCESS test existed, remove the test
+    
     if (tb.selected.element == undefined) return;
 
-    var out$ = tb.outputElement(tb.selected.element);
-    var test$ = tb.testElement(tb.selected.element);
+    var out$ = tb.selected.element$.children('.OUTPUT');
+    var test$ = tb.selected.element$.children('.TEST');
     if (test$.length === 0) {
-      out$.after($('<DIV id="'+tb.selected.element.id.replace(/code/,"test")+'" class="TEST SUCCESS">'+out.innerHTML+'</DIV>'));
+      out$.after($('<div class="TEST SUCCESS">'+out$.html()+'</div>'));
     }
     else if (!test$.hasClass('SUCCESS')) {
       test$.html(out$.html()).removeClass('ERROR').addClass('SUCCESS');
@@ -497,6 +563,7 @@
       test$.remove();
     }
     tb.setModified(true);
+    
   }
 
   tb.mark = function(elements$){
@@ -536,8 +603,11 @@
       clones$.removeClass('SELECTED');
       prepare(clones$.children());
     }
+    
     var newElements$ = elements$.clone();
+    prepare(newElements$);
     tb.setUpToDate(false);
+    tb.setModified(true);
     return newElements$;
   }
 
@@ -547,17 +617,67 @@
     var e$ = $(element);
     if (e$.hasClass('EDITABLE')) return e$;
     return e$.find('.EDITABLE');
-  }
+  };
 
+  tb.updateMenu = function() {
+    // update the menu with the content of tb.selected.element
+    // which can be undefined and it will hide the selectionToolBar
+    var element = tb.selected.element;
+    if (element == undefined){
+      tb.menu.selectionToolBar$.hide();
+      return;
+    }
+    tb.menu.codeId$.html(element.id+'<SPAN style="color:red;cursor:pointer;" onclick="tb.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
+    var flexParent = tb.selected.element$.parent().hasClass('FLEX');
+    tb.menu.moveLeftBtn$.prop('disabled',!flexParent);
+    tb.menu.moveRightBtn$.prop('disabled',!flexParent);
+    
+    var isCode =tb.selected.element$.hasClass('CODE');
+    tb.menu.showHtmlBtn$.prop('disabled',!isCode);
+    tb.menu.toTestBtn$.prop('disabled',!isCode);
+    
+    tb.menu.classes$.children().each(function(){
+      var checkbox$ = $(this);
+      var c = checkbox$.val();
+      if (c) {
+        checkbox$.prop('checked',tb.selected.element$.hasClass(c));
+      };
+    });
+    tb.menu.itemprop$.val(tb.selected.element$.attr('itemprop'));
+    tb.menu.itemtype$.val(tb.selected.element$.attr('itemtype'));
+    tb.menu.funcEditor.setValue(tb.selected.element$.attr('func') || '')
+    var error = tb.selected.element$.prop('error');
+    if (error) {
+      var line = error.lineNumber;
+      var col = error.columnNumber;
+      tb.menu.error$.html('<details><summary>'+error.message+'</summary>'+error.stack.replace('/\n/g','<br>').replace(/ at /g,'<br>at ')+'</details>').show();
+      tb.menu.funcEditor.gotoLine(line,col-1);
+    }
+    else tb.menu.error$.hide();
+    tb.menu.format$.val(tb.selected.element$.attr('format'));
+    tb.updateTemplateChoice();
+    tb.menu.$.show();
+    tb.menu.selectionToolBar$.show(500,function(){tb.menu.funcEditor.resize()});
+    if (error) {
+      element.scrollIntoView();
+      tb.menu.funcEditor.focus();
+    }
+    else {
+      element.focus();
+    };
+    
+  };
 
   tb.selectElement = function(element) {
     // select element as tb.selected.element and update the EDI accordingly
     // element can either be a DOM element or a jQuery of 1 element
+
     if (element instanceof $) element = element[0];
     tb.editor.setCurrentEditor(undefined);
     var e = tb.selected.element;
     if (e) {
-      if (element && (e === element)) { // if already selected nothing to do but give focus again
+      if (element && (e === element) && !e.error) { // if already selected nothing to do but make sure it is visible
+        tb.menu.error$.hide();
         e.focus();
         return;
       }
@@ -573,37 +693,15 @@
     // set the new selection
     tb.selected.element = element;
     tb.selected.element$ = $(element);
-    e$ = tb.selected.element$;
-    tb.selected.itemscope$ = e$.closest('[itemscope]');
-    tb.selected.container$ = e$.parent().closest('[container]');
-    if (element == undefined){
-      $('#codeId').text('no selection');
-      tb.menu.selectionToolBar$.hide();
-      return;
-    }
-    tb.menu.$.show();
-    tb.menu.selectionToolBar$.show(500);
-    tb.menu.codeId$.html(element.id+'<SPAN style="color:red;cursor:pointer;" onclick="tb.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
-    tb.menu.properties$.children().each(function(){
-      var checkbox$ = $(this);
-      var c = checkbox$.val();
-      if (c) {
-        checkbox$.prop('checked',e$.hasClass(c));
-      };
-    });
-    var itemprop = e$.attr('itemprop')
-    tb.menu.itemprop$.val(itemprop);
-    tb.menu.itemtype$.val(e$.attr('itemtype'));
-    tb.menu.func$.val(e$.attr('func'));
-    tb.menu.format$.val(e$.attr('format'));
-
-    e$.addClass('SELECTED');
+    tb.selected.itemscope$ =  tb.selected.element$.closest('[itemscope]');
+    tb.selected.container$ =  tb.selected.element$.parent().closest('[container]');
+    
+    tb.selected.element$.addClass('SELECTED');
     if (itemprop) {
-      e$.parent().closest('[itemscope]').addClass('ITEMSCOPE')
+      tb.selected.element$.parent().closest('[itemscope]').addClass('ITEMSCOPE')
     }
-    tb.updateTemplateChoice();
+    tb.updateMenu();
     tb.editables$(element).attr('contentEditable',true);
-    element.focus();
   }
 
   tb.moveElement = function(element$,where) {
@@ -611,11 +709,11 @@
     // -element$: the element to move
     // - where : cf [$.fn.neighbour]
     if (element$.length===0) return;
-    var whereToInsert$;
+    var whereToInsert$ = element$;
     if (where==='before' || where=='beforeItemscope') {
       do {
-        whereToInsert$ = whereToInsert$.prev();
-      } while (whereToInsert$.length && !whereToInsert$.hasClass('ELEMENT')); // also skip OUTPUT TEST.. and decorative tags
+        whereToInsert$ = whereToInsert$.first().prev();
+      } while (whereToInsert$.length && !whereToInsert$.hasClass('ELEMENT')); // also skip any decorative tags
       element$.insertBefore(whereToInsert$);
     }
     else {
@@ -629,303 +727,20 @@
 
   // EDI eventHandlers ///////////////////////////////////////////////////////////////
 
-
-
-  //  display / execution ////////////////////////////////////////////////////
-
-
-  tb.displayResult = function(result,output) {
-    // display result in output (that must be a tb.Output object
-    $(output.outputElement)
-    .empty().removeClass('ERROR').addClass('SUCCESS')
-    .append(((result !== undefined) && (result !== null) && (typeof result.node$ === 'function') && result.node$() )
-            || tb.format(result)
-           )
-    .prepend(output.toString())
-    .before(trace.span().toString()) // traces are not part of the result
-  }
-
-  tb.execCode = function(element) {
-    // execute the code of element
-    // skip all CUT element
-    var element$ = $(element);
-    if (element$.hasClass('CUT')) return;
-
-    // if template, lauch exec method if any
-    if (element$.attr('itemtype')) {
-      var t = tb.templates[tb.Template.urlToName(element$.attr('itemtype'))];
-      if (t && t.exec) {
-        t.exec(element$);
-      }
-      tb.output = undefined;  // so that any errors from the EDI will be reported in a dialog, not in the last outputElement.
-      return
-    }
-
-    // Execute CODE ELEMENT
-    // clear if any previous WRONG marker
-    var wrong$ = $('.WRONG',element).add('font',element);  //TODO: check in future: IE7 had a tendency to add FONT instead of the SPAN if the text is edited
-    if (wrong$.length > 0) wrong$.replaceWith(function(i,c){return c});
-
-    var out$  = tb.outputElement$(element$);
-    var test$ = tb.testElement$(element$)
-    tb.output = tb.newOutput(element$[0],out$[0]);
-    var res = tb.securedEval(tb.htmlToText(element.innerHTML));
-    tb.displayResult(res,tb.output);
-    // test
-    if (test$.length) {
-      if ((tb.trimHtml(out$.html()) == tb.trimHtml(test$.html()))) {   //TODO rethink how to compare
-        test$.removeClass('ERROR').addClass('SUCCESS');
-      }
-      else {
-        test$.removeClass('SUCCESS').addClass('ERROR');
-      }
-    }
-    tb.output = undefined;  // so that any errors from the EDI will be reported in a dialog, not in the last outputElement.
-  }
-
-  tb.execCodes = function(fromCodeId,toCodeId) {
-    // execute CODE element starting from fromCodeId and ending with toCodeId
-    // it does not clean the environement first, since this function is intended to be used
-    // by the user in order to execute some codes repeatidly
-    // nor it will perform any finalization (but it will register output.finalize functions
-    // that will be executed at the end of the sheet execution
-    // please note that it is POSSIBLE to run the code containing the tb.execCodes() allowing
-    // some recursivity. Of course this can also result in an never ending loop if not used properly
-
-    var code$ = $('.CODE');
-    fromCodeId = fromCodeId || code$.first().attr('id');
-    toCodeId = toCodeId || code$.last().attr('id');
-    code$.filterFromToId(fromCodeId,toCodeId).each(function(i,e) {
-      tb.execCode(e);
-    });
-  }
-
-  tb.runHtaFile = function(fileName,noWait,parameters) {
-    // run an other file
-    // if noWait is false or undefined, just open the file and returns without waiting
-    //           is true run the file with ?runonce. it is the file responsibility to behave in this manner
-    //                   this function will return the result object produced by the .hta file
-    // parameters is encoded for uri and added to the searchstring
-    var params = [];
-    if (noWait) {
-      runOnce=false;
-    }
-    else {
-      runOnce=true;
-      params.push('runonce')
-    }
-    if (parameters) {
-      for (var p in parameters) {
-        params.push(encodeURIComponent(p)+'='+encodeURIComponent(parameters[p]));
-      }
-    }
-
-
-    fileName = tb.absoluteFileName(fileName,tb.url.absolutePath);
-    var resultFileName = fileName.replace(/\.hta/i,'.jres');
-    if (params.length > 0) {
-      var cmd = 'mshta.exe '+fileName+'?'+params.join('&');
-    }
-    else {
-      var cmd = fileName;
-    }
-    var errCode = tb.shell.Run(cmd,1,runOnce);
-    if (runOnce) {
-      var res = {};
-      try {
-        var json = tb.fso.readFile(resultFileName);
-        res = JSON.parse(json);
-        res.cmd = cmd;
-        res.errCode = errCode;
-      }
-      catch (e) {
-        res.errCode = e.message;
-      }
-      return res;
+  tb.beforeUnload = function(event) {  //TODO avec hta, ne fonctionne pas bien
+    // event handler before closing check if a save is needed and desired
+    if (tb.modified) {
+      event.returnValue='ouups?';
+      return 'ouups?'
     }
   }
 
-  tb.runTests = function(/*files...*/) {
-    // run every specified files as test files and return a table with all results
-    var results = [];
-    for (var i=0; i<arguments.length; i++) {
-      var res = tb.runHtaFile(arguments[i]);
-      results.push({file:arguments[i],
-                    errCode:res.errCode,
-                    nbPassed:res.testStatus&&res.testStatus.nbPassed,
-                    nbFailed:res.testStatus&&res.testStatus.nbFailed,
-                    dateTime:res.testStatus&&res.testStatus.dateTime,
-                    exec$ms :res.execStat.execAll$ms});
-    }
-    return table().addRows(results).colStyle(function(r,c,value){return (value !== 0)?{backgroundColor:'red'}:{}},'nbFailed');
-  }
-
-  tb.animate = function (interval,fromCodeId,toCodeId,endCondition) {
-    // run every "interval" all codes between fromCodeId to toCodeId
-    // if fromCodeId is undefined, the CODE element where this function is called will be used
-    fromCodeId = fromCodeId || tb.output.codeElement.id;
-    toCodeId = toCodeId || fromCodeId;
-    if (tb.inAnimation == false) {
-      $('#stopAnimation').attr('disabled',false);
-      $('.CODE').filterFromToId(fromCodeId,toCodeId).addClass('INANIMATION');
-      tb.intervalTimers.push(window.setInterval(function() {
-        tb.inAnimation = true;
-        tb.execCodes(fromCodeId,toCodeId);
-        tb.inAnimation = false;
-      }
-      ,interval));
-    }
-    return new Date().toString();
-  }
-
-  tb.clearTimers = function () {
-    // clear all existing intervalTimers used by [[tb.animate]]
-    for (var i = 0;i<tb.intervalTimers.length;i++) {
-      window.clearInterval(tb.intervalTimers[i]);
-    };
-    tb.intervalTimers = [];
-    tb.inAnimation = false;
-    $('#stopAnimation').attr('disabled',true);
-    $('.INANIMATION').removeClass('INANIMATION');
-  }
-
-  tb.finalize = function() {
-    // execute all finalization code
-    for (var i=0;i<tb.finalizations.length;i++) {
-      var out = tb.finalizations[i];
-      tb.errorHandler.code = out.finalizationFunc.toString();
-      out.finalizationFunc();
-      out.finalizationFunc = undefined;  // so that displayResult will not show ... to be finalized...
-      tb.displayResult(out,out);
-    }
-  }
-
-  tb.run = function() {
-    // run either all CODE ELEMENT or the CODE ELEMENT from the first to the selected.element
-    if (tb.autoRun) {
-      tb.execAll();
-    }
-    else {
-      tb.execUntilSelected();
-    }
-  }
-
-  tb.updateContainers = function() {
-    // make sure that containers are never empty (= at least have a RICHTEXT ELEMENT)
-    var c$ = $('[container]:not(:has(> *))');
-    c$.append('<DIV class="ELEMENT EDITABLE RICHTEXT c-12" id='+tb.blockId('rich')+'></DIV>');
-  }
-  
-  tb.createVarFromItemprop = function(i,element) {
-    // create an instance of tb.Var or tb.Table depending on the type of element
-    var e$ = $(element);
-    var itemprop = e$.attr('itemprop');
-    if (e$.attr('itemscope') !== undefined) {  // itemscope is represented by a tb.Table with one or more line
-      table(itemprop).add(tb.Template.getData(e$));
-    }
-    else {
-      var variable = tb.vars[itemprop];
-      if (variable) { 
-        if (variable instanceof tb.Var) {
-          var _var = variable;
-          variable = new tb.Array(variable.name);
-          variable.push(_var);
-          tb.vars[itemprop] = variable;
-        }
-        else if (variable instanceof tb.Array) {
-          _var = new tb.Var(itemprop);
-          _var.setValue(e$.getItempropValue())
-          variable.push(_var)
-        }
-        else throw Error('internal error: unexpected class '+variable.toString()+'while createVarFromItemprop of'+element.outerHTML);
-      }
-      else {
-        v(itemprop,e$.getItempropValue()) // TODO implement different types (number moment duration) depending on class ???
-      }
-    }
-  }
-  
-  tb.createVars = function() {
-    // look in the DOM for itemprops that have no itemscope ancestor
-    // for each create a tb.vars.<that itemprop> with the itemprop name with the content of that itemprop
-    // 1) if the itemprop ends with [], it is forced to an array (but the name of the array has not the []) 
-    //    and the value is pushed into it
-    // 2) if the itemprop has the same name of an already existing tb.vars that is not an array,
-    //    the var is first converted to an array with the already existing var as [0]
-    //    the new itemprop is pushed into it
-    // 3) the content of the variable depends on the itemprop tag according to 
-    //    [tb.createVarFromItemprop]
-    var globalItemprops = $('[itemprop]').filter(function(){return $(this).parents('[itemscope]').length === 0});
-    globalItemprops.each(tb.createVarFromItemprop)
-  }
-  
-  tb.updateFunctionElements = function() {
-    // update every element that has an itemprop and a func attribute
-    $('[func]').each(function(){
-      e$ = $(this);
-      e$.html(tb.format(e$.prop('tbVar').valueOf(),{format:{fmtStr:e$.attr('format')}}))
-    })
-  }
-
-  tb.prepareExec = function() {
-    // reset the environement before so that no side effect
-    // let [[Feature]]s object collect data on the document
-    tb.results = {execStat:{start: new Date()}};
-
-    for (var i=0; i<tb.features.length; i++) tb.features[i].reset();
-    trace.off();
-    tb.clearTimers();
-    $('.TRACE').remove();
-    $('.BOX').remove();
-    $('.OUTPUT').add('.TEST').removeClass('SUCCESS').removeClass('ERROR')
-    tb.finalizations = [];
-    tb.vars = {}; // run from fresh
-    tb.createVars();
-    tb.IElement.idNumber = 0;
-    for (var i=0; i<tb.features.length; i++) tb.features[i].update && tb.features[i].update();
-    tb.simulation = new tb.Simulation('tb.simulation');
-    tb.editables$(tb.selected.element).each(function(i,e){tb.reformatRichText(e)});
-    tb.results.execStat.prepare$ms=Date.now()-tb.results.execStat.start;
-  }
-
-  tb.execAll = function() {
-    // execute all [[CODE]] [[ELEMENT]]
-    tb.prepareExec();
-    $('.CODE').add('[itemtype]').each(function(i,e) {tb.execCode(e);});
-    tb.updateContainers();
-    tb.finalize();
-    tb.results.execStat.execAll$ms=Date.now()-tb.results.execStat.start;
-    tb.updateFunctionElements();
-    tb.setUpToDate(true);
-  }
-
-  tb.execUntilSelected = function() {
-    // execute all [[CODE]] [[ELEMENT]] until the selected Element
-    tb.prepareExec();
-    var $codes = $('.CODE');
-    if (tb.selected.element$.hasClass('CODE')){
-      var lastI = $codes.index(tb.selected.element);
-    }
-    else {
-      var $last = $('.CODE',tb.selected.element).last();
-      if ($last.length === 0) { // selected element is a section or rich text that has no internal CODE element
-        $codes.add(tb.selected.element); // we add this element (even if not a code) just to know where to stop
-        var lastI = $codes.index(tb.selected.element)-1;
-      }
-      else {
-        var lastI = $codes.index($last);
-      }
-    }
-    $('.CODE').each(function(i,e) {
-      if (i>lastI) return false;
-      tb.execCode(e);
-    });
-    // no finalization since not all code is run, so some element will not exist
-    tb.setUpToDate(false);
-  }
 
   tb.reformatRichText = function(element) {
-    // reformat a [[RICHTEXT]] [[ELEMENT]] in order to find potential [[EMBEDDED]] [[CODE]]
+    // reformat a [[RICHTEXT]] [[ELEMENT]] in order to create [[EMBEDDED]] [[CODE]] out of {{ }} pattern
+    // {{code}} will create an ELEMENT EMBEDDED CODE with that code
+    // {{#link}} will create a LINK to a section title
+    // {{##elementBox}} will create an elementBox
 
     if ((element == undefined) || ($(element).hasClass('CODE'))) return;
 
@@ -933,14 +748,15 @@
     $(element).replaceText(/\{\{([#]{0,2})(.*?)\}\}/g,
                            function(s,command,code) {
                              change = true;  // if called, this function will change the document
+                             var code$ = tb.templates['https://tablord.com/templates/codeSpan'].element$();
                              switch (command) {
-                               case ''   : return '<SPAN class="CODE EMBEDDED ELEMENT" id='+ tb.blockId('code')+'">&nbsp;'+code+'</SPAN>';
-                               case '##' : return '<SPAN class="CODE EMBEDDED ELEMENT" id='+ tb.blockId('code')+'">&nbsp;tb.elementBox("'+code+'")</SPAN>';
-                               case '#'  : return '<SPAN class="CODE EMBEDDED ELEMENT" id='+ tb.blockId('code')+'">&nbsp;tb.link("'+code+'")</SPAN>';
+                               case ''   : return code$.attr('func',code)[0].outerHTML;
+                               case '##' : return code$.attr('func',"tb.elementBox('"+code+"');")[0].outerHTML;
+                               case '#'  : return code$.attr('func',"tb.link('"+code+"');")[0].outerHTML;
                              }
                            },
-                           function(e) {  //replace in any tag except those having CODE or OUTPUT class
-                             return e.className.search(/OUTPUT|CODE/)=== -1;
+                           function(e) {  //replace in any tag except those inside CODE
+                             return !$(e).hasClass('CODE');
                            });
     if (change) {
       element.normalize();
@@ -981,49 +797,81 @@
     // add an INDENT class to indent where is needed and no longer to any container
     $('[container=sectionContent]').addClass('INDENT'); // container=sectionContent was the former definition
 
-  }
+    // since 1ba0c957100f7f3712b903f6a9ebc9c95a176662, [[CODE]] is has a [func] and contains the [[OUTPUT]] and [[TEST]] (templates/exec)
+    var codes = $('.CODE').not('[func]');
+    codes.each(function(i,e){
+      var code$ =$(e);
+      var func = tb.htmlToText(code$.html());
+      var codeId = code$.attr('id');
+      var out$ = $('#'+codeId.replace(/code/,'out')).removeAttr('id');
+      var test$ = $('#'+codeId.replace(/code/,'test')).removeAttr('id');
+      var newCode$;
+      if (code$.hasClass('EMBEDDED')){
+        newCode$ = tb.templates['https://tablord.com/templates/codeSpan'].element$();
+        newCode$.addClass('EMBEDDED');
+      }
+      else {
+        newCode$ = tb.templates['https://tablord.com/templates/code'].element$();
+        newCode$.addClass('SHOW');
+      }
+      newCode$.attr('func',func).attr('id',codeId);
+      code$.replaceWith(newCode$);
+      newCode$.children('.OUTPUT').replaceWith(out$);
+      newCode$.append(test$);
+    });
+    
+    var ugglyEmbedded$ = $('div.EMBEDDED');
+    ugglyEmbedded$.replaceTagName('span');
+    
+    $('.CODE').attr('contentEditable',false);
+    
+    $('[itemtype="https://tablord.com/template/codeSpan"]').attr('itemtype','https://tablord.com/templates/codeSpan');
+    $('[itemtype="https://tablord.com/template/code"]').attr('itemtype','https://tablord.com/templates/code');
+    
+  };
 
 
   $(function () {
     // upgrades ////////////////////////////////////////////////////
-    try {
-      //tb.upgradeModules();
-      tb.upgradeFramework();
-      if (window.document.compatMode != 'CSS1Compat') {
-        window.alert('your document must have <!DOCTYPE html> as first line in order to run properly: please save and re-run it');
-      }
-      // prepare the sheet ///////////////////////////////////////////
-      tb.url = tb.urlComponents(window.document.location.href);
-      tb.tbContent$ = $('#tbContent');
-      $('.SELECTED').removeClass('SELECTED');
-      $(document)
-      .on("click",'.ELEMENT',tb.elementClick)
-      .on("keydown",'.EDITABLE',tb.editableKeyDown)
-      .on("change",'.EDITOR',tb.editorEventHandler)
-      .on("click",'.EDITOR',tb.editorEventHandler)
-      .on("click",'.SCENE',function(event){event.stopPropagation()})       // cancel bubbling of click to let the user control clicks
-      .on("click",'.INTERACTIVE',function(event){event.stopPropagation()}) // cancel bubbling of click to let the user control clicks
-      .on("click",'.LINK',function(event){event.stopPropagation()})        // cancel bubbling of click to let the user control clicks
-      .on("click",'.HELPLINK',function(event){tb.help.index.show(event.target.innerHTML)})
-      .on("click",'.BOXLINK',tb.openCloseBox)                              // open or close Box and cancel bubbling of click since it is only to open close
-      .on("click",'.BOX',function(event){event.stopPropagation()});    // cancel bubbling of click
+    tb.tbContent$ = $('#tbContent');
+    tb.initMenu();
+    window.onerror = function(message,url,lineNo,colNo,error) {
+      tb.showInternalError('Internal Error :'+message+'<br>'+error.stack);
+    };
 
-      $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR');
-      $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
+    //tb.upgradeModules();
+    tb.upgradeFramework();
+    if (window.document.compatMode != 'CSS1Compat') {
+      window.alert('your document must have <!DOCTYPE html> as first line in order to run properly: please save and re-run it');
+    }
+    // prepare the sheet ///////////////////////////////////////////
+    tb.url = tb.urlComponents(window.document.location.href);
 
-      tb.findblockNumber();
-      //tb.initToolBars();
-      tb.initMenu();
-      tb.editor = new tb.Editor();
-      $('body').keydown(tb.bodyKeyDown)//.keyup(tb.bodyKeyUp);
-      tb.autoRun = $('body').attr('autoRun')!==false;
-      tb.help.update(tb,'tb.');
-      tb.updateContainers();
-    }
-    catch (e) {
-      window.alert(e.toString());
-    }
+    $('.SELECTED').removeClass('SELECTED');
+    $(document)
+    .on("click",'.ELEMENT',tb.elementClick)
+    .on("keydown",'.EDITABLE',tb.editableKeyDown)
+    .on("change",'.EDITOR',tb.editorEventHandler)
+    .on("click",'.EDITOR',tb.editorEventHandler)
+    .on("click",'.SCENE',function(event){event.stopPropagation()})       // cancel bubbling of click to let the user control clicks
+    .on("click",'.INTERACTIVE',function(event){event.stopPropagation()}) // cancel bubbling of click to let the user control clicks
+    .on("click",'.LINK',function(event){event.stopPropagation()})        // cancel bubbling of click to let the user control clicks
+    .on("click",'.HELPLINK',function(event){tb.help.index.show(event.target.innerHTML)})
+    .on("click",'.BOXLINK',tb.openCloseBox)                              // open or close Box and cancel bubbling of click since it is only to open close
+    .on("click",'.BOX',function(event){event.stopPropagation()});    // cancel bubbling of click
+
+    $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR');
+    $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
+
+    tb.findblockNumber();
+    
+    tb.editor = new tb.Editor();
+    $(window).bind('beforeunload',tb.beforeUnload);      
+    $('body').keydown(tb.bodyKeyDown)//.keyup(tb.bodyKeyUp);
+    tb.autoRun = $('body').attr('autoRun')!==false;
+    tb.help.update(tb,'tb.');
+    tb.updateContainers();
+
     if (tb.autoRun) tb.execAll();
   });
-
 

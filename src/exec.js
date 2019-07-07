@@ -17,7 +17,6 @@
   // to be checked what could be done to improve
     code.replace(/^\s*\{(.*)\}\s*$/,'({$1})');  // if the code is just a litteral object {..} add brakets in order to deal with the with(tb.vars){ } statement
 
-    tb.errorHandler.code = code;
     code = 'var output = tb.output; with (tb.vars) {\n'+code+'\n};';   //output becomes a closure, so finalize function can use it during finalizations
     return geval(code)
   }
@@ -403,7 +402,7 @@
     if (editor) {
       this.tbObject = tb.vars[$(editor).attr('tbObject')];
       this.value = this.tbObject.getEditableValue(this);
-      this.type = (this.value && this.value.isV)?'function':typeof this.value;
+      this.type = (this.value && this.value.isVar)?'function':typeof this.value;
       var radio$ = $('[value='+this.type+']',this.toolBar$);
       radio$.prop('checked',true);
       this.toolBar$.show();
@@ -435,7 +434,7 @@
     // params : an object that at least has tbObject:nameOfTheObject in tb.vars
 
     var type = typeof value;
-    if (value && value.isV && value.code()) {
+    if (value && value.isVar && value.code()) {
       type = 'function ';
       value = value.valueOf();
       type += (typeof value == 'number')?'RIGHT':'LEFT';
@@ -662,24 +661,288 @@
     return id.slice(0,4);
   }
 
-  tb.outputElement$ = function(element$) {
-    // return the output element associated with element$ if any
-    // if applied on another element than id=codexxxx return an empty jquery;
-    var id = element$.attr('id');
-    if (!id || id.slice(0,4) !== 'code') return $();
-    var outId = id.replace(/code/,"out");
-    var out$ = $('#'+outId);
-    if (out$.length === 0) {
-      var tag = (element$.attr('tagName')==='SPAN')?'SPAN':'DIV';
-      out$ = $('<'+tag+' class=OUTPUT id='+outId+'>no output</'+tag+'>').insertAfter(element$);
-    }
-    return out$;
+  //  display / execution ////////////////////////////////////////////////////
+
+  tb.displayResult = function(result,output) {
+    // display result in output (that must be a tb.Output object
+    // if code first show that code
+    $(output.outputElement)
+    .empty().removeClass('ERROR').addClass('SUCCESS')
+    .append(((result !== undefined) && (result !== null) && (typeof result.node$ === 'function') && result.node$())
+            || tb.format(result)
+           )
+    .prepend(output.toString())
+    .before(trace.span().toString()) // traces are not part of the result
   }
 
-  tb.testElement$ = function(element$) {
-    // returns the test element if any
-    // if applied on another element than id=codexxxx return an empty jquery;
-    var id = element$.attr('id');
-    if (!id || id.slice(0,4) !== 'code') return $();
-    return $('#'+id.replace(/code/,"test"));
+  tb.execCodeElement = function(element$){
+    // execute a CODE ELEMENT
+    var code = element$.attr('func');
+    var source$ = element$.children('.SOURCE');
+    var out$ = element$.children('.OUTPUT');
+    var test$ = element$.children('.TEST');
+    tb.output = tb.newOutput(element$[0],out$[0])
+    if (out$.length===0) {
+      out$ = $('<'+element$.prop('tagName')+' class="OUTPUT">');
+      element$.prepend(out$);
+    }
+    if (source$.length===0) {
+      source$ = $('<pre class="SOURCE">');
+      element$.prepend(source$);
+    }
+    source$.html(element$.hasClass('SHOW')?Prism.highlight(code, Prism.languages.javascript, 'javascript'):'');
+      
+    try {
+      var res = tb.securedEval(code);
+      tb.displayResult(res,output);
+      if (test$.length) {
+        if ((tb.trimHtml(out$.html()) == tb.trimHtml(test$.html()))) {   //TODO rethink how to compare
+          test$.removeClass('ERROR').addClass('SUCCESS');
+        }
+        else {
+          test$.removeClass('SUCCESS').addClass('ERROR');
+        }
+      }
+      tb.output = undefined;
+      return true;
+    }
+    catch (err) {
+      tb.showElementError(element$[0],err);
+      tb.output = undefined;
+      return false;  // will break the each loop
+    }
+  };
+
+  tb.execCode = function(element) {
+    // execute the code of element
+    // skip all DELETED element
+    var element$ = $(element);
+    if (element$.hasClass('DELETED')) throw new Error('should not call DELETED ELEMENT')
+
+    // if template, lauch exec method if any
+    if (element$.attr('itemtype')) {
+      var t = tb.templates[element$.attr('itemtype')];
+      if (t && t.exec) {
+        t.exec(element$);
+      }
+      tb.output = undefined;  // so that any errors from the EDI will be reported in a dialog, not in the last outputElement.
+      return
+    }
+    
+    throw new Error('all executable should be handled through itemtypes')
   }
+
+  tb.execCodes = function(fromCodeId,toCodeId) {
+    // execute CODE element starting from fromCodeId and ending with toCodeId
+    // it does not clean the environement first, since this function is intended to be used
+    // by the user in order to execute some codes repeatidly
+    // nor it will perform any finalization (but it will register output.finalize functions
+    // that will be executed at the end of the sheet execution
+    // please note that it is POSSIBLE to run the code containing the tb.execCodes() allowing
+    // some recursivity. Of course this can also result in an never ending loop if not used properly
+
+    var code$ = $('.CODE');
+    fromCodeId = fromCodeId || code$.first().attr('id');
+    toCodeId = toCodeId || code$.last().attr('id');
+    code$.filterFromToId(fromCodeId,toCodeId).each(function(i,e) {
+      return tb.execCode(e);
+    });
+  }
+
+
+  tb.runTests = function(/*files...*/) {
+    // run every specified files as test files and return a table with all results
+    var results = [];
+    for (var i=0; i<arguments.length; i++) {
+      var res = tb.runHtaFile(arguments[i]);
+      results.push({file:arguments[i],
+                    errCode:res.errCode,
+                    nbPassed:res.testStatus&&res.testStatus.nbPassed,
+                    nbFailed:res.testStatus&&res.testStatus.nbFailed,
+                    dateTime:res.testStatus&&res.testStatus.dateTime,
+                    exec$ms :res.execStat.execAll$ms});
+    }
+    return table().addRows(results).colStyle(function(r,c,value){return (value !== 0)?{backgroundColor:'red'}:{}},'nbFailed');
+  }
+
+  tb.animate = function (interval,fromCodeId,toCodeId,endCondition) {
+    // run every "interval" all codes between fromCodeId to toCodeId
+    // if fromCodeId is undefined, the CODE element where this function is called will be used
+    fromCodeId = fromCodeId || tb.output.codeElement.id;
+    toCodeId = toCodeId || fromCodeId;
+    if (tb.inAnimation == false) {
+      $('#stopAnimation').attr('disabled',false);
+      $('.CODE').filterFromToId(fromCodeId,toCodeId).addClass('INANIMATION');
+      tb.intervalTimers.push(window.setInterval(function() {
+        tb.inAnimation = true;
+        tb.execCodes(fromCodeId,toCodeId);
+        tb.inAnimation = false;
+      }
+      ,interval));
+    }
+    return new Date().toString();
+  }
+
+  tb.clearTimers = function () {
+    // clear all existing intervalTimers used by [[tb.animate]]
+    for (var i = 0;i<tb.intervalTimers.length;i++) {
+      window.clearInterval(tb.intervalTimers[i]);
+    };
+    tb.intervalTimers = [];
+    tb.inAnimation = false;
+    $('#stopAnimation').attr('disabled',true);
+    $('.INANIMATION').removeClass('INANIMATION');
+  }
+
+  tb.finalize = function() {
+    // execute all finalization code
+    for (var i=0;i<tb.finalizations.length;i++) {
+      var out = tb.finalizations[i];
+//todo suppress      tb.errorHandler.code = out.finalizationFunc.toString();
+      out.finalizationFunc();
+      out.finalizationFunc = undefined;  // so that displayResult will not show ... to be finalized...
+      tb.displayResult(out,out);
+    }
+  }
+
+  tb.run = function() {
+    // run either all CODE ELEMENT or the CODE ELEMENT from the first to the selected.element
+    if (tb.autoRun) {
+      tb.execAll();
+    }
+    else {
+      tb.execUntilSelected();
+    }
+  }
+
+  tb.updateContainers = function() {
+    // make sure that containers are never empty (= at least have a RICHTEXT ELEMENT)
+    var c$ = $('[container]:not(:has(> *))');
+    if (c$.length) c$.append('<DIV class="ELEMENT EDITABLE RICHTEXT c-12" id='+tb.blockId('rich')+'></DIV>');
+  }
+  
+  tb.createVarFromItemprop = function(i,element) {
+    // create an instance of tb.Var or tb.Table depending on the type of element
+    var err;
+    var e$ = $(element);
+    var itemprop = e$.attr('itemprop');
+    var variable = tb.vars[itemprop];
+    if (e$.attr('itemscope')!==undefined) {  // itemscope is represented by a tb.Table with one or more line
+      if (variable && !(variable instanceof tb.Table)){
+        err = new Error(itemprop+' is already declared and is not a table ');
+        tb.showItempropError(element,err);
+        throw err;
+      }
+      var data = tb.Template.getData(e$);
+      table(itemprop).add(data);
+    }
+    else {// this is a simple tb.Var
+      if (variable) {
+        err = new Error(itemprop+' is already declared '); 
+        tb.showItempropError(element,err);
+        throw err;
+      }
+      _var = e$.getItempropValue();
+      if (_var.isVar) { // this is a function
+        _var.name = itemprop;
+        tb.vars[itemprop] = _var;
+      }
+      else v(itemprop,_var);
+    }
+  }
+  
+  tb.createVars = function() {
+    // look in the DOM for itemprops that have no itemscope ancestor
+    // for each create a tb.vars.<that itemprop> with the itemprop name with the content of that itemprop
+    // 1) if the itemprop ends with [], it is forced to an array (but the name of the array has not the []) 
+    //    and the value is pushed into it
+    // 2) if the itemprop has the same name of an already existing tb.vars that is not an array,
+    //    the var is first converted to an array with the already existing var as [0]
+    //    the new itemprop is pushed into it
+    // 3) the content of the variable depends on the itemprop tag according to 
+    //    [tb.createVarFromItemprop]
+    var globalItemprops = $('[itemprop]').filter(function(){
+      return $(this).parents('[itemscope]').length === 0 && // must not be inside a itemscope
+             $(this).closest('.DELETED').length === 0;  // nor be deleted or having a deleted parent
+    });
+    globalItemprops.each(tb.createVarFromItemprop);
+  }
+  
+  tb.updateFunctionElements = function() {
+    // update every element that has an itemprop and a func attribute
+    var elements$ = $('[func]').not('.CODE'); //todo à voir si c'est la bonne solution où si on met une class FUNC aux fonctions
+    elements$.each(function(){
+      try {
+        var this$ = $(this);
+        var tbVar = this$.prop('tbVar');
+        var value = tbVar.valueOf();
+        this$.html(tb.format(value,{format:{fmtStr:this$.attr('format')}})).addClass('SUCCESS');
+      }
+      catch (err) {
+        // do nothing, since the error has already been registred 
+      }
+    })
+  }
+
+  tb.prepareExec = function() {
+    // reset the environement before so that no side effect
+    // let [[Feature]]s object collect data on the document
+    tb.results = {execStat:{start: new Date()}};
+
+    for (var i=0; i<tb.features.length; i++) tb.features[i].reset();
+    trace.off();
+    tb.clearTimers();
+    $('.SUCCESS').removeClass('SUCCESS');
+    $('.ERROR').removeClass('ERROR').removeProp('error');
+    $('.TRACE').remove();
+    $('.BOX').remove();
+    $('[func]').removeProp('tbVar');
+    tb.finalizations = [];
+    tb.vars = {}; // run from fresh
+    tb.createVars();
+    tb.IElement.idNumber = 0;
+    for (var i=0; i<tb.features.length; i++) tb.features[i].update && tb.features[i].update();
+    tb.simulation = new tb.Simulation('tb.simulation');
+    tb.editables$(tb.selected.element).each(function(i,e){tb.reformatRichText(e)});
+    tb.results.execStat.prepare$ms=Date.now()-tb.results.execStat.start;
+  }
+
+  tb.execAll = function() {
+    // execute all [[CODE]] [[ELEMENT]]
+    tb.prepareExec();
+    var elements$ = $('.CODE').add('[itemtype]').not('.DELETED');
+    elements$.each(function(i,e) {return tb.execCode(e);});
+    tb.updateContainers();
+    tb.finalize();
+    tb.results.execStat.execAll$ms=Date.now()-tb.results.execStat.start;
+    tb.updateFunctionElements();
+    tb.setUpToDate(true);
+    tb.selectElement(tb.selected.element); // update properties / error...
+  }
+
+  tb.execUntilSelected = function() {
+    // execute all [[CODE]] [[ELEMENT]] until the selected Element
+    tb.prepareExec();
+    var $codes = $('.CODE');
+    if (tb.selected.element$.hasClass('CODE')){
+      var lastI = $codes.index(tb.selected.element);
+    }
+    else {
+      var $last = $('.CODE',tb.selected.element).last();
+      if ($last.length === 0) { // selected element is a section or rich text that has no internal CODE element
+        $codes.add(tb.selected.element); // we add this element (even if not a code) just to know where to stop
+        var lastI = $codes.index(tb.selected.element)-1;
+      }
+      else {
+        var lastI = $codes.index($last);
+      }
+    }
+    $('.CODE').each(function(i,e) {
+      if (i>lastI) return false;
+      tb.execCode(e);
+    });
+    // no finalization since not all code is run, so some element will not exist
+    tb.setUpToDate(false);
+  }
+
+

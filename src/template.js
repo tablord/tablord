@@ -69,10 +69,12 @@
     return this;
   }
 
+  tb.Template.prototype.blockPrefix = 'item';
+  
   tb.Template.prototype.element$ = function(itemprop) {
     // return a jQuery containing a new instance of this Template as itemprop and setting its id
     if (this.html === undefined) throw new Error('in order to define a template at least define .fields, .html or .element$()');
-    var new$ = $(this.html).attr('id',tb.blockId('item'));
+    var new$ = $(this.html).attr('id',tb.blockId(this.blockPrefix));
     if (itemprop) new$.attr('itemprop',itemprop);
     new$.attr('itemscope','').attr('itemtype',this.url);
     return new$;
@@ -221,7 +223,7 @@
     var newT = new tb.Template(newTemplate.name);
     $.extend(newT,newTemplate)
     if (newTemplate.fields) {
-      var h = '<DIV class="ELEMENT" itemprop="'+itemprop+'" itemscope itemtype="'+newT.url()+'"><TABLE width="100%">';
+      var h = '<DIV class="ELEMENT" itemprop="'+itemprop+'" itemscope itemtype="'+newT.url+'"><TABLE width="100%">';
       for (var f in newTemplate.fields) {
         var label = f.label || f;
         if (newTemplate.fields[f].container) {
@@ -247,12 +249,25 @@
     }
   });
 
+
   tb.template({
     url : 'https://tablord.com/templates/code',
-    element$: function() {
-      return $('<PRE class="ELEMENT CODE EDITABLE" id='+tb.blockId('code')+'>');
-    },
-    convertData: function(data,element$) {element$.html('Object('+tb.toJSCode(data)+')')}
+    blockPrefix : 'code',
+    html: '<div class="ELEMENT CODE" func="" contentEditable="false">'+
+             '<pre class="SOURCE"></pre>'+
+             '<div class="OUTPUT">no output</div>'+
+           '</div>',
+    exec: tb.execCodeElement
+  });
+
+  tb.template({
+    url : 'https://tablord.com/templates/codeSpan',
+    blockPrefix : 'code',
+    html: '<span class="ELEMENT EMBEDDED CODE" func="" contentEditable="false">'+
+             '<pre class="SOURCE"></pre>'+
+             '<span class="OUTPUT">no output</span>'+
+           '</span>',
+    exec: tb.execCodeElement
   });
 
   tb.template({
@@ -291,19 +306,19 @@
                 '<h2 class="EDITABLE" itemprop="title">&nbsp;</h2>'+
                 '<div container="item[]"></div>');
     },
-    exec: function(element) {
-      var data = $(element).getItemscopeData()
+    exec: function(element$) {
+      var data = element$.getItemscopeData()
       // to ensure the data persistance when saved, set the value attr with the current value
-      $('[itemprop=fromDate]',element).attr('value',data.fromDate);
-      $('[itemprop=fromTime]',element).attr('value',data.fromTime);
-      $('[itemprop=toDate]',element).attr('value',data.toDate);
-      $('[itemprop=toTime]',element).attr('value',data.toTime);
+      $('[itemprop=fromDate]',element$).attr('value',data.fromDate);
+      $('[itemprop=fromTime]',element$).attr('value',data.fromTime);
+      $('[itemprop=toDate]',element$).attr('value',data.toDate);
+      $('[itemprop=toTime]',element$).attr('value',data.toTime);
       data = this.remap(data)
       if (isNaN(data.duration)) {
-        $('[itemprop=duration]',element).text('NaN');
+        $('[itemprop=duration]',element$).text('NaN');
       }
       else {
-        $('[itemprop=duration]',element).text(data.duration.format('hh[h]mm'));
+        $('[itemprop=duration]',element$).text(data.duration.format('hh[h]mm'));
       }
     },
     remap: function(data){

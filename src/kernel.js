@@ -74,33 +74,6 @@
                 },
                 string:function(s){return s}
               }
-            },
-
-            errorHandler:function(message,url,line) {
-              // the default handler called by JavaScript giving the message, the url of the page or script and the faulty line
-              var out  = tb.output && tb.output.outputElement;
-              if (out) {
-                if (url) {
-                  out.innerHTML = message+'<br>'+url+' line:'+line+'<br>'+trace.span();
-                }
-                else {
-                  var code = tb.errorHandler.code || '';
-                  var faults = message.match(/« (.+?) »/);
-                  if (faults !== null) {
-                    var fault = faults[1];
-                    code = tb.output.codeElement.innerHTML
-                             .replace(/ /g,'&nbsp;')
-                             .replace(new RegExp(fault,'g'),'<SPAN class="WRONG">'+fault+'</SPAN>');
-                    tb.output.codeElement.innerHTML = code;
-                    tb.selectElement(tb.output.codeElement);
-                  }
-                  out.innerHTML = trace.span()+message;
-                }
-                $(out).removeClass('SUCCESS').addClass('ERROR');
-                out.scrollIntoView();
-                return true;
-              }
-              return false;
             }
            };
 

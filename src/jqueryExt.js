@@ -18,17 +18,17 @@
           s.push('<li class="INSPECTHTML">textNode: "'+this[i].nodeValue+'"');
           break;
         default:
-          s.push('<li class="INSPECTHTML">node type '+this.nodeType)
+          s.push('<li class="INSPECTHTML">node type '+this.nodeType);
           break;
       }
     }
     s.push('</ol>');
     return new tb.HTML('JQuery of '+this.length+' elements<br>'+s.join('<br>'));
-  }
+  };
 
   $.fn.toString = function(){
     return '[object JQuery] length:'+ this.length;
-  }
+  };
 
   $.fn.inspectString = function(){
     var r = this.toString()+'\n';
@@ -36,41 +36,40 @@
       r += i+') '+this[i].outerHTML+'\n';
     }
     return r;
-  }
+  };
 
   $.fn.asNode = function() {
     var query = this;
-    return {node$:function() {return query}}
-  }
+    return {node$:function() {return query}};
+  };
 
   $.fn.itemscopeOrThis$ = function() {
     // return the wrapping itemscope of this if any or this otherwise
     // this must be a one element jQuery
-    // it also handles the case of code that comes with output and potentially test
     if (this.length !== 1) throw Error('must be a jquery of one element');
     var c$ = this.closest('[itemscope]');
     if (c$.length===1) return c$;
-    return this.add(tb.outputElement$(this)).add(tb.testElement$(this));
-  }
+    return this;
+  };
   
   
   $.fn.getItems = function(url) {
     // get the matching itemtypes that are descendent of the jquery
     // please note that if an itemtype is embeeded in another instance of itemtype, both will be part of the result
     return this.find('[itemtype~="'+url+'"]');
-  }
+  };
 
   $.getItems = function(url) {
     // get all itemtype = url of the document.
     return $('[itemtype~="'+url+'"]');
-  }
+  };
 
   $.fn.getItemProp = function(itemprop) {
     // get the first matching itemprop of the first elements of the jquery
     // all elements should be itemscope
     var e = this[0];
     return this.find('[itemprop='+itemprop+']').filter(function(){return $(this).closest('[itemscope=""]')[0] == e}).first().html();
-  }
+  };
 
   $.fn.setItemProp = function(itemprop,html) {
     // set the itemprop of the elements of the jquery
@@ -79,7 +78,7 @@
       $(e).find('[itemprop='+itemprop+']').filter(function(){return $(this).closest('[itemscope=""]')[0] == e}).html(html);
     });
     return this;
-  }
+  };
 
   $.fn.getItemscopeMicrodata = function() {
     // this must be a single itemscope element jQuery
@@ -91,12 +90,15 @@
     if (! this.is('[itemscope=""]')) throw new Error('getItemscopeMicrodata must be called on a jquery having a itemscope');
     var result={id:this.attr('id') || undefined,
                 type:this.attr('itemtype') || '',
-                properties:this.children().getMicrodata()}
+                properties:this.children().getMicrodata()};
     return result;
-  }
+  };
 
   $.fn.getItempropValue = function(){
     // return the value of an element handling all specifications of microdata of the getter of itemValue
+    // if the element is a standard tag (not AUDIO...) and has a [[func]] attribute the return value is a tb.Var instance without name
+    //   in that case this tb.Var is cached in the tbVar property of the element
+    //   this is the responsibility of the application to destroy the cache when needed (typically tb.prepareExec)
     var tag = this.prop('tagName');
     if (this.attr('itemprop') === undefined) return null;
     if (this.attr('itemscope')) return this[0];
@@ -112,7 +114,9 @@
     //--- this is not microdata but only valid in Tablord where the class number or date or duration can force
     else value = this.text();
     if (this.attr('func')) {
-      var tbVar = new tb.Var(undefined,f(this.attr('func')));
+      var tbVar = this.prop('tbVar');
+      if (tbVar) return tbVar;
+      tbVar = new tb.Var(undefined,f(this.attr('func')));
       tbVar.sourceElement = this[0];
       this.prop('tbVar',tbVar); // store a direct link to the tb.Var object that contains the function
                                 // so it will be easy to update the content at the end of calculation
@@ -296,8 +300,16 @@
     })
   }
 
+  $.fn.replaceTagName = function(newTagName) {
+    // replace all element of this with a similar element having newTag
+    this.replaceWith(function(){
+      var newHtml = this.outerHTML.replace(/^<\w+([ >].*)<\/\w+>$/,'<'+newTagName+'$1</'+newTagName+'>');
+      return newHtml;
+    });
+  }
+  
   $.fn.replaceText = function(regExp,replacement,accept){
-    // like string.replace(regExp,replacement), but only acts on text of the elements of the jQuery (not on the TAG ot the attributes)
+    // like string.replace(regExp,replacement), but only acts on text of the elements of the jQuery (not on the TAG or the attributes)
     // - accept: function(element) that return true if the text nodes of this element will be replaced
     //                                         undefined if the text nodes of this element will be untouched, but the children will be examined
     //                                         false if the element has to be completely skipped
@@ -336,21 +348,11 @@
     if (this.length !== 1) throw new Error('neighbourg$ needs a 1 element jQuery'+this.toString())
     
     var element$ = this;
-    var after = where==='after' || where==='afterItemscope';
     if (where==='beforeItemscope' || where==='afterItemscope') {
       element$ = element$.itemscopeOrThis$();
     }
-    if (element$.hasClass('CODE')) {
-      if (after) {
-        if (element$.next().hasClass('OUTPUT')) element$=element$.next();
-        if (element$.next().hasClass('TEST')) element$=element$.next();
-      }
-      else {
-        if (element$.prev().hasClass('OUTPUT')) element$=element$.prev();
-        if (element$.prev().hasClass('TEST')) element$=element$.prev();
-      }
-    }
-    return element$;
+    if (where==='after' || where==='afterItemscope') return element$.last();
+    return element$.first();
   }
 
 
