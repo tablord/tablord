@@ -741,7 +741,7 @@
     // {{code}} will create an ELEMENT EMBEDDED CODE with that code
     // {{#link}} will create a LINK to a section title
     // {{##elementBox}} will create an elementBox
-
+    // {{variable=value}} will create an ELEMENT with variable as itemprop and value as content
     if ((element == undefined) || ($(element).hasClass('CODE'))) return;
 
     var change = false;
@@ -750,7 +750,12 @@
                              change = true;  // if called, this function will change the document
                              var code$ = tb.templates['https://tablord.com/templates/codeSpan'].element$();
                              switch (command) {
-                               case ''   : return code$.attr('func',code)[0].outerHTML;
+                               case ''   : 
+                                 var m = code.match(/(\w+):(.*)/);
+                                 if (m) return '<span class="ELEMENT EDITABLE" itemprop="'+m[1]+'">'+m[2]+'</span>&nbsp;';
+                                 m = code.match(/(\w+)=(.*)/);
+                                 if (m) return '<span class="ELEMENT FUNC" itemprop="'+m[1]+'" func="'+m[2]+'"></span>&nbsp;';
+                                 return code$.attr('func',code)[0].outerHTML;
                                case '##' : return code$.attr('func',"tb.elementBox('"+code+"');")[0].outerHTML;
                                case '#'  : return code$.attr('func',"tb.link('"+code+"');")[0].outerHTML;
                              }
