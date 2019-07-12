@@ -299,7 +299,7 @@
   tb.template({
     url : 'https://tablord.com/templates/time_frame',
     element$ : function() {
-      return $('<div class="ELEMENT" id="'+tb.blockId('tfrm')+'" itemscope itemtype="'+this.url()+'">'+
+      return $('<div class="ELEMENT" id="'+tb.blockId('tfrm')+'" itemscope itemtype="'+this.url+'">'+
                '<div>Du <input type="date" itemprop="fromDate"> <input type="time" itemprop="fromTime"> '+
                     'au <input type="date" itemprop="toDate"> <input type="time" itemprop="toTime"> '+
                     '(durée :<time itemprop="duration"></time>)</div>'+
@@ -329,6 +329,40 @@
       delete data.fromDate;
       delete data.fromTime;
       delete data.toDate;
+      delete data.toTime;
+      return data;
+    }
+  });
+
+  tb.template({
+    url :   'https://tablord.com/templates/time_frame_one_date',
+    html :  '<div class="ELEMENT" itemscope >'+
+               '<div>Date <input type="date" itemprop="date"> de <input type="time" itemprop="fromTime"> '+
+                    ' à <input type="time" itemprop="toTime"> '+
+                    '(durée :<time itemprop="duration"></time>)</div>'+
+                '<div class="EDITABLE" itemprop="descr"></div>'+
+            '</div>',
+    exec: function(element$) {
+      var data = element$.getItemscopeData()
+      // to ensure the data persistance when saved, set the value attr with the current value
+      $('[itemprop=date]',element$).attr('value',data.date);
+      $('[itemprop=fromTime]',element$).attr('value',data.fromTime);
+      $('[itemprop=toTime]',element$).attr('value',data.toTime);
+      data = this.remap(data)
+      if (isNaN(data.duration)) {
+        $('[itemprop=duration]',element$).text('NaN');
+      }
+      else {
+        $('[itemprop=duration]',element$).text(data.duration.format('hh[h]mm'));
+      }
+    },
+    remap: function(data){
+      var from = moment(data.date +' '+ data.fromTime);
+      var to   = moment(data.date + ' '+ data.toTime);
+      var duration = moment.duration(to-from);
+      $.extend(data,{from:from,to:to,duration:duration,title:data.title,_id:data._id});
+      delete data.date;
+      delete data.fromTime;
       delete data.toTime;
       return data;
     }

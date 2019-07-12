@@ -64,27 +64,39 @@
   tb.Var.prototype.toJSCode = function () {
     // return a string that can be interpreted by eval and will give the same result as the value
     return this.code()?'f('+tb.toJSCode(this.code())+')':tb.toJSCode(this.value);
-  }
+  };
 
   tb.Var.prototype.code = function() {
     // return the code of the embedded function if such a function exists
     //        or undefined if not a function
     if (this.func) return this.func.toString();
-    return undefined
-  }
+    return undefined;
+  };
 
   tb.Var.prototype.to = function(unit) {
     // return the value converted to unit
     return tb.Units.convert(this.valueOf(),this.unit,unit);
-  }
+  };
 
+  tb.Var.prototype.moment = function() {
+    // return a clone of the moment represented by the value
+    return moment(this.valueOf());
+  };
+  
+  tb.Var.prototype.durationSince = function(startMoment) {
+    // return the duration between this moment and the startMoment
+    // this must be a moment and startMoment car be either a tb.Var representing a moment or a moment
+    if (startMoment.isVar) startMoment = startMoment.valueOf();
+    return moment.duration(this.moment().diff(startMoment));
+  };
+  
   tb.Var.prototype.fullName = function() {
     // return the most explicit name either as a global variable
     // or as a cell of a table
     if (this.name) return this.name;
     var table = this.row && this.row.table;
     return (table.name?table.name:anonymous_table)+'['+this.row.index+','+this.col+']';
-  }
+  };
   
   tb.Var.prototype.toString = function() {
     // return the summary of the variable

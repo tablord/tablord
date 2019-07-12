@@ -122,7 +122,7 @@
                                 // so it will be easy to update the content at the end of calculation
       return tbVar;
     }
-    if (this.hasClass('date')) return moment(value);
+    if (this.hasClass('date')) return moment(value,this.attr('format'));
     if (this.hasClass('duration')) return moment(value);
     if (this.hasClass('number')) return Number(value);
     return value;
