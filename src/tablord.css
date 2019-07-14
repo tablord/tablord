@@ -104,68 +104,82 @@ pre {
 .ELEMENT {
   position:relative;    
   padding: 3px;
-}
-.ELEMENT.EMPTY {
-  color: grey;
-}
-.ELEMENT.SELECTED {
-  padding:0px;
-  border: 3px solid grey;
-}
-.ELEMENT:hover {
-  outline:1px dotted grey;
-}
-.ELEMENT[itemprop]:hover::after {
-  position:absolute;
-  top:-2em;
-  right:0;
-  color:white;
-  background-color: rgba(169, 169, 169,0.6);
-  font-size:0.6em;
-  padding:3px;
-  content:attr(itemprop);
-}
-.ELEMENT[itemprop][itemscope]:hover::before {
-  left:0;
-  right:none;
-  color:orange;
-}
-.ELEMENT.SELECTED::after {
-  position:absolute;
-  top:-2em;
-  right:0;
-  outline:none;
-  color:white;
-  background-color: rgba(169, 169, 169,0.6);
-  font-size:0.6em;
-  padding:3px;
-  content:attr(itemprop);
+  margin-bottom:0.5em;
 }
 
-.ELEMENT.ITEMSCOPE {
-  padding:0;
-  border: 3px solid orange;
-}
-
-.ELEMENT.ITEMSCOPE::after {
-  position:relative;
-  width:0;
-  left:6px;
-  background-color: rgba(169, 169, 169,0.6);
-  outline:none;
-  color:orange;
-  content:attr(itemprop);
-}
-
-.ELEMENT.EDITABLE:empty::before {
-  content:"empty";
-  font-style:italic;
-  color:grey;
-}
-.ELEMENT[itemprop]:empty::before {
-  content:attr(itemprop);
-  font-style:italic;
-  color:grey;
+@media screen {
+    .ELEMENT.EMPTY {
+      color: grey;
+    }
+    .ELEMENT.SELECTED,
+    .ELEMENT.SELECTED[itemprop]{
+      padding:0px;
+      border: 3px solid grey;
+    }
+    .ELEMENT:hover {
+      outline:1px dotted grey;
+    }
+    .ELEMENT[itemprop]:not([itemscope]):not(.VIEW) {
+      border: 1px solid blue;
+    }
+    
+    .ELEMENT.SHOW[itemprop]::before {
+      content:attr(itemprop)": ";
+      font-style:italic;
+      color:grey;  
+    }
+    .ELEMENT[itemprop]:hover::after {
+      position:absolute;
+      top:-2em;
+      right:0;
+      color:white;
+      background-color: rgba(169, 169, 169,0.6);
+      font-size:0.6em;
+      padding:3px;
+      content:attr(itemprop);
+    }
+    .ELEMENT[itemprop][itemscope]:hover::before {
+      left:0;
+      right:none;
+      color:orange;
+    }
+    .ELEMENT.SELECTED::after {
+      position:absolute;
+      top:-2em;
+      right:0;
+      outline:none;
+      color:white;
+      background-color: rgba(169, 169, 169,0.6);
+      font-size:0.6em;
+      padding:3px;
+      content:attr(itemprop);
+    }
+    
+    .ELEMENT.ITEMSCOPE {
+      padding:0;
+      border: 3px solid orange;
+    }
+    
+    .ELEMENT.ITEMSCOPE::after {
+      position:relative;
+      width:0;
+      left:6px;
+      background-color: rgba(169, 169, 169,0.6);
+      outline:none;
+      color:orange;
+      content:attr(itemprop);
+    }
+    
+    .ELEMENT.EDITABLE:empty::before {
+      content:"empty";
+      font-style:italic;
+      color:grey;
+    }
+    .ELEMENT[itemprop]:empty::before {
+      content:attr(itemprop);
+      font-style:italic;
+      color:grey;
+    }
 }
 
 .ELEMENT.c-1 {
@@ -568,6 +582,7 @@ td.RICHTEXT {
   background-color: #dddcdc;
   z-index:100;
   font-size:12px;
+  max-width:50%;
 }
 
 #menu .btn,
@@ -607,6 +622,7 @@ td.RICHTEXT {
   .landscape {
     transform: rotate(90deg);
   }
+  
 }
 
 @page { 

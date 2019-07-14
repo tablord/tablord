@@ -39,9 +39,27 @@
   };
 
   $.fn.asNode = function() {
+    // return an object that has a node$ function that returns the jQuery
+    // you can use it to create documents element with jQuery like this
+    // $('<div>just a demo</div>').asNode()
     var query = this;
     return {node$:function() {return query}};
   };
+  
+  $.fn.frozenCopy = function(keepItemscope) {
+    // copy the jQuery in a frozen manner
+    // it can be used either to document the GUI like $('#markBtn').frozenCopy(); to show the button
+    // or to keep the result of a simulation like $('#sect0007').frozenCopy();
+    //
+    // frozen copy clone the jQuery, suppress any [id], any [func] and FUNC or CODE class 
+    // and return an object that has only an node$() function
+    if (keepItemscope) throw Error('not yet implemented')
+    var query = this.clone();
+    var allChildren = query.find('*').addBack();
+    allChildren.removeAttr('id').removeAttr('func').removeClass('CODE FUNC ELEMENT');
+    allChildren.removeAttr('itemprop').removeAttr('itemscope').removeAttr('itemtype');
+    return {node$:function() {return query}};
+  }
 
   $.fn.itemscopeOrThis$ = function() {
     // return the wrapping itemscope of this if any or this otherwise
@@ -124,7 +142,7 @@
     }
     if (this.hasClass('date')) return moment(value,this.attr('format'));
     if (this.hasClass('duration')) return moment(value);
-    if (this.hasClass('number')) return Number(value);
+    if (this.hasClass('number')) return numeral(value,this.attr('format')).value();
     return value;
   }
 

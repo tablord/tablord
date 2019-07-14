@@ -80,13 +80,15 @@
 
   tb.Var.prototype.moment = function() {
     // return a clone of the moment represented by the value
+    var m = this.valueOf();
+    if (!moment.isMoment(m)) throw Error('tb.Var '+this.name+' was expected to be a moment. '+m+' found instead');
     return moment(this.valueOf());
   };
   
   tb.Var.prototype.durationSince = function(startMoment) {
     // return the duration between this moment and the startMoment
     // this must be a moment and startMoment car be either a tb.Var representing a moment or a moment
-    if (startMoment.isVar) startMoment = startMoment.valueOf();
+    if (startMoment.isVar) startMoment = startMoment.moment();
     return moment.duration(this.moment().diff(startMoment));
   };
   
@@ -225,7 +227,7 @@
     if (typeof value == "function") {
       var value = new tb.Var(undefined,value);  //wrap the function into a V
     }
-    if (value.isVar) {
+    if (value && value.isVar) {
       value.row = this;       //and assign the _row,_col
       value.col = col;
     }
