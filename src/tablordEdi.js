@@ -57,8 +57,8 @@
                     '<button id="saveBtn" type="button" class="btn btn-dark"><i class="fas fa-cloud-upload-alt"></i></button>'+
                     '<button id="printBtn" type="button" class="btn btn-dark"><i class="fas fa-print"></i></button>'+
                     '<button id="helpBtn" type="button" class="btn btn-dark"><i class="fas fa-question-circle"></i></button>'+
-                    '<button id="btnGroupDrop1" type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cog"></i></button>'+
-                    '<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">'+
+                    '<button id="settingsBtnGroupDrop" type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cog"></i></button>'+
+                    '<div class="dropdown-menu" aria-labelledby="settingsBtnGroupDrop">'+
                         '<a class="dropdown-item" id="clearOutputsBtn" onclick="tb.clearOutputs();" >clear outputs</a>'+
                         '<input id="showCode" type=checkbox>code<br/>'+
                         '<input id="showCut" type=checkbox>cut<br/>'+
@@ -87,7 +87,7 @@
         			'<div id="insertAfter" class="btn-group btn-group-sm mr-2" role="group" where="after">'+
                         '<button id="insertSectionBtn" class="btn btn-dark" title="section" template="https://tablord.com/templates/section">'+
         					'<i class="fas fa-heading"></i></button>'+
-        				'<button id="insertText" class="btn btn-dark" title="Text" template="https://tablord.com/templates/richText">'+
+        				'<button id="insertRichTextBtn" class="btn btn-dark" title="Text" template="https://tablord.com/templates/richText">'+
         					'<i class="fas fa-paragraph"></i></button>'+
         				'<button id="cloneEmptyBtn" class="btn btn-dark" title="empty copy of selected element"><i class="far fa-clone"></i></button>'+
                         '<button id="insertCodeBtn" class="btn btn-dark" title="code" template="https://tablord.com/templates/code">{}</button>'+
@@ -752,7 +752,10 @@
                              switch (command) {
                                case ''   : 
                                  var m = code.match(/(\w+):(.*)/);
-                                 if (m) return '<span class="ELEMENT EDITABLE" itemprop="'+m[1]+'">'+m[2]+'</span>&nbsp;';
+                                 if (m) {
+                                   var n = Number(m[2]);
+                                   return '<span class="ELEMENT EDITABLE'+(Number.isNaN(n)?'':' number')+'" itemprop="'+m[1]+'">'+m[2]+'</span>&nbsp;';
+                                 }
                                  m = code.match(/(\w+)=(.*)/);
                                  if (m) return '<span class="ELEMENT FUNC" itemprop="'+m[1]+'" func="'+m[2]+'"></span>&nbsp;';
                                  return code$.attr('func',code)[0].outerHTML;
