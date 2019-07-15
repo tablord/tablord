@@ -4,14 +4,14 @@
   "description": "Open Source Library to create calculated Documents",
   "main": "index.js",
   "scripts": {
-    "test": "make test"
+    "test": "mocha"
   },
   "engines": {
     "node": ">=10.16.0",
     "npm": ">=6.9.0"
   },
   "author": "Marc Nicole",
-  "license": "CC-BY-SA",
+  "license": "CC-BY-SA-4.0",
   "dependencies": {
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
