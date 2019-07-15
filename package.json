@@ -1,0 +1,31 @@
+{
+  "name": "Tablord",
+  "version": "1.1.2",
+  "description": "Open Source Library to create calculated Documents",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "engines": {
+    "node": ">=10.16.0",
+    "npm": ">=6.9.0"
+  },
+  "author": "Marc Nicole",
+  "license": "CC-BY-SA-4.0",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "express-validator": "^3.1.2",
+    "mongoose": "^4.8.7",
+    "nodemon": "^1.14.12"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tablord/tablord.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tablord/tablord/issues"
+  },
+  "homepage": "https://github.com/tablord/tablord"
+}
