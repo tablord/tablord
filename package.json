@@ -4,7 +4,7 @@
   "description": "Open Source Library to create calculated Documents",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js"
+    "test": "make test"
   },
   "engines": {
     "node": ">=10.16.0",
@@ -22,7 +22,7 @@
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "https://github.com/tablord/tablord.git" 
+    "url": "https://github.com/tablord/tablord.git"
   },
   "bugs": {
     "url": "https://github.com/tablord/tablord/issues"
