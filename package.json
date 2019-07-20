@@ -14,8 +14,11 @@
   "license": "CC-BY-SA-4.0",
   "dependencies": {
     "body-parser": "^1.17.1",
+    "chai": "^4.2.0",
     "express": "^4.15.2",
     "express-validator": "^3.1.2",
+    "jquery": "^3.4.1",
+    "jsdom": "^15.1.1",
     "mocha": "^6.1.4",
     "mongoose": "^4.8.7",
     "nodemon": "^1.14.12"
