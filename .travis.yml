@@ -1,5 +1,6 @@
-language: node_js
-node_js:
-  - "10"
-install:
-  - npm install mocha
+dist: xenial   # required for Python >= 3.7
+language: python
+python:
+  - "3.7"
+script:
+  - pytest

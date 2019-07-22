@@ -1,0 +1,6 @@
+# first test just to see if travis ... is ok
+def func(x):
+    return x + 1
+
+def test_answer():
+    assert func(3) == 4
