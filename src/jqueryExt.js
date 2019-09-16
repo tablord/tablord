@@ -53,13 +53,13 @@
     //
     // frozen copy clone the jQuery, suppress any [id], any [func] and FUNC or CODE class 
     // and return an object that has only an node$() function
-    if (keepItemscope) throw Error('not yet implemented')
+    if (keepItemscope) throw Error('not yet implemented');
     var query = this.clone();
     var allChildren = query.find('*').addBack();
     allChildren.removeAttr('id').removeAttr('func').removeClass('CODE FUNC ELEMENT');
     allChildren.removeAttr('itemprop').removeAttr('itemscope').removeAttr('itemtype');
     return {node$:function() {return query}};
-  }
+  };
 
   $.fn.itemscopeOrThis$ = function() {
     // return the wrapping itemscope of this if any or this otherwise
@@ -69,7 +69,18 @@
     if (c$.length===1) return c$;
     return this;
   };
-  
+
+  $.elementsByIds$ = function(elements$) {
+    // return either elements$ if already a jQuery or a jQuery with all elements listed in elements$
+    // example elementsByIds$('id1 id2 id3') returns a jQuery with 3 elements
+    if (elements$ instanceof $) return elements$;
+    var res$ = $();
+    var ids = elements$.split(' ');
+    for (var id in ids){
+      res$ = res$.add('#'+ids[id]);
+    }
+    return res$
+  };
   
   $.fn.getItems = function(url) {
     // get the matching itemtypes that are descendent of the jquery
@@ -130,7 +141,7 @@
     var value; 
     if ($.inArray(tag,['DATA','METER','SELECT','INPUT'])!=-1) value = this.val();
     //--- this is not microdata but only valid in Tablord where the class number or date or duration can force
-    else value = this.text();
+    else value = $.trim(this.text()); //TODO text retourne une valeur débutant par des \n et espaces et terminant de même
     if (this.attr('func')) {
       var tbVar = this.prop('tbVar');
       if (tbVar) return tbVar;
@@ -144,7 +155,7 @@
     if (this.hasClass('duration')) return moment(value);
     if (this.hasClass('number')) return numeral(value,this.attr('format')).value();
     return value;
-  }
+  };
 
   $.fn.setItemValue = function(value){
     // set the value of an element handling all specifications of microdata of the getter of itemValue
@@ -160,7 +171,7 @@
     }
     else this.text(value);
     return this;
-  }
+  };
 
 
 
@@ -207,7 +218,7 @@
     });
     if (remap) data = remap(data);
     return data;
-  }
+  };
 
   $.fn.getData = function(criteria,fields,remap) {
     // return data object for the jQuery, very similarly as a mongoDB .find
@@ -240,7 +251,7 @@
       }
     });
     return result;
-  }
+  };
 
   $.fn.getMicrodata = function(result) {
     // return microdata object for the jQuery.
@@ -254,7 +265,7 @@
     var result = result || {};
     this.each(function(i,e){
       var e$ = $(e);
-      var itemprop = e$.attr('itemprop')
+      var itemprop = e$.attr('itemprop');
       if (itemprop) {
         if (result[itemprop] == undefined) result[itemprop] = [];
         if (e$.attr('itemscope') !== undefined) {
@@ -273,7 +284,7 @@
       }
     });
     return result;
-  }
+  };
 
   $.fn.setMicrodata = function(data) {
     // set the itemprop elements under all elements of the jQuery
@@ -306,7 +317,7 @@
       }
     });
     return this;
-  }
+  };
 
   $.fn.filterFromToId = function(fromId,toId) {
     // filter the query to keep only query Element that are between the fromId element and toId element
@@ -316,7 +327,7 @@
       if (this.id === toId) inRange=false;
       return (this.id===toId) || inRange;
     })
-  }
+  };
 
   $.fn.replaceTagName = function(newTagName) {
     // replace all element of this with a similar element having newTag
@@ -324,7 +335,7 @@
       var newHtml = this.outerHTML.replace(/^<\w+([ >].*)<\/\w+>$/,'<'+newTagName+'$1</'+newTagName+'>');
       return newHtml;
     });
-  }
+  };
   
   $.fn.replaceText = function(regExp,replacement,accept){
     // like string.replace(regExp,replacement), but only acts on text of the elements of the jQuery (not on the TAG or the attributes)
@@ -343,7 +354,7 @@
         case 1:
           switch (accept(this[i])) {
             case true:
-              $(this[i]).contents().replaceText(regExp,replacement,accept)
+              $(this[i]).contents().replaceText(regExp,replacement,accept);
               break;
             case false:
               continue;
@@ -355,7 +366,7 @@
       }
     }
     return this;
-  }
+  };
 
   $.fn.neighbour$ = function(where) {
     // jQuery should be of 1 element and return the neighbour that corresponds 
@@ -363,7 +374,7 @@
     // in case, this is a CODE,OUTPUT or TEST, takes also into account
     // those elements to skip them properly
     //  - where: 'after', 'afterItemscope', 'before' or 'beforeItemscope'
-    if (this.length !== 1) throw new Error('neighbourg$ needs a 1 element jQuery'+this.toString())
+    if (this.length !== 1) throw new Error('neighbourg$ needs a 1 element jQuery'+this.toString());
     
     var element$ = this;
     if (where==='beforeItemscope' || where==='afterItemscope') {
@@ -371,7 +382,7 @@
     }
     if (where==='after' || where==='afterItemscope') return element$.last();
     return element$.first();
-  }
+  };
 
 
   tb.help.update($,'$.');

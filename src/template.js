@@ -38,7 +38,7 @@
 
   tb.Template.prototype.convert = function(element,itemprop) {
     // convert element to template(name) as itemprop
-
+    itemprop = itemprop || 'item';
     var e$ = $(element);
     var microdata = $.extend(true,e$.data('itemData') || {},e$.getMicrodata());
     var id = e$.attr('id');
@@ -46,12 +46,13 @@
     var k = tb.keys(microdata);
     if (k.length > 1) throw new Error('element.convert error: microdata has more than 1 head key\n'+tb.toJSCode(microdata));
     var newData = {};
-    newData[itemprop || 'item'] = microdata[k[0]] || {};
+    newData[itemprop] = microdata[k[0]] || {};
     var new$ = this.element$(itemprop,id);
     if (this.convertData) {
       this.convertData(microdata,new$);
     }
     else {
+        //////////////  TODO
       new$.setMicrodata(newData);
       tb.Template.setElement$Containers(new$,containers);
     }

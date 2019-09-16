@@ -9,7 +9,7 @@
     //in the tb.vars namespace
     this.setName(name);
     this.setValue(value);
-  }
+  };
   tb.Var.className = 'tb.Var';
 
   tb.Var.prototype.setName = function(name) {
@@ -19,13 +19,13 @@
     if (name === undefined) return;
 
     this.name =name;
-    var lu = name.match(/(^.+)\$(.+)/)
+    var lu = name.match(/(^.+)\$(.+)/);
     if (lu !== null) {
       this.label = lu[1];
       this.unit  = lu[2];
     }
     else this.label = this.name;
-  }
+  };
 
   tb.Var.prototype.setValue = function(value){
     if (typeof value == "function") {
@@ -38,7 +38,7 @@
       this.type = typeof value;
     }
     return this;
-  }
+  };
 
   tb.Var.prototype.valueOf = function () {
     // return the value of the variable
@@ -59,7 +59,7 @@
       return res
     }
     return this.value;
-  }
+  };
 
   tb.Var.prototype.toJSCode = function () {
     // return a string that can be interpreted by eval and will give the same result as the value
@@ -103,20 +103,20 @@
   tb.Var.prototype.toString = function() {
     // return the summary of the variable
     return '[object tb.Var('+this.fullName()+'):'+(this.func?this.toJSCode()+'==>':'')+this.valueOf()+']';
-  }
+  };
 
   tb.Var.prototype.view = function(options) {
     // returns an HTML object with VariableName = value
     options = $.extend(true,{},tb.defaults,options);
     return tb.html('<var>'+this.label+'</var> = <span class=VALUE>'+tb.format(this.valueOf(),options)+'</span>'+(this.unit?'&nbsp;<span class=UNIT>'+this.unit+'</span>':''));
-  }
+  };
 
   tb.Var.prototype.edit = function() {
     // returns an HTML object with the necessary controls to edit the variable
     this.codeElement = tb.output.codeElement;
     $(this.codeElement).addClass('AUTOEDIT').attr('tbObject',this.name);
     return tb.html('<var>'+this.label+'</var>'+tb.editor.html(this.valueOf(),{tbObject:this.name})+(this.unit?'&nbsp;<span class=UNIT>'+this.unit+'</span>':''));
-  }
+  };
 
 
   tb.Var.prototype.getEditableValue = function(editor) {
@@ -126,7 +126,7 @@
     else {
       return this.value;
     }
-  }
+  };
 
   tb.Var.prototype.setEditableValue = function(editor) {
     // implementation of the [[tb.EditableObject.prototype.setEditableValue]]
@@ -134,13 +134,13 @@
     tb.setModified(true);
     var obj = this;
     window.setTimeout(function(){obj.updateCode();tb.run()},0);
-  }
+  };
 
   tb.Var.prototype.updateCode = function() {
     // implementation of the [[tb.EditableObject.prototype.updateCode]]
     var code = 'v('+tb.toJSCode(this.name)+','+this.toJSCode()+')';
     this.codeElement.innerHTML = tb.toHtml(code+'.edit()');
-  }
+  };
 
 
   tb.Var.prototype.isVar = true;
@@ -172,7 +172,7 @@
     if (typeof tbFunc == "string") {
       try {
         var code = tbFunc;
-        if (tbFunc.search(/return/)== -1) {
+        if (tbFunc.search(/return/)=== -1) {
           tbFunc.replace(/^\s*\{(.*)\}\s*$/,'({$1})');
           code = 'return '+tbFunc;
         }
@@ -209,19 +209,19 @@
         this.setCell(k,obj[k]);
       }
     }
-  }
+  };
   tb.Row.className = 'tb.Row';
 
   tb.Row.prototype.cell = function(col) {
     return this._[col];
-  }
+  };
 
   tb.Row.prototype.val = function(col) {
     var c = this._[col];
     if (c===undefined) return undefined;
     if ((c instanceof Date) || moment.isMoment(c) || moment.isDuration(c)) return this._[col];
     return this._[col].valueOf();
-  }
+  };
 
   tb.Row.prototype.setCell = function (col,value) {
     if (typeof value == "function") {
@@ -233,11 +233,11 @@
     }
     this._[col] = value;
     return this;
-  }
+  };
 
   tb.Row.prototype.toString = function() {
     return "[object Row]";
-  }
+  };
 
   tb.Row.prototype.eachCol = function(func) {
     // func must be function(colname,colObject)
@@ -245,7 +245,7 @@
       func(col,this._[col]);
     }
     return this;
-  }
+  };
 
   tb.Row.prototype.reduce = function(reduceF,criteria,initialValue) {
     // apply a reduce function on a column
@@ -270,34 +270,34 @@
       }
     }
     return r;
-  }
+  };
 
   tb.Row.prototype.sum = function(criteria) {
     // return the sum of the row
     return this.reduce(tb.reduce.sum,criteria)
-  }
+  };
 
   tb.Row.prototype.min = function(criteria) {
     // return the min of the row
     return this.reduce(tb.reduce.min,criteria);
-  }
+  };
 
   tb.Row.prototype.max = function(criteria) {
     // return the min of the row
     return this.reduce(tb.reduce.max,criteria);
-  }
+  };
 
   tb.Row.prototype.average = function(criteria) {
     // return the average of the row
     var sc = this.reduce(colName,tb.reduce.sumCount,criteria,{sum:0,count:0});
     return sc.sum/sc.count;
-  }
+  };
 
   tb.Row.prototype.rms = function(colName,criteria) {
     // return the root mean square of the row
     var sc = this.reduce(colName,tb.reduce.sumCount,criteria,{sum:0,count:0});
     return Math.sqrt(sc.sum/sc.count);
-  }
+  };
 
   tb.Row.prototype.toJSCode = function() {
     var e = [];
@@ -305,7 +305,7 @@
       e.push(tb.toJSCode(colName)+':'+tb.toJSCode(colObject));
     });
     return '{'+ e.join(',')+ '}';
-  }
+  };
 
   tb.Row.prototype.span = function (options) {
     options = options || {};
@@ -316,24 +316,25 @@
       });
     }
     var h = '<table><thead><tr>';  // TODO modify to style
-    for (var col in options.cols) {
+    var col;
+    for (col in options.cols) {
       h += '<th>'+col+'</th>';
     }
     h += '</tr></thead><tbody>';
     h += '<tr>';
-    for (var col in options.cols) {
+    for (col in options.cols) {
       var cell = this._[col];
-      h += (col=="_id")?'<th>'+cell+'</th>':'<td>'+tb.format(cell)+'</td>';
+      h += (col==="_id")?'<th>'+cell+'</th>':'<td>'+tb.format(cell)+'</td>';
     }
     h += '</tr></tbody></table>';
     return tb.html(h);
-  }
+  };
 
   tb.Row.prototype.list = function() {
     var h = '<table>';
     this.eachCol(function (col,val) {h += '<tr><th>'+col+'</th><td>'+val+'</td></tr>'});
     return tb.html(h+'</table>');
-  }
+  };
 
   tb.Row.prototype.isRow = true;
 
@@ -344,12 +345,12 @@
     // internal use only
     this.name = name;
     this.table = table;
-  }
+  };
   tb.Col.className = 'tb.Col';
 
   tb.Col.prototype.toString = function() {
     return '[object Col '+this.name+']';
-  }
+  };
 
 
 // Table //////////////////////////////////////////////////////////////
@@ -369,7 +370,7 @@
                     colOrder:[],
                     visibleCols:tb.heir(this.cols)
                    };
-  }
+  };
   tb.Table.className = 'tb.Table';
 
   tb.Table.prototype.set = tb.set;
@@ -383,10 +384,10 @@
       return this.name;
     }
     if (this.name) delete tb.vars[name];
-    this.name = name
+    this.name = name;
     tb.vars[name] = this;
     return this;
-  }
+  };
 
   tb.Table.prototype.registerPk = function(row) {
     if (this.pk !== undefined) {
@@ -398,7 +399,7 @@
         throw new Error('duplicated value in primaryKey: '+pkVal+' found twice at '+this.pks[pk].index+' and '+i);
       }
     }
-  }
+  };
 
   tb.Table.prototype.primaryKey = function(pkCol) {
     // set the primary key colName
@@ -408,7 +409,7 @@
       this.registerPk(this[i]);
     }
     return this;
-  }
+  };
 
 
   tb.Table.prototype.defCol = function(name, defValue, style) {
@@ -423,7 +424,7 @@
     c.defValue = defValue;
     if (style) this.colStyle(style,name);
     return this;
-  }
+  };
 
   tb.Table.prototype.updateCols = function(withRow) {
     // updates the cols description with the fields found in withRow
@@ -431,13 +432,13 @@
     // return the table for command chaining
 
     for (var col in withRow._) {
-      if (this.cols[col]==undefined) {
+      if (this.cols[col]===undefined) {
         this.cols[col] = new tb.Col(col);
         if ($.inArray(col,this.options.colOrder)===-1) this.options.colOrder.push(col);
       }
     }
     return this;
-  }
+  };
 
   tb.Table.prototype.colOrder = function(order) {
     // if order = array of colName: set a new order
@@ -452,36 +453,37 @@
       if ($.inArray(col,this.options.colOrder)===-1) order.push(col);
     }
     return order;
-  }
+  };
 
   tb.Table.prototype.show = function(columns,visible) {
     // show all columns specified in the columns array
     // if visible = true or undefined,  ensure this columns are visible if it exist
     // if visible = false, ensure this columns are hidden
     // if visible = null,  reset to the default (specialy for View)
+    var i;
     if (visible === null) {
-      for (var i in columns) {
+      for (i in columns) {
         delete this.options.visibleCols[columns[i]];
       }
     }
     else {
       visible = visible !== false;
-      for (var i in columns) {
+      for (i in columns) {
         this.options.visibleCols[columns[i]] = visible ;
       }
     }
     return this;
-  }
+  };
 
   tb.Table.prototype.hide = function(columns) {
     this.show(columns,false);
     return this;
-  }
+  };
 
   tb.Table.prototype.showOnly = function(columns) {
     this.hide(tb.keys(this.cols)).show(columns);
     return this;
-  }
+  };
 
   tb.Table.prototype.add = function(rowData) {
     // add a row
@@ -494,7 +496,7 @@
     this.registerPk(row);
     this.updateCols(row);
     return this;
-  }
+  };
 
   tb.Table.prototype.addRows = function(rows) {
     // add multiple rows
@@ -504,7 +506,7 @@
       this.add(rows[i]);
     }
     return this;
-  }
+  };
 
   tb.Table.prototype.update = function(cols,keepOnlyValue) {
     // cols is an object {colName:value,....}
@@ -527,13 +529,13 @@
       }
     });
     for (var colName in cols) {
-      if (this.cols[colName]==undefined) {
+      if (this.cols[colName]===undefined) {
         this.cols[colName] = new tb.Col();
         if ($.inArray(colName,this.options.colOrder)===-1) this.options.colOrder.push(colName);
       }
     }
     return this;
-  }
+  };
 
   tb.Table.prototype.forEachRow = function(func) {
     // execute func for each row of the table
@@ -543,7 +545,7 @@
       func(i,this[i])
     }
     return this;
-  }
+  };
 
 
   tb.Table.prototype.cell = function(row,col) {
@@ -553,7 +555,7 @@
     }
     row = this.pks[row];
     return row && row.cell(col);
-  }
+  };
 
   tb.Table.prototype.val = function(row,col) {
     // return the VALUE of the cell: if a function, this function is calculated first
@@ -561,7 +563,7 @@
     if (c===undefined) return undefined;
     if (moment.isMoment(c) || moment.isDuration(c)) return c; // don't touch otherwise converted to number
     return c.valueOf();
-  }
+  };
 
   tb.Table.prototype.reduce = function(colName,reduceF,criteria,initialValue) {
     // apply a reduce function on a column
@@ -585,45 +587,46 @@
       }
     }
     return r;
-  }
+  };
 
   tb.Table.prototype.sum = function(colName,criteria) {
     // return the sum of the column
     return this.reduce(colName,tb.reduce.sum,criteria,0)
-  }
+  };
 
   tb.Table.prototype.min = function(colName,criteria) {
     // return the min of the column
     return this.reduce(colName,tb.reduce.min,criteria);
-  }
+  };
 
   tb.Table.prototype.max = function(colName,criteria) {
     // return the min of the column
     return this.reduce(colName,tb.reduce.max,criteria);
-  }
+  };
 
   tb.Table.prototype.average = function(colName,criteria) {
     // return the average of the column
     var sc = this.reduce(colName,tb.reduce.sumCount,criteria,{count:0,sum:0});
     return sc.sum/sc.count;
-  }
+  };
 
   tb.Table.prototype.rms = function(colName,criteria) {
     // return the root mean square of the column
     var sc = this.reduce(colName,tb.reduce.sumCount,criteria,{count:0,sum:0});
     return Math.sqrt(sc.sum/sc.count);
-  }
+  };
 
   tb.Table.prototype.setCell = function(row,col,value) {
     if (this.cols[col] === undefined) {
       this.cols[col] = new tb.Col(col);
       if ($.inArray(col,this.options.colOrder==-1)) this.options.colOrder.push(col);
     }
+    var r;
     if (typeof row === 'number') {
-      var r = this[row];
+      r = this[row];
     }
     else {
-      var r = this.pks[row];
+      r = this.pks[row];
     }
     if (r === undefined) {
       r = {};
@@ -639,7 +642,7 @@
     }
     r.setCell(col,value);
     return this;
-  }
+  };
 
   tb.Table.prototype.lookup = function(criteria) {
     // return the data of the first row matching the criteria
@@ -647,14 +650,14 @@
     var row = this.findFirst(criteria);
     if (row) return row._;
     return {}; // if not found, return empty data, so it can still be dereferenced
-  }
+  };
 
   tb.Table.prototype.tableStyle = function(style) {
     for (var attr in style) {
       this.options.tableStyle[attr] = style[attr];
     }
     return this;
-  }
+  };
 
   tb.Table.prototype.colStyle = function(style,colName){
     // set the style for a column
@@ -666,11 +669,11 @@
       if (col === colName) {
         $.extend(true,compoundStyle,typeof style === 'function'?style.call(row,row._,col,value):style);
       }
-    }
-    fStyle.toString = function() {return 'colStyle for '+colName+': '+tb.toJSCode(style)}
+    };
+    fStyle.toString = function() {return 'colStyle for '+colName+': '+tb.toJSCode(style)};
     this.options.styles.push(fStyle);
     return this;
-  }
+  };
 
   tb.Table.prototype.rowStyle = function(style,rowNumber){
     // set the style for a row
@@ -679,11 +682,11 @@
       if (row === expRow) {
         $.extend(true,compoundStyle,typeof style === 'function'?style.call(row,row._,col,value):style);
       }
-    }
-    fStyle.toString = function() {return 'rowStyle for '+expRow+': '+tb.toJSCode(style)}
+    };
+    fStyle.toString = function() {return 'rowStyle for '+expRow+': '+tb.toJSCode(style)};
     this.options.styles.push(fStyle);
     return this;
-  }
+  };
 
   tb.Table.prototype.style = function(newStyle,rowNumber,colName){
     // .style(newStyle)  will set the default newStyle for the complete table
@@ -691,13 +694,13 @@
     // .style(newStyle,undefined,colName) will set the default style for a column
     // .style(newStyle,rowNumber,colName) will set the style for a given cell
     // newStyle can either be an object {cssAttr=val,...} or a function(table,rowNumber,colName)
-
+    var fStyle;
     if ((rowNumber === undefined) && (colName === undefined)){
-      var fStyle = function(table,row,col,value,compoundStyle) {
+      fStyle = function(table,row,col,value,compoundStyle) {
         $.extend(true,compoundStyle,typeof newStyle === 'function'?newStyle.call(row,row._,col,value):newStyle);
-      }
+      };
       this.options.styles.push(fStyle);
-      fStyle.toString = function() {return 'general style: '+tb.toJSCode(newStyle)}
+      fStyle.toString = function() {return 'general style: '+tb.toJSCode(newStyle)};
       return this;
     }
     if (rowNumber === undefined) {
@@ -710,15 +713,15 @@
     }
 
     var expRow = this[rowNumber];
-    var fStyle = function(table,row,col,value,compoundStyle) {
+    fStyle = function(table,row,col,value,compoundStyle) {
       if ((row === expRow) && (col === colName)) {
         $.extend(true,compoundStyle,typeof newStyle === 'function'?newStyle.call(row,row._,col,value):newStyle);
       }
-    }
-    fStyle.toString = function() {return 'cell style for '+expRow+','+colName+': '+tb.toJSCode(newStyle)}
+    };
+    fStyle.toString = function() {return 'cell style for '+expRow+','+colName+': '+tb.toJSCode(newStyle)};
     this.options.styles.push(fStyle);
     return this;
-  }
+  };
 
 
   tb.Table.prototype.compoundStyle = function(row,colName,value) {
@@ -728,7 +731,7 @@
       this.options.styles[i](this,row,colName,value,style);
     }
     return style;
-  }
+  };
 
   tb.Table.prototype.sort = function(cols) {
     // sort the table according to the "cols" criteria
@@ -740,8 +743,8 @@
     function order(a,b) {
       for (var col in cols) {
         if (typeof cols[col] == 'function') {
-          var res = cols[col](a.cell(col),b.cell(col))
-          if (res != 0) return res;
+          var res = cols[col](a.cell(col),b.cell(col));
+          if (res !== 0) return res;
         }
         if (a.cell(col) > b.cell(col)) return  cols[col];
         if (a.cell(col) < b.cell(col)) return -cols[col];
@@ -751,7 +754,7 @@
 
     Array.prototype.sort.call(this,order);
     return this;
-  }
+  };
 
   tb.Table.prototype.find = function(criteria) {
     // return a new view of this table that has only the rows that match the criteria
@@ -765,7 +768,7 @@
       }
     }
     return view;
-  }
+  };
 
   tb.Table.prototype.findFirst = function(criteria) {
     // mongoDB find() as if the table was a small mongoDB
@@ -775,12 +778,12 @@
         return this[i];
       }
     }
-  }
+  };
 
   tb.Table.prototype.toString = function() {
     // return a string summarizing the table
     return '[object Table('+this.name+') of '+this.length+' rows]';
-  }
+  };
 
   tb.Table.prototype.toJSCode = function() {
     var e = [];
@@ -788,7 +791,7 @@
       e.push(row.toJSCode())
     });
     return '['+e.join(',\n')+']';
-  }
+  };
 
   tb.Table.prototype.node$ = function() {
     // display the table without its name
@@ -797,17 +800,18 @@
     var b$ = $('<tbody/>');
     var r$ = $('<tr/>');
     var colOrder = this.colOrder();
-    for (var i in colOrder) {
+    var i;
+    for (i in colOrder) {
       if (this.options.visibleCols[colOrder[i]] !== false) r$.append('<th>'+colOrder[i]+'</th>');
     }
     h$.append(r$);
     for (var rowNumber=0;rowNumber<this.length;rowNumber++) {
       var row = this[rowNumber];
       r$ = $('<tr/>');
-      for (var i in colOrder) {
+      for (i in colOrder) {
         var col = colOrder[i];
         if (this.options.visibleCols[col] !== false) {
-          var val = row.val(col)
+          var val = row.val(col);
           var cell$ = col===this.pk?$('<th></th>'):$('<td></td>');
           var style = this.compoundStyle(row,col,val);
           cell$.html(tb.format(val,style)).css(style);
@@ -818,18 +822,18 @@
     }
     t$.append(h$).append(b$);
     return t$;
-  }
+  };
 
   tb.Table.prototype.span = function() {
     // deprecated: only for backward compatibility: use node$ instead
     return tb.html(this.node$()[0].outerHTML);
-  }
+  };
 
   tb.Table.prototype.view = function() {
     //display the table, including its name in a <div>
     var table = this;
     return {node$:function(){return $('<div>').append('<var>'+table.name+'</var>').append(table.node$())}};
-  }
+  };
 
 
   // editor interface ////////////////////////////////////////////////////
@@ -844,31 +848,32 @@
     $(this.codeElement).addClass('AUTOEDIT').attr('tbObject',this.name);
 
     var h = '<div><var>'+this.name+'</var><table><tr><th>#</th>';
-    for (var col in this.cols) {
+    var col;
+    for (col in this.cols) {
       h += '<th>'+col+'</th>';
     }
     h += '</tr>';
     for (var row=0; row<this.length; row++) {
       h += '<tr><th draggable=true>'+row+'</th>';
-      for (var col in this.cols) {
+      for (col in this.cols) {
         h += '<td>'+tb.editor.html(this.cell(row,col),{tbObject:this.name,'tbRow':row,tbCol:col})+'</td>';
       }
       h += '</tr>';
     }
     h+='</table></div>';
     return tb.html(h);
-  }
+  };
 
   tb.Table.prototype.getEditableValue = function(editor) {
     return this.cell(Number(editor.attr('tbRow')),editor.attr('tbCol'));
-  }
+  };
 
   tb.Table.prototype.setEditableValue = function(editor) {
     this.setCell(Number(editor.attr('tbRow')),editor.attr('tbCol'),editor.value);
     tb.setModified(true);
     var obj = this;
     window.setTimeout(function(){obj.updateCode();tb.run()},0);
-  }
+  };
 
 
   tb.Table.prototype.updateCode = function() {
@@ -879,7 +884,7 @@
       code += '.add('+this[i].toJSCode()+')\n';
     }
     this.codeElement.innerHTML = tb.toHtml(code+'.edit()');
-  }
+  };
 
 
   // factory ////////////////////////////////////////////////
@@ -887,15 +892,15 @@
     // returns an already existing table or creates a new table
     // - name is the name of the instance
     // - if local=true, the instance is not registered in v
-    if (tb.vars[name] && tb.vars[name].constructor == tb.Table){
+    if (tb.vars[name] && tb.vars[name].constructor === tb.Table){
       return tb.vars[name];
     }
 
-    if ((local == true) || (name == undefined)) {
+    if ((local === true) || (name === undefined)) {
       return new tb.Table(name);
     }
     return tb.vars[name] = new tb.Table(name);
-  }
+  };
   
   table = tb.table; // for compatibility TODO rethink accessibility of very common functions
 
@@ -914,7 +919,7 @@
                    };
     this.cols = {};
     for (var col in parent.cols) this.cols[col] = new tb.Col(col,this);
-  }
+  };
   tb.View.className = 'tb.View';
 
   tb.View.prototype.set = tb.set;
@@ -930,9 +935,9 @@
       return this[row] && this[row].cell(col);
     }
     row = parent.pks[row];
-    if ((row===undefined) || ($.inArray(row,this) == -1)) return undefined;
+    if ((row===undefined) || ($.inArray(row,this) === -1)) return undefined;
     return row.cell(col);
-  }
+  };
 
   tb.View.prototype.val = tb.Table.prototype.val;
   tb.View.prototype.lookup = tb.Table.prototype.lookup;
@@ -953,7 +958,7 @@
   tb.View.prototype.toString = function() {
     // return a string summarizing the table
     return '[object View '+this.name+' of Table '+this.parent.name+' of '+this.length+' rows]';
-  }
+  };
 
   tb.View.prototype.toJSON = tb.Table.prototype.toJSON;
   tb.View.prototype.node$ = tb.Table.prototype.node$;
@@ -965,7 +970,7 @@
     // var in tb.vars
     this.name = name;
     Array.call(this)
-  }
+  };
   tb.Array.className = 'tb.Array';
 
   tb.Array.prototype = Object.create(Array.prototype);
@@ -991,11 +996,11 @@
   
   tb.Array.prototype.toString = function() {
       return '[object Array '+this.name+' ['+this.join(',')+']]';
-  }
+  };
   
   tb.Array.prototype.sum = function() {
       return this.reduce(tb.reduce.sum);
-  }
+  };
   
   // Output ///////////////////////////////////////////////
 
@@ -1007,7 +1012,7 @@
     h.outputElement = outputElement;
     h.span = function(){return ''};  // so that if a statment ends with an output, it will no show the output twice
     return h;
-  }
+  };
 
 
   // html ///////////////////////////////////////////////
@@ -1017,22 +1022,22 @@
   tb.HTML = function(html) {
     this.htmlCode = html || '';
     this.tagsEnd = [];
-  }
+  };
   tb.HTML.className = 'tb.HTML';
 
   tb.HTML.prototype.asNode = function() {
     var html = this;
     return {node$:function() {return $(html.toString())},html:html}
-  }
+  };
 
   tb.HTML.prototype.toString = function() {
     return this.htmlCode+this.tagsEnd.join('');
-  }
+  };
 
   tb.HTML.prototype.removeJQueryAttr = function() {
     this.htmlCode = this.htmlCode.replace(/jQuery\d+="\d+"/g,'');
     return this;
-  }
+  };
 
   tb.HTML.prototype.toAscii = function() {
     // same as toString(), but no character is bigger than &#255; every such a character is transformed into &#xxx;
@@ -1051,7 +1056,7 @@
     }
     asciiH += h.slice(last);
     return asciiH;
-  }
+  };
 
   tb.HTML.prototype.span = tb.HTML.prototype.toString;
 
@@ -1059,64 +1064,70 @@
   // insert any html
     this.htmlCode += html;
     return this;
-  }
+  };
 
   tb.HTML.prototype.showHtml = function (html) {
   // show html as html code
     this.htmlCode += '<span class=INSPECTHTML>'+tb.toHtml(html)+'</span>';
     return this;
-  }
+  };
 
   tb.HTML.prototype.showDiff = function(e1,e2) {
-    if (e1.length != e2.length) {
+    if (e1.length !== e2.length) {
       this.htmlCode += '<span class=DIFFSAME>e1.length=='+e1.length+' != e2.length=='+e2.length+'</span>';
     }
     for (var i=0; (i<e1.length) && (i<e2.length); i++) {
-      if (e1.charAt(i) != e2.charAt(i)) break;
+      if (e1.charAt(i) !== e2.charAt(i)) break;
     }
     this.htmlCode += '<span class=DIFFSAME>'+e1.slice(0,i)+'</span><br>e1:<span class=DIFFERENT>'+e1.slice(i)+'</span><br>e2:<span class=DIFFERENT>'+e2.slice(i)+'</span>';
     return this;
-  }
+  };
 
   tb.HTML.prototype.showHtmlDiff = function(e1,e2) {
-    if (e1.length != e2.length) {
+    if (e1.length !== e2.length) {
       this.htmlCode += '<span class=DIFFERENT>e1.length=='+e1.length+' != e2.length=='+e2.length+'</span>';
     }
     for (var i=0; (i<e1.length) && (i<e2.length); i++) {
-      if (e1.charAt(i) != e2.charAt(i)) break;
+      if (e1.charAt(i) !== e2.charAt(i)) break;
     }
     this.htmlCode += '<span class=DIFFSAME>'+tb.toHtml(e1.slice(0,i))+'</span><br>e1:<span class=DIFFERENT>'+tb.toHtml(e1.slice(i))+'</span><br>e2:<span class=DIFFERENT>'+tb.toHtml(e2.slice(i))+'</span>';
     return this;
-  }
+  };
 
   tb.HTML.prototype.p = function (/*elements*/) {
     this._tag('P',arguments);
     return this;
-  }
+  };
+
   tb.HTML.prototype.ul = function (/*elements*/) {
     this._tag('UL',arguments);
     return this;
-  }
+  };
+
   tb.HTML.prototype.ol = function (/*elements*/) {
     this._tag('OL',arguments);
     return this;
-  }
+  };
+
   tb.HTML.prototype.li = function (/*elements*/) {
     this._tag('LI',arguments);
     return this;
-  }
+  };
+
   tb.HTML.prototype.pre = function (/*elements*/) {
     this._tag('PRE',arguments);
     return this;
-  }
+  };
+
   tb.HTML.prototype.hr = function (){
     this._tag('HR',[]);
     return this
-  }
+  };
+
   tb.HTML.prototype.h = function (/*elements*/) {
     this._tag('H'+tb.htmlIndent,arguments);
     return this;
-  }
+  };
 
   tb.HTML.prototype.indent = function(levels) {
     // increment the header level
@@ -1124,7 +1135,7 @@
     levels = levels || 1;
     tb.htmlIndent += levels;
     return this;
-  }
+  };
 
   tb.HTML.prototype.tag = function(tagNameAndAttributes /*,elements*/) {
     // adds to the html <tagNameAndAttributes>span of all elements</tagName>
@@ -1134,12 +1145,12 @@
     for (var i = 1; i<arguments.length; i++) elements.push(arguments[i]);
     this._tag(tagNameAndAttributes,elements);
     return this;
-  }
+  };
 
   tb.HTML.prototype._tag = function(tagNameAndAttributes ,elements) {
     this.htmlCode += '<'+tagNameAndAttributes+'>';
     var tagEnd = '</'+tagNameAndAttributes.split(' ')[0]+'>';
-    if ((elements == undefined) || (!elements.length)) {
+    if ((elements === undefined) || (!elements.length)) {
       this.tagsEnd.push(tagEnd);
       return this;
     }
@@ -1157,13 +1168,13 @@
     }
     this.htmlCode += tagEnd;
     return this;
-  }
+  };
 
   tb.HTML.prototype.end = function() {
     // close the last opened tag
     this.htmlCode += this.tagsEnd.pop();
     return this;
-  }
+  };
 
   tb.HTML.prototype.inspect = function(/*objects*/) {
     // adds to the HTML object the inspection of all objects passed in parameters
@@ -1171,7 +1182,7 @@
       this.htmlCode += tb.inspect(arguments[i]).span();
     }
     return this;
-  }
+  };
 
 
 
@@ -1179,29 +1190,29 @@
     var that = this;
     $(jquerySelector).each(function(i,e){e.innerHTML = that.html});
     return this
-  }
+  };
 
   tb.HTML.prototype.finalize = function(finalizationFunc) {
     // finalizationFunc must be a function() {...}
     // note that as this function is defined within a code that will be created in secureEval, we are
     // also inside with(v) so any user variable is availlable as well as output is availlable because of the closure mecanism
 
-    if ((this.codeElement == undefined) || (this.outputElement == undefined)) {
+    if ((this.codeElement === undefined) || (this.outputElement === undefined)) {
       throw new Error('HTML.finalize can only be used if a code and output Element was associated');
     }
     this.finalizationFunc = finalizationFunc;
     tb.finalizations.push(this);
     return this;
-  }
+  };
 
   tb.HTML.prototype.alert = function(message) {
     window.alert(message);
     return this;
-  }
+  };
 
   tb.html = function(htmlcode) {
     return new tb.HTML(htmlcode);
-  }
+  };
 
 
   // interactive Elements ////////////////////////////////////////////////////////
@@ -1221,53 +1232,53 @@
     this.$ = this.create$(css||{top:0,left:0},innerHtml || '');
     this.$[0].IElement = this; // special attribute back to the IElement
     this.$.$end = this;
-  }
+  };
   tb.IElement.className = 'tb.IElement';
 
   tb.IElement.prototype.create$ = function(css,html) {
     // return the jQuery object corresponding to the DOM element of the IElement
     return $('<DIV>'+html+'</DIV>').addClass('IELEMENT').css(css);
-  }
+  };
 
   tb.IElement.prototype.top = function(newValue) {
     // if newValue == undefined, return the current value of top
     // else set the new value
-    if (newValue == undefined) return this.$.position().top;
+    if (newValue === undefined) return this.$.position().top;
     this.$.css('top',newValue);
     return this;
-  }
+  };
 
   tb.IElement.prototype.left = function(newValue) {
     // if newValue === undefined, return the current value of left
     // else set the new value
-    if (newValue == undefined) return this.$.position().left;
+    if (newValue === undefined) return this.$.position().left;
     this.$.css('left',newValue);
     return this;
-  }
+  };
 
   tb.IElement.prototype.width = function(newValue) {
     // if newValue === undefined, return the current value of width
     // else set the new value
-    if (newValue == undefined) return this.$.width();
+    if (newValue === undefined) return this.$.width();
     this.$.width(newValue);
     return this;
-  }
+  };
 
   tb.IElement.prototype.height = function(newValue) {
     // if newValue === undefined, return the current value of height
     // else set the new value
-    if (newValue == undefined) return this.$.height();
+    if (newValue === undefined) return this.$.height();
     this.$.height(newValue);
     return this;
-  }
+  };
 
   tb.IElement.prototype.html = function(newValue) {
     // if newValue === undefined, return the current value of html
     // else set the new value
-    if (newValue == undefined) return this.$.html();
+    if (newValue === undefined) return this.$.html();
     this.$.html(newValue);
     return this;
-  }
+  };
 
   tb.IElement.prototype.css = function(name,newValue) {
     // if newValue === undefined, return the current value of html
@@ -1277,15 +1288,15 @@
       this.$.css(name);
       return this;
     }
-    if (newValue == undefined) return this.$.css(name);
+    if (newValue === undefined) return this.$.css(name);
     this.$.css(name,newValue);
     return this;
-  }
+  };
 
   tb.IElement.prototype.addForce = function(iElement,force) {
     // add a force between this element and another iElement
     this.forces[iElement.name] = force;
-  }
+  };
 
   tb.IElement.prototype.addForces = function(forces) {
     // add new forces
@@ -1294,18 +1305,18 @@
     // or undefined to cancel the force produced by a given element
     $.extend(this.forces,forces);
     return this;
-  }
+  };
 
   tb.IElement.prototype.clearForces = function() {
   // remove all forces on an IElement
     this.forces = {};
-  }
+  };
 
   tb.IElement.prototype.prepareAnimation = function() {
     this.f = {x:0,y:0};
     if (!this.p) this.p = {x:this.left()+this.width()/2,y:this.top()+this.height()/2};
     return this;
-  }
+  };
 
   tb.IElement.prototype.applyForceWith = function(otherIElement,force){
     //apply a force between this and the otherIElement
@@ -1315,14 +1326,14 @@
     otherIElement.f.x -= f.x;
     otherIElement.f.y -= f.y;
     return this;
-  }
+  };
 
   tb.IElement.prototype.applyForceToAll = function(iElements,force) {
     // apply a force between this and each element of iElements
     for (var i = 0;i<iElements.length;i++) {
       this.applyForceWith(iElements[i],force);
     }
-  }
+  };
 
   tb.IElement.prototype.bounceOnBorders = function(top,left,bottom,right) {
     // modifies position and velocity in order to keep p inside a rectangle
@@ -1343,7 +1354,7 @@
       this.v.y = - this.v.y*0.8;
     }
     return this;
-  }
+  };
 
   tb.IElement.prototype.animate = function(deltaT$ms) {
     // calculate all forces on this element, then calculate a new acceleration, speed and position
@@ -1374,36 +1385,36 @@
     this.left(this.p.x - this.width()/2)
         .top( this.p.y - this.height()/2);
     return this;
-  }
+  };
 
   tb.IElement.prototype.div = function(name,css,html) {
     return this.scene.add(new tb.IElement(name,css,html,this.scene));
-  }
+  };
 
   tb.IElement.prototype.value = function(name,css,html) {
     return this.scene.add(new tb.IValue(name,css,html,this.scene));
-  }
+  };
 
   tb.IElement.prototype.checkBox = function(name,css,html) {
     return this.scene.add(new tb.ICheckBox(name,css,html,this.scene));
-  }
+  };
 
   tb.IElement.prototype.trace = function(/*objects*/){
     trace(arguments);
     return this;
-  }
+  };
 
   tb.IElement.prototype.end = function() {
     return this.scene;
-  }
+  };
 
   tb.IElement.prototype.toString = function() {
     return '[object '+tb.functionName(this.constructor)+' '+this.name+']';
-  }
+  };
 
   tb.IElement.prototype.element$ = function() {
     return this.$;
-  }
+  };
 
 
   // forceFunctions ///////////////////////////////////////////
@@ -1428,7 +1439,7 @@
       }
       return f;
     }
-  }
+  };
 
   tb.ySpring = function(k) {
     // return a function that tries to keep 2 elements at the same y
@@ -1442,7 +1453,7 @@
       f.y = f.dist*k;
       return f;
     }
-  }
+  };
 
   tb.repulseForce = function repulseForce(iE1,iE2) {
   // standard repulse force between 2 elements
@@ -1458,7 +1469,7 @@
       f.y = k;
     }
     return f;
-  }
+  };
 
   tb.centripetalForce = tb.spring(0,1);
 
@@ -1471,7 +1482,7 @@
         iElements[i].applyForceWith(iElements[j],repulsionForce);
       }
     }
-  }
+  };
 
   tb.repulseAndCenterIElements = function(iElements,repulsionForce,centripetalForce,center){
   // repulse all iElements between them by repulseForce
@@ -1483,14 +1494,14 @@
       }
       iElements[i].applyForceWith(iECenter,centripetalForce);
     }
-  }
+  };
 
 
   // IValue //////////////////////////////////////////////////
 
   tb.IValue = function (name,css,html,scene) {
     tb.IElement.call(this,name,css,html || name,scene);
-  }
+  };
   tb.IValue.className = 'tb.IValue';
 
   tb.makeInheritFrom(tb.IValue,tb.IElement);
@@ -1502,18 +1513,18 @@
     if (newValue===undefined) return this.$.children('INPUT').val();
     this.$.children('INPUT').val(newValue);
     return this;
-  }
+  };
 
   tb.IValue.prototype.valueOf = function() {
     // returns the state of the value attribute
     return this.value();
-  }
+  };
 
   tb.IValue.prototype.create$ = function(css,html) {
     // return the JQuery for a checkBox
     // this checkBox will have the class IELEMENT and so will be positionned absolute
     return $('<SPAN class=IELEMENT>'+html+'<INPUT type="number" value=0></INPUT></SPAN>').css(css);
-  }
+  };
 
 
   // ICheckBox //////////////////////////////////////////////////
@@ -1521,7 +1532,7 @@
   tb.ICheckBox = function (name,css,html,scene) {
     // ICheckBox is an IElement for <INPUT type=checkbox>
     tb.IElement.call(this,name,css,html || name,scene);
-  }
+  };
   tb.ICheckBox.className = 'tb.ICheckBox';
 
   tb.makeInheritFrom(tb.ICheckBox,tb.IElement);
@@ -1533,12 +1544,12 @@
     if (newState===undefined) return this.$.children().prop('checked');
     this.$.children().prop('checked',newState);
     return this;
-  }
+  };
 
   tb.ICheckBox.prototype.valueOf = function() {
     // returns the state of the checked attribute
     return this.checked();
-  }
+  };
 
   tb.ICheckBox.prototype.create$ = function(css,html) {
     // return the HTML code for a checkBox with id=id and text as content
@@ -1546,7 +1557,7 @@
     // at the same time a ICheckBox is created with the same id allowing to interact
     // easily with the checkBox in user code
     return $('<SPAN class=IELEMENT><INPUT type="checkbox">'+html+'</INPUT></SPAN>').css(css);
-  }
+  };
 
   // Scene ///////////////////////////////////////////////////////////////////////
 
@@ -1554,7 +1565,7 @@
   // a scene has itself as scene so all .div.. methods of IElement are also valid
     tb.IElement.call(this,name,css || {},html || '',this);
     this.length = 0;
-  }
+  };
   tb.Scene.className = 'tb.Scene';
 
   tb.makeInheritFrom(tb.Scene,tb.IElement);
@@ -1562,44 +1573,44 @@
   tb.Scene.prototype.create$ = function(css,html) {
     this.container$ = $('<DIV class=SCENECONTAINER>');
     return $('<DIV class=SCENE>').css(css).html(html).append(this.container$);
-  }
+  };
 
   tb.Scene.prototype.add = function(iElement) {
     // add an IElement to the Scene;
     this[iElement.name] = iElement;
     this[this.length++] = iElement;
-    this.container$.append(iElement.element$())
+    this.container$.append(iElement.element$());
     return iElement;
-  }
+  };
 
   tb.Scene.prototype.remove = function(iElement) {
   // remove iElement from the sceen
   // it does'nt destroy the iElement itself
   // but it also detach the DOM element so it is no longer part of the DOM tree
-    if (iElement == undefined) return this;
+    if (iElement === undefined) return this;
     var pos = $.inArray(iElement,this);
     if (pos === -1) throw new Error ("can't remove iElement "+iElement.name+" from scene "+this.name+" since it doesn't belongs to that scene");
     Array.prototype.splice.call(this,pos,1);
     delete this[iElement.name];
     iElement.$.detach();
     return this;
-  }
+  };
 
   tb.Scene.prototype.animate = function(deltaT$ms) {
-    var deltaT$ms = deltaT$ms || 100;
-
-    for (var i = 0;i<this.length;i++) {
+    deltaT$ms = deltaT$ms || 100;
+    var i;
+    for (i = 0;i<this.length;i++) {
       this[i].prepareAnimation();
     }
 
-    for (var i = 0;i<this.length;i++) {
+    for (i = 0;i<this.length;i++) {
       this[i].animate(deltaT$ms)
     }
-  }
+  };
 
   tb.Scene.prototype.node$ = function() {
     return this.$;
-  }
+  };
 
   tb.scene = function(name,css) {
     // creates a new Scene and return a fake IElement that has scene as "parent"
@@ -1607,7 +1618,7 @@
     var scene = new tb.Scene(name,css);
     tb.vars[name] = scene;
     return scene;
-  }
+  };
 
   // Cloud ///////////////////////////////////////////////
 
@@ -1616,35 +1627,35 @@
     tb.Scene.call(this,name,css,html);
     this.repulseForce = tb.repulseForce;
     this.centripetalForce = tb.centripetalForce;
-  }
+  };
   tb.Cloud.className = 'tb.Cloud';
 
   tb.makeInheritFrom(tb.Cloud,tb.Scene);
 
   tb.Cloud.prototype.animate = function(deltaT$ms) {
-    var deltaT$ms = deltaT$ms || 100;
+    deltaT$ms = deltaT$ms || 100;
     var center = {x:this.width()/2,y:this.height()/2};
     var t = 0;
     var l = 0;
     var b = this.height();
     var r = this.width();
-
-    for (var i = 0;i<this.length;i++) {
+    var i;
+    for (i = 0;i<this.length;i++) {
       this[i].prepareAnimation();
     }
 
     tb.repulseAndCenterIElements(this,this.repulseForce,this.centripetalForce,center);
 
-    for (var i = 0;i<this.length;i++) {
+    for (i = 0;i<this.length;i++) {
       this[i].bounceOnBorders(t,l,b,r).animate(deltaT$ms);
     }
-  }
+  };
 
   tb.cloud = function(name,css){
     var cloud = new tb.Cloud(name,css);
     tb.vars[name] = cloud;
     return cloud;
-  }
+  };
 
   // helpers /////////////////////////////////////////////
 

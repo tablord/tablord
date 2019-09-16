@@ -44,9 +44,9 @@
     return this;
   };
   
-  tb.help.add('undoAction','undo','an undoAction is of the form {caption:"a caption",steps:[ of [[undoObj]]  ]');
-  tb.help.add('undoObj','undo','an undoableObj is of the form {undo:[[undoFunction]],redo:[[undoFunction]]... other properties depending on undoFunction');
-  tb.help.add('undoFunction','undo','an undoableObj is a function([[undoObj]]) that is capable of undoing (or redoing) based on the information of the undoObj');
+  tb.help.add('undoAction','undo',['an undoAction is of the form {caption:"a caption",steps:[ of [[undoObj]]  ]']);
+  tb.help.add('undoObj','undo',['an undoableObj is of the form {undo:[[undoFunction]],redo:[[undoFunction]]... other properties depending on undoFunction']);
+  tb.help.add('undoFunction','undo',['an undoableObj is a function([[undoObj]]) that is capable of undoing (or redoing) based on the information of the undoObj']);
   
   tb.UndoSystem.prototype.undo = function() {
     // undo the last action

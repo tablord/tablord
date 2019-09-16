@@ -38,7 +38,7 @@
             templates:{},         // all native, locally defined and imported templates
 
             vars:{},              // where all user variables are stored
-
+            actions:{},           // all actions that can be used to manipulate the document.
             autoRun:true,
             sheetOptions: {
               get showCode() {return tb.tbContent$.attr('showCode') || true},

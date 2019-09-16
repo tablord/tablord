@@ -519,14 +519,14 @@
       var currentNumbers = [];
       this.toc = [];
       $('.SECTION').each(function (i,e) {
-        if ($(e).hasClass('CUT')) return;
+        if ($(e).hasClass('DELETED')) return;
         var title = $('.SECTIONTITLE',e)[0];
         var level = tb.level(e);
 
         currentNumbers[level] = (currentNumbers[level] || 0)+1;
         currentNumbers.length = level+1;
         var number = currentNumbers.join('.');
-        var t = title.innerHTML.replace(/^[\d\.]*(\s|\&nbsp;)*/,'');
+        var t = $.trim(title.innerHTML).replace(/^[\d\.]*(\s|\&nbsp;)*/,'');
         title.outerHTML = '<H'+(level+1)+' class="SECTIONTITLE EDITABLE" contentEditable='+(e===tb.selected.element)+'>'+number+' '+t+'</H'+(level+1)+'>';
         tb.tableOfContent.toc.push({number:number,level:level,title:tb.textContent(t),sectionId:e.id});
       });

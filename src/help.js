@@ -66,18 +66,18 @@
 
   tb.HelpIndex.prototype.show =function(name) {
     // show in the help Panel the help on `name`
-    this.history[++this.historyPos] = tb.helpSearch$.val();
+    this.history[++this.historyPos] = tb.menu.helpSearch$.val();
     this.history.length = this.historyPos+1;
-    tb.helpSearch$.val(name);
-    tb.helpOutput$.html(tb.help.index.help$(name)).show(500);
+    tb.menu.helpSearch$.val(name);
+    tb.menu.helpOutput$.html(tb.help.index.help$(name)).show(500);
   };
 
   tb.HelpIndex.prototype.back = function() {
     // return on the previous search
     if (this.historyPos>=0){
       var name = this.history[this.historyPos--];
-      tb.helpSearch$.val(name);
-      tb.helpOutput$.html(tb.help.index.help$(name));
+      tb.menu.helpSearch$.val(name);
+      tb.menu.helpOutput$.html(tb.help.index.help$(name));
     }
   };
 
