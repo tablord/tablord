@@ -4,7 +4,7 @@
 //
 // (CC-BY-SA 2019)Marc Nicole  according to https://creativecommons.org/
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+require('./browserlike');
   //JQuery extentions /////////////////////////////////////////////////
 
   $.fn.span = function() {
@@ -12,7 +12,7 @@
     for (var i=0; i < this.length; i++) {
       switch (this[i].nodeType) {
         case 1:
-          s.push('<li class="INSPECTHTML">'+tb.toHtml(tb.trimHtml(tb.purgeJQueryAttr(this[i].outerHTML))));
+          s.push('<li class="INSPECTHTML">'+tb.toHtml(tb.trimHtml(this[i].outerHTML)));
           break;
         case 3:
           s.push('<li class="INSPECTHTML">textNode: "'+this[i].nodeValue+'"');
@@ -97,14 +97,14 @@
     // get the first matching itemprop of the first elements of the jquery
     // all elements should be itemscope
     var e = this[0];
-    return this.find('[itemprop='+itemprop+']').filter(function(){return $(this).closest('[itemscope=""]')[0] == e}).first().html();
+    return this.find('[itemprop='+itemprop+']').filter(function(){return $(this).closest('[itemscope=""]')[0] === e}).first().html();
   };
 
   $.fn.setItemProp = function(itemprop,html) {
     // set the itemprop of the elements of the jquery
     // all elements should be itemscope
     this.each(function(i,e) {
-      $(e).find('[itemprop='+itemprop+']').filter(function(){return $(this).closest('[itemscope=""]')[0] == e}).html(html);
+      $(e).find('[itemprop='+itemprop+']').filter(function(){return $(this).closest('[itemscope=""]')[0] === e}).html(html);
     });
     return this;
   };
@@ -117,10 +117,11 @@
     //  id:...}   //In addition to microdata specification
 
     if (! this.is('[itemscope=""]')) throw new Error('getItemscopeMicrodata must be called on a jquery having a itemscope');
-    var result={id:this.attr('id') || undefined,
-                type:this.attr('itemtype') || '',
-                properties:this.children().getMicrodata()};
-    return result;
+    return {
+      id: this.attr('id') || undefined,
+      type: this.attr('itemtype') || '',
+      properties: this.children().getMicrodata()
+    };
   };
 
   $.fn.getItempropValue = function(){
@@ -132,14 +133,14 @@
     if (this.attr('itemprop') === undefined) return null;
     if (this.attr('itemscope')) return this[0];
     if (tag === 'META') return this.attr('content');
-    if ($.inArray(tag,['AUDIO','EMBED','IFRAME','IMG','SOURCE','TRACK','VIDEO'])!=-1) return this.attr('src');
-    if ($.inArray(tag,['A','AREA','LINK'])!=-1) return this.attr('href');
+    if ($.inArray(tag,['AUDIO','EMBED','IFRAME','IMG','SOURCE','TRACK','VIDEO'])!==-1) return this.attr('src');
+    if ($.inArray(tag,['A','AREA','LINK'])!==-1) return this.attr('href');
     if (tag === 'OBJECT') return this.attr('data');
     if (tag === 'TIME') return moment(this.attr('datetime') || this.text());
     
     // simple values can be converted to numbers or moment
     var value; 
-    if ($.inArray(tag,['DATA','METER','SELECT','INPUT'])!=-1) value = this.val();
+    if ($.inArray(tag,['DATA','METER','SELECT','INPUT'])!==-1) value = this.val();
     //--- this is not microdata but only valid in Tablord where the class number or date or duration can force
     else value = $.trim(this.text()); //TODO text retourne une valeur débutant par des \n et espaces et terminant de même
     if (this.attr('func')) {
@@ -162,10 +163,10 @@
     var tag = this.prop('tagName');
     if (this.attr('itemprop') === undefined) throw new Error("can't set the itemprop value of an element that is not an itemprop\n"+e.outerHTML);
     else if (tag === 'META') this.attr('content',value);
-    else if ($.inArray(tag,['AUDIO','EMBED','IFRAME','IMG','SOURCE','TRACK','VIDEO'])!=-1) this.attr('src',value);
-    else if ($.inArray(tag,['A','AREA','LINK'])!=-1) this.attr('href',value);
+    else if ($.inArray(tag,['AUDIO','EMBED','IFRAME','IMG','SOURCE','TRACK','VIDEO'])!==-1) this.attr('src',value);
+    else if ($.inArray(tag,['A','AREA','LINK'])!==-1) this.attr('href',value);
     else if (tag === 'OBJECT') this.attr('data',value);
-    else if ($.inArray(tag,['DATA','METER','SELECT','INPUT'])!=-1) this.attr('value',value).val(value); // set also the attribute, so it will be saved
+    else if ($.inArray(tag,['DATA','METER','SELECT','INPUT'])!==-1) this.attr('value',value).val(value); // set also the attribute, so it will be saved
     else if (tag === 'TIME') {
       this.attr('datetime',value);
     }
@@ -183,7 +184,7 @@
     var data = {};
 
     function set(itemprop,value) {
-      if (itemprop.slice(-2) == '[]') {
+      if (itemprop.slice(-2) === '[]') {
         data[itemprop] = data[itemprop] || [];
         data[itemprop].push(value);
       }
@@ -238,13 +239,13 @@
     this.each(function(i,element){
       var data = $(element).getItemscopeData(remap);
       if (tb.objMatchCriteria(data,criteria)) {
-        if (fields == undefined){
+        if (fields === undefined){
           result.push(data);
         }
         else {
           var ro = {};
           for (var f in fields) {
-            if (fields[f] == 1) ro[f] = data[f];
+            if (fields[f] === 1) ro[f] = data[f];
           }
           result.push(ro);
         }
@@ -262,12 +263,12 @@
     // the parameter result is only intended for recusivity purpose and should be undefined
     // in addition to the microdata specifications, the structure also set "id" if id is defined at the itemscope element
     // see also [[getData]] for simple usage
-    var result = result || {};
+    result = result || {};
     this.each(function(i,e){
       var e$ = $(e);
       var itemprop = e$.attr('itemprop');
       if (itemprop) {
-        if (result[itemprop] == undefined) result[itemprop] = [];
+        if (result[itemprop] === undefined) result[itemprop] = [];
         if (e$.attr('itemscope') !== undefined) {
           result[itemprop].push(e$.getItemscopeMicrodata());
         }
@@ -296,17 +297,18 @@
     // every itemprop will "consume" the first element of the array
     this.each(function(i,e){
       var e$ = $(e);
+      var itemprop,subData;
       if (e$.attr('itemscope') !== undefined)  {
-        var itemprop = e$.attr('itemprop') || 'item';
-        var subData = data && data[itemprop] && data[itemprop].shift();
+        itemprop = e$.attr('itemprop') || 'item';
+        subData = data && data[itemprop] && data[itemprop].shift();
         if (subData !== undefined) {
           e$.children().setMicrodata(subData.properties);
         }
       }
       else {
-        var itemprop = e$.attr('itemprop');
+        itemprop = e$.attr('itemprop');
         if (itemprop) {
-          var subData = data && data[itemprop] && data[itemprop].shift();
+          subData = data && data[itemprop] && data[itemprop].shift();
           if (subData) {
             e$.setItemValue(subData);
           }
@@ -332,8 +334,7 @@
   $.fn.replaceTagName = function(newTagName) {
     // replace all element of this with a similar element having newTag
     this.replaceWith(function(){
-      var newHtml = this.outerHTML.replace(/^<\w+([ >].*)<\/\w+>$/,'<'+newTagName+'$1</'+newTagName+'>');
-      return newHtml;
+      return this.outerHTML.replace(/^<\w+([ >].*)<\/\w+>$/, '<' + newTagName + '$1</' + newTagName + '>');
     });
   };
   

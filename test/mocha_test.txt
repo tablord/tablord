@@ -1,0 +1,6 @@
+kernel.js
+../test/kernel.js
+helper.js
+../test/helper.js
+../modules/ElementCompare/src/elementcompare.js
+../modules/ElementCompare/test/elementcompare.js

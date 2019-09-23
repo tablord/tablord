@@ -80,3 +80,7 @@
 
 
   tb.credits = {name:tb.name,version:tb.version,authors:tb.authors,rights:tb.rights};
+
+  process = {browser: true};  // for compatibility with nodejs modules
+  module = {exports:{}};
+  function require(){};
