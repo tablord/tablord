@@ -103,7 +103,7 @@ describe('jQueryExt', function () {
                 $('<time itemprop="v1" datetime="2019-09-24">24 septembre 2019</time>').getItempropValue()
                     .format().should.be.equal('2019-09-24T00:00:00+02:00');
                 $('<time itemprop="v1">2019-09-24</time>').getItempropValue()
-                    .format().should.be.equal('2019-09-24T00:00:00+02:00');
+                    .format('YYYY-MM-DD').should.be.equal('2019-09-24');
             });
             it("in case of  'DATA','METER','SELECT','INPUT' return the value",function(){
                 $('<input itemprop="v1" value="value1">').getItempropValue().should.be.equal('value1');
@@ -122,7 +122,7 @@ describe('jQueryExt', function () {
             });
             it('converts to moment if class="date" and format="..."',function(){
                 $('<div itemprop="v1" class="date" format="DD-MM-YYYY">24-09-2019</div>').getItempropValue()
-                .format().should.be.equal('2019-09-24T00:00:00+02:00');
+                .format('YYYY-MM-DD').should.be.equal('2019-09-24');
             });
 
         })
