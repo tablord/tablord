@@ -101,7 +101,7 @@ describe('jQueryExt', function () {
             });
             it("in case of  'TIME' return the datetime or the html",function(){
                 $('<time itemprop="v1" datetime="2019-09-24">24 septembre 2019</time>').getItempropValue()
-                    .format().should.be.equal('2019-09-24T00:00:00+02:00');
+                    .format('YYYY-MM-DD').should.be.equal('2019-09-24');
                 $('<time itemprop="v1">2019-09-24</time>').getItempropValue()
                     .format('YYYY-MM-DD').should.be.equal('2019-09-24');
             });
