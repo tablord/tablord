@@ -4,7 +4,18 @@
 //
 // (CC-BY-SA 2019)Marc Nicole  according to https://creativecommons.org/
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-require('./browserlike');
+
+if (!process.browser) {
+  require('./browserlike');
+  var numeral = require('numeral');
+  var moment = require('moment');
+  require('moment-duration-format');
+  var tb = require('./kernel');
+  $.extend(tb,
+      require('./tablord'),
+      require('./help')
+  )
+}
   //JQuery extentions /////////////////////////////////////////////////
 
   $.fn.span = function() {
@@ -93,6 +104,7 @@ require('./browserlike');
     return $('[itemtype~="'+url+'"]');
   };
 
+  /* TODO remove
   $.fn.getItemProp = function(itemprop) {
     // get the first matching itemprop of the first elements of the jquery
     // all elements should be itemscope
@@ -108,7 +120,7 @@ require('./browserlike');
     });
     return this;
   };
-
+  */
   $.fn.getItemscopeMicrodata = function() {
     // this must be a single itemscope element jQuery
     // return the microdata under the scope as an object
@@ -153,8 +165,11 @@ require('./browserlike');
       return tbVar;
     }
     if (this.hasClass('date')) return moment(value,this.attr('format'));
-    if (this.hasClass('duration')) return moment(value);
-    if (this.hasClass('number')) return numeral(value,this.attr('format')).value();
+    if (this.hasClass('duration')) {
+      let [val,unit] = value.split(' ');
+      return moment.duration(Number(val),unit);
+    }
+    if (this.hasClass('number')) return numeral(value).value();
     return value;
   };
 
@@ -299,7 +314,7 @@ require('./browserlike');
       var e$ = $(e);
       var itemprop,subData;
       if (e$.attr('itemscope') !== undefined)  {
-        itemprop = e$.attr('itemprop') || 'item';
+        itemprop = e$.attr('itemprop') || 'items';
         subData = data && data[itemprop] && data[itemprop].shift();
         if (subData !== undefined) {
           e$.children().setMicrodata(subData.properties);
@@ -369,6 +384,7 @@ require('./browserlike');
     return this;
   };
 
+  // TODO check if usefull or just like itemscopeOrThis
   $.fn.neighbour$ = function(where) {
     // jQuery should be of 1 element and return the neighbour that corresponds 
     // to where.
@@ -386,5 +402,5 @@ require('./browserlike');
   };
 
 
-  tb.help.update($,'$.');
-  tb.help.update($.fn,'$.prototype.');
+  tb.help.update($, '$.');
+  tb.help.update($.fn, '$.prototype.');

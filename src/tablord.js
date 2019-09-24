@@ -1,6 +1,11 @@
 
   // tablord library /////////////////////////////////////////////////////
+if (!process.browser) {
+  require('./browserlike');
+  var tb = require('./kernel');
+  $.extend(tb,require('./helper'));
 
+}
 
 
   // calcul ///////////////////

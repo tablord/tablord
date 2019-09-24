@@ -1,5 +1,9 @@
   // HELP system ///////////////////////////////////////////////////////////////////////
   // must be defined very early so that every module can also add documentation
+if (!process.browser) {
+  require('./browserlike');
+  var tb = require('./kernel');
+}
 
   tb.HelpIndex = function() {
     // HelpIndex objects contain an index of all functions of the system
@@ -318,3 +322,6 @@
     tb.help.index.update(object,path);
   };
 
+  if (!process.browser) {
+    module.exports = tb;
+  }

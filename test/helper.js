@@ -3,8 +3,11 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 'use strict';
 
-require('should');
-require('../src/helper');
+
+if (!process.browser){
+    require('should');
+    var tb = require('../src/helper');
+}
 
 describe('helpers.js', function () {
     describe('Date extension',function(){
@@ -295,3 +298,7 @@ describe('helpers.js', function () {
         })
     })
 });
+
+if (!process.browser) {
+    module.exports = tb;
+}

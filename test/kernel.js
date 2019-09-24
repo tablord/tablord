@@ -3,14 +3,14 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 'use strict';
 
-require('should');
-require('../src/kernel');
+if(!process.browser) {
+    require('should');
+    var tb = require('../src/kernel');
+}
 
-
-tb = {help:{update:function(){}}};  // dummy to satisfy help dependency
 
 describe('kernel.js', function () {
     it('has noting to test',  function () {
-
+        console.info(JSON.stringify(tb.credits))
     });
 });

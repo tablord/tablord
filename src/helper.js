@@ -4,6 +4,10 @@
 //
 // (CC-BY-SA 2019)Marc Nicole  according to https://creativecommons.org/
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  if (!process.browser) {
+    var tb = require('./kernel');
+    console.info('imported kernel');
+  }
 
   tb.getScrollOffsets = function(w) {
     // return the scroll offset for the window w. if w is not specified, window is used
@@ -517,3 +521,6 @@
     return (name.search(/[A-Z]/) === 0);
   };
 
+if (!process.browser) {
+  module.exports = tb;
+}
