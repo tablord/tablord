@@ -4,6 +4,10 @@
 //
 // (CC-BY-SA 2019)Marc Nicole  according to https://creativecommons.org/
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  if (!process.browser) {
+    var tb = require('./kernel');
+    console.info('imported kernel');
+  }
 
   tb.getScrollOffsets = function(w) {
     // return the scroll offset for the window w. if w is not specified, window is used
@@ -12,12 +16,12 @@
 
     //for IE
     var d = w.document;
-    if (window.document.compatMode == "CSS1Compat")
+    if (window.document.compatMode === "CSS1Compat")
       return {left:d.documentElement.scrollLeft, top:d.documentElement.scrollTop};
 
     // for browser in quirks mode
     return {left:d.body.scrollLeft, top: d.body.scrollTop };
-  }
+  };
 
   tb.getViewPortSize = function(w){
     // return {width,height} of the window w. if w is undefined, window is used
@@ -25,41 +29,41 @@
     if (w.innerWidth != null) return {width:w.innerWidth,Height:w.innerHeight};
 
     var d = w.document;
-    if (window.document.compatMode == "CSS1Compat")
+    if (window.document.compatMode === "CSS1Compat")
       return {width:d.documentElement.clientWidth, height:d.documentElement.clientHeight};
 
     return {width:d.body.clientWidth, height:d.body.clientHeight};
-  }
+  };
 
 
 
   // some new Date methods
-
+/*TODO Scrap this if no side effect
   Date.prototype.nextMonth = function nextMonth(n) {
     // return a date that is one month ahead than date
     var d = new Date(this);
     d.setMonth(d.getMonth()+(n||1));
     return d;
-  }
+  };
 
   Date.prototype.nextYear = function nextYear(n) {
     // return a date that is one month ahead than date
     var d = new Date(this);
     d.setFullYear(d.getFullYear()+(n||1));
     return d;
-  }
+  };
 
   Date.prototype.adjustDay = function AdjustDay(day) {
     // return a date that is the same month but different day if day is not undefined
     var d = new Date(this);
     d.setDate(day);
     return d;
-  }
-
+  };
+*/
   Date.prototype.yyyymmdd = function () {
     // return the date in yyyy-mm-dd format
     return this.getFullYear()+'-'+tb.pad(this.getMonth()+1,2)+'-'+tb.pad(this.getDate(),2);
-  }
+  };
 
   Date.prototype.hhh_mm = function () {
     // return a duration in a number of hours and minutes
@@ -68,14 +72,14 @@
     var ms = t % 1000;
     t = (t - ms) / 1000;
     var s = t % 60;
-    t = (t -s) / 60
+    t = (t -s) / 60;
     var min = t % 60;
     var hhh = (t - min) / 60;
     return hhh.toString()+'h '+tb.pad(min,2)+'m';
-  }
+  };
 
 
-  tb.getItems$ = function(url) {
+  tb.getItems$ = function(url,content$) {
     // returns a jQuery of all itemscope in the document having the itemtype=url
     // if url is undefined, gets all itemscope
     // if url ends with # select any url that match any version
@@ -85,18 +89,22 @@
     //       http://www.tablord.com/templates/product
     //       http://www.tablord.com/templates/product#2
     //
+    // content$ (optional) limit the search to children of content$
+    //          if not specified, search in tb.tbContent$ i.e the document
+
+    content$ = content$ || tb.tbContent$;
     var items$;
     if (url === undefined) {
-      items$ = $('[itemscope=""]');
+      items$ = $('[itemscope=""]',content$);
     }
     else if (url.slice(-1) === '#') {
-      items$ = $('[itemtype^="'+url.slice(0,-1)+'"]');
+      items$ = $('[itemtype^="'+url.slice(0,-1)+'"]',content$);
     }
     else {
-      items$ = $('[itemtype="'+url+'"]');
+      items$ = $('[itemtype="'+url+'"]',content$);
     }
     return items$.filter(function(){return $(this).parent().closest('[itemscope=""]').length === 0});
-  }
+  };
 
 
   tb.get = function(/*path*/) {
@@ -116,7 +124,7 @@
       o = o.parent;
     }
     return undefined;
-  }
+  };
 
   tb.set = function(value /*,path*/) {
     // set the value of the property of this.path1.path2... and creates, if needed the intermediate objects
@@ -132,7 +140,7 @@
     }
     o[arguments[i]] = value;
     return this;
-  }
+  };
 
   // functions for reduce /////////////////////////////////////////////
   // those function also work on moment and duration
@@ -148,7 +156,7 @@
   tb.reduce.sumCount = function(sc,b) {sc.count++;sc.sum+=b;return sc};
 
   // color functions //////////////////////////////////////////////////
-
+  // todo find replacement for those
   tb.hue = function(h) {
     // return {r:,g:,b:} for a given h hue
     h = h % 360;
@@ -160,13 +168,13 @@
     if (h < 240) return {r:0,g:255-(h-180)/60*255,b:255};
     if (h < 300) return {r:(h-240)/60*255,g:0,b:255};
     return {r:255,g:0,b:255-(h-300)/60*255};
-  }
+  };
 
   tb.hsl = function(h,s,l) {
     // return a string 'rgb(...)' for h:hue s:saturation l:luminosity
     var color = tb.hue(h); //TODO integrate s,l
     return 'rgb('+color.r+','+color.g+','+color.b+')';
-  }
+  };
 
 
   tb.summary = function(obj) {
@@ -188,7 +196,7 @@
       l = '['+typeof obj+']';
     }
     return l;
-  }
+  };
 
 
   tb.heir = function (p) {
@@ -197,10 +205,11 @@
     if (Object.create) return Object.create(p);
     var t=typeof p;
     if (t !== "object" && t !== "function") throw TypeError();
-    function F(){};
+    function F() {
+    }
     F.prototype = p;
     return new F();
-  }
+  };
 
   tb.makeInheritFrom = function(newClass,ancestorClass) {
     // make a newClass inherit from another ancestorClass
@@ -214,7 +223,7 @@
     newClass.prototype = tb.heir(ancestorClass.prototype);
     newClass.prototype.constructor = newClass;
     return newClass;
-  }
+  };
 
   tb.keys = function(obj) {
     // returns an Array with all keys (=non inherited properties) of an object
@@ -224,7 +233,7 @@
       if (obj.hasOwnProperty(k)) res.push(k);
     }
     return res;
-  }
+  };
 
   tb.values = function(obj) {
     // returns an Array with all values of all non inherited properties of an object
@@ -233,7 +242,7 @@
       if (obj.hasOwnProperty(k)) res.push(obj[k]);
     }
     return res;
-  }
+  };
 
   tb.copy = function(obj) {
     // makes a copy of obj this version only copies the first level
@@ -243,7 +252,7 @@
       o[k] = obj[k]
     }
     return o;
-  }
+  };
 
   tb.objMatchCriteria = function(obj,criteria) {
     // return true if obj is matching criteria
@@ -253,7 +262,7 @@
       if (obj[k] !== criteria[k]) return false;
     }
     return true;
-  }
+  };
 
   tb.findInArrayOfObject = function(criteria,a) {
     // find the first object in the array (or array like) of object a that has all criteria true
@@ -263,12 +272,12 @@
       if (tb.objMatchCriteria(a[i],criteria)) return i;
     }
     return -1;
-  }
+  };
 
   tb.pad = function(integer,numberOfDigits){
     // return a string representing the integer, by filling with 0 in order to return a constant numberOfDigits
     return ('00000000000000000'+integer).slice(-numberOfDigits);
-  }
+  };
 
 
   tb.urlComponents = function(urlOrFileName) {
@@ -279,7 +288,7 @@
     // - domain
     // - port
     // - path
-    // - fullFilName
+    // - fullFileName
     // - fileName
     // - ext
     // - tag
@@ -299,11 +308,11 @@
     res.domain   = comp[7];
     res.port     = comp[9];
     res.drive    = comp[11];
-    res.path     = comp[12];
+    res.path     = comp[12] || '';
     res.fullFileName = comp[13] || '';
     res.search   = comp[15] || '';
     res.tag      = comp[17] || '';
-    var m = res.fullFileName.match(/((.*)\.(\w+$))|(.*)/)
+    var m = res.fullFileName.match(/((.*)\.(\w+$))|(.*)/);
     res.fileName = m[2] || m[4] || '';
     res.ext      = m[3] || '';
     if (res.drive) {
@@ -329,23 +338,23 @@
     }
     res.arguments = args;
     return res;
-  }
+  };
 
   tb.fileName = function(url) {
     // return the fileName.ext of url (or os file)
     var comp = tb.urlComponents(url);
     return comp.fullFileName;
-  }
+  };
 
   tb.absoluteFileName = function (relativeFileName,path) {
     // return a absolute path+filename combining the absolute path and the relative fileName
     // TODO implement all .\ : yet works only if relativeFileName has no path
-    var comp = tb.urlComponents(relativeFileName)
+    var comp = tb.urlComponents(relativeFileName);
     if (comp.path === '') {
       return path+comp.fileName+'.'+comp.ext;
     }
     return relativeFileName;
-  }
+  };
 
 
   // Math helpers /////////////////
@@ -355,28 +364,28 @@
     if (value < min) return min;
     if (value > max) return max;
     return value;
-  }
+  };
 
   tb.sign = function(value){
     // returns 0 if value==0
     //         1 if value > 0
     //        -1 if value < 0
     return value===0?0:(value>0?1:-1);
-  }
+  };
 
   tb.dist2 = function(p1,p2) {
     // return dist^2 between 2 points p1 and p2 {x,y}
     return Math.pow(p1.x-p2.x,2)+Math.pow(p1.y-p2.y,2);
-  }
+  };
 
   tb.dist = function(p1,p2) {
     // return the distance between 2 points p1 and p2 {x,y}
     return Math.sqrt(tb.dist2(p1,p2));
-  }
+  };
 
   // helpers specific to Tablord ////////////////////////////////////////////////////////////////////
 
-
+//TODO check if this is still needed with the current jQuery
   tb.purgeJQueryAttr = function(html) {
     // supress all jqueryxxx="yy" attributes in html, since they are meaningless for the user and also compromise the testability
     // since they depend on the context
@@ -387,9 +396,9 @@
     while ((res = reg.exec(html)) != null) {
       result += res[1]+res[2].replace(/\s*?jQuery\d+="\d"/g,'');
       lastIndex = res.lastIndex;
-    };
+    }
     return result;
-  }
+  };
 
   tb.htmlToText = function(html) {
     // transform the html content (from innerHTML) to a string as if this content is a text editor
@@ -403,7 +412,7 @@
               .replace(/&gt;/g,">")
               .replace(/&amp;/g,"&");
     return res;
-  }
+  };
 
   tb.toHtml = function(code) {
     // transform code in such a manner that the code can be visualised in a <pre>...
@@ -414,16 +423,17 @@
              .replace(/ /g,"&nbsp;")
              .replace(/\r/g,'')
              .replace(/\n/g,"<br>");
-  }
+  };
 
   tb.isJSid = function (id) {
     // return true if id is a javaScript id
-    return id.match(/^[\w$]+\w*$/) !== null;
-  }
+    return id.match(/^[a-zA-Z$_][\w\$]*$/) !== null;
+  };
 
   tb.toJSCode = function(obj,stringQuote) {
     // return a string representing obj that can be interpreted by eval
-    // stringQuote is by default ' but can be set to "
+    let sa;
+// stringQuote is by default ' but can be set to "
     stringQuote = stringQuote || "'";
     if (typeof obj == 'number') {
       return obj.toString();
@@ -452,30 +462,31 @@
       return obj.toJSON();
     }
     else if ($.isArray(obj)) {
-      var sa=[];
+      sa = [];
       $.each(obj, function(i,value) {sa.push(tb.toJSCode(value,stringQuote))});
       return '['+sa.join(',')+']';
     }
     else {
-      var sa=[];
+      sa = [];
       $.each(obj, function(name,value) {
         if (!tb.isJSid(name)) name = tb.toJSCode(name,stringQuote);
         sa.push(name+':'+tb.toJSCode(value,stringQuote))
       });
       return '{'+sa.join(',')+'}';
     }
-  }
+  };
 
+  //TODO should be deprecated
   tb.htmlAttribute = function(attr,value) {
     // return a string as found in html tag for the attribute attr assigning a value
     var h = ' '+attr+'='+(typeof value == 'number'?value:'"'+tb.toHtml(value).replace(/"/g,'&quote;')+'"');
     return h;
-  }
+  };
 
   tb.trimHtml = function(html) {
   // suppress all unsignificant blanks of html and non visible char but keeps \n
     return html.replace(/[ \t\r]+/g,' ').replace(/> /g,'>').replace(/ </g,'<');
-  }
+  };
 
   tb.textContent = function(html) {
   // return the text of html like textcontent that doesn't exist in IE7
@@ -483,7 +494,7 @@
   // TODO******** not ok for nested tags !!!! ********************************
   // PREFER [[$.text]]
     return html.replace(/\<.*?style\="DISPLAY\: none".*?\<\/.*?\>/g,'').replace(/\<.*?\>/g,'');
-  }
+  };
 
   // helpers for functions /////////////////////////////////////////
 
@@ -492,78 +503,24 @@
     var m = func.toString().match(/(function.*?\))/);
     if (m) return m[0];
     return func.toString();
-  }
+  };
 
   tb.functionName = function (func) {
     // returns the name of the function or '' if an anonymous function
+    // TODO: decide if replace by func.name (doesn't work in IE)
     return func.toString().match(/function *([a-zA-Z0-9_$]*)/)[1];
-  }
+  };
 
-  tb.constructorName = function(name) {
+  tb.isConstructorName = function(name) {
   // returns if name is a constructor name for a function
   // the last identified starting with a capital character
   // 'tb' --> false
   // 'Table' --> true
-  // 'tb.Table' --> true
+  // 'tb.Table' --> false
     if (typeof name !== 'string') return false;
     return (name.search(/[A-Z]/) === 0);
-  }
+  };
 
-
-
-/*
-  // JSON ///////////////////////////////////////////////////////////
-  //
-  // a replacement for ECMA5+
-
-  try {
-    var test = JSON == undefined; // in ECMA3 JSON doesn't exist and will make this statement crash
-  }
-  catch (e) {
-    JSON = function(){
-      // a replacement JSON class if JSON is missing
-    };
-    JSON.className='JSON';
-
-    JSON.stringify = function(obj){
-      // return a JSON string of obj
-
-      if (typeof obj == 'number') {
-        return obj.toString();
-      }
-      else if (typeof obj == 'string') {
-        return '"'+obj.replace(/\\/g,'\\\\').replace(/"/g,"\\\"").replace(/\n/g,"\\n")+'"';
-      }
-      else if ($.isPlainObject(obj)) {
-        var sa=[]
-        $.each(obj, function(name,value) {sa.push(JSON.stringify(name)+':'+JSON.stringify(value))});
-        return '{'+sa.join(',\n')+'}';
-      }
-      else if ($.isArray(obj)) {
-        var sa=[];
-        $.each(obj, function(i,value) {sa.push(JSON.stringify(value))});
-        return '['+sa.join(',\n')+']';
-      }
-      else if (obj === undefined) {
-        return 'undefined';
-      }
-      else if (obj.toJSON) {
-        return obj.toJSON();  // if ECMA 5, will also work for dates
-      }
-      else if (obj.toUTCString) {  // fallback for IE7 that neither has toJSON nor toISOString
-        return '"'+obj.toUTCString()+'"';
-      }
-      throw new Error("INTERNAL ERROR: can't stringify "+tb.inspect(obj));
-    };
-
-    JSON.parse = function(json){
-      // parse json string and return a simple object corresponding to the json
-
-      return (new Function('return '+json))();  //as jQuery does
-    }
-
-  }
-
-  tb.help.update(JSON,'JSON.');
-  tb.help.update({JSON:JSON},'');
-*/
+if (!process.browser) {
+  module.exports = tb;
+}

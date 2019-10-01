@@ -1,0 +1,3 @@
+[submodule "modules/elementcompare"]
+	path = modules/elementcompare
+	url = https://github.com/tablord/elementcompare.git

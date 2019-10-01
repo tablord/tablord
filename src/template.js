@@ -15,7 +15,7 @@
     // get the default name. a template can replace the name by supplying it in the tb.template function
     // name is just more convenient for the user, but only the url is the identified
     get: function() {return tb.Template.urlToName(this.url)} // the name is just the last part after /
-  })
+  });
 
 
   tb.Template.prototype.insertNew = function(element,where,itemprop) {
@@ -26,19 +26,19 @@
     // - itemprop if not '' or undefined will force the itemprop of the template
 
     var element$ = $(element).neighbour$(where);
-    var newElement$ = this.element$()
-    if (itemprop) newElement$.attr('itemprop',itemprop)
+    var newElement$ = this.element$();
+    if (itemprop) newElement$.attr('itemprop',itemprop);
     var after = (where==='after' || where === 'afterItemscope');
-    if (after) newElement$.insertAfter(element$)
+    if (after) newElement$.insertAfter(element$);
     else       newElement$.insertBefore(element$);
     tb.selectElement(newElement$[0]);
     tb.setModified(true);
-    tb.run();
-  }
+    tb.run(); // TODO should not be done here: refactor
+  };
 
   tb.Template.prototype.convert = function(element,itemprop) {
     // convert element to template(name) as itemprop
-
+    itemprop = itemprop || 'item';
     var e$ = $(element);
     var microdata = $.extend(true,e$.data('itemData') || {},e$.getMicrodata());
     var id = e$.attr('id');
@@ -46,12 +46,13 @@
     var k = tb.keys(microdata);
     if (k.length > 1) throw new Error('element.convert error: microdata has more than 1 head key\n'+tb.toJSCode(microdata));
     var newData = {};
-    newData[itemprop || 'item'] = microdata[k[0]] || {};
+    newData[itemprop] = microdata[k[0]] || {};
     var new$ = this.element$(itemprop,id);
     if (this.convertData) {
       this.convertData(microdata,new$);
     }
     else {
+        //////////////  TODO
       new$.setMicrodata(newData);
       tb.Template.setElement$Containers(new$,containers);
     }
@@ -67,7 +68,7 @@
       e$.replaceWith(new$);
     }
     return this;
-  }
+  };
 
   tb.Template.prototype.blockPrefix = 'item';
   
@@ -78,28 +79,28 @@
     if (itemprop) new$.attr('itemprop',itemprop);
     new$.attr('itemscope','').attr('itemtype',this.url);
     return new$;
-  }
+  };
 
   tb.Template.prototype.toString = function() {
     // return a string for a template
     return 'template '+this.name+' created ['+this.url+']';
-  }
+  };
 
   tb.Template.prototype.span = function() {
     // return an html object representing the this Template
     return tb.html('template '+this.name+' created [<a href="'+this.url+'">'+this.url+'</a>]');
-  }
+  };
 
   tb.Template.prototype.find = function(criteria,fields) {
     // return the data of a template collection as mongodb would do using criteria and returning only the specified fields
 
     return tb.getItems$(this.url()).getData(criteria,fields,this.remap);
-  }
+  };
 
   tb.Template.prototype.table = function(criteria,fields) {
     // return a table of all data matching the optional criteria containing only the specified fields
     return table().addRows(tb.getItems$(this.url()).getData(criteria,fields,this.remap));
-  }
+  };
 
   tb.Template.microdataToData = function(microdata) {
     // transforms the microdata structure where all properties are array into a structure
@@ -109,7 +110,7 @@
     // - properties which names do not end with [] will be transformed as the value of the first element
     //   of the array. if the array has more than one element, an Error will be raised.
     a('TODO not yet implemented')
-  }
+  };
 
   tb.Template.getData = function(element$) {
     // get the Data (the simplified version of microdata) of element$
@@ -125,25 +126,25 @@
       remap = t && t.remap;
     }
     var data = element$.getItemscopeData(remap);
-    var section = element$.parent().closest('.SECTION')
+    var section = element$.parent().closest('.SECTION');
     if (section.length === 1) {
       data._section = section.attr('id');
     }
     return data;
-  }
+  };
 
   tb.Template.urlToName = function(url) {
     // return the name from the url
     if (url === undefined) return undefined;
     return url.match(/(.*\/)?([^\.]*)/)[2];
-  }
+  };
 
   tb.Template.moveContainerContent = function(oldElement$,newElement$) {
     // NOT YET IMPLEMENTED
     // move into newElement$ all Container's content found in oldElements$
     // both oldElement$ and newElement$ should be jquery with one single element to give predictable results
 
-  }
+  };
 
   tb.Template.setElement$Containers = function(element$,containers){
     // move the content of the different containers stored in containers into the containers of element$
@@ -162,7 +163,7 @@
         tb.Template.setElement$Containers(e$,containers);
       }
     });
-  }
+  };
 
   tb.Template.getElement$Containers = function(element$,containers){
     // returns a object {containerName:jqueryOfcontentOfThisContainer,....} with all containers of element$
@@ -179,7 +180,7 @@
       }
     });
     return containers;
-  }
+  };
 
 
 
@@ -221,7 +222,7 @@
 
     itemprop = itemprop || newTemplate.name;
     var newT = new tb.Template(newTemplate.name);
-    $.extend(newT,newTemplate)
+    $.extend(newT,newTemplate);
     if (newTemplate.fields) {
       var h = '<DIV class="ELEMENT" itemprop="'+itemprop+'" itemscope itemtype="'+newT.url+'"><TABLE width="100%">';
       for (var f in newTemplate.fields) {
@@ -240,7 +241,7 @@
     var elementsToConvert$ = $('[itemtype="'+newT.url+'"]');  //TODO not sure it's a good idea to always convert
     elementsToConvert$.each(function(idx,e){newT.convert(e,e.itemprop || 'item')});
     return newT;
-  }
+  };
 
   tb.template({
     url : 'https://tablord.com/templates/paste',
@@ -307,13 +308,13 @@
                 '<div container="item[]"></div>');
     },
     exec: function(element$) {
-      var data = element$.getItemscopeData()
+      var data = element$.getItemscopeData();
       // to ensure the data persistance when saved, set the value attr with the current value
       $('[itemprop=fromDate]',element$).attr('value',data.fromDate);
       $('[itemprop=fromTime]',element$).attr('value',data.fromTime);
       $('[itemprop=toDate]',element$).attr('value',data.toDate);
       $('[itemprop=toTime]',element$).attr('value',data.toTime);
-      data = this.remap(data)
+      data = this.remap(data);
       if (isNaN(data.duration)) {
         $('[itemprop=duration]',element$).text('NaN');
       }
@@ -343,12 +344,12 @@
                 '<div class="EDITABLE" itemprop="descr"></div>'+
             '</div>',
     exec: function(element$) {
-      var data = element$.getItemscopeData()
+      var data = element$.getItemscopeData();
       // to ensure the data persistance when saved, set the value attr with the current value
       $('[itemprop=date]',element$).attr('value',data.date);
       $('[itemprop=fromTime]',element$).attr('value',data.fromTime);
       $('[itemprop=toTime]',element$).attr('value',data.toTime);
-      data = this.remap(data)
+      data = this.remap(data);
       if (isNaN(data.duration)) {
         $('[itemprop=duration]',element$).text('NaN');
       }

@@ -5,10 +5,14 @@
 // (CC-BY-SA 2019)Marc Nicole  according to https://creativecommons.org/
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+if (!process.browser) {
+    require('../src/browserlike.js');
+}
+
   var tb = {name:'Tablord',
             version:'1.0',
             authors:['Marc Nicole'],
-            rights:'CC-BY-SA 2018',
+            rights:'CC-BY-SA-4.0 2018',
             selected: {   // is updated by selectElement 
               element:undefined,
               element$:$(),    // element as a jQuery of 0 or 1 element
@@ -38,7 +42,7 @@
             templates:{},         // all native, locally defined and imported templates
 
             vars:{},              // where all user variables are stored
-
+            actions:{},           // all actions that can be used to manipulate the document.
             autoRun:true,
             sheetOptions: {
               get showCode() {return tb.tbContent$.attr('showCode') || true},
@@ -80,3 +84,7 @@
 
 
   tb.credits = {name:tb.name,version:tb.version,authors:tb.authors,rights:tb.rights};
+
+  if (!process.browser) {
+      module.exports = tb;
+  }

@@ -5,6 +5,17 @@
 // (CC-BY-SA 2019)Marc Nicole  according to https://creativecommons.org/
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+if (!process.browser) {
+  require('./browserlike');
+  var numeral = require('numeral');
+  var moment = require('moment');
+  require('moment-duration-format');
+  var tb = require('./kernel');
+  $.extend(tb,
+      require('./tablord'),
+      require('./help')
+  )
+}
   //JQuery extentions /////////////////////////////////////////////////
 
   $.fn.span = function() {
@@ -12,7 +23,7 @@
     for (var i=0; i < this.length; i++) {
       switch (this[i].nodeType) {
         case 1:
-          s.push('<li class="INSPECTHTML">'+tb.toHtml(tb.trimHtml(tb.purgeJQueryAttr(this[i].outerHTML))));
+          s.push('<li class="INSPECTHTML">'+tb.toHtml(tb.trimHtml(this[i].outerHTML)));
           break;
         case 3:
           s.push('<li class="INSPECTHTML">textNode: "'+this[i].nodeValue+'"');
@@ -53,13 +64,13 @@
     //
     // frozen copy clone the jQuery, suppress any [id], any [func] and FUNC or CODE class 
     // and return an object that has only an node$() function
-    if (keepItemscope) throw Error('not yet implemented')
+    if (keepItemscope) throw Error('not yet implemented');
     var query = this.clone();
     var allChildren = query.find('*').addBack();
     allChildren.removeAttr('id').removeAttr('func').removeClass('CODE FUNC ELEMENT');
     allChildren.removeAttr('itemprop').removeAttr('itemscope').removeAttr('itemtype');
     return {node$:function() {return query}};
-  }
+  };
 
   $.fn.itemscopeOrThis$ = function() {
     // return the wrapping itemscope of this if any or this otherwise
@@ -69,7 +80,18 @@
     if (c$.length===1) return c$;
     return this;
   };
-  
+
+  $.elementsByIds$ = function(elements$) {
+    // return either elements$ if already a jQuery or a jQuery with all elements listed in elements$
+    // example elementsByIds$('id1 id2 id3') returns a jQuery with 3 elements
+    if (elements$ instanceof $) return elements$;
+    var res$ = $();
+    var ids = elements$.split(' ');
+    for (var id in ids){
+      res$ = res$.add('#'+ids[id]);
+    }
+    return res$
+  };
   
   $.fn.getItems = function(url) {
     // get the matching itemtypes that are descendent of the jquery
@@ -82,22 +104,23 @@
     return $('[itemtype~="'+url+'"]');
   };
 
+  /* TODO remove
   $.fn.getItemProp = function(itemprop) {
     // get the first matching itemprop of the first elements of the jquery
     // all elements should be itemscope
     var e = this[0];
-    return this.find('[itemprop='+itemprop+']').filter(function(){return $(this).closest('[itemscope=""]')[0] == e}).first().html();
+    return this.find('[itemprop='+itemprop+']').filter(function(){return $(this).closest('[itemscope=""]')[0] === e}).first().html();
   };
 
   $.fn.setItemProp = function(itemprop,html) {
     // set the itemprop of the elements of the jquery
     // all elements should be itemscope
     this.each(function(i,e) {
-      $(e).find('[itemprop='+itemprop+']').filter(function(){return $(this).closest('[itemscope=""]')[0] == e}).html(html);
+      $(e).find('[itemprop='+itemprop+']').filter(function(){return $(this).closest('[itemscope=""]')[0] === e}).html(html);
     });
     return this;
   };
-
+  */
   $.fn.getItemscopeMicrodata = function() {
     // this must be a single itemscope element jQuery
     // return the microdata under the scope as an object
@@ -106,10 +129,11 @@
     //  id:...}   //In addition to microdata specification
 
     if (! this.is('[itemscope=""]')) throw new Error('getItemscopeMicrodata must be called on a jquery having a itemscope');
-    var result={id:this.attr('id') || undefined,
-                type:this.attr('itemtype') || '',
-                properties:this.children().getMicrodata()};
-    return result;
+    return {
+      id: this.attr('id') || undefined,
+      type: this.attr('itemtype') || '',
+      properties: this.children().getMicrodata()
+    };
   };
 
   $.fn.getItempropValue = function(){
@@ -121,16 +145,16 @@
     if (this.attr('itemprop') === undefined) return null;
     if (this.attr('itemscope')) return this[0];
     if (tag === 'META') return this.attr('content');
-    if ($.inArray(tag,['AUDIO','EMBED','IFRAME','IMG','SOURCE','TRACK','VIDEO'])!=-1) return this.attr('src');
-    if ($.inArray(tag,['A','AREA','LINK'])!=-1) return this.attr('href');
+    if ($.inArray(tag,['AUDIO','EMBED','IFRAME','IMG','SOURCE','TRACK','VIDEO'])!==-1) return this.attr('src');
+    if ($.inArray(tag,['A','AREA','LINK'])!==-1) return this.attr('href');
     if (tag === 'OBJECT') return this.attr('data');
     if (tag === 'TIME') return moment(this.attr('datetime') || this.text());
     
     // simple values can be converted to numbers or moment
     var value; 
-    if ($.inArray(tag,['DATA','METER','SELECT','INPUT'])!=-1) value = this.val();
+    if ($.inArray(tag,['DATA','METER','SELECT','INPUT'])!==-1) value = this.val();
     //--- this is not microdata but only valid in Tablord where the class number or date or duration can force
-    else value = this.text();
+    else value = $.trim(this.text()); //TODO text retourne une valeur débutant par des \n et espaces et terminant de même
     if (this.attr('func')) {
       var tbVar = this.prop('tbVar');
       if (tbVar) return tbVar;
@@ -141,26 +165,29 @@
       return tbVar;
     }
     if (this.hasClass('date')) return moment(value,this.attr('format'));
-    if (this.hasClass('duration')) return moment(value);
-    if (this.hasClass('number')) return numeral(value,this.attr('format')).value();
+    if (this.hasClass('duration')) {
+      let [val,unit] = value.split(' ');
+      return moment.duration(Number(val),unit);
+    }
+    if (this.hasClass('number')) return numeral(value).value();
     return value;
-  }
+  };
 
   $.fn.setItemValue = function(value){
     // set the value of an element handling all specifications of microdata of the getter of itemValue
     var tag = this.prop('tagName');
     if (this.attr('itemprop') === undefined) throw new Error("can't set the itemprop value of an element that is not an itemprop\n"+e.outerHTML);
     else if (tag === 'META') this.attr('content',value);
-    else if ($.inArray(tag,['AUDIO','EMBED','IFRAME','IMG','SOURCE','TRACK','VIDEO'])!=-1) this.attr('src',value);
-    else if ($.inArray(tag,['A','AREA','LINK'])!=-1) this.attr('href',value);
+    else if ($.inArray(tag,['AUDIO','EMBED','IFRAME','IMG','SOURCE','TRACK','VIDEO'])!==-1) this.attr('src',value);
+    else if ($.inArray(tag,['A','AREA','LINK'])!==-1) this.attr('href',value);
     else if (tag === 'OBJECT') this.attr('data',value);
-    else if ($.inArray(tag,['DATA','METER','SELECT','INPUT'])!=-1) this.attr('value',value).val(value); // set also the attribute, so it will be saved
+    else if ($.inArray(tag,['DATA','METER','SELECT','INPUT'])!==-1) this.attr('value',value).val(value); // set also the attribute, so it will be saved
     else if (tag === 'TIME') {
       this.attr('datetime',value);
     }
     else this.text(value);
     return this;
-  }
+  };
 
 
 
@@ -172,7 +199,7 @@
     var data = {};
 
     function set(itemprop,value) {
-      if (itemprop.slice(-2) == '[]') {
+      if (itemprop.slice(-2) === '[]') {
         data[itemprop] = data[itemprop] || [];
         data[itemprop].push(value);
       }
@@ -207,7 +234,7 @@
     });
     if (remap) data = remap(data);
     return data;
-  }
+  };
 
   $.fn.getData = function(criteria,fields,remap) {
     // return data object for the jQuery, very similarly as a mongoDB .find
@@ -227,20 +254,20 @@
     this.each(function(i,element){
       var data = $(element).getItemscopeData(remap);
       if (tb.objMatchCriteria(data,criteria)) {
-        if (fields == undefined){
+        if (fields === undefined){
           result.push(data);
         }
         else {
           var ro = {};
           for (var f in fields) {
-            if (fields[f] == 1) ro[f] = data[f];
+            if (fields[f] === 1) ro[f] = data[f];
           }
           result.push(ro);
         }
       }
     });
     return result;
-  }
+  };
 
   $.fn.getMicrodata = function(result) {
     // return microdata object for the jQuery.
@@ -251,12 +278,12 @@
     // the parameter result is only intended for recusivity purpose and should be undefined
     // in addition to the microdata specifications, the structure also set "id" if id is defined at the itemscope element
     // see also [[getData]] for simple usage
-    var result = result || {};
+    result = result || {};
     this.each(function(i,e){
       var e$ = $(e);
-      var itemprop = e$.attr('itemprop')
+      var itemprop = e$.attr('itemprop');
       if (itemprop) {
-        if (result[itemprop] == undefined) result[itemprop] = [];
+        if (result[itemprop] === undefined) result[itemprop] = [];
         if (e$.attr('itemscope') !== undefined) {
           result[itemprop].push(e$.getItemscopeMicrodata());
         }
@@ -273,7 +300,7 @@
       }
     });
     return result;
-  }
+  };
 
   $.fn.setMicrodata = function(data) {
     // set the itemprop elements under all elements of the jQuery
@@ -285,17 +312,18 @@
     // every itemprop will "consume" the first element of the array
     this.each(function(i,e){
       var e$ = $(e);
+      var itemprop,subData;
       if (e$.attr('itemscope') !== undefined)  {
-        var itemprop = e$.attr('itemprop') || 'item';
-        var subData = data && data[itemprop] && data[itemprop].shift();
+        itemprop = e$.attr('itemprop') || 'items';
+        subData = data && data[itemprop] && data[itemprop].shift();
         if (subData !== undefined) {
           e$.children().setMicrodata(subData.properties);
         }
       }
       else {
-        var itemprop = e$.attr('itemprop');
+        itemprop = e$.attr('itemprop');
         if (itemprop) {
-          var subData = data && data[itemprop] && data[itemprop].shift();
+          subData = data && data[itemprop] && data[itemprop].shift();
           if (subData) {
             e$.setItemValue(subData);
           }
@@ -306,7 +334,7 @@
       }
     });
     return this;
-  }
+  };
 
   $.fn.filterFromToId = function(fromId,toId) {
     // filter the query to keep only query Element that are between the fromId element and toId element
@@ -316,15 +344,14 @@
       if (this.id === toId) inRange=false;
       return (this.id===toId) || inRange;
     })
-  }
+  };
 
   $.fn.replaceTagName = function(newTagName) {
     // replace all element of this with a similar element having newTag
     this.replaceWith(function(){
-      var newHtml = this.outerHTML.replace(/^<\w+([ >].*)<\/\w+>$/,'<'+newTagName+'$1</'+newTagName+'>');
-      return newHtml;
+      return this.outerHTML.replace(/^<\w+([ >].*)<\/\w+>$/, '<' + newTagName + '$1</' + newTagName + '>');
     });
-  }
+  };
   
   $.fn.replaceText = function(regExp,replacement,accept){
     // like string.replace(regExp,replacement), but only acts on text of the elements of the jQuery (not on the TAG or the attributes)
@@ -343,7 +370,7 @@
         case 1:
           switch (accept(this[i])) {
             case true:
-              $(this[i]).contents().replaceText(regExp,replacement,accept)
+              $(this[i]).contents().replaceText(regExp,replacement,accept);
               break;
             case false:
               continue;
@@ -355,15 +382,16 @@
       }
     }
     return this;
-  }
+  };
 
+  // TODO check if usefull or just like itemscopeOrThis
   $.fn.neighbour$ = function(where) {
     // jQuery should be of 1 element and return the neighbour that corresponds 
     // to where.
     // in case, this is a CODE,OUTPUT or TEST, takes also into account
     // those elements to skip them properly
     //  - where: 'after', 'afterItemscope', 'before' or 'beforeItemscope'
-    if (this.length !== 1) throw new Error('neighbourg$ needs a 1 element jQuery'+this.toString())
+    if (this.length !== 1) throw new Error('neighbourg$ needs a 1 element jQuery'+this.toString());
     
     var element$ = this;
     if (where==='beforeItemscope' || where==='afterItemscope') {
@@ -371,8 +399,8 @@
     }
     if (where==='after' || where==='afterItemscope') return element$.last();
     return element$.first();
-  }
+  };
 
 
-  tb.help.update($,'$.');
-  tb.help.update($.fn,'$.prototype.');
+  tb.help.update($, '$.');
+  tb.help.update($.fn, '$.prototype.');

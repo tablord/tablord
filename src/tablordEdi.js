@@ -24,9 +24,11 @@
     ol:        function(){tb.richedit.exec('insertOrderedList')},
     ul:        function(){tb.richedit.exec('insertUnorderedList')},
     pre:       function(){tb.richedit.exec('formatBlock','<pre>')}
-  }
+  };
 
   tb.initMenu = function() {
+    // creates the menu of tablord
+    // see also [[menu and actions]]
     tb.dialogs = {};
     tb.dialogs.showHtml$ = $(
     	'<div id="showHtml" class="modal fade no_print" role="dialog">'+
@@ -49,17 +51,17 @@
     	'<div id="menu" class="TOOLBAR no_print">'+
             '<div class="btn-toolbar mb-1" role="toolbar" aria-label="main buttons">'+
                 '<div class="btn-group btn-group-sm mr-2" role="group" aria-label="run btns">'+
-                    '<button id="runUntilSelectedBtn" type="button" class="btn btn-dark"  onclick=tb.execUntilSelected(); style="color: #8dff60;" ><i class="fas fa-step-forward"></i></button>'+
-                    '<button id="runAllBtn" type="button" class="btn btn-dark" onclick=tb.execAll(); style="color: #8dff60;" ><i class="fas fa-play"></i></button>'+
-                    '<button id="stopAnimation" type="button" class="btn btn-dark" onclick=tb.clearTimers(); style="color: red" disabled=true ><i class="fas fa-stop"></i></button>'+
+                    '<button id="runUntilSelected" type="button" class="btn btn-dark" style="color: #8dff60;" ><i class="fas fa-step-forward"></i></button>'+
+                    '<button id="runAll" type="button" class="btn btn-dark" style="color: #8dff60;" ><i class="fas fa-play"></i></button>'+
+                    '<button id="stopAnimation" type="button" class="btn btn-dark" style="color: red" disabled=true ><i class="fas fa-stop"></i></button>'+
                 '</div>'+
                 '<div class="btn-group btn-group-sm mr-2" role="group" aria-label="actions on sheet">'+
-                    '<button id="saveBtn" type="button" class="btn btn-dark"><i class="fas fa-cloud-upload-alt"></i></button>'+
-                    '<button id="printBtn" type="button" class="btn btn-dark"><i class="fas fa-print"></i></button>'+
-                    '<button id="helpBtn" type="button" class="btn btn-dark"><i class="fas fa-question-circle"></i></button>'+
-                    '<button id="settingsBtnGroupDrop" type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cog"></i></button>'+
+                    '<button id="save" type="button" class="btn btn-dark"><i class="fas fa-cloud-upload-alt"></i></button>'+
+                    '<button id="print" type="button" class="btn btn-dark"><i class="fas fa-print"></i></button>'+
+                    '<button id="help" type="button" class="btn btn-dark"><i class="fas fa-question-circle"></i></button>'+
+                    '<button id="settingsGroupDrop" type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cog"></i></button>'+
                     '<div class="dropdown-menu" aria-labelledby="settingsBtnGroupDrop">'+
-                        '<a class="dropdown-item" id="clearOutputsBtn" onclick="tb.clearOutputs();" >clear outputs</a>'+
+                        '<a class="dropdown-item" id="clearOutputs" onclick="tb.clearOutputs();" >clear outputs</a>'+
                         '<input id="showCode" type=checkbox>code<br/>'+
                         '<input id="showCut" type=checkbox>cut<br/>'+
                         '<input id="showDeleted" type=checkbox>deleted<br/>'+
@@ -73,25 +75,25 @@
         		'<div class="btn-toolbar" role="toolbar">'+
         			'<div class="btn-group btn-group-sm mr-2" role="group">'+
         				'<button id="codeId" type="button" class="btn btn-outline-dark">no selection</button>'+
-        				'<button id="markBtn" class="btn btn-dark" title="mark the selected element"><i class="far fa-check-square"></i></button>'+
-        				'<button id="cutBtn" class="btn btn-dark" title="cut marked elements"><i class="fas fa-cut"></i></button>'+
-        				'<button id="pasteBtn" class="btn btn-dark title="paste cut/marked elements" where="after"><i class="fas fa-paste"></i></button>'+
-        				'<button id="deleteBtn" class="btn btn-dark" title="delete marked/selected element"><i class="fas fa-trash"></i></button>'+
-        				'<button id="moveUpBtn" class="btn btn-dark" title="move selected before previous block element"><i class="fas fa-arrow-up"></i></button>'+
-        				'<button id="moveDownBtn" class="btn btn-dark" title="move selected after next block element"><i class="fas fa-arrow-down"></i></button>'+
-        				'<button id="moveLeftBtn" class="btn btn-dark" title="move selected before previous element"><i class="fas fa-arrow-left"></i></button>'+
-        				'<button id="moveRightBtn" class="btn btn-dark" title="move selected after next element"><i class="fas fa-arrow-right"></i></button>'+
-        				'<button id="showHtmlBtn" class="btn btn-dark">&#8594;html</button>'+
-        				'<button id="toTestBtn" class="btn btn-dark">&#8594;test</button>'+
+        				'<button id="mark" class="btn btn-dark" title="mark the selected element"><i class="far fa-check-square"></i></button>'+
+        				'<button id="cut" class="btn btn-dark" title="cut marked elements"><i class="fas fa-cut"></i></button>'+
+        				'<button id="paste" class="btn btn-dark title="paste cut/marked elements" where="after"><i class="fas fa-paste"></i></button>'+
+        				'<button id="delete" class="btn btn-dark" title="delete marked/selected element"><i class="fas fa-trash"></i></button>'+
+        				'<button id="moveUp" class="btn btn-dark" title="move selected before previous block element"><i class="fas fa-arrow-up"></i></button>'+
+        				'<button id="moveDown" class="btn btn-dark" title="move selected after next block element"><i class="fas fa-arrow-down"></i></button>'+
+        				'<button id="moveLeft" class="btn btn-dark" title="move selected before previous element"><i class="fas fa-arrow-left"></i></button>'+
+        				'<button id="moveRight" class="btn btn-dark" title="move selected after next element"><i class="fas fa-arrow-right"></i></button>'+
+        				'<button id="showHtml" class="btn btn-dark">&#8594;html</button>'+
+        				'<button id="toTest" class="btn btn-dark">&#8594;test</button>'+
                     '</div>'+
         			'<div id="insertAfter" class="btn-group btn-group-sm mr-2" role="group" where="after">'+
-                        '<button id="insertSectionBtn" class="btn btn-dark" title="section" template="https://tablord.com/templates/section">'+
+                        '<button id="insertSection" class="btn btn-dark" title="section" template="https://tablord.com/templates/section">'+
         					'<i class="fas fa-heading"></i></button>'+
-        				'<button id="insertRichTextBtn" class="btn btn-dark" title="Text" template="https://tablord.com/templates/richText">'+
+        				'<button id="insertRichText" class="btn btn-dark" title="Text" template="https://tablord.com/templates/richText">'+
         					'<i class="fas fa-paragraph"></i></button>'+
-        				'<button id="cloneEmptyBtn" class="btn btn-dark" title="empty copy of selected element"><i class="far fa-clone"></i></button>'+
-                        '<button id="insertCodeBtn" class="btn btn-dark" title="code" template="https://tablord.com/templates/code">{}</button>'+
-                        '<button id="insertTemplateBtn" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">...</button>'+
+        				'<button id="cloneEmpty" class="btn btn-dark" title="empty copy of selected element"><i class="far fa-clone"></i></button>'+
+                        '<button id="insertCode" class="btn btn-dark" title="code" template="https://tablord.com/templates/code">{}</button>'+
+                        '<button id="insertTemplate" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">...</button>'+
         				'<div id="templateChoice" class="dropdown-menu"></div>'+
         			'</div>'+
         		'</div>'+
@@ -138,7 +140,7 @@
                 '</div>'+
             '</div>'+
 			'<div id="helpPanel">'+
-				'<button id="hideHelpBtn" style="color:red;cursor:pointer;">&nbsp;&#215;&nbsp;</button>'+
+				'<button id="hideHelp" style="color:red;cursor:pointer;">&nbsp;&#215;&nbsp;</button>'+
 				'<input id="helpSearch" placeholder="help search"/>'+
 			    '<div id="helpOutput" style="overflow:auto;max-height:400px;"></div>'+
 			'</div>'+
@@ -146,21 +148,38 @@
 		'</div>'+
         ''
     );
-    // create in tb.menu one xxxx$ jquery having the button, input... that has an id
+
+    tb.help.add('menu and actions','menu ',[
+        "for every DOM element that has an id inside the menu, [[tb.initMenu]] creates automatically",
+        "- a jQuery in tb.menu.<i>id</i>$ that points to the element",
+        "- try to find a tb.<i>id</i>Click method and if found bind it to the click event",
+        "  - if no tb.<i>id</i>Click is found, tries to find a tb.actions.<i>id</i> that should have no parameter and that will be bound to the click event",
+        "- try to find a tb.<i>id</i>Change method and if found bind it to the change event",
+        "normally the tb.<i>id</i>Click method will call an similar tb.actions.xxxx method that will perform the real action.",
+        "The click method has the responsibility to understand the UI (like click + altKey means some parameters of the action",
+        "the action is very close to the UI semantic (like finding the selected / marked elements), but can be used in a programable way.",
+        "- actions always return this, allowing for command chaining",
+        "- actions will have the responsibility of register the undo command",
+        "the action usually call one or more tb method that will perform the work"]);
+
     $('body').prepend(tb.menu.$);
     // for easier access and better perf
     $('[id]',tb.menu.$).each(function(){
       var e$ = $(this);
       if (tb[this.id+'Click']) e$.click(tb[this.id+'Click']); // if a corresponding function bind it
+      else if (tb.actions[this.id]) e$.click(tb.actions[this.id]); // else if a corresponding action is found, bind it to click
+
       if (tb[this.id+'Change']) e$.click(tb[this.id+'Change']); // if a corresponding function bind it
       
       tb.menu[this.id+'$'] = e$;
     });
-    tb.menu.runUntilSelectedBtn$.click(tb.execUntilSelected);
-    tb.menu.runAllBtn$.click(tb.execAll);
+
+
+    tb.menu.runUntilSelected$.click(tb.execUntilSelected);
+    tb.menu.runAll$.click(tb.execAll);
     tb.menu.stopAnimation$.click(tb.clearTimers);
-    tb.menu.saveBtn$.click(tb.save);
-    tb.menu.helpBtn$.click(function(){tb.menu.helpPanel$.toggle(100)});
+    tb.menu.save$.click(tb.save);
+    tb.menu.help$.click(function(){tb.menu.helpPanel$.toggle(100)});
 
     tb.menu.showCode$.prop('checked',tb.sheetOptions.showCode);
     tb.menu.showCut$.prop('checked',tb.sheetOptions.showCut);
@@ -214,7 +233,7 @@
   //////////////////////////////////////////////////////////////////////////////
   // a function that is xxxxxxClick or xxxxxxChange is automatically bound to the 
   // click or change event of the button id="xxxxxx"
-  
+
   tb.showCodeClick = function(event) {
     // click event handler for the show Code checkbox
     var button = event.target;
@@ -227,7 +246,7 @@
     var button = event.target;
     $('.CUT').toggleClass('HIDDEN',!button.checked);
     tb.sheetOptions.showCut = button.checked;
-  }
+  };
 
   tb.showDeletedClick = function(event) {
     // click event handler for the show cut checkbox
@@ -235,96 +254,105 @@
     if (checkbox.checked) $('.DELETED').show(300);
     else $('.DELETED').hide(300);
     tb.sheetOptions.showDeleted = checkbox.checked;
-  }
+  };
   
   tb.showTestClick = function(event) {
     // click event handler for the show test checkbox
     var button = event.target;
     $('.TEST').toggleClass('HIDDEN',!button.checked);
     tb.sheetOptions.showTest = button.checked;
-  }
+  };
 
   tb.showTraceClick = function(event) {
     // click event handler for the show trace checkbox
     var button = event.target;
     $('.TRACE').toggleClass('HIDDEN',!button.checked);
     tb.sheetOptions.showTrace = button.checked;
-  }
+  };
 
   tb.setAutoRunClick = function(event) {
     // click event handler for the auto run checkbox
     var button = event.target;
     tb.autoRun = button.checked;
     $('body').attr('autoRun',tb.autoRun);
-  }
+  };
 
-  tb.printBtnClick = function(event) {
+  tb.printClick = function(event) {
     // click event handler for the print button
     tb.selectElement(undefined);
     window.print();
-  }
-  
-  tb.pasteBtnClick = function(event) {
-    // paste 
+  };
+
+  tb.actions.paste = function(intoItemscope){
+    // paste cut elements after the selected element
+    // if intoItemscope == true it will paste right after the selected element even if target$ is inside an itemscope
+    // otherwise will paste after the parent itemscope
     var elements$ = $('.CUT').removeClass('CUT');
     if (elements$.length === 0) elements$ = tb.cloneElements$($('.MARKED').removeClass('MARKED'));
-    var target$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$().last();
+    var target$ = intoItemscope?tb.selected.element$:tb.selected.element$.itemscopeOrThis$().last();
     elements$.insertAfter(target$);
-  }
+  };
 
-  tb.moveUpBtnClick = function(event) {
-    // simple version: at itemscope boundaries
+  tb.pasteClick = function(event) {
+    // paste
+    tb.actions.paste(event.altKey);
+    return this;
+  };
+
+  tb.actions.moveUp = function() {
+    // move the itemscope of the selected element up one itemscope level
     tb.moveElement(tb.selected.element$.itemscopeOrThis$(),'before');
-  }
-  
-  tb.moveDownBtnClick = function(event) {
+    return this;
+  };
+
+  tb.actions.moveDown = function(event) {
     // simple version: at itemscope boundaries
     tb.moveElement(tb.selected.element$.itemscopeOrThis$(),'after');
-  }
+  };
 
-  tb.moveLeftBtnClick = function(event) {
+  tb.actions.moveLeft = function(event) {
     // simple version: at element boundaries
     tb.moveElement(tb.selected.element$,'before');
-  }
+  };
 
-  tb.moveRightBtnClick = function(event) {
+  tb.actions.moveRight = function(event) {
     // simple version: at element boundaries
     tb.moveElement(tb.selected.element$,'after');
-  }
+  };
   
-  tb.toTestBtnClick = function(event) {
+  tb.actions.toTest = function(event) {
     tb.copyOutputToTest();
-  }
+  };
   
-  tb.hideHelpBtnClick = function(event) {
+  tb.actions.hideHelp = function(event) {
     tb.menu.helpPanel$.hide(300);
-  }
+  };
   
   tb.helpSearchKeyup = function(event) {
     // event handler for the help search box
     tb.menu.helpOutput$.html(tb.help.index.help$(event.currentTarget.value));
-  }
+  };
 
-  tb.markBtnClick = function(event) {
+  tb.markClick = function(event) {
     // simple version marks only Selected Element
     var target$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
-    tb.mark(target$);
-  }
+    tb.actions.mark(target$);
+  };
   
-  tb.cutBtnClick = function(event) {
+  tb.cutClick = function(event) {
     // simple version
     // if there are [[MARKED]] [[ELEMENT]], will cut them
     // if element is inside an [[itemscope]], will cut the entire itemscope
     // except if the Alt Key is pressed where it will only take the ELEMENT
     var elements$ = $('.MARKED');
     if (elements$.length ===0) elements$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
-    tb.cutBlock(elements$);
-  }
+    tb.actions.cutBlock(elements$);
+  };
 
-  tb.deleteBtnClick = function(event) {
+  tb.actions.delete = function() {
     // look for MARKED elements or if none for SELECTED element
     // and add the DELETED class
-    var elements$ = $('.MARKED')
+    var elements$ = $('.MARKED');
     if (elements$.length === 0) elements$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
     var deleted$ = elements$.find('.DELETED').addBack('.DELETED'); // search for deleted elements including itself
     if (deleted$.length) { // some elements in the selection are deleted, so undelete those
@@ -334,28 +362,42 @@
     if ($('.SELECTED',elements$).length) tb.selectElement(undefined);
     elements$.removeClass('MARKED').addClass('DELETED');
     if (!tb.sheetOptions.showDeleted) elements$.hide(500)
-  }
+  };
 
-  tb.cloneEmptyBtnClick = function(event) {
+  tb.actions.cloneEmpty = function(intoItemscope) {
     // clone MARKED or the selected.element$
-    var elements$ = $('.MARKED')
+    // the text of the cloned element are cleared
+    // if intoItemscope is true, work at the element level, not itemscope level
+    var elements$ = $('.MARKED');
     if (elements$.length === 0) elements$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
-    var target$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
+    var target$ = intoItemscope?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
     tb.cloneElements$(elements$,true).insertAfter(target$);
-  }
-  
+  };
+
+  tb.cloneEmptyClick = function(event) {
+    // clone MARKED or the selected.element$
+    tb.actions.cloneEmpty(event.altKey);
+  };
+
+  tb.actions.insertTemplate = function(template,where) {
+    // insert a template
+    // - template is the url of the template
+    // - where is one of "after" "afterItemscope" "before" "beforeItemscope"
+    if (where===undefined || template === undefined) return;
+    tb.templates[template].insertNew(tb.selected.element,where,tb.selected.container$.attr('container'));
+  };
 
   tb.templateButtonClick = function(event) {
     var where = $(event.target).closest('[where]').attr('where');
     if (!event.altKey) where += 'Itemscope';
     var template = $(event.target).closest('[template]').attr('template');
-    if (where===undefined || template === undefined) return;
-    tb.templates[template].insertNew(tb.selected.element,where,tb.selected.container$.attr('container'));
-    event.stopPropagation(); // in order to have embedded buttons like the drop down menu
+    tb.actions.insertTemplate(template,where);
+    //event.stopPropagation(); // in order to have embedded buttons like the drop down menu
                              // otherwise the event will be treated twice issue #13
-  }
+  };
 
-  tb.showHtmlBtnClick = function(event) {
+  tb.showHtmlClick = function(event) {
+    //TODO prettify the html before compare
     if (tb.selected.element$.hasClass('CODE')) {
       var out = tb.selected.element$.children('.OUTPUT')[0] || {id:'no output',innerHTML:''};
       var test = tb.selected.element$.children('.TEST')[0] || {id:'no test',innerHTML:''};
@@ -371,7 +413,7 @@
         '<fieldset><legend>'+tb.selected.element.id+'</legend>'+tb.toHtml(tb.selected.element.outerHTML)+'</fieldset>')
     }
     $('#showHtml').modal()
-  }
+  };
 
 
   tb.bodyKeyDown = function(event) {
@@ -382,18 +424,18 @@
         break;
     }
     return true;
-  }
+  };
 
   tb.bodyKeyUp = function(event) {
     tb.menu.debug$.html(tb.inspect(window.document.selection).span().toString())
-  }
+  };
 
 
   tb.elementClick = function(event) {
     // event handler for click on an ELEMENT
     var element$ = $(event.currentTarget); // not target, since target can be an child element, not the div itself
     if (event.ctrlKey) {
-      tb.mark(event.altKey?element$:element$.itemscopeOrThis$());
+      tb.actions.mark(event.altKey?element$:element$.itemscopeOrThis$());
       return false;
     }
     else if (event.shiftKey){
@@ -401,28 +443,28 @@
     }
     tb.selectElement(element$);
     return false;  // prevent bubbling
-  }
+  };
 
   tb.editableKeyDown = function(event) {
     // keyDown event handler for EDITABLE ELEMENT in order to see if the ELEMENT is modified and so the sheet
     // also treat ctrl-enter as a run key
-    if ($.inArray(event.keyCode,[16,17,18,20,27,33,34,35,36,37,38,39,40,45,91,92,93]) != -1) return; // non modifying keys like shift..
+    if ($.inArray(event.keyCode,[16,17,18,20,27,33,34,35,36,37,38,39,40,45,91,92,93]) !== -1) return; // non modifying keys like shift..
     tb.setModified(true);
     tb.setUpToDate(false);
-    if ((event.keyCode==13) && event.ctrlKey) {
+    if ((event.keyCode===13) && event.ctrlKey) {
       event.stopPropagation();
       tb.run();
     }
-  }
+  };
 
   tb.elementEditor = function(event) {
     // generic editor event handler for click and keypress
     // assumes that the DOM element that has a class=EDITOR also has an id="name of the corresponding Tablord element"
     // this handler just dispatch the event at the right object eventHandler
     var element = event.currentTarget;
-    var tbObject = tb.vars[element.tbObject]
+    var tbObject = tb.vars[element.tbObject];
     return tbObject.editorEvent(event);
-  }
+  };
   
   //////////////////////////////////////////////////////////////////////////////
   // method to display changes
@@ -432,17 +474,17 @@
   tb.setModified = function(state) {
     // set the modified state and modify the save button accordingly
     tb.modified = state;
-    tb.menu.saveBtn$.toggleClass('btn-warning',state).toggleClass('btn-dark',!state);
-  }
+    tb.menu.save$.toggleClass('btn-warning',state).toggleClass('btn-dark',!state);
+  };
 
   tb.setUpToDate = function(state) {
     // set if the sheet is up to date or not (has to be re-run)
     if (state === tb.setUpToDate.state) return;
     if (state) {
-      tb.menu.runAllBtn$.removeClass('btn-warning').addClass('btn-dark');
+      tb.menu.runAll$.removeClass('btn-warning').addClass('btn-dark');
     }
     else {
-      tb.menu.runAllBtn$.removeClass('btn-dark').addClass('btn-warning');
+      tb.menu.runAll$.removeClass('btn-dark').addClass('btn-warning');
       $('.OUTPUT').add('.TEST').removeClass('SUCCESS ERROR');
     }
     tb.setUpToDate.state = state;
@@ -502,12 +544,12 @@
         '<button class="dropdown-item" template="'+template.url+'">'+template.name+'</button>'
       );
     }
-  }
+  };
 
   tb.clearOutputs = function() {
     // remove all outputs
     $('.OUTPUT').remove();
-  }
+  };
 
   tb.saveRemote = function() {
     // save to a remote server
@@ -522,7 +564,7 @@
                 tb.setModified(false);
             })
     .fail(function(data){tb.menu.debug$.html(data)})
-  }
+  };
 
   tb.save = tb.saveRemote;
 
@@ -542,14 +584,14 @@
                 tb.menu.debug$.html(data);
             })
     .fail(function(data){tb.menu.debug$.html(data)})
-  }
+  };
 
 
   tb.copyOutputToTest = function() {
     // set the current element's output as the test element if no test element existed or if it failed
     // if a SUCCESS test existed, remove the test
     
-    if (tb.selected.element == undefined) return;
+    if (tb.selected.element === undefined) return;
 
     var out$ = tb.selected.element$.children('.OUTPUT');
     var test$ = tb.selected.element$.children('.TEST');
@@ -564,14 +606,21 @@
     }
     tb.setModified(true);
     
-  }
+  };
 
-  tb.mark = function(elements$){
-    // mark all elements$
-    elements$.toggleClass('MARKED');
-  }
+  tb.mark = function(elements$,marked){
+    // mark all elements$. if marked is specified (true or false) it will force to be marked or unmarked
+    elements$.toggleClass('MARKED',marked);
+  };
 
-  tb.cutBlock = function(element$,cut) {
+  tb.actions.mark = function(elements$,marked){
+    // mark all elements
+    elements$ = $.elementsByIds$(elements$);
+    tb.mark(elements$,marked);
+    return this;
+  };
+
+  tb.actions.cutBlock = function(element$,cut) {
     // cut or "uncut" element
     // if cut is true or false, set the cut state
     // if cut is undefined, toggle the cut state
@@ -579,12 +628,12 @@
     element$.toggleClass('CUT',cut).removeClass('MARKED');
     tb.setModified(true);
     tb.setUpToDate(false);
-  }
+  };
 
   tb.removeDeletedBlocks = function() {
     // remove all DELETED elements
     $('.DELETED').remove();
-  }
+  };
 
   tb.cloneElements$ = function(elements$,empty) {
   // clone the elements$ making sure the ids are renamed properly
@@ -597,7 +646,7 @@
         return tb.blockId(tb.blockPrefix(id));
       });
       if (empty) {clones$.contents().filter(function() {
-          return this.nodeType == 3; //Node.TEXT_NODE
+          return this.nodeType === 3; //Node.TEXT_NODE
         }).remove();
       }
       clones$.removeClass('SELECTED');
@@ -609,7 +658,7 @@
     tb.setUpToDate(false);
     tb.setModified(true);
     return newElements$;
-  }
+  };
 
 
   tb.editables$ = function(element) {
@@ -623,29 +672,29 @@
     // update the menu with the content of tb.selected.element
     // which can be undefined and it will hide the selectionToolBar
     var element = tb.selected.element;
-    if (element == undefined){
+    if (element === undefined){
       tb.menu.selectionToolBar$.hide();
       return;
     }
     tb.menu.codeId$.html(element.id+'<SPAN style="color:red;cursor:pointer;" onclick="tb.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
     var flexParent = tb.selected.element$.parent().hasClass('FLEX');
-    tb.menu.moveLeftBtn$.prop('disabled',!flexParent);
-    tb.menu.moveRightBtn$.prop('disabled',!flexParent);
+    tb.menu.moveLeft$.prop('disabled',!flexParent);
+    tb.menu.moveRight$.prop('disabled',!flexParent);
     
     var isCode =tb.selected.element$.hasClass('CODE');
-    tb.menu.showHtmlBtn$.prop('disabled',!isCode);
-    tb.menu.toTestBtn$.prop('disabled',!isCode);
+    tb.menu.showHtml$.prop('disabled',!isCode);
+    tb.menu.toTest$.prop('disabled',!isCode);
     
     tb.menu.classes$.children().each(function(){
       var checkbox$ = $(this);
       var c = checkbox$.val();
       if (c) {
         checkbox$.prop('checked',tb.selected.element$.hasClass(c));
-      };
+      }
     });
     tb.menu.itemprop$.val(tb.selected.element$.attr('itemprop'));
     tb.menu.itemtype$.val(tb.selected.element$.attr('itemtype'));
-    tb.menu.funcEditor.setValue(tb.selected.element$.attr('func') || '')
+    tb.menu.funcEditor.setValue(tb.selected.element$.attr('func') || '');
     var error = tb.selected.element$.prop('error');
     if (error) {
       var line = error.lineNumber;
@@ -664,15 +713,14 @@
     }
     else {
       element.focus();
-    };
-    
+    }
   };
 
   tb.selectElement = function(element) {
     // select element as tb.selected.element and update the EDI accordingly
-    // element can either be a DOM element or a jQuery of 1 element
-
-    if (element instanceof $) element = element[0];
+    // element can either be a DOM element or a jQuery of 1 element or a string representing the id of the element
+    if (typeof element === 'string') element = $('#'+element)[0];
+    else if (element instanceof $) element = element[0];
     tb.editor.setCurrentEditor(undefined);
     var e = tb.selected.element;
     if (e) {
@@ -702,7 +750,13 @@
     }
     tb.updateMenu();
     tb.editables$(element).attr('contentEditable',true);
-  }
+    return this;
+  };
+
+  tb.actions.selectElement = function(element){
+    tb.selectElement(element);
+    return this;
+  };
 
   tb.moveElement = function(element$,where) {
     // moves element$ at a position defined by where
@@ -710,7 +764,7 @@
     // - where : cf [$.fn.neighbour]
     if (element$.length===0) return;
     var whereToInsert$ = element$;
-    if (where==='before' || where=='beforeItemscope') {
+    if (where==='before' || where==='beforeItemscope') {
       do {
         whereToInsert$ = whereToInsert$.first().prev();
       } while (whereToInsert$.length && !whereToInsert$.hasClass('ELEMENT')); // also skip any decorative tags
@@ -723,7 +777,7 @@
       element$.insertAfter(whereToInsert$);
     }
     tb.setModified(true);
-  }
+  };
 
   // EDI eventHandlers ///////////////////////////////////////////////////////////////
 
@@ -733,7 +787,7 @@
       event.returnValue='ouups?';
       return 'ouups?'
     }
-  }
+  };
 
 
   tb.reformatRichText = function(element) {
@@ -742,10 +796,10 @@
     // {{#link}} will create a LINK to a section title
     // {{##elementBox}} will create an elementBox
     // {{variable=value}} will create an ELEMENT with variable as itemprop and value as content
-    if ((element == undefined) || ($(element).hasClass('CODE'))) return;
+    if ((element === undefined) || ($(element).hasClass('CODE'))) return;
 
     var change = false;
-    $(element).replaceText(/\{\{([#]{0,2})(.*?)\}\}/g,
+    $(element).replaceText(/{{([#]{0,2})(.*?)}}/g,
                            function(s,command,code) {
                              change = true;  // if called, this function will change the document
                              var code$ = tb.templates['https://tablord.com/templates/codeSpan'].element$();
@@ -770,7 +824,7 @@
       element.normalize();
       tb.setUpToDate(false);
     }
-  }
+  };
 
 
   // upgrades from previous versions ////////////////////////////////////////////////////////////////////////////////
@@ -779,15 +833,15 @@
     var modulesNeeded = ['jquery-1.5.1.min.js','tablordEdi.js','units.js','tablord.js','axe.js','simulation.js','sys.js','ocrRdy.js','finance.js','diff.js'];
     var allModules = modulesNeeded.concat('jquery.js'); // including deprecated modules
     var modules = [];
-    var $script = $('SCRIPT').filter(function(){return $.inArray(tb.fileName(this.src),allModules)!=-1});
+    var $script = $('SCRIPT').filter(function(){return $.inArray(tb.fileName(this.src),allModules)!==-1});
     $script.each(function(i,e){modules.push(tb.fileName(e.src))});
-    if (modules.toString() == modulesNeeded.toString()) return; // everything is just as expected
+    if (modules.toString() === modulesNeeded.toString()) return; // everything is just as expected
 
     // otherwise we have to upgrade
     var h = '';
     $.each(modulesNeeded,function(i,m){h+='<SCRIPT src="'+m+'"></SCRIPT>'});
     window.prompt(/*'your need to edit your scripts to upgrade\n'+*/modules+'\n'+modulesNeeded,h);
-  }
+  };
 
 
   tb.upgradeFramework = function() {
@@ -849,7 +903,7 @@
 
     //tb.upgradeModules();
     tb.upgradeFramework();
-    if (window.document.compatMode != 'CSS1Compat') {
+    if (window.document.compatMode !== 'CSS1Compat') {
       window.alert('your document must have <!DOCTYPE html> as first line in order to run properly: please save and re-run it');
     }
     // prepare the sheet ///////////////////////////////////////////
@@ -875,8 +929,8 @@
     
     tb.editor = new tb.Editor();
     $(window).bind('beforeunload',tb.beforeUnload);      
-    $('body').keydown(tb.bodyKeyDown)//.keyup(tb.bodyKeyUp);
-    tb.autoRun = $('body').attr('autoRun')!==false;
+    $('body').keydown(tb.bodyKeyDown);//.keyup(tb.bodyKeyUp);
+    tb.autoRun = !tb.url.arguments.no_run;
     tb.help.update(tb,'tb.');
     tb.updateContainers();
 

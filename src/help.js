@@ -1,5 +1,9 @@
   // HELP system ///////////////////////////////////////////////////////////////////////
   // must be defined very early so that every module can also add documentation
+if (!process.browser) {
+  require('./browserlike');
+  var tb = require('./kernel');
+}
 
   tb.HelpIndex = function() {
     // HelpIndex objects contain an index of all functions of the system
@@ -66,18 +70,18 @@
 
   tb.HelpIndex.prototype.show =function(name) {
     // show in the help Panel the help on `name`
-    this.history[++this.historyPos] = tb.helpSearch$.val();
+    this.history[++this.historyPos] = tb.menu.helpSearch$.val();
     this.history.length = this.historyPos+1;
-    tb.helpSearch$.val(name);
-    tb.helpOutput$.html(tb.help.index.help$(name)).show(500);
+    tb.menu.helpSearch$.val(name);
+    tb.menu.helpOutput$.html(tb.help.index.help$(name)).show(500);
   };
 
   tb.HelpIndex.prototype.back = function() {
     // return on the previous search
     if (this.historyPos>=0){
       var name = this.history[this.historyPos--];
-      tb.helpSearch$.val(name);
-      tb.helpOutput$.html(tb.help.index.help$(name));
+      tb.menu.helpSearch$.val(name);
+      tb.menu.helpOutput$.html(tb.help.index.help$(name));
     }
   };
 
@@ -104,7 +108,7 @@
       n$ = $('<div class=ERROR>'+e.message+' res.length='+res.length+' l='+l+'i='+i+'<br>'+tb.inspect(res[i]).span()+'</div>');
     }
     return n$;
-  }
+  };
 
   tb.HelpIndex.prototype.undocumentedClasses = function() {
     // return a list of index entries of function that are potential Classes (start with uppercase)
@@ -112,14 +116,14 @@
     // for maintenance only
     var res = [];
     for (var i = 0;i<this.index.length; i++) {
-      if (tb.constructorName(this.index[i].prop)){
+      if (tb.isConstructorName(this.index[i].prop)){
         if (this.index[i].func && (this.index[i].func.className !== (this.index[i].path+this.index[i].prop))) {
           res.push(this.index[i]);
         }
       }
     }
     return res;
-  }
+  };
 
 
   tb.HelpIndex.prototype.badlyDocumentedFunctions = function() {
@@ -133,7 +137,7 @@
       }
     }
     return tb.html(res+'</table>');
-  }
+  };
 
 
   tb.helps = {'tb.credits':tb.credits};
@@ -149,12 +153,12 @@
     var signature = tb.signature(func);
     var parameters = signature.replace(/(\/\*.*?\*\/)/g,'')   // remove comments /*...*/
                               .replace(/\s+/,'')              // remove any spaces
-                              .replace(/^.*\((.*)\).*$/,'$1') // keep only what is between ()
-    if (parameters === '') parameters = undefined
+                              .replace(/^.*\((.*)\).*$/,'$1'); // keep only what is between ()
+    if (parameters === '') parameters = undefined;
     else                   parameters = parameters.split(',');
 
     if (func.className){
-      comments.push('constructor for '+func.className+' objects')
+      comments.push('constructor for '+func.className+' objects');
       comments.push('');
     }
 
@@ -180,10 +184,10 @@
         }
       }
       methods += '</table></fieldset>';
-    };
+    }
     var h = new tb.HTML('<SPAN class=HELP><b>'+signature+'</b><br/>'+tb.help.markDownToHtml(comments,parameters)+(func.help?func.help():'')+methods+'</SPAN>');
     return h;
-  }
+  };
   tb.help.level = 0;
   // Markdown //// simplified version: TODO replace with better implementation
   tb.help.markDownToHtml = function(markDownLines,parameters) {
@@ -213,7 +217,7 @@
       +'<br>';
     }
     return h;
-  }
+  };
 
   tb.help.docQualityProblems = function(func) {
     // list all non quality criteria of a function documentation
@@ -223,7 +227,7 @@
     var problems = new tb.HTML();
 
     var source = func.toString().split('\n');
-    var comments = []
+    var comments = [];
     var signature = tb.signature(func);
     var parameters = signature.replace(/(\/\*.*?\*\/)/g,'').replace(/^.*\((.*)\).*$/,'$1').split(',');
 
@@ -247,7 +251,7 @@
 
     if (problems.toString() === '') return null;
     return problems;
-  }
+  };
 
 
   tb.help.index = new tb.HelpIndex();
@@ -255,7 +259,7 @@
   tb.help.add = function(prop,path,markDown) {
     // add a topic to the help index
     tb.help.index.add(prop,path,markDown);
-  }
+  };
 
   tb.help.add('How to document functions','',[
     'comments that are directly following the function declaration are considered as the public documentation '+
@@ -316,5 +320,8 @@
   tb.help.update = function(object,path) {
     // update the help index with all functions of object that will be recorded under path
     tb.help.index.update(object,path);
-  }
+  };
 
+  if (!process.browser) {
+    module.exports = tb;
+  }
