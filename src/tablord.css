@@ -113,13 +113,13 @@ pre {
     }
     .ELEMENT.SELECTED,
     .ELEMENT.SELECTED[itemprop]{
-      padding:0px;
+      padding:0;
       border: 3px solid grey;
     }
     .ELEMENT:hover {
       outline:1px dotted grey;
     }
-    .ELEMENT[itemprop]:not([itemscope]):not(.VIEW) {
+    .ELEMENT[itemprop]:not(.VIEW) {
       border: 1px solid blue;
     }
     
@@ -138,11 +138,7 @@ pre {
       padding:3px;
       content:attr(itemprop);
     }
-    .ELEMENT[itemprop][itemscope]:hover::before {
-      left:0;
-      right:none;
-      color:orange;
-    }
+
     .ELEMENT.SELECTED::after {
       position:absolute;
       top:-2em;
@@ -154,22 +150,7 @@ pre {
       padding:3px;
       content:attr(itemprop);
     }
-    
-    .ELEMENT.ITEMSCOPE {
-      padding:0;
-      border: 3px solid orange;
-    }
-    
-    .ELEMENT.ITEMSCOPE::after {
-      position:relative;
-      width:0;
-      left:6px;
-      background-color: rgba(169, 169, 169,0.6);
-      outline:none;
-      color:orange;
-      content:attr(itemprop);
-    }
-    
+
     .ELEMENT.EDITABLE:empty::before {
       content:"empty";
       font-style:italic;

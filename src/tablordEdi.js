@@ -194,7 +194,7 @@
     
     tb.menu.error$.hide();
     tb.menu.funcEditor = ace.edit('func');
-    tb.menu.funcEditor.session.setMode("ace/mode/javascript");
+    //tb.menu.funcEditor.session.setMode("ace/mode/javascript"); TODO remove if it works
     tb.menu.funcEditor.on('blur',function(){
       var code = tb.menu.funcEditor.getValue();
       if (code != tb.selected.element$.attr('func')) {
@@ -203,6 +203,11 @@
         tb.run();
         tb.setModified(true);
       }
+    });
+    tb.menu.funcEditor.commands.addCommand({
+        name: "run",
+        exec: tb.run,
+        bindKey: {mac: "Ctrl-Return", win: "Ctrl-Return"}
     });
     tb.menu.classes$.click(function(event){
       $(event.currentTarget).children().each(function(){
@@ -302,30 +307,35 @@
   tb.actions.moveUp = function() {
     // move the itemscope of the selected element up one itemscope level
     tb.moveElement(tb.selected.element$.itemscopeOrThis$(),'before');
+
+  };
+
+  tb.actions.moveDown = function() {
+    // simple version: at itemscope boundaries
+    tb.moveElement(tb.selected.element$.itemscopeOrThis$(),'after');
     return this;
   };
 
-  tb.actions.moveDown = function(event) {
-    // simple version: at itemscope boundaries
-    tb.moveElement(tb.selected.element$.itemscopeOrThis$(),'after');
-  };
-
-  tb.actions.moveLeft = function(event) {
+  tb.actions.moveLeft = function() {
     // simple version: at element boundaries
     tb.moveElement(tb.selected.element$,'before');
+    return this;
   };
 
-  tb.actions.moveRight = function(event) {
+  tb.actions.moveRight = function() {
     // simple version: at element boundaries
     tb.moveElement(tb.selected.element$,'after');
+    return this;
   };
   
-  tb.actions.toTest = function(event) {
+  tb.actions.toTest = function() {
     tb.copyOutputToTest();
+    return this;
   };
   
   tb.actions.hideHelp = function(event) {
     tb.menu.helpPanel$.hide(300);
+    return this;
   };
   
   tb.helpSearchKeyup = function(event) {
@@ -349,11 +359,11 @@
     tb.actions.cutBlock(elements$);
   };
 
-  tb.actions.delete = function() {
+  tb.actions.delete = function(intoItemscope) {
     // look for MARKED elements or if none for SELECTED element
     // and add the DELETED class
     var elements$ = $('.MARKED');
-    if (elements$.length === 0) elements$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
+    if (elements$.length === 0) elements$ = intoItemscope?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
     var deleted$ = elements$.find('.DELETED').addBack('.DELETED'); // search for deleted elements including itself
     if (deleted$.length) { // some elements in the selection are deleted, so undelete those
       deleted$.removeClass('DELETED').show(500);
@@ -362,6 +372,18 @@
     if ($('.SELECTED',elements$).length) tb.selectElement(undefined);
     elements$.removeClass('MARKED').addClass('DELETED');
     if (!tb.sheetOptions.showDeleted) elements$.hide(500)
+  };
+
+  tb.actions.killMarked = function() {
+      // look for MARKED elements
+      // and remove those elements forever (no possible undo)
+      // useful in conjunction with actions.mark and actions.invertMarked
+      // to create test sheets
+
+    let elements$ = $('.MARKED');
+    if ($('.SELECTED',elements$).length) tb.selectElement(undefined);
+    elements$.remove();
+    return this;
   };
 
   tb.actions.cloneEmpty = function(intoItemscope) {
@@ -382,9 +404,12 @@
   tb.actions.insertTemplate = function(template,where) {
     // insert a template
     // - template is the url of the template
-    // - where is one of "after" "afterItemscope" "before" "beforeItemscope"
-    if (where===undefined || template === undefined) return;
+    // - where is one of "after" "afterItemscope"(default) "before" "beforeItemscope"
+    // TODO consolider pour traiter tous les cas (pas de selected...)
+    where = where || 'afterItemscope';
+    if (template === undefined) return this;
     tb.templates[template].insertNew(tb.selected.element,where,tb.selected.container$.attr('container'));
+    return this;
   };
 
   tb.templateButtonClick = function(event) {
@@ -609,14 +634,28 @@
   };
 
   tb.mark = function(elements$,marked){
-    // mark all elements$. if marked is specified (true or false) it will force to be marked or unmarked
+    // mark all elements$ (a jQuery of [[ELEMENT]]). if marked is specified (true or false) it will force to be marked or unmarked
     elements$.toggleClass('MARKED',marked);
   };
 
   tb.actions.mark = function(elements$,marked){
     // mark all elements
+    // - elements$ can either be a jquery that contains [[ELEMENT]]
+    // or a string with a list of id spaced separated or with * for all elements
+    // - marked if undefined toggle marked / unmarked
+    //          if true or false, set / remove the [[MARKED]] class
     elements$ = $.elementsByIds$(elements$);
     tb.mark(elements$,marked);
+    return this;
+  };
+
+  tb.actions.invertMarked = function(){
+    // invert all [[ELEMENT]] regarding [[MARKED]]
+    // return this for method chaining
+    let marked$ = $('.MARKED');
+    let unmarked$ = $('.ELEMENT').not('.MARKED');
+    unmarked$.addClass('MARKED');
+    marked$.removeClass('MARKED');
     return this;
   };
 
@@ -663,15 +702,53 @@
 
   tb.editables$ = function(element) {
     // returns a JQuery of the tags that are editable in element (JQuery can be .length==0 if nothing is editable)
-    var e$ = $(element);
+    let e$ = $(element);
     if (e$.hasClass('EDITABLE')) return e$;
     return e$.find('.EDITABLE');
+  };
+
+  tb.storeEditorSession = function(element$) {
+    // store properly the editor session if needed
+    // - element$: if empty (length == 0) simply return
+    //            otherwise attach the session to this element$ (jquery of 1 element)
+    if (element$.length === 0) return;
+    element$.data('editSession',tb.menu.funcEditor.getSession());
+  };
+
+  tb.restoreEditorSession = function() {
+    // update the editor with the content of tb.selected.element
+    // if no selected element, clear the editor
+    if (!tb.selected.element) {
+      tb.menu.funcEditor.setSession(ace.createEditSession('',"ace/mode/text"));
+      return;
+    }
+    let editSession = tb.selected.element$.data('editSession');
+    let func = tb.selected.element$.attr('func');
+
+    if (editSession) {
+      tb.menu.funcEditor.setSession(editSession);
+    }
+    else {
+      tb.menu.funcEditor.setSession(ace.createEditSession(func || '',"ace/mode/javascript"));
+    }
+    let error = tb.selected.element$.prop('error');
+    if (error) {
+      let line = error.lineNumber;
+      let col = error.columnNumber;
+      tb.menu.error$.html('<details><summary>'+error.message+'</summary>'+error.stack.replace('/\n/g','<br>').replace(/ at /g,'<br>at ')+'</details>').show();
+      tb.menu.funcEditor.gotoLine(line,col-1);
+    }
+    else tb.menu.error$.hide();
+    if (func) {
+      tb.menu.properties$.prop('open',true);
+      tb.menu.funcEditor.focus();
+    }
   };
 
   tb.updateMenu = function() {
     // update the menu with the content of tb.selected.element
     // which can be undefined and it will hide the selectionToolBar
-    var element = tb.selected.element;
+    let element = tb.selected.element;
     if (element === undefined){
       tb.menu.selectionToolBar$.hide();
       return;
@@ -681,10 +758,10 @@
     tb.menu.moveLeft$.prop('disabled',!flexParent);
     tb.menu.moveRight$.prop('disabled',!flexParent);
     
-    var isCode =tb.selected.element$.hasClass('CODE');
+    let isCode = tb.selected.element$.hasClass('CODE');
     tb.menu.showHtml$.prop('disabled',!isCode);
     tb.menu.toTest$.prop('disabled',!isCode);
-    
+
     tb.menu.classes$.children().each(function(){
       var checkbox$ = $(this);
       var c = checkbox$.val();
@@ -694,20 +771,12 @@
     });
     tb.menu.itemprop$.val(tb.selected.element$.attr('itemprop'));
     tb.menu.itemtype$.val(tb.selected.element$.attr('itemtype'));
-    tb.menu.funcEditor.setValue(tb.selected.element$.attr('func') || '');
-    var error = tb.selected.element$.prop('error');
-    if (error) {
-      var line = error.lineNumber;
-      var col = error.columnNumber;
-      tb.menu.error$.html('<details><summary>'+error.message+'</summary>'+error.stack.replace('/\n/g','<br>').replace(/ at /g,'<br>at ')+'</details>').show();
-      tb.menu.funcEditor.gotoLine(line,col-1);
-    }
-    else tb.menu.error$.hide();
     tb.menu.format$.val(tb.selected.element$.attr('format'));
+    tb.restoreEditorSession();
     tb.updateTemplateChoice();
     tb.menu.$.show();
     tb.menu.selectionToolBar$.show(500,function(){tb.menu.funcEditor.resize()});
-    if (error) {
+    if (tb.selected.element$.prop('error')) {
       element.scrollIntoView();
       tb.menu.funcEditor.focus();
     }
@@ -718,10 +787,10 @@
 
   tb.selectElement = function(element) {
     // select element as tb.selected.element and update the EDI accordingly
-    // element can either be a DOM element or a jQuery of 1 element or a string representing the id of the element
+    // - element can either be a DOM element or a jQuery of 1 element or a string representing the id of the element
     if (typeof element === 'string') element = $('#'+element)[0];
     else if (element instanceof $) element = element[0];
-    tb.editor.setCurrentEditor(undefined);
+    tb.editor.setCurrentEditor(undefined); //TODO suppress editors?
     var e = tb.selected.element;
     if (e) {
       if (element && (e === element) && !e.error) { // if already selected nothing to do but make sure it is visible
@@ -731,8 +800,9 @@
       }
 
       // remove the old selection
-      $(e).removeClass('SELECTED');
-      $('.ITEMSCOPE').removeClass('ITEMSCOPE');
+      let e$ = $(e);
+      e$.removeClass('SELECTED');
+      tb.storeEditorSession(e$);
       tb.editables$(e)
         .attr('contentEditable',false)
         .each(function(i,e){tb.reformatRichText(e)});
@@ -745,15 +815,13 @@
     tb.selected.container$ =  tb.selected.element$.parent().closest('[container]');
     
     tb.selected.element$.addClass('SELECTED');
-    if (itemprop) {
-      tb.selected.element$.parent().closest('[itemscope]').addClass('ITEMSCOPE')
-    }
+
     tb.updateMenu();
     tb.editables$(element).attr('contentEditable',true);
     return this;
   };
 
-  tb.actions.selectElement = function(element){
+  tb.actions.select = function(element){
     tb.selectElement(element);
     return this;
   };

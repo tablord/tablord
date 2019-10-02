@@ -85,8 +85,10 @@ if (!process.browser) {
     // return either elements$ if already a jQuery or a jQuery with all elements listed in elements$
     // example elementsByIds$('id1 id2 id3') returns a jQuery with 3 elements
     if (elements$ instanceof $) return elements$;
-    var res$ = $();
-    var ids = elements$.split(' ');
+    if (elements$ === '*') return $('.ELEMENT');
+
+    let res$ = $();
+    let ids = elements$.split(' ');
     for (var id in ids){
       res$ = res$.add('#'+ids[id]);
     }

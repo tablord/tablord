@@ -277,7 +277,7 @@ if (!process.browser) {
                                       'for other templates:',
                                       '[[itemtype]] specifies the template,',
                                       '[[itemprop]] comes from the [[container]] attribute of the parent container or is "item"',
-                                      '[[itemscope]] is also set to be complient with microData (cf [[getMicroData]])']);
+                                      '[[itemscope]] is also set to be compliant with microData (cf [[getMicroData]])']);
   tb.help.add('SELECTED','DOM class=',['an SELECTED [[ELEMENT]] is the DOM element of the document that is currently SELECTED']);
   tb.help.add('CODE','DOM class=',['a CODE [[ELEMENT]] is a DOM element of the document that contains JavaScript CODE. It can also have the [[EMBEDDED]]']);
   tb.help.add('AUTOEDIT','DOM class=',['a [[CODE]] [[ELEMENT]] that is AUTOEDIT is modified automatically by the corresponding [[EDITOR]]s since it contains the .[[edit]]() of an [[EditableObject]]']);

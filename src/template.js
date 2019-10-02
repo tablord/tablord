@@ -33,7 +33,6 @@
     else       newElement$.insertBefore(element$);
     tb.selectElement(newElement$[0]);
     tb.setModified(true);
-    tb.run(); // TODO should not be done here: refactor
   };
 
   tb.Template.prototype.convert = function(element,itemprop) {
