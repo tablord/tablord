@@ -3,15 +3,15 @@ tb.diff = function (t1,t2) {
 }
 
 tb.diffFiles = function (fileName1,fileName2) {
-  var t1 = tb.fso.readFile(fileName1);
-  var t2 = tb.fso.readFile(fileName2);
+  let t1 = tb.fso.readFile(fileName1);
+  let t2 = tb.fso.readFile(fileName2);
   return tb.diff(t1,t2);
 }
 
 tb.Diff = function (t1,t2) {
   this.l1 = $.map(t1.split('\n'), function(l,i) {return {i1:i,line:l};});
   this.l2 = $.map(t2.split('\n'), function(l,i) {return {i2:i,line:l};});
-  var mods = [];
+  let mods = [];
   this.i1 = 0;
   this.i2 = 0;
 }
@@ -42,20 +42,20 @@ tb.Diff.prototype.resynchronize = function () {
   function search(line, lines,start) {
     // search line in lines[start...]
     // returns the index where line was found or -1 if not found
-    for (var i = start; i < lines.length;i++) {
+    for (let i = start; i < lines.length;i++) {
       if (line.line === lines[i].line) return i;
     }
     return -1;
   }
 
 trace('resynchronize',this.i1,this.i2)
-  var lost1 = this.i1;
-  var lost2 = this.i2;
+  let lost1 = this.i1;
+  let lost2 = this.i2;
   while ((this.i1 < this.l1.length) && (this.i2 < this.l2.length)) {
 trace('resynchronize; before search',this.l1[this.i1],this.l2[this.i2])
 
-    var s2 = search(this.l1[this.i1],this.l2,lost2);
-    var s1 = search(this.l2[this.i2],this.l1,lost1);
+    let s2 = search(this.l1[this.i1],this.l2,lost2);
+    let s1 = search(this.l2[this.i2],this.l1,lost1);
 trace('  after search s1='+s1+' s2='+s2)
     if ((s1 === -1) && (s2 === -1)) {
 trace('  no match')
@@ -97,10 +97,10 @@ tb.Diff.prototype.markDiff = function (begin1,end1,begin2,end2) {
   //  and the lines of 2 as '+' (aded) between begin2(included) and end2(notincluded)
 trace('....markDiff('+begin1+','+end1+','+begin2+','+end2+')');
 
-  for (var i=begin1; i<end1;i++) {
+  for (let i=begin1; i<end1;i++) {
     this.l1[i].status='-';
   }
-  for (var i=begin2; i<end2;i++) {
+  for (let i=begin2; i<end2;i++) {
     this.l2[i].status='+';
   }
 }
@@ -118,11 +118,11 @@ trace('execute',this.i1,this.i2)
 
 
 tb.Diff.prototype.span = function () {
-  var h = '';
-  var s1=0;
-  var s2=0;
-  var i1=0;
-  var i2=0;
+  let h = '';
+  let s1=0;
+  let s2=0;
+  let i1=0;
+  let i2=0;
 
   while ((i1 < this.l1.length) && (i2 < this.l2.length)) {
     while ((i1 < this.l1.length) && (this.l1[i1].status==='=') &&

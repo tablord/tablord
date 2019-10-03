@@ -35,19 +35,19 @@
     // native function will be used to generate formatted output. If the feature
     // test fails, the fallback format function internal to this plugin will be
     // used.
-    var toLocaleStringWorks = false;
+    let toLocaleStringWorks = false;
 
     // `Number#toLocaleString` rounds incorrectly for select numbers in Microsoft
     // environments (Edge, IE11, Windows Phone) and possibly other environments.
     // If the rounding test fails and `toLocaleString` will be used for formatting,
     // the plugin will "pre-round" number values using the fallback number format
     // function before passing them to `toLocaleString` for final formatting.
-    var toLocaleStringRoundingWorks = false;
+    let toLocaleStringRoundingWorks = false;
 
     // Token type names in order of descending magnitude.
-    var types = "escape years months weeks days hours minutes seconds milliseconds general".split(" ");
+    let types = "escape years months weeks days hours minutes seconds milliseconds general".split(" ");
 
-    var bubbles = [
+    let bubbles = [
         {
             type: "seconds",
             targets: [
@@ -107,7 +107,7 @@
     // Returns "0" repeated `qty` times.
     // `qty` must be a integer >= 0.
     function repeatZero(qty) {
-        var result = "";
+        let result = "";
 
         while (qty) {
             result += "0";

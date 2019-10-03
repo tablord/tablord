@@ -13,11 +13,11 @@ tb.Axe.prototype.toString = function() {
 }
 
 tb.Axe.prototype.appendFunction = function (f,init) {
-  var last = this.functions.length-1;
+  let last = this.functions.length-1;
   if ((last<0) || (init.t < this.functions[last].init.t)) {
     throw new Error("tb.Axe.appendFunction: can't append a function with time "+init.t+" since last function starts at "+this.functions[last].init.t);
   }
-  var res = this.functions[last].f(this.functions[last].init,init.t); // calculate the next last point of previous function
+  let res = this.functions[last].f(this.functions[last].init,init.t); // calculate the next last point of previous function
   init.p = res.p;
   init.v = res.v;
   this.functions.push({f:f,init:init});
@@ -27,8 +27,8 @@ tb.Axe.prototype.appendFunction = function (f,init) {
 tb.Axe.prototype.faccelerate = function (init,t) {
   //returns {t:t,p:xxx,v:xxx,a:init.a,j:xxxx} for a given t
   if (init.t == -Infinity) return {t:t,a:init.a,v:init.v,p:init.p};
-  var dt = t-init.t;
-  var res = {t:t,a:init.a};
+  let dt = t-init.t;
+  let res = {t:t,a:init.a};
   res.v = init.v+init.a*(t-init.t);
   res.p = init.p+(init.v*dt)+(0.5*init.a*Math.pow(dt,2));
   return res;
@@ -51,7 +51,7 @@ tb.Axe.prototype.move = function(init){
 
 //TODO pour les petits d�placement (d < df) ce n'est pas encore ok !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  var t,t1,tc,t2,t3,tf,ts,a1,a2,a3,v0,v1,v2,v3,d,d1,d2,d3,dc,ds,df, dir,at_t,defaults;
+  let t,t1,tc,t2,t3,tf,ts,a1,a2,a3,v0,v1,v2,v3,d,d1,d2,d3,dc,ds,df, dir,at_t,defaults;
   t = init.t || (this.simulation && this.simulation.time$s);
   at_t = this.at(t);
   d = init.p - at_t.p;
@@ -115,8 +115,8 @@ tb.Axe.prototype.move = function(init){
       continue;
     }
 
-    var dc = d-d1-d2-df;
-    var tc = dc / v1;
+    let dc = d-d1-d2-df;
+    let tc = dc / v1;
     if (tc < 0) {
       v1 = 0.9*v1; // ***** dirty and stupid
     }
@@ -128,7 +128,7 @@ tb.Axe.prototype.move = function(init){
 
   // if t is before the last function init time, it means that the user initiate a move before the end of the
   // previous move. we have to cancel the planned future function in order to replace by new ones
-  var i = this.functions.length-1;
+  let i = this.functions.length-1;
   while ((i >= 0) && (t <= this.functions[i].init.t)) {
     i--;
   }
@@ -150,7 +150,7 @@ tb.Axe.prototype.move = function(init){
 
 
 tb.Axe.prototype.move.help = function() {
-  var h ="   |<-------------- tt ----------------->|       \n"+
+  let h ="   |<-------------- tt ----------------->|       \n"+
          "   |<--t1-->|<----- tc ------->|<t2>|    |       \n"+
          "   |        +------------------+ v1 |    |       \n"+
          "   |       /                    \\   |<tf>|       \n"+
@@ -170,7 +170,7 @@ tb.Axe.prototype.move.help = function() {
 
 tb.Axe.prototype.at = function(t) {
   t = t || this.simulation.time$s;
-  var i = this.functions.length-1;
+  let i = this.functions.length-1;
   while ((i > 0) && (t < this.functions[i].init.t)) i--;
   return this.functions[i].f(this.functions[i].init,t);
 }
@@ -179,9 +179,9 @@ tb.Axe.prototype.at = function(t) {
 tb.Axe.prototype.sample = function(start,end,step) {
 // return a Table with all values form start to end, step by step
 
-  var samples = table();
-  var i = 0;
-  for (var t = start; t <= end; t += step) {
+  let samples = table();
+  let i = 0;
+  for (let t = start; t <= end; t += step) {
     while ((i < this.functions.length) && (this.functions[i].init.t <= t)) i++;
     if (i>0) {
       i--;
@@ -192,23 +192,23 @@ tb.Axe.prototype.sample = function(start,end,step) {
 }
 
 tb.Axe.prototype.span = function() {
-  var cols = {t:1,p:1,v:1,a:1,j:1};
-  for (var i in this.functions) {
-    var f = this.functions[i];
-    for (var c in f.init) {
+  let cols = {t:1,p:1,v:1,a:1,j:1};
+  for (let i in this.functions) {
+    let f = this.functions[i];
+    for (let c in f.init) {
       cols[c]=1;
     }
   }
 
-  var h = '<table border="1px"><thead><tr><th>f</th>';
-  for (var col in cols) {
+  let h = '<table border="1px"><thead><tr><th>f</th>';
+  for (let col in cols) {
     h += '<th>'+col+'</th>';
   }
   h += '</tr></thead><tbody>';
-  for (var i in this.functions) {
-    var f = this.functions[i];
+  for (let i in this.functions) {
+    let f = this.functions[i];
     h += '<tr><td>'+f.f.toString()+'</td>';
-    for (var col in cols) {
+    for (let col in cols) {
       h += '<td>'+((f.init[col]!==undefined)?(typeof f.init[col] == 'number'?f.init[col].toFixed(this.decimals):f.init[col]):'--')+'</td>';
     }
     h += '</tr>';
@@ -223,7 +223,7 @@ tb.Axe.prototype.view = function() {
 
 function axe(name,params,simulation) {
   // params = {forward:{..same as move},backward:{..same as move},a:default acceleration,v1:default maxSpeed, v2:default approachSpeed}
-  var a = new tb.Axe(name);
+  let a = new tb.Axe(name);
   a.simulation = simulation || tb.simulation;
   a.forward = $.extend(true,{a1:params.a,a2:-params.a,a3:-params.a,v1: (params.v1 || 1),v2: (params.v2 || 0),v3: (params.v3 || 0)},params.forward);
   a.backward = $.extend(true,{a1:-params.a,a2:params.a,a3:params.a,v1:-(params.v1 || 1),v2:-(params.v2 || 0),v3:-(params.v3 || 0)},params.backward);

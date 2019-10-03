@@ -19,8 +19,8 @@ if (!process.browser) {
   //JQuery extentions /////////////////////////////////////////////////
 
   $.fn.span = function() {
-    var s = ['<ol start=0>'];
-    for (var i=0; i < this.length; i++) {
+    let s = ['<ol start=0>'];
+    for (let i=0; i < this.length; i++) {
       switch (this[i].nodeType) {
         case 1:
           s.push('<li class="INSPECTHTML">'+tb.toHtml(tb.trimHtml(this[i].outerHTML)));
@@ -42,8 +42,8 @@ if (!process.browser) {
   };
 
   $.fn.inspectString = function(){
-    var r = this.toString()+'\n';
-    for (var i = 0;i<this.length;i++) {
+    let r = this.toString()+'\n';
+    for (let i = 0;i<this.length;i++) {
       r += i+') '+this[i].outerHTML+'\n';
     }
     return r;
@@ -53,7 +53,7 @@ if (!process.browser) {
     // return an object that has a node$ function that returns the jQuery
     // you can use it to create documents element with jQuery like this
     // $('<div>just a demo</div>').asNode()
-    var query = this;
+    let query = this;
     return {node$:function() {return query}};
   };
   
@@ -62,12 +62,12 @@ if (!process.browser) {
     // it can be used either to document the GUI like $('#markBtn').frozenCopy(); to show the button
     // or to keep the result of a simulation like $('#sect0007').frozenCopy();
     //
-    // frozen copy clone the jQuery, suppress any [id], any [func] and FUNC or CODE class 
+    // frozen copy clone the jQuery, suppress any [id], any [data-code] and FUNC or CODE class
     // and return an object that has only an node$() function
     if (keepItemscope) throw Error('not yet implemented');
-    var query = this.clone();
-    var allChildren = query.find('*').addBack();
-    allChildren.removeAttr('id').removeAttr('func').removeClass('CODE FUNC ELEMENT');
+    let query = this.clone();
+    let allChildren = query.find('*').addBack();
+    allChildren.removeAttr('id').removeAttr('data-code').removeClass('CODE FUNC ELEMENT');
     allChildren.removeAttr('itemprop').removeAttr('itemscope').removeAttr('itemtype');
     return {node$:function() {return query}};
   };
@@ -76,7 +76,7 @@ if (!process.browser) {
     // return the wrapping itemscope of this if any or this otherwise
     // this must be a one element jQuery
     if (this.length !== 1) throw Error('must be a jquery of one element');
-    var c$ = this.closest('[itemscope]');
+    let c$ = this.closest('[itemscope]');
     if (c$.length===1) return c$;
     return this;
   };
@@ -89,7 +89,7 @@ if (!process.browser) {
 
     let res$ = $();
     let ids = elements$.split(' ');
-    for (var id in ids){
+    for (let id in ids){
       res$ = res$.add('#'+ids[id]);
     }
     return res$
@@ -106,23 +106,7 @@ if (!process.browser) {
     return $('[itemtype~="'+url+'"]');
   };
 
-  /* TODO remove
-  $.fn.getItemProp = function(itemprop) {
-    // get the first matching itemprop of the first elements of the jquery
-    // all elements should be itemscope
-    var e = this[0];
-    return this.find('[itemprop='+itemprop+']').filter(function(){return $(this).closest('[itemscope=""]')[0] === e}).first().html();
-  };
 
-  $.fn.setItemProp = function(itemprop,html) {
-    // set the itemprop of the elements of the jquery
-    // all elements should be itemscope
-    this.each(function(i,e) {
-      $(e).find('[itemprop='+itemprop+']').filter(function(){return $(this).closest('[itemscope=""]')[0] === e}).html(html);
-    });
-    return this;
-  };
-  */
   $.fn.getItemscopeMicrodata = function() {
     // this must be a single itemscope element jQuery
     // return the microdata under the scope as an object
@@ -143,7 +127,7 @@ if (!process.browser) {
     // if the element is a standard tag (not AUDIO...) and has a [[func]] attribute the return value is a tb.Var instance without name
     //   in that case this tb.Var is cached in the tbVar property of the element
     //   this is the responsibility of the application to destroy the cache when needed (typically tb.prepareExec)
-    var tag = this.prop('tagName');
+    let tag = this.prop('tagName');
     if (this.attr('itemprop') === undefined) return null;
     if (this.attr('itemscope')) return this[0];
     if (tag === 'META') return this.attr('content');
@@ -153,14 +137,14 @@ if (!process.browser) {
     if (tag === 'TIME') return moment(this.attr('datetime') || this.text());
     
     // simple values can be converted to numbers or moment
-    var value; 
+    let value;
     if ($.inArray(tag,['DATA','METER','SELECT','INPUT'])!==-1) value = this.val();
     //--- this is not microdata but only valid in Tablord where the class number or date or duration can force
     else value = $.trim(this.text()); //TODO text retourne une valeur débutant par des \n et espaces et terminant de même
-    if (this.attr('func')) {
-      var tbVar = this.prop('tbVar');
+    if (this.attr('data-code')) {
+      let tbVar = this.prop('tbVar');
       if (tbVar) return tbVar;
-      tbVar = new tb.Var(undefined,f(this.attr('func')));
+      tbVar = new tb.Var(undefined,f(this.attr('data-code')));
       tbVar.sourceElement = this[0];
       this.prop('tbVar',tbVar); // store a direct link to the tb.Var object that contains the function
                                 // so it will be easy to update the content at the end of calculation
@@ -177,7 +161,7 @@ if (!process.browser) {
 
   $.fn.setItemValue = function(value){
     // set the value of an element handling all specifications of microdata of the getter of itemValue
-    var tag = this.prop('tagName');
+    let tag = this.prop('tagName');
     if (this.attr('itemprop') === undefined) throw new Error("can't set the itemprop value of an element that is not an itemprop\n"+e.outerHTML);
     else if (tag === 'META') this.attr('content',value);
     else if ($.inArray(tag,['AUDIO','EMBED','IFRAME','IMG','SOURCE','TRACK','VIDEO'])!==-1) this.attr('src',value);
@@ -198,7 +182,7 @@ if (!process.browser) {
     // jquery must be a single itemscope element
     // - remap: an optional function that remaps the found itemprop in an object
     //
-    var data = {};
+    let data = {};
 
     function set(itemprop,value) {
       if (itemprop.slice(-2) === '[]') {
@@ -212,8 +196,8 @@ if (!process.browser) {
 
     if (this.attr('id')) data._id = this.attr('id');
     this.children().each(function(i,element) {
-      var e$ = $(element);
-      var itemprop = e$.attr('itemprop');
+      let e$ = $(element);
+      let itemprop = e$.attr('itemprop');
       if (itemprop !== undefined) {
         if (e$.attr('itemscope') !== undefined) {
           set(itemprop,e$.getItemscopeData());
@@ -254,14 +238,14 @@ if (!process.browser) {
     // - remap:    a function (data) that return a new object with the remapped fields
     result = [];
     this.each(function(i,element){
-      var data = $(element).getItemscopeData(remap);
+      let data = $(element).getItemscopeData(remap);
       if (tb.objMatchCriteria(data,criteria)) {
         if (fields === undefined){
           result.push(data);
         }
         else {
-          var ro = {};
-          for (var f in fields) {
+          let ro = {};
+          for (let f in fields) {
             if (fields[f] === 1) ro[f] = data[f];
           }
           result.push(ro);
@@ -282,8 +266,8 @@ if (!process.browser) {
     // see also [[getData]] for simple usage
     result = result || {};
     this.each(function(i,e){
-      var e$ = $(e);
-      var itemprop = e$.attr('itemprop');
+      let e$ = $(e);
+      let itemprop = e$.attr('itemprop');
       if (itemprop) {
         if (result[itemprop] === undefined) result[itemprop] = [];
         if (e$.attr('itemscope') !== undefined) {
@@ -313,8 +297,8 @@ if (!process.browser) {
     // as all itemprop are arrays (since it is legal to have multiple itemprops having the same name)
     // every itemprop will "consume" the first element of the array
     this.each(function(i,e){
-      var e$ = $(e);
-      var itemprop,subData;
+      let e$ = $(e);
+      let itemprop,subData;
       if (e$.attr('itemscope') !== undefined)  {
         itemprop = e$.attr('itemprop') || 'items';
         subData = data && data[itemprop] && data[itemprop].shift();
@@ -340,7 +324,7 @@ if (!process.browser) {
 
   $.fn.filterFromToId = function(fromId,toId) {
     // filter the query to keep only query Element that are between the fromId element and toId element
-    var inRange = false;
+    let inRange = false;
     return this.filter(function() {
       if (this.id === fromId) inRange=true;
       if (this.id === toId) inRange=false;
@@ -364,7 +348,7 @@ if (!process.browser) {
     // any text node that is part of this will be replaced (if the jquery was made with .contents()) (this is used internally in recusive search)
     accept = accept || function(){return true};
 
-    for (var i = 0; i<this.length; i++) {
+    for (let i = 0; i<this.length; i++) {
       switch (this[i].nodeType) {
         case 3:
           $(this[i]).replaceWith(this[i].nodeValue.replace(regExp,replacement));
@@ -395,7 +379,7 @@ if (!process.browser) {
     //  - where: 'after', 'afterItemscope', 'before' or 'beforeItemscope'
     if (this.length !== 1) throw new Error('neighbourg$ needs a 1 element jQuery'+this.toString());
     
-    var element$ = this;
+    let element$ = this;
     if (where==='beforeItemscope' || where==='afterItemscope') {
       element$ = element$.itemscopeOrThis$();
     }

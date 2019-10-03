@@ -14,8 +14,8 @@ tb.Simulation.className = 'tb.Simulation';
 
 tb.Simulation.prototype.runSteps = function(nbSteps) {
   nbSteps = nbSteps || 1;
-  for (var s= 1; s <= nbSteps; s++) {
-    for (var i=0; i< this.length; i++) {
+  for (let s= 1; s <= nbSteps; s++) {
+    for (let i=0; i< this.length; i++) {
       this[i].runOnce(this.time$s);
     }
     this.time$s += this.step$s;
@@ -24,7 +24,7 @@ tb.Simulation.prototype.runSteps = function(nbSteps) {
 }
 
 tb.Simulation.prototype.runWhile = function(jcFunc) {
-  var jcCond = f(jcFunc);
+  let jcCond = f(jcFunc);
   while (jcCond()==true){
     this.runSteps();
   }
@@ -62,20 +62,20 @@ tb.StateMachine = function(name,simulation) {
 tb.StateMachine.className = 'tb.StateMachine';
 
 tb.StateMachine.prototype.state = function(name) {
-  var s = new tb.State(name,this)
+  let s = new tb.State(name,this)
   this[name] = s;
   return this[this.length++] = s;
 }
 
 tb.StateMachine.prototype.span = function(options) {
   options = options ||{};
-  var h = '<DIV class=STATEMACHINE>'+this.name;
-  for (var i=0; i<this.length; i++) {
+  let h = '<DIV class=STATEMACHINE>'+this.name;
+  for (let i=0; i<this.length; i++) {
     h += this[i].span();
   }
   if (options.log) {
     h += 'Log<TABLE>';
-    for (var i=0; i<this.log.length; i++) {
+    for (let i=0; i<this.log.length; i++) {
       h += '<TR><TD>'+this.log[i].time.toFixed(options.timeDecimals || this.timeDecimals)+'</TD><TD>'+this.log[i].transition.span()+'</TD></TR>';
     }
     h += '</TABLE>';
@@ -86,14 +86,14 @@ tb.StateMachine.prototype.span = function(options) {
 tb.StateMachine.prototype.view = tb.StateMachine.prototype.span;
 
 tb.StateMachine.prototype.runOnce = function(time) {
-  var where = 'runOnce';
+  let where = 'runOnce';
   try {
     where='runOnce/runF';
     if (this.currentState.runF) {
       this.currentState.runF();
     }
-    for (var i = 0; i<this.currentState.length; i++) {
-      var trans = this.currentState[i];
+    for (let i = 0; i<this.currentState.length; i++) {
+      let trans = this.currentState[i];
       where='runOnce/transition-->'+trans.next.name;
       if (trans.condF(this.currentState) == true) {  //currentState is passed to condF so the user can call wait(...)
         if (this.currentState.exitF) {
@@ -172,7 +172,7 @@ tb.State.prototype.wait = function(time) {
 }
 
 tb.State.prototype.state = function (name) {  //same as StateMachine.state, but to ease writing, is also a method of state
-  var s = new tb.State(name,this.stateMachine);
+  let s = new tb.State(name,this.stateMachine);
   this.stateMachine[name] = s;
   return this.stateMachine[this.stateMachine.length++] = s;
 }
@@ -181,15 +181,15 @@ tb.State.prototype.end = function () {
   // terminate the declaration of the state machine and compile the code
   // return the state machine so that it can easily be displayed
 
-  var sm = this.stateMachine;
-  for (var i = 0; i< sm.length; i++) {
+  let sm = this.stateMachine;
+  for (let i = 0; i< sm.length; i++) {
     sm[i].compile();
   }
   return this.stateMachine;
 }
 
 tb.State.prototype.compile = function() {
-  var where;
+  let where;
   try {
     if (this.entryCode) {
       where = 'entry';
@@ -203,7 +203,7 @@ tb.State.prototype.compile = function() {
       where = 'exit';
       this.exitF = f(this.exitCode);
     }
-    for (var i=0; i<this.length; i++) {
+    for (let i=0; i<this.length; i++) {
       this[i].compile();
     }
   }
@@ -213,11 +213,11 @@ tb.State.prototype.compile = function() {
 }
 
 tb.State.prototype.span = function(){
-  var h = '<DIV class="SMSTATE'+((this.stateMachine.currentState==this)?' SMCURRENTSTATE':'')+'">'+this.name+'<br>';
+  let h = '<DIV class="SMSTATE'+((this.stateMachine.currentState==this)?' SMCURRENTSTATE':'')+'">'+this.name+'<br>';
   if (this.entryCode) h+= 'entry: <SPAN class=CODEVIEW>'+this.entryCode+'</SPAN>';
   if (this.runCode)   h+= 'run  : <SPAN class=CODEVIEW>'+this.runCode+'</SPAN>';
   if (this.exitCode)  h+= 'exit : <SPAN class=CODEVIEW>'+this.exitCode+'</SPAN>';
-  for (var i=0; i<this.length; i++) {
+  for (let i=0; i<this.length; i++) {
     h += this[i].span();
   }
   return h+'</DIV>';

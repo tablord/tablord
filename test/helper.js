@@ -50,7 +50,7 @@ describe('helpers.js', function () {
 
     describe('tb.get', function(){
         it('walk into the sub object of an object for a given property and return undefined if any of the steps are undefined', function(){
-            var obj = {get:tb.get,
+            let obj = {get:tb.get,
                        toto:3,
                        tutu:{titi:4}};
             obj.get('toto').should.be.equal(3);
@@ -61,7 +61,7 @@ describe('helpers.js', function () {
     });
     describe('tb.set', function(){
         it('set a property and create if necessary the intermediate objects', function(){
-            var obj = {get:tb.get,
+            let obj = {get:tb.get,
                        set:tb.set,
                        toto:3,
                        tutu:{titi:4}};
@@ -84,8 +84,8 @@ describe('helpers.js', function () {
 
     describe('tb.heir',function(){
         it('creates an heir of an object', function(){
-            var ancestor= {toto:5,tutu:6};
-            var child = tb.heir(ancestor);
+            let ancestor= {toto:5,tutu:6};
+            let child = tb.heir(ancestor);
             child.titi = 7;
             child.toto.should.be.equal(5);
         })
@@ -105,8 +105,8 @@ describe('helpers.js', function () {
 
     describe('tb.copy',function(){
         it('copy the first level of an object',function(){
-            var a = {toto:1,tutu:2,titi:{x:3,y:4}};
-            var b = tb.copy(a);
+            let a = {toto:1,tutu:2,titi:{x:3,y:4}};
+            let b = tb.copy(a);
             b.should.be.deepEqual(a);
             b.toto = 10;
             a.toto.should.be.equal(1);
@@ -117,7 +117,7 @@ describe('helpers.js', function () {
 
     describe('tb.objMatchCriteria',function(){
         it('return true if the object match the critera',function(){
-            var a = {toto:1,tutu:2,titi:{x:3,y:4}};
+            let a = {toto:1,tutu:2,titi:{x:3,y:4}};
             tb.objMatchCriteria(a,{toto:1}).should.be.true();
             tb.objMatchCriteria(a,{toto:2}).should.be.false();
             tb.objMatchCriteria(a,{toto:1,tutu:2}).should.be.true();
@@ -127,7 +127,7 @@ describe('helpers.js', function () {
 
     describe('tb.findInArrayOfObject',function(){
         it('return the object that correspond to the criteria',function(){
-            var a = [
+            let a = [
                 {titi:5,tutu:0},
                 {titi:4,tutu:0},
                 {titi:4,tutu:1}];
@@ -217,16 +217,16 @@ describe('helpers.js', function () {
 
     describe('tb.dist2',function(){
         it('return the square of the distance between two points',function(){
-            var p1={x:0,y:0};
-            var p2={x:3,y:4};
+            let p1={x:0,y:0};
+            let p2={x:3,y:4};
             tb.dist2(p1,p2).should.be.equal(25);
         })
     });
 
     describe('tb.dist',function(){
         it('return the distance between two points',function(){
-            var p1={x:0,y:0};
-            var p2={x:3,y:4};
+            let p1={x:0,y:0};
+            let p2={x:3,y:4};
             tb.dist(p1,p2).should.be.equal(5);
         })
     });

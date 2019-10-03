@@ -15,7 +15,7 @@
     if(w.pageXOffset != null) return {left:w.pageXOffset, top:w.pageYOffset};
 
     //for IE
-    var d = w.document;
+    let d = w.document;
     if (window.document.compatMode === "CSS1Compat")
       return {left:d.documentElement.scrollLeft, top:d.documentElement.scrollTop};
 
@@ -28,38 +28,13 @@
     w = w||window;
     if (w.innerWidth != null) return {width:w.innerWidth,Height:w.innerHeight};
 
-    var d = w.document;
+    let d = w.document;
     if (window.document.compatMode === "CSS1Compat")
       return {width:d.documentElement.clientWidth, height:d.documentElement.clientHeight};
 
     return {width:d.body.clientWidth, height:d.body.clientHeight};
   };
 
-
-
-  // some new Date methods
-/*TODO Scrap this if no side effect
-  Date.prototype.nextMonth = function nextMonth(n) {
-    // return a date that is one month ahead than date
-    var d = new Date(this);
-    d.setMonth(d.getMonth()+(n||1));
-    return d;
-  };
-
-  Date.prototype.nextYear = function nextYear(n) {
-    // return a date that is one month ahead than date
-    var d = new Date(this);
-    d.setFullYear(d.getFullYear()+(n||1));
-    return d;
-  };
-
-  Date.prototype.adjustDay = function AdjustDay(day) {
-    // return a date that is the same month but different day if day is not undefined
-    var d = new Date(this);
-    d.setDate(day);
-    return d;
-  };
-*/
   Date.prototype.yyyymmdd = function () {
     // return the date in yyyy-mm-dd format
     return this.getFullYear()+'-'+tb.pad(this.getMonth()+1,2)+'-'+tb.pad(this.getDate(),2);
@@ -68,13 +43,13 @@
   Date.prototype.hhh_mm = function () {
     // return a duration in a number of hours and minutes
     // even if the duration is month, it will be expressed as hours
-    var t = this.valueOf();
-    var ms = t % 1000;
+    let t = this.valueOf();
+    let ms = t % 1000;
     t = (t - ms) / 1000;
-    var s = t % 60;
+    let s = t % 60;
     t = (t -s) / 60;
-    var min = t % 60;
-    var hhh = (t - min) / 60;
+    let min = t % 60;
+    let hhh = (t - min) / 60;
     return hhh.toString()+'h '+tb.pad(min,2)+'m';
   };
 
@@ -93,7 +68,7 @@
     //          if not specified, search in tb.tbContent$ i.e the document
 
     content$ = content$ || tb.tbContent$;
-    var items$;
+    let items$;
     if (url === undefined) {
       items$ = $('[itemscope=""]',content$);
     }
@@ -112,10 +87,10 @@
     // returns this.path1.path2.path3 or undefined if at any stage it becomes undefined
     // and search also in this.parent is case of undefined property
     // enables a cascad search of a property
-    var o = this;
+    let o = this;
     while (o) {
-      var subO = o;
-      for (var i=0;i<arguments.length;i++){
+      let subO = o;
+      for (let i=0;i<arguments.length;i++){
         subO = subO[arguments[i]];
         if (subO === undefined) break;
       }
@@ -128,9 +103,10 @@
 
   tb.set = function(value /*,path*/) {
     // set the value of the property of this.path1.path2... and creates, if needed the intermediate objects
-    var o = this;
-    for (var i=1;i<arguments.length-1;i++) {
-      var p = o[arguments[i]];
+    let o = this;
+    let i;
+    for (i=1;i<arguments.length-1;i++) {
+      let p = o[arguments[i]];
       if (p === undefined) {
         o = o[arguments[i]] = {};
       }
@@ -172,14 +148,14 @@
 
   tb.hsl = function(h,s,l) {
     // return a string 'rgb(...)' for h:hue s:saturation l:luminosity
-    var color = tb.hue(h); //TODO integrate s,l
+    let color = tb.hue(h); //TODO integrate s,l
     return 'rgb('+color.r+','+color.g+','+color.b+')';
   };
 
 
   tb.summary = function(obj) {
     // return a 1 line summary of obj
-    var l;
+    let l;
     if ($.isFunction(obj)) {
       l = tb.signature(obj);
     }
@@ -203,7 +179,7 @@
     // return an heir of p
     if (p==null) throw TypeError();
     if (Object.create) return Object.create(p);
-    var t=typeof p;
+    let t=typeof p;
     if (t !== "object" && t !== "function") throw TypeError();
     function F() {
     }
@@ -228,8 +204,8 @@
   tb.keys = function(obj) {
     // returns an Array with all keys (=non inherited properties) of an object
     // replacement for ECMA5
-    var res = [];
-    for (var k in obj) {
+    let res = [];
+    for (let k in obj) {
       if (obj.hasOwnProperty(k)) res.push(k);
     }
     return res;
@@ -237,8 +213,8 @@
 
   tb.values = function(obj) {
     // returns an Array with all values of all non inherited properties of an object
-    var res = [];
-    for (var k in obj) {
+    let res = [];
+    for (let k in obj) {
       if (obj.hasOwnProperty(k)) res.push(obj[k]);
     }
     return res;
@@ -247,8 +223,8 @@
   tb.copy = function(obj) {
     // makes a copy of obj this version only copies the first level
     // does not copy any inheritance (result is an Object instance)
-    var o = {};
-    for (var k in obj) {
+    let o = {};
+    for (let k in obj) {
       o[k] = obj[k]
     }
     return o;
@@ -258,7 +234,7 @@
     // return true if obj is matching criteria
     // - criteria: an object specifying the values of some properties {prop1:value1,....}
     criteria = criteria || {};
-    for (var k in criteria) {
+    for (let k in criteria) {
       if (obj[k] !== criteria[k]) return false;
     }
     return true;
@@ -268,7 +244,7 @@
     // find the first object in the array (or array like) of object a that has all criteria true
     // example tb.findInArrayOfObject({toto:5},[{toto:1,tutu:5},{toto:5}])
     // will return 1
-    for (var i=0; i<a.length; i++) {
+    for (let i=0; i<a.length; i++) {
       if (tb.objMatchCriteria(a[i],criteria)) return i;
     }
     return -1;
@@ -295,13 +271,13 @@
     // - search
     // - arguments (object param=values of search)
     // if url is an ordinary file name it is first transformed to an url with file:///
-    var url = urlOrFileName.replace(/\\/g,'/');
+    let url = urlOrFileName.replace(/\\/g,'/');
     if (/file:|http[s]?:|mailto:|ftp:/i.test(url)==false) url='file:///'+url;
     // you can test this regex at https://regex101.com/r/8f4HUA/1/
-    var urlSplitRegExp = /(\w+):((\/\/((\w+):(\w+)@)?([\w\.]+)(:(\w+))?)|(\/\/\/(\w:)?))?(\/.+\/)?([^\?\#]+)?(\?([^\#]+))?(\#(\w+))?/;
-    var comp = url.match(urlSplitRegExp);
+    let urlSplitRegExp = /(\w+):((\/\/((\w+):(\w+)@)?([\w\.]+)(:(\w+))?)|(\/\/\/(\w:)?))?(\/.+\/)?([^\?\#]+)?(\?([^\#]+))?(\#(\w+))?/;
+    let comp = url.match(urlSplitRegExp);
     if (comp == null) throw new Error(url+" doesn't look like an URL");
-    var res = {};
+    let res = {};
     res.protocol = comp[1];
     res.user     = comp[5];
     res.password = comp[6];
@@ -312,7 +288,7 @@
     res.fullFileName = comp[13] || '';
     res.search   = comp[15] || '';
     res.tag      = comp[17] || '';
-    var m = res.fullFileName.match(/((.*)\.(\w+$))|(.*)/);
+    let m = res.fullFileName.match(/((.*)\.(\w+$))|(.*)/);
     res.fileName = m[2] || m[4] || '';
     res.ext      = m[3] || '';
     if (res.drive) {
@@ -321,18 +297,20 @@
     else {
       res.absolutePath = res.protocol+'://'+res.domain+res.path;
     }
-    var args = {};
-    var pairs = res.search.split("&");
-    for (var i=0;i< pairs.length;i++) {
-      var pos = pairs[i].indexOf("=");
-      if (pos == -1) {
-        var name = pairs[i];
-        if (name == '') continue;
-        var value = true;
+    let args = {};
+    let pairs = res.search.split("&");
+    for (let i=0;i< pairs.length;i++) {
+      let value;
+      let name;
+      let pos = pairs[i].indexOf("=");
+      if (pos === -1) {
+        name = pairs[i];
+        if (name === '') continue;
+        value = true;
       }
       else {
-        var name = pairs[i].substring(0,pos);
-        var value= decodeURIComponent(pairs[i].substring(pos+1));
+        name = pairs[i].substring(0,pos);
+        value= decodeURIComponent(pairs[i].substring(pos+1));
       }
       args[name] = value;
     }
@@ -342,14 +320,14 @@
 
   tb.fileName = function(url) {
     // return the fileName.ext of url (or os file)
-    var comp = tb.urlComponents(url);
+    let comp = tb.urlComponents(url);
     return comp.fullFileName;
   };
 
   tb.absoluteFileName = function (relativeFileName,path) {
     // return a absolute path+filename combining the absolute path and the relative fileName
     // TODO implement all .\ : yet works only if relativeFileName has no path
-    var comp = tb.urlComponents(relativeFileName);
+    let comp = tb.urlComponents(relativeFileName);
     if (comp.path === '') {
       return path+comp.fileName+'.'+comp.ext;
     }
@@ -390,9 +368,9 @@
     // supress all jqueryxxx="yy" attributes in html, since they are meaningless for the user and also compromise the testability
     // since they depend on the context
 
-    var reg = /(.*?)(<.+?>)/g;
-    var res,lastIndex=0;
-    var result = '';
+    let reg = /(.*?)(<.+?>)/g;
+    let res,lastIndex=0;
+    let result = '';
     while ((res = reg.exec(html)) != null) {
       result += res[1]+res[2].replace(/\s*?jQuery\d+="\d"/g,'');
       lastIndex = res.lastIndex;
@@ -403,7 +381,7 @@
   tb.htmlToText = function(html) {
     // transform the html content (from innerHTML) to a string as if this content is a text editor
     // removes any tags other than <BR> and <P>
-    var res = html
+    let res = html
               .replace(/<BR>/ig,'\n')
               .replace(/<P>/ig,'\n\n')
               .replace(/<.+?>/g,"")
@@ -479,7 +457,7 @@
   //TODO should be deprecated
   tb.htmlAttribute = function(attr,value) {
     // return a string as found in html tag for the attribute attr assigning a value
-    var h = ' '+attr+'='+(typeof value == 'number'?value:'"'+tb.toHtml(value).replace(/"/g,'&quote;')+'"');
+    let h = ' '+attr+'='+(typeof value == 'number'?value:'"'+tb.toHtml(value).replace(/"/g,'&quote;')+'"');
     return h;
   };
 
@@ -500,7 +478,7 @@
 
   tb.signature = function(func) {
     // returns only the signature of the function
-    var m = func.toString().match(/(function.*?\))/);
+    let m = func.toString().match(/(function.*?\))/);
     if (m) return m[0];
     return func.toString();
   };

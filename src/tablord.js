@@ -24,7 +24,7 @@ if (!process.browser) {
     if (name === undefined) return;
 
     this.name =name;
-    var lu = name.match(/(^.+)\$(.+)/);
+    let lu = name.match(/(^.+)\$(.+)/);
     if (lu !== null) {
       this.label = lu[1];
       this.unit  = lu[2];
@@ -49,15 +49,16 @@ if (!process.browser) {
     // return the value of the variable
     // if the variable is in fact a function, executes the function and return its value
     if (this.func) {
-      var row = this.row && this.row._;
+      let res;
+      let row = this.row && this.row._;
       try {
-        var res = this.func(row,this.col);
+        res = this.func(row,this.col);
       }
       catch (err) {
         err.lineNumber = tb.errorLine(err)-this.func.lineOffset;
         err.columnNumber = tb.errorCol(err)-this.func.colOffset;
         if (this.sourceElement) tb.showElementError(this.sourceElement,err);
-        var cascadeError = new Error('error in evaluation of '+this.fullName());
+        let cascadeError = new Error('error in evaluation of '+this.fullName());
         cascadeError.cascade = (err.cascade || 0)+1;
         throw cascadeError;
       }
@@ -85,7 +86,7 @@ if (!process.browser) {
 
   tb.Var.prototype.moment = function() {
     // return a clone of the moment represented by the value
-    var m = this.valueOf();
+    let m = this.valueOf();
     if (!moment.isMoment(m)) throw Error('tb.Var '+this.name+' was expected to be a moment. '+m+' found instead');
     return moment(this.valueOf());
   };
@@ -101,7 +102,7 @@ if (!process.browser) {
     // return the most explicit name either as a global variable
     // or as a cell of a table
     if (this.name) return this.name;
-    var table = this.row && this.row.table;
+    let table = this.row && this.row.table;
     return (table.name?table.name:anonymous_table)+'['+this.row.index+','+this.col+']';
   };
   
@@ -137,13 +138,13 @@ if (!process.browser) {
     // implementation of the [[tb.EditableObject.prototype.setEditableValue]]
     this.setValue(editor.value);
     tb.setModified(true);
-    var obj = this;
+    let obj = this;
     window.setTimeout(function(){obj.updateCode();tb.run()},0);
   };
 
   tb.Var.prototype.updateCode = function() {
     // implementation of the [[tb.EditableObject.prototype.updateCode]]
-    var code = 'v('+tb.toJSCode(this.name)+','+this.toJSCode()+')';
+    let code = 'v('+tb.toJSCode(this.name)+','+this.toJSCode()+')';
     this.codeElement.innerHTML = tb.toHtml(code+'.edit()');
   };
 
@@ -176,12 +177,12 @@ if (!process.browser) {
 
     if (typeof tbFunc == "string") {
       try {
-        var code = tbFunc;
+        let code = tbFunc;
         if (tbFunc.search(/return/)=== -1) {
           tbFunc.replace(/^\s*\{(.*)\}\s*$/,'({$1})');
           code = 'return '+tbFunc;
         }
-        var f = new Function('rowData','col','value','with (tb.vars){with(rowData||{}) {\n'+code+'\n}}');
+        let f = new Function('rowData','col','value','with (tb.vars){with(rowData||{}) {\n'+code+'\n}}');
         f.userCode = tbFunc;
         f.toString = function(){return this.userCode};
         f.toJson = function(){return 'f('+JSON.stringify(this.userCode)+')'};
@@ -209,7 +210,7 @@ if (!process.browser) {
     this._ = {};
     this.table = table;
     if (obj.isRow) obj = obj._;
-    for (var k in obj) {
+    for (let k in obj) {
       if (obj.hasOwnProperty(k)) {
         this.setCell(k,obj[k]);
       }
@@ -222,7 +223,7 @@ if (!process.browser) {
   };
 
   tb.Row.prototype.val = function(col) {
-    var c = this._[col];
+    let c = this._[col];
     if (c===undefined) return undefined;
     if ((c instanceof Date) || moment.isMoment(c) || moment.isDuration(c)) return this._[col];
     return this._[col].valueOf();
@@ -230,7 +231,7 @@ if (!process.browser) {
 
   tb.Row.prototype.setCell = function (col,value) {
     if (typeof value == "function") {
-      var value = new tb.Var(undefined,value);  //wrap the function into a V
+      let value = new tb.Var(undefined,value);  //wrap the function into a V
     }
     if (value && value.isVar) {
       value.row = this;       //and assign the _row,_col
@@ -246,7 +247,7 @@ if (!process.browser) {
 
   tb.Row.prototype.eachCol = function(func) {
     // func must be function(colname,colObject)
-    for (var col in this._) {
+    for (let col in this._) {
       func(col,this._[col]);
     }
     return this;
@@ -256,14 +257,14 @@ if (!process.browser) {
     // apply a reduce function on a column
     // criteria is an optional object that list all fields that have to be processed
     // {field1:1,field2:1....}
-    var first = true;
-    var r;
+    let first = true;
+    let r;
     if (initialValue !== undefined) {
       r = initialValue;
       first = false;
     }
-    for (var colName in this._) {
-      var value = this.val(colName);
+    for (let colName in this._) {
+      let value = this.val(colName);
       if ((criteria===undefined)|| (colName in criteria)) {
         if (first) {
           r = value;
@@ -294,18 +295,18 @@ if (!process.browser) {
 
   tb.Row.prototype.average = function(criteria) {
     // return the average of the row
-    var sc = this.reduce(colName,tb.reduce.sumCount,criteria,{sum:0,count:0});
+    let sc = this.reduce(colName,tb.reduce.sumCount,criteria,{sum:0,count:0});
     return sc.sum/sc.count;
   };
 
   tb.Row.prototype.rms = function(colName,criteria) {
     // return the root mean square of the row
-    var sc = this.reduce(colName,tb.reduce.sumCount,criteria,{sum:0,count:0});
+    let sc = this.reduce(colName,tb.reduce.sumCount,criteria,{sum:0,count:0});
     return Math.sqrt(sc.sum/sc.count);
   };
 
   tb.Row.prototype.toJSCode = function() {
-    var e = [];
+    let e = [];
     this.eachCol(function(colName,colObject){
       e.push(tb.toJSCode(colName)+':'+tb.toJSCode(colObject));
     });
@@ -320,15 +321,15 @@ if (!process.browser) {
         options.cols[col]=1;
       });
     }
-    var h = '<table><thead><tr>';  // TODO modify to style
-    var col;
+    let h = '<table><thead><tr>';  // TODO modify to style
+    let col;
     for (col in options.cols) {
       h += '<th>'+col+'</th>';
     }
     h += '</tr></thead><tbody>';
     h += '<tr>';
     for (col in options.cols) {
-      var cell = this._[col];
+      let cell = this._[col];
       h += (col==="_id")?'<th>'+cell+'</th>':'<td>'+tb.format(cell)+'</td>';
     }
     h += '</tr></tbody></table>';
@@ -336,7 +337,7 @@ if (!process.browser) {
   };
 
   tb.Row.prototype.list = function() {
-    var h = '<table>';
+    let h = '<table>';
     this.eachCol(function (col,val) {h += '<tr><th>'+col+'</th><td>'+val+'</td></tr>'});
     return tb.html(h+'</table>');
   };
@@ -367,7 +368,7 @@ if (!process.browser) {
     this.pk = undefined;
     this.pks = {};
     this.cols = {};
-    var leftStyle = function(table,row,col,value,style){if (typeof value!=='number') style.textAlign='left'};
+    let leftStyle = function(table,row,col,value,style){if (typeof value!=='number') style.textAlign='left'};
     leftStyle.toString = function(){return 'left for not numbers'};
     this.options = {tableStyle:{},
                     styles:[leftStyle],
@@ -396,7 +397,7 @@ if (!process.browser) {
 
   tb.Table.prototype.registerPk = function(row) {
     if (this.pk !== undefined) {
-      var pkVal = row.cell(this.pk).valueOf();
+      let pkVal = row.cell(this.pk).valueOf();
       if (this.pks[pkVal]===undefined){
         this.pks[pkVal] = row;
       }
@@ -410,7 +411,7 @@ if (!process.browser) {
     // set the primary key colName
     this.pk = pkCol;
     this.pks = {};
-    for (var i=0;i<this.length;i++) {
+    for (let i=0;i<this.length;i++) {
       this.registerPk(this[i]);
     }
     return this;
@@ -423,7 +424,7 @@ if (!process.browser) {
     // defValue is the value that is used when a new Row is added and that column is not defined
     // it can be a JavaScript value (number, object.. or an f(tbFunc)
     // the style if set will call colStyle
-    var c = new tb.Col(name);
+    let c = new tb.Col(name);
     this.cols[name]=c;
     this.options.defValues[name]=defValue;
     c.defValue = defValue;
@@ -436,7 +437,7 @@ if (!process.browser) {
     // normally for internal use only
     // return the table for command chaining
 
-    for (var col in withRow._) {
+    for (let col in withRow._) {
       if (this.cols[col]===undefined) {
         this.cols[col] = new tb.Col(col);
         if ($.inArray(col,this.options.colOrder)===-1) this.options.colOrder.push(col);
@@ -454,7 +455,7 @@ if (!process.browser) {
     }
 
     order = this.options.colOrder.concat(); // make a copy
-    for (var col in this.cols) {
+    for (let col in this.cols) {
       if ($.inArray(col,this.options.colOrder)===-1) order.push(col);
     }
     return order;
@@ -465,7 +466,7 @@ if (!process.browser) {
     // if visible = true or undefined,  ensure this columns are visible if it exist
     // if visible = false, ensure this columns are hidden
     // if visible = null,  reset to the default (specialy for View)
-    var i;
+    let i;
     if (visible === null) {
       for (i in columns) {
         delete this.options.visibleCols[columns[i]];
@@ -507,7 +508,7 @@ if (!process.browser) {
     // add multiple rows
     // rows must be an array or array-like of objects
     // columns are ajusted automatically
-    for (var i=0; i<rows.length; i++) {
+    for (let i=0; i<rows.length; i++) {
       this.add(rows[i]);
     }
     return this;
@@ -522,9 +523,9 @@ if (!process.browser) {
     // if keepOnlyValue == true
 
     this.forEachRow(function(i,row){
-      for (var colName in cols) {
+      for (let colName in cols) {
         if (keepOnlyValue) {
-          var val = cols[colName];
+          let val = cols[colName];
           if (typeof val === 'function') val = val.call(row,row._,colName);
           if (val !== null) row.setCell(colName,val);
         }
@@ -533,7 +534,7 @@ if (!process.browser) {
         }
       }
     });
-    for (var colName in cols) {
+    for (let colName in cols) {
       if (this.cols[colName]===undefined) {
         this.cols[colName] = new tb.Col();
         if ($.inArray(colName,this.options.colOrder)===-1) this.options.colOrder.push(colName);
@@ -546,7 +547,7 @@ if (!process.browser) {
     // execute func for each row of the table
     // func must be function(i,row) in which this represents the Row object
     // return the table for command chaining
-    for (var i=0; i<this.length; i++) {
+    for (let i=0; i<this.length; i++) {
       func(i,this[i])
     }
     return this;
@@ -564,7 +565,7 @@ if (!process.browser) {
 
   tb.Table.prototype.val = function(row,col) {
     // return the VALUE of the cell: if a function, this function is calculated first
-    var c=this.cell(row,col);
+    let c=this.cell(row,col);
     if (c===undefined) return undefined;
     if (moment.isMoment(c) || moment.isDuration(c)) return c; // don't touch otherwise converted to number
     return c.valueOf();
@@ -573,14 +574,14 @@ if (!process.browser) {
   tb.Table.prototype.reduce = function(colName,reduceF,criteria,initialValue) {
     // apply a reduce function on a column
     // criteria is an optional f(tbFunc) that process only row that return true
-    var first = true;
-    var r;
+    let first = true;
+    let r;
     if (initialValue !== undefined) {
       r = initialValue;
       first = false;
     }
-    for (var i=0;i<this.length;i++) {
-      var value = this.val(i,colName);
+    for (let i=0;i<this.length;i++) {
+      let value = this.val(i,colName);
       if ((criteria===undefined)||tb.objMatchCriteria(this[i]._,criteria)) {
         if (first) {
           r = value;
@@ -611,13 +612,13 @@ if (!process.browser) {
 
   tb.Table.prototype.average = function(colName,criteria) {
     // return the average of the column
-    var sc = this.reduce(colName,tb.reduce.sumCount,criteria,{count:0,sum:0});
+    let sc = this.reduce(colName,tb.reduce.sumCount,criteria,{count:0,sum:0});
     return sc.sum/sc.count;
   };
 
   tb.Table.prototype.rms = function(colName,criteria) {
     // return the root mean square of the column
-    var sc = this.reduce(colName,tb.reduce.sumCount,criteria,{count:0,sum:0});
+    let sc = this.reduce(colName,tb.reduce.sumCount,criteria,{count:0,sum:0});
     return Math.sqrt(sc.sum/sc.count);
   };
 
@@ -626,7 +627,7 @@ if (!process.browser) {
       this.cols[col] = new tb.Col(col);
       if ($.inArray(col,this.options.colOrder==-1)) this.options.colOrder.push(col);
     }
-    var r;
+    let r;
     if (typeof row === 'number') {
       r = this[row];
     }
@@ -652,13 +653,13 @@ if (!process.browser) {
   tb.Table.prototype.lookup = function(criteria) {
     // return the data of the first row matching the criteria
 
-    var row = this.findFirst(criteria);
+    let row = this.findFirst(criteria);
     if (row) return row._;
     return {}; // if not found, return empty data, so it can still be dereferenced
   };
 
   tb.Table.prototype.tableStyle = function(style) {
-    for (var attr in style) {
+    for (let attr in style) {
       this.options.tableStyle[attr] = style[attr];
     }
     return this;
@@ -670,7 +671,7 @@ if (!process.browser) {
     //       or a function(data,col,value) where this represents the row object which is compatible with f("tbFunc")
     //       and which return an object of css parameters
 
-    var fStyle = function(table,row,col,value,compoundStyle) {
+    let fStyle = function(table,row,col,value,compoundStyle) {
       if (col === colName) {
         $.extend(true,compoundStyle,typeof style === 'function'?style.call(row,row._,col,value):style);
       }
@@ -682,8 +683,8 @@ if (!process.browser) {
 
   tb.Table.prototype.rowStyle = function(style,rowNumber){
     // set the style for a row
-    var expRow = this[rowNumber];
-    var fStyle = function(table,row,col,value,compoundStyle) {
+    let expRow = this[rowNumber];
+    let fStyle = function(table,row,col,value,compoundStyle) {
       if (row === expRow) {
         $.extend(true,compoundStyle,typeof style === 'function'?style.call(row,row._,col,value):style);
       }
@@ -699,7 +700,7 @@ if (!process.browser) {
     // .style(newStyle,undefined,colName) will set the default style for a column
     // .style(newStyle,rowNumber,colName) will set the style for a given cell
     // newStyle can either be an object {cssAttr=val,...} or a function(table,rowNumber,colName)
-    var fStyle;
+    let fStyle;
     if ((rowNumber === undefined) && (colName === undefined)){
       fStyle = function(table,row,col,value,compoundStyle) {
         $.extend(true,compoundStyle,typeof newStyle === 'function'?newStyle.call(row,row._,col,value):newStyle);
@@ -717,7 +718,7 @@ if (!process.browser) {
       return this;
     }
 
-    var expRow = this[rowNumber];
+    let expRow = this[rowNumber];
     fStyle = function(table,row,col,value,compoundStyle) {
       if ((row === expRow) && (col === colName)) {
         $.extend(true,compoundStyle,typeof newStyle === 'function'?newStyle.call(row,row._,col,value):newStyle);
@@ -731,8 +732,8 @@ if (!process.browser) {
 
   tb.Table.prototype.compoundStyle = function(row,colName,value) {
     // calculate the compound style for a given cell
-    var style = (this.parent && this.parent.compoundStyle(row,colName,value)) || {};
-    for (var i=0;i<this.options.styles.length;i++) {
+    let style = (this.parent && this.parent.compoundStyle(row,colName,value)) || {};
+    for (let i=0;i<this.options.styles.length;i++) {
       this.options.styles[i](this,row,colName,value,style);
     }
     return style;
@@ -746,9 +747,9 @@ if (!process.browser) {
     //      col3: function(a,b) {... // any function that compare a and b and returns >0 if a>b, <0 if a<b, 0 if a==b
     // return the table for command chaining
     function order(a,b) {
-      for (var col in cols) {
+      for (let col in cols) {
         if (typeof cols[col] == 'function') {
-          var res = cols[col](a.cell(col),b.cell(col));
+          let res = cols[col](a.cell(col),b.cell(col));
           if (res !== 0) return res;
         }
         if (a.cell(col) > b.cell(col)) return  cols[col];
@@ -766,8 +767,8 @@ if (!process.browser) {
     // the rows of this view ARE THE ORIGINAL ROWS
     // any function in a cell still refer to the original table.
 
-    var view = new tb.View(this);
-    for (var i=0; i<this.length; i++) {
+    let view = new tb.View(this);
+    for (let i=0; i<this.length; i++) {
       if (tb.objMatchCriteria(this[i]._,criteria)){
         view[view.length++] = this[i];
       }
@@ -778,7 +779,7 @@ if (!process.browser) {
   tb.Table.prototype.findFirst = function(criteria) {
     // mongoDB find() as if the table was a small mongoDB
     // return the first Row of this table that match the criteria
-    for (var i=0; i<this.length; i++) {
+    for (let i=0; i<this.length; i++) {
       if (tb.objMatchCriteria(this[i]._,criteria)){
         return this[i];
       }
@@ -791,7 +792,7 @@ if (!process.browser) {
   };
 
   tb.Table.prototype.toJSCode = function() {
-    var e = [];
+    let e = [];
     this.forEachRow(function(i,row){
       e.push(row.toJSCode())
     });
@@ -800,25 +801,25 @@ if (!process.browser) {
 
   tb.Table.prototype.node$ = function() {
     // display the table without its name
-    var t$ = $('<table/>').css(this.options.tableStyle || {});
-    var h$ = $('<thead/>');
-    var b$ = $('<tbody/>');
-    var r$ = $('<tr/>');
-    var colOrder = this.colOrder();
-    var i;
+    let t$ = $('<table/>').css(this.options.tableStyle || {});
+    let h$ = $('<thead/>');
+    let b$ = $('<tbody/>');
+    let r$ = $('<tr/>');
+    let colOrder = this.colOrder();
+    let i;
     for (i in colOrder) {
       if (this.options.visibleCols[colOrder[i]] !== false) r$.append('<th>'+colOrder[i]+'</th>');
     }
     h$.append(r$);
-    for (var rowNumber=0;rowNumber<this.length;rowNumber++) {
-      var row = this[rowNumber];
+    for (let rowNumber=0;rowNumber<this.length;rowNumber++) {
+      let row = this[rowNumber];
       r$ = $('<tr/>');
       for (i in colOrder) {
-        var col = colOrder[i];
+        let col = colOrder[i];
         if (this.options.visibleCols[col] !== false) {
-          var val = row.val(col);
-          var cell$ = col===this.pk?$('<th></th>'):$('<td></td>');
-          var style = this.compoundStyle(row,col,val);
+          let val = row.val(col);
+          let cell$ = col===this.pk?$('<th></th>'):$('<td></td>');
+          let style = this.compoundStyle(row,col,val);
           cell$.html(tb.format(val,style)).css(style);
           r$.append(cell$);
         }
@@ -836,7 +837,7 @@ if (!process.browser) {
 
   tb.Table.prototype.view = function() {
     //display the table, including its name in a <div>
-    var table = this;
+    let table = this;
     return {node$:function(){return $('<div>').append('<var>'+table.name+'</var>').append(table.node$())}};
   };
 
@@ -852,13 +853,13 @@ if (!process.browser) {
     this.codeElement = tb.output.codeElement;
     $(this.codeElement).addClass('AUTOEDIT').attr('tbObject',this.name);
 
-    var h = '<div><var>'+this.name+'</var><table><tr><th>#</th>';
-    var col;
+    let h = '<div><var>'+this.name+'</var><table><tr><th>#</th>';
+    let col;
     for (col in this.cols) {
       h += '<th>'+col+'</th>';
     }
     h += '</tr>';
-    for (var row=0; row<this.length; row++) {
+    for (let row=0; row<this.length; row++) {
       h += '<tr><th draggable=true>'+row+'</th>';
       for (col in this.cols) {
         h += '<td>'+tb.editor.html(this.cell(row,col),{tbObject:this.name,'tbRow':row,tbCol:col})+'</td>';
@@ -876,7 +877,7 @@ if (!process.browser) {
   tb.Table.prototype.setEditableValue = function(editor) {
     this.setCell(Number(editor.attr('tbRow')),editor.attr('tbCol'),editor.value);
     tb.setModified(true);
-    var obj = this;
+    let obj = this;
     window.setTimeout(function(){obj.updateCode();tb.run()},0);
   };
 
@@ -884,8 +885,8 @@ if (!process.browser) {
   tb.Table.prototype.updateCode = function() {
     // generate the code that represents the element as edited
     // can be used to replace the existing code
-    var code = 'table('+JSON.stringify(this.name)+')\n';
-    for (var i=0; i<this.length; i++) {
+    let code = 'table('+JSON.stringify(this.name)+')\n';
+    for (let i=0; i<this.length; i++) {
       code += '.add('+this[i].toJSCode()+')\n';
     }
     this.codeElement.innerHTML = tb.toHtml(code+'.edit()');
@@ -923,7 +924,7 @@ if (!process.browser) {
                     visibleCols:tb.heir(parent.options.visibleCols)
                    };
     this.cols = {};
-    for (var col in parent.cols) this.cols[col] = new tb.Col(col,this);
+    for (let col in parent.cols) this.cols[col] = new tb.Col(col,this);
   };
   tb.View.className = 'tb.View';
 
@@ -1012,7 +1013,7 @@ if (!process.browser) {
   tb.newOutput = function(codeElement,outputElement) {
     // outputElement is, if specified, the Element where HTML will be dumped
     //         element is essential if HTML uses the finalize() method
-    h = new tb.HTML();
+    let h = new tb.HTML();
     h.codeElement = codeElement;
     h.outputElement = outputElement;
     h.span = function(){return ''};  // so that if a statment ends with an output, it will no show the output twice
@@ -1028,10 +1029,11 @@ if (!process.browser) {
     this.htmlCode = html || '';
     this.tagsEnd = [];
   };
+
   tb.HTML.className = 'tb.HTML';
 
   tb.HTML.prototype.asNode = function() {
-    var html = this;
+    let html = this;
     return {node$:function() {return $(html.toString())},html:html}
   };
 
@@ -1047,10 +1049,10 @@ if (!process.browser) {
   tb.HTML.prototype.toAscii = function() {
     // same as toString(), but no character is bigger than &#255; every such a character is transformed into &#xxx;
     // Needed for this /&ç&"@ activeX of FileSystem
-    var h = this.toString();
-    var asciiH = '';
-    var i = 0;
-    var last = 0;
+    let h = this.toString();
+    let asciiH = '';
+    let i = 0;
+    let last = 0;
     while (i <= h.length) {
       c = h.charCodeAt(i);
       if (c> 255) {
@@ -1081,7 +1083,7 @@ if (!process.browser) {
     if (e1.length !== e2.length) {
       this.htmlCode += '<span class=DIFFSAME>e1.length=='+e1.length+' != e2.length=='+e2.length+'</span>';
     }
-    for (var i=0; (i<e1.length) && (i<e2.length); i++) {
+    for (let i=0; (i<e1.length) && (i<e2.length); i++) {
       if (e1.charAt(i) !== e2.charAt(i)) break;
     }
     this.htmlCode += '<span class=DIFFSAME>'+e1.slice(0,i)+'</span><br>e1:<span class=DIFFERENT>'+e1.slice(i)+'</span><br>e2:<span class=DIFFERENT>'+e2.slice(i)+'</span>';
@@ -1092,7 +1094,7 @@ if (!process.browser) {
     if (e1.length !== e2.length) {
       this.htmlCode += '<span class=DIFFERENT>e1.length=='+e1.length+' != e2.length=='+e2.length+'</span>';
     }
-    for (var i=0; (i<e1.length) && (i<e2.length); i++) {
+    for (let i=0; (i<e1.length) && (i<e2.length); i++) {
       if (e1.charAt(i) !== e2.charAt(i)) break;
     }
     this.htmlCode += '<span class=DIFFSAME>'+tb.toHtml(e1.slice(0,i))+'</span><br>e1:<span class=DIFFERENT>'+tb.toHtml(e1.slice(i))+'</span><br>e2:<span class=DIFFERENT>'+tb.toHtml(e2.slice(i))+'</span>';
@@ -1146,21 +1148,21 @@ if (!process.browser) {
     // adds to the html <tagNameAndAttributes>span of all elements</tagName>
     // if element is empty, only adds <tagNameAndAttributes> and push the
     // closing </tagName> on the stack waiting for an .end()
-    var elements = [];
-    for (var i = 1; i<arguments.length; i++) elements.push(arguments[i]);
+    let elements = [];
+    for (let i = 1; i<arguments.length; i++) elements.push(arguments[i]);
     this._tag(tagNameAndAttributes,elements);
     return this;
   };
 
   tb.HTML.prototype._tag = function(tagNameAndAttributes ,elements) {
     this.htmlCode += '<'+tagNameAndAttributes+'>';
-    var tagEnd = '</'+tagNameAndAttributes.split(' ')[0]+'>';
+    let tagEnd = '</'+tagNameAndAttributes.split(' ')[0]+'>';
     if ((elements === undefined) || (!elements.length)) {
       this.tagsEnd.push(tagEnd);
       return this;
     }
-    for (var i=0;i<elements.length;i++) {
-      var e = elements[i];
+    for (let i=0;i<elements.length;i++) {
+      let e = elements[i];
       if (e.span) {
         this.htmlCode += e.span();
       }
@@ -1183,7 +1185,7 @@ if (!process.browser) {
 
   tb.HTML.prototype.inspect = function(/*objects*/) {
     // adds to the HTML object the inspection of all objects passed in parameters
-    for (var i=0; i<arguments.length; i++) {
+    for (let i=0; i<arguments.length; i++) {
       this.htmlCode += tb.inspect(arguments[i]).span();
     }
     return this;
@@ -1192,7 +1194,7 @@ if (!process.browser) {
 
 
   tb.HTML.prototype.sendTo = function(jquerySelector){
-    var that = this;
+    let that = this;
     $(jquerySelector).each(function(i,e){e.innerHTML = that.html});
     return this
   };
@@ -1335,7 +1337,7 @@ if (!process.browser) {
 
   tb.IElement.prototype.applyForceToAll = function(iElements,force) {
     // apply a force between this and each element of iElements
-    for (var i = 0;i<iElements.length;i++) {
+    for (let i = 0;i<iElements.length;i++) {
       this.applyForceWith(iElements[i],force);
     }
   };
@@ -1364,13 +1366,13 @@ if (!process.browser) {
   tb.IElement.prototype.animate = function(deltaT$ms) {
     // calculate all forces on this element, then calculate a new acceleration, speed and position
 
-    var deltaT = (deltaT$ms || 100)/1000;
-    var friction = {x:0,y:0,u:1};
-    var thisElement = this;
+    let deltaT = (deltaT$ms || 100)/1000;
+    let friction = {x:0,y:0,u:1};
+    let thisElement = this;
 
     $.each(this.forces,function(name,forceFunc){
       if (!forceFunc) return;
-      var fe=forceFunc(thisElement,thisElement.scene[name]);
+      let fe=forceFunc(thisElement,thisElement.scene[name]);
       thisElement.f.x += fe.x;
       thisElement.f.y += fe.y;
     });
@@ -1430,7 +1432,7 @@ if (!process.browser) {
     k = k !== undefined ? k:1;
     d = d !== undefined ? d:100;
     return function springForce(thisElement,otherElement) {
-      var f = {};
+      let f = {};
       f.delta = {x:otherElement.p.x-thisElement.p.x,y:otherElement.p.y-thisElement.p.y};
       f.dist = Math.sqrt(Math.pow(f.delta.x,2)+Math.pow(f.delta.y,2));
       f.force = (f.dist-d)*k;
@@ -1452,7 +1454,7 @@ if (!process.browser) {
     //
     k = k !== undefined ? k:1;
     return function springForce(thisElement,otherElement) {
-      var f = {};
+      let f = {};
       f.dist = otherElement.p.y-thisElement.p.y;
       f.x = 0;
       f.y = f.dist*k;
@@ -1462,9 +1464,9 @@ if (!process.browser) {
 
   tb.repulseForce = function repulseForce(iE1,iE2) {
   // standard repulse force between 2 elements
-    var dist2 = tb.dist2(iE1.p,iE2.p);
-    var k = 100;
-    var f = {x:0,y:0};
+    let dist2 = tb.dist2(iE1.p,iE2.p);
+    let k = 100;
+    let f = {x:0,y:0};
     if (dist2 > 0) {
       f.x = (iE1.p.x-iE2.p.x) / dist2 * k;
       f.y = (iE1.p.y-iE2.p.y) / dist2 * k;
@@ -1482,8 +1484,8 @@ if (!process.browser) {
   tb.repulseIElements = function(iElements,repulsionForce){
   // repulse all iElements between them by repulseForce
 
-    for (var i = 0;i<iElements.length;i++) {
-      for (var j = i+1;j<iElements.length;j++) {
+    for (let i = 0;i<iElements.length;i++) {
+      for (let j = i+1;j<iElements.length;j++) {
         iElements[i].applyForceWith(iElements[j],repulsionForce);
       }
     }
@@ -1492,9 +1494,9 @@ if (!process.browser) {
   tb.repulseAndCenterIElements = function(iElements,repulsionForce,centripetalForce,center){
   // repulse all iElements between them by repulseForce
   // and attract all to center {x,y}
-    var iECenter = {f:{x:0,y:0},p:center};
-    for (var i = 0;i<iElements.length;i++) {
-      for (var j = i+1;j<iElements.length;j++) {
+    let iECenter = {f:{x:0,y:0},p:center};
+    for (let i = 0;i<iElements.length;i++) {
+      for (let j = i+1;j<iElements.length;j++) {
         iElements[i].applyForceWith(iElements[j],repulsionForce);
       }
       iElements[i].applyForceWith(iECenter,centripetalForce);
@@ -1593,7 +1595,7 @@ if (!process.browser) {
   // it does'nt destroy the iElement itself
   // but it also detach the DOM element so it is no longer part of the DOM tree
     if (iElement === undefined) return this;
-    var pos = $.inArray(iElement,this);
+    let pos = $.inArray(iElement,this);
     if (pos === -1) throw new Error ("can't remove iElement "+iElement.name+" from scene "+this.name+" since it doesn't belongs to that scene");
     Array.prototype.splice.call(this,pos,1);
     delete this[iElement.name];
@@ -1603,7 +1605,7 @@ if (!process.browser) {
 
   tb.Scene.prototype.animate = function(deltaT$ms) {
     deltaT$ms = deltaT$ms || 100;
-    var i;
+    let i;
     for (i = 0;i<this.length;i++) {
       this[i].prepareAnimation();
     }
@@ -1620,7 +1622,7 @@ if (!process.browser) {
   tb.scene = function(name,css) {
     // creates a new Scene and return a fake IElement that has scene as "parent"
     // so that method chaining is only done at IElement level
-    var scene = new tb.Scene(name,css);
+    let scene = new tb.Scene(name,css);
     tb.vars[name] = scene;
     return scene;
   };
@@ -1639,12 +1641,12 @@ if (!process.browser) {
 
   tb.Cloud.prototype.animate = function(deltaT$ms) {
     deltaT$ms = deltaT$ms || 100;
-    var center = {x:this.width()/2,y:this.height()/2};
-    var t = 0;
-    var l = 0;
-    var b = this.height();
-    var r = this.width();
-    var i;
+    let center = {x:this.width()/2,y:this.height()/2};
+    let t = 0;
+    let l = 0;
+    let b = this.height();
+    let r = this.width();
+    let i;
     for (i = 0;i<this.length;i++) {
       this[i].prepareAnimation();
     }
@@ -1657,7 +1659,7 @@ if (!process.browser) {
   };
 
   tb.cloud = function(name,css){
-    var cloud = new tb.Cloud(name,css);
+    let cloud = new tb.Cloud(name,css);
     tb.vars[name] = cloud;
     return cloud;
   };
@@ -1665,8 +1667,8 @@ if (!process.browser) {
   // helpers /////////////////////////////////////////////
 
   function range(min,max) {    //TODO devrait être un itérateur, mais n'existe pas encore dans cette version
-    var a = [];
-    for (var i = min; i <= max; i++) {
+    let a = [];
+    for (let i = min; i <= max; i++) {
       a.push(i);
     }
     return a;

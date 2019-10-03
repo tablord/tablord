@@ -52,8 +52,8 @@
     // undo the last action
     // return the caption of the undo action or undefined if nothing to undo
     if (this.undoStack.length === 0) return undefined;
-    var action = this.undoStack.pop();
-    for (var i = action.steps.length-1; i>=0;i--) {
+    let action = this.undoStack.pop();
+    for (let i = action.steps.length-1; i>=0;i--) {
       action.steps[i].undo(action.steps[i]);
     }
     this.redoStack.push(action);
@@ -64,8 +64,8 @@
     // redo the last undone action
     // return the caption of the redo action or undefined if nothing to undo
     if (this.redoStack.length === 0) return undefined;
-    var action = this.redoStack.pop();
-    for (var i = 0; i< action.steps.length;i++) {
+    let action = this.redoStack.pop();
+    for (let i = 0; i< action.steps.length;i++) {
       action.steps[i].redo(action.steps[i]);
     }
     this.undoStack.push(action);
@@ -74,8 +74,8 @@
   
   tb.UndoSystem.prototype.span = function() {
     // display the UndoSystem
-    var h = '<h2>redo</h2>';
-    for (var i=0;i<this.redoStack.length;i++){
+    let h = '<h2>redo</h2>';
+    for (let i=0;i<this.redoStack.length;i++){
       h += '<p>'+this.redoStack[i].caption+'</p>';
     }
     h += '<h2>undo</h2>';
@@ -92,7 +92,7 @@
 
   $.fn.undoableAddClass = function(className) {
     // limited version of $.addClass, but that also register in undo the necessary object
-    var elements$ = this.not('.'+className).addClass(className); // be sure to take only what will change
+    let elements$ = this.not('.'+className).addClass(className); // be sure to take only what will change
     tb.undo.add({undo:function(){elements$.removeClass(className)},  //thanks closures!!
                  redo:function(){elements$.addClass(className)}
     });
@@ -101,7 +101,7 @@
 
   $.fn.undoableRemoveClass = function(className) {
     // limited version of $.removeClass, but that also register in undo the necessary object
-    var elements$ = this.not('.'+className).removeClass(className); // be sure to take only what will change
+    let elements$ = this.not('.'+className).removeClass(className); // be sure to take only what will change
     tb.undo.add({undo:function(){elements$.addClass(className)},  //thanks closures!!
                  redo:function(){elements$.removeClass(className)}
     });
@@ -112,8 +112,8 @@
     // limited version of $.attr(), but that also register in undo the necessary object
     // this must be a single element
     console.assert(this.length===1,'undoableAttr can operate only on single element');
-    var element$ = this;
-    var oldValue = element$.attr(attribute);
+    let element$ = this;
+    let oldValue = element$.attr(attribute);
     element$.attr(attribute,value);
     tb.undo.add({undo:function(){if(oldValue===undefined) element$.removeAttr(attribute); else element$.attr(attribute,oldValue)},
                  redo:function(){element$.attr(attribute,value)}
@@ -125,8 +125,8 @@
     // limited version of $.prop(), but that also register in undo the necessary object
     // this must be a single element
     console.assert(this.length===1,'undoableProp can operate only on single element');
-    var element$ = this;
-    var oldValue = element$.prop(attribute);
+    let element$ = this;
+    let oldValue = element$.prop(attribute);
     element$.prop(attribute,value);
     tb.undo.add({undo:function(){if(oldValue===undefined) element$.removeProp(property); else element$.prop(property,oldValue);},
                  redo:function(){element$.prop(property,value)}
@@ -138,34 +138,51 @@
     // same as $.insertAfter(target$) but can be undone
     
     this.each(function(){
-      var element$ = $(this);
-      var n$ = element$.next();
-      if (n$.length) tb.undo.add({undo:function(){element$.insertBefore(n$)},
-                                  redo:function(){element$.insertBefore(target$)} });
-      else // no previous sibling ==> prepend to parent
-        var p$ = element$.parent();
-        tb.undo.add({undo:function(){element$.appendTo(p$)},
+      let element$ = $(this);
+      let n$ = element$.next();
+      if (n$.length){
+        tb.undo.add({undo:function(){element$.insertBefore(n$)},
                      redo:function(){element$.insertBefore(target$)} });
+      }
+      else { // no previous sibling ==> prepend to parent
+        let p$ = element$.parent();
+        tb.undo.add({
+          undo: function () {
+            element$.appendTo(p$)
+          },
+          redo: function () {
+            element$.insertBefore(target$)
+          }
+        });
+      }
       element$.insertBefore(target$);
     });
     
-  }
+  };
   
   $.fn.undoableInsertAfter = function(target$) {
     // same as $.insertAfter(target$) but can be undone
     
     this.each(function(){
-      var element$ = $(this);
-      var p$ = element$.prev();
-      if (p$.length) tb.undo.add({undo:function(){element$.insertAfter(p$)},
-                                  redo:function(){element$.insertAfter(target$)} });
-      else // no previous sibling ==> prepend to parent
-        var p$ = element$.parent();
-        tb.undo.add({undo:function(){element$.prependTo(p$)},
-                     redo:function(){element$.insertAfter(target$)} });
+      let element$ = $(this);
+      let p$ = element$.prev();
+      if (p$.length)  {
+        tb.undo.add({undo:function(){element$.insertAfter(p$)},
+          redo:function(){element$.insertAfter(target$)} });
+      }
+      else {// no previous sibling ==> prepend to parent
+        let p$ = element$.parent();
+        tb.undo.add({
+          undo: function () {
+            element$.prependTo(p$)
+          },
+          redo: function () {
+            element$.insertAfter(target$)
+          }
+        });
+      }
       element$.insertAfter(target$);
     });
-    
-  }
+  };
   
   

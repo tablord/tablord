@@ -10,21 +10,21 @@
 
 Date.prototype.nextMonth = function nextMonth(n) {
   // return a date that is one month ahead than date
-  var d = new Date(this);
+  let d = new Date(this);
   d.setMonth(d.getMonth()+(n||1));
   return d;
 }
 
 Date.prototype.nextYear = function nextYear(n) {
   // return a date that is one month ahead than date
-  var d = new Date(this);
+  let d = new Date(this);
   d.setFullYear(d.getFullYear()+(n||1));
   return d;
 }
 
 Date.prototype.adjustDay = function AdjustDay(day) {
   // return a date that is the same month but different day if day is not undefined
-  var d = new Date(this);
+  let d = new Date(this);
   d.setDate(day);
   return d;
 }
@@ -82,7 +82,7 @@ jc.finance.Order.prototype.name = function(name) {
   // return this for method chaining.
 
   name = name || this._name;
-//  if (jc.vars[name] !== undefined) {   *** TODO: ne fonctionne pas car v n'est pas vidé à chaque execution: à réflechir pour vider v
+//  if (jc.vars[name] !== undefined) {   *** TODO: ne fonctionne pas car v n'est pas vidï¿½ ï¿½ chaque execution: ï¿½ rï¿½flechir pour vider v
 //    throw new Error('impossible to register an object with .name("'+name+'") since such a name already exists');
 //  }
   jc.vars[name] = this;
@@ -92,9 +92,9 @@ jc.finance.Order.prototype.name = function(name) {
 jc.finance.Order.prototype.convertTo = function(currency) {
   // for internal use only: add a new amount$curency field to all ._payments if needed
   if ((currency == undefined) || (currency == this._currency)) return this;
-  var amountField = 'amount$'+this._currency;
-  var toAmountField = 'amount$'+currency;
-  for (var i in this._payments) {
+  let amountField = 'amount$'+this._currency;
+  let toAmountField = 'amount$'+currency;
+  for (let i in this._payments) {
     this._payments[i][toAmountField] = jc.Units.convert(this._payments[i][amountField],this._currency,currency);
   }
   return this;
@@ -111,7 +111,7 @@ jc.finance.Order.prototype.execute = function(currency,date) {
   // if currency != undefined, also creates a field for that currency if needed
   // if date != undefined calls .setDate(date) to change the date
   // returns an array of one single payment
-  var p = {date : date || this._date,subject : this._subject};
+  let p = {date : date || this._date,subject : this._subject};
   p[this._amountField] = this._amount;
   if (this._budgetAdjustment) p.budgetAdjustment = true;
   this._payments = [p];  // overkill to use an array for one single payment, but enables to use generic convertTo
@@ -175,7 +175,7 @@ jc.finance.Account.prototype.account = function(name,currency,startDate,endDate)
     currency = currency || this._currency;
     startDate= new Date(startDate || this._startDate);
     endDate = new Date(endDate || this._endDate);
-    var account = new jc.finance.Account(name,currency,startDate,endDate,this);
+    let account = new jc.finance.Account(name,currency,startDate,endDate,this);
     this._orders.push(account);
     return account;
   }
@@ -193,7 +193,7 @@ jc.finance.Account.prototype.budget = function(name,initialBudget,currency,start
     currency = currency || this._currency;
     startDate= new Date(startDate || this._startDate);
     endDate = new Date(endDate || this._endDate);
-    var budget = new jc.finance.Budget(name,initialBudget,currency,startDate,endDate,this);
+    let budget = new jc.finance.Budget(name,initialBudget,currency,startDate,endDate,this);
     this._orders.push(budget);
     return budget;
   }
@@ -209,7 +209,7 @@ jc.finance.Account.prototype.task = function(name,initialBudget,currency,startDa
     currency = currency || this._currency;
     startDate= new Date(startDate || this._startDate);
     endDate = new Date(endDate || this._endDate);
-    var task = new jc.finance.Task(name,initialBudget,currency,startDate,endDate,this);
+    let task = new jc.finance.Task(name,initialBudget,currency,startDate,endDate,this);
     this._orders.push(task);
     return task;
   }
@@ -239,7 +239,7 @@ jc.finance.Account.prototype.monthly = function(startDate,endDate) {
   // returns the new PermanentOrders for method chainning
   startDate = new Date(startDate || this._startDate);
   endDate = new Date(endDate || this._endDate);
-  var permanentOrders = new jc.finance.PermanentOrders(startDate,endDate,this);
+  let permanentOrders = new jc.finance.PermanentOrders(startDate,endDate,this);
   permanentOrders._nextDate = Date.prototype.nextMonth;
   this._orders.push(permanentOrders);
   return permanentOrders;
@@ -250,10 +250,10 @@ jc.finance.Account.prototype.update = function() {
   // as records are shared between the different levels of cashFlow 
   // this function has to be called before reading any balance field
   // as Account, it takes into account only true payments, not budgetAdjustments
-  var balance = 0;
-  var amountField = 'amount$'+this._currency;
+  let balance = 0;
+  let amountField = 'amount$'+this._currency;
   this._payments.sort(function(a,b){return a.date-b.date});
-  for (var i in this._payments) {
+  for (let i in this._payments) {
     if (this._payments[i].budgetAdjustment==undefined) {
       balance += this._payments[i][amountField];
       this._payments[i][this._balanceField] = balance;
@@ -273,7 +273,7 @@ jc.finance.Account.prototype.execute = function(currency) {
   // returns the array of ._payments
 
   this._payments = [];
-  for (var i in this._orders){
+  for (let i in this._orders){
     this._payments = this._payments.concat(this._orders[i].execute(this._currency))
   }
   this.convertTo(currency);
@@ -284,11 +284,11 @@ jc.finance.Account.prototype.execute = function(currency) {
 jc.finance.Account.prototype.span = function(options) {
   this.execute(); 
   this.update();
-  var p = this._payments;
+  let p = this._payments;
   if (!options || !options.showBudgetAdjustmentInAccount) {
     p=$.grep(p,function(payment,i) {return !payment.budgetAdjustment});
   }
-  var t = table().addRows(p).sort({date:1});
+  let t = table().addRows(p).sort({date:1});
   options = $.extend(true,{},jc.defaults,{cols:t._cols,format:jc.finance.defaults.format},{cols:{date:1,subject:{style:"text-align:left;"}}},options);
   return jc.html('<var>'+this._name+'</var>'+t.span(options));
 }
@@ -315,15 +315,15 @@ jc.finance.Budget.prototype.update = function() {
   // as Budget, it takes into account all payments and budgetAdjustments
   // it also calculated the internal fields ._totalBudget and ._totalPaid
 
-  var balance = 0;
-  var amountField = this._amountField;
+  let balance = 0;
+  let amountField = this._amountField;
   this._totalBudget = 0;
   this._totalPaid = 0;
   this._firstPayment = undefined;
   this._lastPayment = undefined;
   this._payments.sort(function(a,b){return a.date-b.date});
-  for (var i in this._payments) {
-    var p = this._payments[i];
+  for (let i in this._payments) {
+    let p = this._payments[i];
     balance += p[amountField];
     p[this._balanceField] = balance;
     if (p.budgetAdjustment) {
@@ -343,14 +343,14 @@ jc.finance.Budget.prototype.span = function(options) {
 
   options = $.extend(true,{},jc.defaults,{format:jc.finance.defaults.format,tasks:0,payments:1,summary:1},options);
 
-  var h = '<var>'+this._name+'</var>';
+  let h = '<var>'+this._name+'</var>';
   if (options.tasks) {
     h += '<fieldset><legend>tasks</legend>'+this.collectInfo('taskSummary').span($.extend(true,{},options,{cols:{name:{className:'LEFT'},'*':1}}))+'</fieldset>';
   }
   
   if (options.payments) {
-    var p = this._payments;
-    var t = table().addRows(p).sort({date:1});
+    let p = this._payments;
+    let t = table().addRows(p).sort({date:1});
     h += '<fieldset><legend>payments</legend>'+t.span(options)+'</fieldset>';
   }
 
@@ -399,9 +399,9 @@ jc.finance.Budget.prototype._burningRate$_ms = function() {
   if ((this._firstPayment === undefined) || (this._firstPayment === this._lastPayment)) {
     return this._burning$_ms || NaN;
   }
-  var deltaP = this._totalPaid + this._firstPayment[this._amountField];
-  var deltaT = this._lastPayment.date - this._firstPayment.date;
-  var burnrate = deltaP/deltaT;
+  let deltaP = this._totalPaid + this._firstPayment[this._amountField];
+  let deltaT = this._lastPayment.date - this._firstPayment.date;
+  let burnrate = deltaP/deltaT;
   return burnrate;
 }
 
@@ -410,11 +410,11 @@ jc.finance.Budget.prototype._estimatedEndDate = function() {
     return this._doneDate;
   }
   if ((this._firstPayment === undefined) || (this._firstPayment === this._lastPayment)) {
-    var estDate = new Date(this._startDate.valueOf() + (this._totalBudget/this._burningRate$_ms()));
+    let estDate = new Date(this._startDate.valueOf() + (this._totalBudget/this._burningRate$_ms()));
     return estDate;
   }
-  var stillToBePaid = this._totalBudget - this._totalPaid;
-  var estDate = new Date(this._lastPayment.date.valueOf() + (stillToBePaid/this._burningRate$_ms()));
+  let stillToBePaid = this._totalBudget - this._totalPaid;
+  let estDate = new Date(this._lastPayment.date.valueOf() + (stillToBePaid/this._burningRate$_ms()));
   return estDate;
 }
   
@@ -457,7 +457,7 @@ jc.finance.PermanentOrders.prototype.pay = function(subject,amount,currency,day)
   // pays within the permanent odrer the amount for that subject
   // currency is by default the currency of the permanent order
 
-  var o = new jc.finance.Order(undefined,subject,-amount,currency || this._currency);
+  let o = new jc.finance.Order(undefined,subject,-amount,currency || this._currency);
   o.setDate = function(date) {this._date=this.date.adjustDate(day);return this};
   this._orders.push(o);
   return this;
@@ -467,9 +467,9 @@ jc.finance.PermanentOrders.prototype.execute = function(currency) {
   // execute all Orders of this PermanentOrders for every date of the PermanentOrders
   // returns all resulting payments, adding an amount$currency field if necessary
   this._payments = [];
-  for (var date = new Date(this._startDate);date <= this._endDate;date = this._nextDate.call(date)) {
-    for (var i in this._orders) {
-      var res = this._orders[i].execute(this._currency,date);
+  for (let date = new Date(this._startDate);date <= this._endDate;date = this._nextDate.call(date)) {
+    for (let i in this._orders) {
+      let res = this._orders[i].execute(this._currency,date);
       this._payments = this._payments.concat(res);
     }
   }

@@ -18,7 +18,7 @@ if (!process.browser) {
     // update the index by adding all methods of object and all static methods of object
     // using path as base path. path must include the .
 
-    for (var prop in object) {
+    for (let prop in object) {
       if (typeof object[prop] == 'function') {
         this.index.push({prop:prop,path:path,func:object[prop]});
         if (object[prop].className===path+prop) {
@@ -43,13 +43,13 @@ if (!process.browser) {
     // return all entry corresponding to `name`: name can be partial
     // if name is a full path (ie. tb.help) the result is an exact match
     // if not (ie no . notation) any entry having name inside is valid
-    var res = [];
-    var i;
-    var m = name.match(/^(.+\.)(.*)$/i);
+    let res = [];
+    let i;
+    let m = name.match(/^(.+\.)(.*)$/i);
 
     if (m) { // fully specified search ==> only one result
-      var path = m[1];
-      var prop = m[2];
+      let path = m[1];
+      let prop = m[2];
       for (i=0;i<this.index.length;i++) {
         if ((this.index[i].prop === prop) && (this.index[i].path === path)) {
           res.push(this.index[i]);
@@ -58,7 +58,7 @@ if (!process.browser) {
       }
     }
     else { // free search
-      var regExp = new RegExp('^(.*)('+name+')(.*)$','i');
+      const regExp = new RegExp('^(.*)('+name+')(.*)$','i');
       // first priority is find in prop
       for (i=0;i<this.index.length;i++) {
         if ((this.index[i].prop.search(regExp)!==-1) ||
@@ -79,7 +79,7 @@ if (!process.browser) {
   tb.HelpIndex.prototype.back = function() {
     // return on the previous search
     if (this.historyPos>=0){
-      var name = this.history[this.historyPos--];
+      const name = this.history[this.historyPos--];
       tb.menu.helpSearch$.val(name);
       tb.menu.helpOutput$.html(tb.help.index.help$(name));
     }
@@ -88,19 +88,19 @@ if (!process.browser) {
   tb.HelpIndex.prototype.help$ = function(name) {
     // return the jquery in order to display the result of the search of `name`
     name = name.replace(/[\$\^\[\]\(\)\\]/g,'\\$&'); // fix chars that have a special meaning for regExp
-    var regExp = new RegExp('^(.*)('+name+')(.*)$','i');
-    var res = this.find(name);
-    var n$ = $('<table style="margin-right:30px">');  //TODO: remove this magic number that reserves the space for the scroll bar (check with HTML5)
+    let regExp = new RegExp('^(.*)('+name+')(.*)$','i');
+    let res = this.find(name);
+    let n$ = $('<table style="margin-right:30px">');  //TODO: remove this magic number that reserves the space for the scroll bar (check with HTML5)
     try {
-      var l = res.length;
+      let l = res.length;
       if (l>30) {
         l = 30;
         n$.append('<tr><td class="WARNING LEFT" colspan=2>'+res.length+' results: only '+l+' first results displayed</td></tr>');
       }
 
-      for (var i = 0; i<l; i++) {
-        var path = res[i].path.replace(/([\$\w]+)/ig,'<span class=HELPLINK>$1</span>');
-        var desc = res[i].func?tb.help(res[i].func):tb.help.markDownToHtml(res[i].desc);
+      for (let i = 0; i<l; i++) {
+        let path = res[i].path.replace(/([\$\w]+)/ig,'<span class=HELPLINK>$1</span>');
+        let desc = res[i].func?tb.help(res[i].func):tb.help.markDownToHtml(res[i].desc);
         n$.append($('<TR><TD valign="top" class=LEFT>'+path+res[i].prop.replace(regExp,'$1<b>$2</b>$3')+'</TD><TD class=LEFT>'+desc+'</TD></TR>'));
       }
     }
@@ -114,8 +114,8 @@ if (!process.browser) {
     // return a list of index entries of function that are potential Classes (start with uppercase)
     // without proper documentation (ie. className property defined on the constructor)
     // for maintenance only
-    var res = [];
-    for (var i = 0;i<this.index.length; i++) {
+    let res = [];
+    for (let i = 0;i<this.index.length; i++) {
       if (tb.isConstructorName(this.index[i].prop)){
         if (this.index[i].func && (this.index[i].func.className !== (this.index[i].path+this.index[i].prop))) {
           res.push(this.index[i]);
@@ -129,9 +129,9 @@ if (!process.browser) {
   tb.HelpIndex.prototype.badlyDocumentedFunctions = function() {
     // return a list of index entries of function that are badly documented
     // for maintenance only
-    var res = '<table>';
-    var problems;
-    for (var i = 0;i<this.index.length; i++) {
+    let res = '<table>';
+    let problems;
+    for (let i = 0;i<this.index.length; i++) {
       if (this.index[i].func && (problems = tb.help.docQualityProblems(this.index[i].func))) {
         res += '<tr><th>'+this.index[i].path+this.index[i].prop+'</th><td class=LEFT>'+problems+'</td></tr>';
       }
@@ -148,10 +148,10 @@ if (!process.browser) {
   //         followed by the content of the .[[help]]() static method of func if any
   // func: the function to be inspected
     if (func===undefined) return new tb.HTML('general help to be implemented');
-    var source = func.toString().split('\n');
-    var comments = [];
-    var signature = tb.signature(func);
-    var parameters = signature.replace(/(\/\*.*?\*\/)/g,'')   // remove comments /*...*/
+    let source = func.toString().split('\n');
+    let comments = [];
+    let signature = tb.signature(func);
+    let parameters = signature.replace(/(\/\*.*?\*\/)/g,'')   // remove comments /*...*/
                               .replace(/\s+/,'')              // remove any spaces
                               .replace(/^.*\((.*)\).*$/,'$1'); // keep only what is between ()
     if (parameters === '') parameters = undefined;
@@ -162,30 +162,30 @@ if (!process.browser) {
       comments.push('');
     }
 
-    for (var i=1; i<source.length; i++) {
-      var comment = source[i].match(/^\s*\/\/(.*)/);
+    for (let i=1; i<source.length; i++) {
+      let comment = source[i].match(/^\s*\/\/(.*)/);
       if (comment && (comment.length ==2)) {
         comments.push(comment[1]);
       }
       else break;
     }
-    var methods = '';
+    let methods = '';
     if (func.className) {
       methods = '<fieldset><legend>methods</legend><table>';
-      for (var m in func.prototype) {
+      for (let m in func.prototype) {
         if ((m !== 'constructor') && (typeof func.prototype[m] === 'function')){
           methods += '<tr><th valign="top">'+m+'</th><td valign="top" style="text-align:left;">'+tb.help(func.prototype[m],true)+'</td></tr>';
         }
       }
       methods += '</table></fieldset><fieldset><legend>static methods</legend><table>';
-      for (var m in func) {
+      for (let m in func) {
         if (typeof func[m] === 'function'){
           methods += '<tr><th valign="top">'+m+'</th><td valign="top" style="text-align:left;">'+tb.help(func[m],true)+'</td></tr>';
         }
       }
       methods += '</table></fieldset>';
     }
-    var h = new tb.HTML('<SPAN class=HELP><b>'+signature+'</b><br/>'+tb.help.markDownToHtml(comments,parameters)+(func.help?func.help():'')+methods+'</SPAN>');
+    let h = new tb.HTML('<SPAN class=HELP><b>'+signature+'</b><br/>'+tb.help.markDownToHtml(comments,parameters)+(func.help?func.help():'')+methods+'</SPAN>');
     return h;
   };
   tb.help.level = 0;
@@ -197,14 +197,15 @@ if (!process.browser) {
     // any line starting with .xxxx or - xxxx will be considered as a definition
     // .property describes the property
     // - parameter describes the parameter
-    var h = '';
+    let h = '';
+    let parameterRegExp;
     if (parameters && (parameters.length > 0)) {
-      var parameterRegExp = new RegExp('(\\W)('+parameters.join('|')+')(\\W)','g');
+      parameterRegExp = new RegExp('(\\W)('+parameters.join('|')+')(\\W)','g');
     }
     else {
-      var parameterRegExp = /ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©ÃƒÆ’¶ very improbable string that never match/g;
+      parameterRegExp = /ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©ÃƒÆ’¶ very improbable string that never match/g;
     }
-    for (var i = 0; i<markDownLines.length; i++) {
+    for (let i = 0; i<markDownLines.length; i++) {
       h += markDownLines[i]
       .replace(/^\s+(\.\S+)/,'<dt>$1<dd>')
       .replace(/^\s+- +(\S+)/,'<dt>$1<dd>')
@@ -224,15 +225,15 @@ if (!process.browser) {
     // returns null if everything is ok
     //         or an HTML object listing all problems found
     // - func: the function to check
-    var problems = new tb.HTML();
+    let problems = new tb.HTML();
 
-    var source = func.toString().split('\n');
-    var comments = [];
-    var signature = tb.signature(func);
-    var parameters = signature.replace(/(\/\*.*?\*\/)/g,'').replace(/^.*\((.*)\).*$/,'$1').split(',');
+    let source = func.toString().split('\n');
+    let comments = [];
+    let signature = tb.signature(func);
+    let parameters = signature.replace(/(\/\*.*?\*\/)/g,'').replace(/^.*\((.*)\).*$/,'$1').split(',');
 
-    for (var i=1; i<source.length; i++) {
-      var comment = source[i].match(/^\s*\/\/(.*)$/);
+    for (let i=1; i<source.length; i++) {
+      let comment = source[i].match(/^\s*\/\/(.*)$/);
       if (comment && (comment.length ==2)) {
         comments.push(comment[1]);
       }
@@ -245,7 +246,7 @@ if (!process.browser) {
 
     comment = comments.join(' ');
 
-    for (var i in parameters) {
+    for (let i in parameters) {
       if (comment.search(parameters[i]) === -1) problems.li('parameter '+parameters[i]+' is not described');
     }
 

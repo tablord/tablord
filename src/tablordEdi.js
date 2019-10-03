@@ -77,7 +77,7 @@
         				'<button id="codeId" type="button" class="btn btn-outline-dark">no selection</button>'+
         				'<button id="mark" class="btn btn-dark" title="mark the selected element"><i class="far fa-check-square"></i></button>'+
         				'<button id="cut" class="btn btn-dark" title="cut marked elements"><i class="fas fa-cut"></i></button>'+
-        				'<button id="paste" class="btn btn-dark title="paste cut/marked elements" where="after"><i class="fas fa-paste"></i></button>'+
+        				'<button id="paste" class="btn btn-dark" title="paste cut/marked elements" data-where="after"><i class="fas fa-paste"></i></button>'+
         				'<button id="delete" class="btn btn-dark" title="delete marked/selected element"><i class="fas fa-trash"></i></button>'+
         				'<button id="moveUp" class="btn btn-dark" title="move selected before previous block element"><i class="fas fa-arrow-up"></i></button>'+
         				'<button id="moveDown" class="btn btn-dark" title="move selected after next block element"><i class="fas fa-arrow-down"></i></button>'+
@@ -86,13 +86,13 @@
         				'<button id="showHtml" class="btn btn-dark">&#8594;html</button>'+
         				'<button id="toTest" class="btn btn-dark">&#8594;test</button>'+
                     '</div>'+
-        			'<div id="insertAfter" class="btn-group btn-group-sm mr-2" role="group" where="after">'+
-                        '<button id="insertSection" class="btn btn-dark" title="section" template="https://tablord.com/templates/section">'+
+        			'<div id="insertAfter" class="btn-group btn-group-sm mr-2" role="group" data-where="after">'+
+                        '<button id="insertSection" class="btn btn-dark" title="section" data-template="https://tablord.com/templates/section">'+
         					'<i class="fas fa-heading"></i></button>'+
-        				'<button id="insertRichText" class="btn btn-dark" title="Text" template="https://tablord.com/templates/richText">'+
+        				'<button id="insertRichText" class="btn btn-dark" title="Text" data-template="https://tablord.com/templates/richText">'+
         					'<i class="fas fa-paragraph"></i></button>'+
         				'<button id="cloneEmpty" class="btn btn-dark" title="empty copy of selected element"><i class="far fa-clone"></i></button>'+
-                        '<button id="insertCode" class="btn btn-dark" title="code" template="https://tablord.com/templates/code">{}</button>'+
+                        '<button id="insertCode" class="btn btn-dark" title="code" data-template="https://tablord.com/templates/code">{}</button>'+
                         '<button id="insertTemplate" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">...</button>'+
         				'<div id="templateChoice" class="dropdown-menu"></div>'+
         			'</div>'+
@@ -165,7 +165,7 @@
     $('body').prepend(tb.menu.$);
     // for easier access and better perf
     $('[id]',tb.menu.$).each(function(){
-      var e$ = $(this);
+      const e$ = $(this);
       if (tb[this.id+'Click']) e$.click(tb[this.id+'Click']); // if a corresponding function bind it
       else if (tb.actions[this.id]) e$.click(tb.actions[this.id]); // else if a corresponding action is found, bind it to click
 
@@ -196,10 +196,10 @@
     tb.menu.funcEditor = ace.edit('func');
     //tb.menu.funcEditor.session.setMode("ace/mode/javascript"); TODO remove if it works
     tb.menu.funcEditor.on('blur',function(){
-      var code = tb.menu.funcEditor.getValue();
-      if (code != tb.selected.element$.attr('func')) {
-        if (code) tb.selected.element$.attr('func',code);
-        else tb.selected.element$.removeAttr('func');
+      const code = tb.menu.funcEditor.getValue();
+      if (code != tb.selected.element$.attr('data-code')) {
+        if (code) tb.selected.element$.attr('data-code',code);
+        else tb.selected.element$.removeAttr('data-code');
         tb.run();
         tb.setModified(true);
       }
@@ -211,7 +211,7 @@
     });
     tb.menu.classes$.click(function(event){
       $(event.currentTarget).children().each(function(){
-        var className = $(this).val();
+        const className = $(this).val();
         if (className) {
            tb.selected.element$.toggleClass(className,$(this).prop('checked'));
         }
@@ -241,21 +241,21 @@
 
   tb.showCodeClick = function(event) {
     // click event handler for the show Code checkbox
-    var button = event.target;
+    const button = event.target;
     $('.CODE').toggleClass('HIDDEN',!button.checked);
     tb.sheetOptions.showCode = button.checked;
   };
 
   tb.showCutClick = function(event) {
     // click event handler for the show cut checkbox
-    var button = event.target;
+    const button = event.target;
     $('.CUT').toggleClass('HIDDEN',!button.checked);
     tb.sheetOptions.showCut = button.checked;
   };
 
   tb.showDeletedClick = function(event) {
     // click event handler for the show cut checkbox
-    var checkbox = event.target;
+    const checkbox = event.target;
     if (checkbox.checked) $('.DELETED').show(300);
     else $('.DELETED').hide(300);
     tb.sheetOptions.showDeleted = checkbox.checked;
@@ -263,21 +263,21 @@
   
   tb.showTestClick = function(event) {
     // click event handler for the show test checkbox
-    var button = event.target;
+    const button = event.target;
     $('.TEST').toggleClass('HIDDEN',!button.checked);
     tb.sheetOptions.showTest = button.checked;
   };
 
   tb.showTraceClick = function(event) {
     // click event handler for the show trace checkbox
-    var button = event.target;
+    const button = event.target;
     $('.TRACE').toggleClass('HIDDEN',!button.checked);
     tb.sheetOptions.showTrace = button.checked;
   };
 
   tb.setAutoRunClick = function(event) {
     // click event handler for the auto run checkbox
-    var button = event.target;
+    const button = event.target;
     tb.autoRun = button.checked;
     $('body').attr('autoRun',tb.autoRun);
   };
@@ -292,9 +292,9 @@
     // paste cut elements after the selected element
     // if intoItemscope == true it will paste right after the selected element even if target$ is inside an itemscope
     // otherwise will paste after the parent itemscope
-    var elements$ = $('.CUT').removeClass('CUT');
+    const elements$ = $('.CUT').removeClass('CUT');
     if (elements$.length === 0) elements$ = tb.cloneElements$($('.MARKED').removeClass('MARKED'));
-    var target$ = intoItemscope?tb.selected.element$:tb.selected.element$.itemscopeOrThis$().last();
+    const target$ = intoItemscope?tb.selected.element$:tb.selected.element$.itemscopeOrThis$().last();
     elements$.insertAfter(target$);
   };
 
@@ -333,7 +333,7 @@
     return this;
   };
   
-  tb.actions.hideHelp = function(event) {
+  tb.actions.hideHelp = function() {
     tb.menu.helpPanel$.hide(300);
     return this;
   };
@@ -345,7 +345,7 @@
 
   tb.markClick = function(event) {
     // simple version marks only Selected Element
-    var target$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
+    const target$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
     tb.actions.mark(target$);
   };
   
@@ -354,7 +354,7 @@
     // if there are [[MARKED]] [[ELEMENT]], will cut them
     // if element is inside an [[itemscope]], will cut the entire itemscope
     // except if the Alt Key is pressed where it will only take the ELEMENT
-    var elements$ = $('.MARKED');
+    let elements$ = $('.MARKED');
     if (elements$.length ===0) elements$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
     tb.actions.cutBlock(elements$);
   };
@@ -362,9 +362,9 @@
   tb.actions.delete = function(intoItemscope) {
     // look for MARKED elements or if none for SELECTED element
     // and add the DELETED class
-    var elements$ = $('.MARKED');
+    let elements$ = $('.MARKED');
     if (elements$.length === 0) elements$ = intoItemscope?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
-    var deleted$ = elements$.find('.DELETED').addBack('.DELETED'); // search for deleted elements including itself
+    const deleted$ = elements$.find('.DELETED').addBack('.DELETED'); // search for deleted elements including itself
     if (deleted$.length) { // some elements in the selection are deleted, so undelete those
       deleted$.removeClass('DELETED').show(500);
       return;
@@ -390,9 +390,9 @@
     // clone MARKED or the selected.element$
     // the text of the cloned element are cleared
     // if intoItemscope is true, work at the element level, not itemscope level
-    var elements$ = $('.MARKED');
+    let elements$ = $('.MARKED');
     if (elements$.length === 0) elements$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
-    var target$ = intoItemscope?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
+    let target$ = intoItemscope?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
     tb.cloneElements$(elements$,true).insertAfter(target$);
   };
 
@@ -413,9 +413,9 @@
   };
 
   tb.templateButtonClick = function(event) {
-    var where = $(event.target).closest('[where]').attr('where');
+    let where = $(event.target).closest('[data-where]').attr('data-where');
     if (!event.altKey) where += 'Itemscope';
-    var template = $(event.target).closest('[template]').attr('template');
+    let template = $(event.target).closest('[data-template]').attr('data-template');
     tb.actions.insertTemplate(template,where);
     //event.stopPropagation(); // in order to have embedded buttons like the drop down menu
                              // otherwise the event will be treated twice issue #13
@@ -424,10 +424,10 @@
   tb.showHtmlClick = function(event) {
     //TODO prettify the html before compare
     if (tb.selected.element$.hasClass('CODE')) {
-      var out = tb.selected.element$.children('.OUTPUT')[0] || {id:'no output',innerHTML:''};
-      var test = tb.selected.element$.children('.TEST')[0] || {id:'no test',innerHTML:''};
-      var hout  = out.innerHTML;
-      var htest = test.innerHTML;
+      let out = tb.selected.element$.children('.OUTPUT')[0] || {id:'no output',innerHTML:''};
+      let test = tb.selected.element$.children('.TEST')[0] || {id:'no test',innerHTML:''};
+      let hout  = out.innerHTML;
+      let htest = test.innerHTML;
       diff = tb.diff(hout,htest).span().toString();
       $('#showHtmlBody').html(
         '<fieldset><legend>'+tb.selected.element.id+'</div></legend><div  class=CODEEXAMPLE>'+tb.toHtml(tb.selected.element.outerHTML)+'</fieldset>'+
@@ -458,7 +458,7 @@
 
   tb.elementClick = function(event) {
     // event handler for click on an ELEMENT
-    var element$ = $(event.currentTarget); // not target, since target can be an child element, not the div itself
+    let element$ = $(event.currentTarget); // not target, since target can be an child element, not the div itself
     if (event.ctrlKey) {
       tb.actions.mark(event.altKey?element$:element$.itemscopeOrThis$());
       return false;
@@ -486,8 +486,8 @@
     // generic editor event handler for click and keypress
     // assumes that the DOM element that has a class=EDITOR also has an id="name of the corresponding Tablord element"
     // this handler just dispatch the event at the right object eventHandler
-    var element = event.currentTarget;
-    var tbObject = tb.vars[element.tbObject];
+    const element = event.currentTarget;
+    const tbObject = tb.vars[element.tbObject];
     return tbObject.editorEvent(event);
   };
   
@@ -519,8 +519,8 @@
   tb.showElementError = function(element,error) {
     // report an error that occured inside an element
     // like getting the valueof a tb.Var
-    var element$ = $(element);
-    var output$ = element$;
+    let element$ = $(element);
+    let output$ = element$;
     if (element$.hasClass('CODE')) output$ = $('.OUTPUT',element);
     output$.removeClass('SUCCESS').html('<span class="badge badge-pill badge-warning">'+(error.cascade || 'error')+'</span>');
     element$.addClass('ERROR')
@@ -538,7 +538,7 @@
   
   tb.showItempropError = function(element,error) {
     // report an error that occured at the variable creation
-    var element$ = $(element);
+    let element$ = $(element);
     element$.addClass('ERROR')
     .prop('error',error);
     tb.selectElement(element);
@@ -556,17 +556,17 @@
   tb.updateTemplateChoice = function() {
     // update the template selection box according to the context i.e. the acceptedTemplate of the current container
     tb.menu.templateChoice$.empty();
-    var acceptedTemplates = tb.selected.container$.attr('templates');
+    let acceptedTemplates = tb.selected.container$.attr('templates');
     if (acceptedTemplates) {
       acceptedTemplates = acceptedTemplates.split(' ');
     }
     else {
       acceptedTemplates = tb.keys(tb.templates);
     }
-    for (var i=0;i<acceptedTemplates.length;i++) {
-      var template = tb.templates[acceptedTemplates[i]];
+    for (let i=0;i<acceptedTemplates.length;i++) {
+      let template = tb.templates[acceptedTemplates[i]];
       if (template) tb.menu.templateChoice$.append(
-        '<button class="dropdown-item" template="'+template.url+'">'+template.name+'</button>'
+        '<button class="dropdown-item" data-template="'+template.url+'">'+template.name+'</button>'
       );
     }
   };
@@ -578,7 +578,7 @@
 
   tb.saveRemote = function() {
     // save to a remote server
-    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    let csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
     tb.removeDeletedBlocks();
     tb.selectElement(undefined);
     $.post(window.location,
@@ -596,7 +596,7 @@
 
   tb.pushTestResults = function() {
     // send the test result to the server
-    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    let csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
     $.post(window.location,
             {csrfmiddlewaretoken:csrftoken,
              passed:tb.results.testStatus.nbPassed,
@@ -618,8 +618,8 @@
     
     if (tb.selected.element === undefined) return;
 
-    var out$ = tb.selected.element$.children('.OUTPUT');
-    var test$ = tb.selected.element$.children('.TEST');
+    let out$ = tb.selected.element$.children('.OUTPUT');
+    let test$ = tb.selected.element$.children('.TEST');
     if (test$.length === 0) {
       out$.after($('<div class="TEST SUCCESS">'+out$.html()+'</div>'));
     }
@@ -692,7 +692,7 @@
       prepare(clones$.children());
     }
     
-    var newElements$ = elements$.clone();
+    let newElements$ = elements$.clone();
     prepare(newElements$);
     tb.setUpToDate(false);
     tb.setModified(true);
@@ -723,7 +723,7 @@
       return;
     }
     let editSession = tb.selected.element$.data('editSession');
-    let func = tb.selected.element$.attr('func');
+    let func = tb.selected.element$.attr('data-code');
 
     if (editSession) {
       tb.menu.funcEditor.setSession(editSession);
@@ -754,7 +754,7 @@
       return;
     }
     tb.menu.codeId$.html(element.id+'<SPAN style="color:red;cursor:pointer;" onclick="tb.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
-    var flexParent = tb.selected.element$.parent().hasClass('FLEX');
+    let flexParent = tb.selected.element$.parent().hasClass('FLEX');
     tb.menu.moveLeft$.prop('disabled',!flexParent);
     tb.menu.moveRight$.prop('disabled',!flexParent);
     
@@ -763,8 +763,8 @@
     tb.menu.toTest$.prop('disabled',!isCode);
 
     tb.menu.classes$.children().each(function(){
-      var checkbox$ = $(this);
-      var c = checkbox$.val();
+      let checkbox$ = $(this);
+      let c = checkbox$.val();
       if (c) {
         checkbox$.prop('checked',tb.selected.element$.hasClass(c));
       }
@@ -791,7 +791,7 @@
     if (typeof element === 'string') element = $('#'+element)[0];
     else if (element instanceof $) element = element[0];
     tb.editor.setCurrentEditor(undefined); //TODO suppress editors?
-    var e = tb.selected.element;
+    let e = tb.selected.element;
     if (e) {
       if (element && (e === element) && !e.error) { // if already selected nothing to do but make sure it is visible
         tb.menu.error$.hide();
@@ -831,7 +831,7 @@
     // -element$: the element to move
     // - where : cf [$.fn.neighbour]
     if (element$.length===0) return;
-    var whereToInsert$ = element$;
+    let whereToInsert$ = element$;
     if (where==='before' || where==='beforeItemscope') {
       do {
         whereToInsert$ = whereToInsert$.first().prev();
@@ -840,7 +840,7 @@
     }
     else {
       whereToInsert$ = whereToInsert$.last().next();
-      var traillingTags$ = whereToInsert$.nextUntil('.ELEMENT'); 
+      let traillingTags$ = whereToInsert$.nextUntil('.ELEMENT');
       if (traillingTags$.length) whereToInsert$ = traillingTags$.last();
       element$.insertAfter(whereToInsert$);
     }
@@ -866,23 +866,23 @@
     // {{variable=value}} will create an ELEMENT with variable as itemprop and value as content
     if ((element === undefined) || ($(element).hasClass('CODE'))) return;
 
-    var change = false;
+    let change = false;
     $(element).replaceText(/{{([#]{0,2})(.*?)}}/g,
                            function(s,command,code) {
                              change = true;  // if called, this function will change the document
-                             var code$ = tb.templates['https://tablord.com/templates/codeSpan'].element$();
+                             let code$ = tb.templates['https://tablord.com/templates/codeSpan'].element$();
                              switch (command) {
                                case ''   : 
-                                 var m = code.match(/(\w+):(.*)/);
+                                 let m = code.match(/(\w+):(.*)/);
                                  if (m) {
-                                   var n = Number(m[2]);
+                                   let n = Number(m[2]);
                                    return '<span class="ELEMENT EDITABLE'+(Number.isNaN(n)?'':' number')+'" itemprop="'+m[1]+'">'+m[2]+'</span>&nbsp;';
                                  }
                                  m = code.match(/(\w+)=(.*)/);
                                  if (m) return '<span class="ELEMENT FUNC" itemprop="'+m[1]+'" func="'+m[2]+'"></span>&nbsp;';
-                                 return code$.attr('func',code)[0].outerHTML;
-                               case '##' : return code$.attr('func',"tb.elementBox('"+code+"');")[0].outerHTML;
-                               case '#'  : return code$.attr('func',"tb.link('"+code+"');")[0].outerHTML;
+                                 return code$.attr('data-code',code)[0].outerHTML;
+                               case '##' : return code$.attr('data-code',"tb.elementBox('"+code+"');")[0].outerHTML;
+                               case '#'  : return code$.attr('data-code',"tb.link('"+code+"');")[0].outerHTML;
                              }
                            },
                            function(e) {  //replace in any tag except those inside CODE
@@ -898,15 +898,15 @@
   // upgrades from previous versions ////////////////////////////////////////////////////////////////////////////////
     tb.upgradeModules = function() {
     // checks that this is the lastest modules and if not replaces what is needed
-    var modulesNeeded = ['jquery-1.5.1.min.js','tablordEdi.js','units.js','tablord.js','axe.js','simulation.js','sys.js','ocrRdy.js','finance.js','diff.js'];
-    var allModules = modulesNeeded.concat('jquery.js'); // including deprecated modules
-    var modules = [];
-    var $script = $('SCRIPT').filter(function(){return $.inArray(tb.fileName(this.src),allModules)!==-1});
+    let modulesNeeded = ['jquery-1.5.1.min.js','tablordEdi.js','units.js','tablord.js','axe.js','simulation.js','sys.js','ocrRdy.js','finance.js','diff.js'];
+    let allModules = modulesNeeded.concat('jquery.js'); // including deprecated modules
+    let modules = [];
+    let $script = $('SCRIPT').filter(function(){return $.inArray(tb.fileName(this.src),allModules)!==-1});
     $script.each(function(i,e){modules.push(tb.fileName(e.src))});
     if (modules.toString() === modulesNeeded.toString()) return; // everything is just as expected
 
     // otherwise we have to upgrade
-    var h = '';
+    let h = '';
     $.each(modulesNeeded,function(i,m){h+='<SCRIPT src="'+m+'"></SCRIPT>'});
     window.prompt(/*'your need to edit your scripts to upgrade\n'+*/modules+'\n'+modulesNeeded,h);
   };
@@ -927,15 +927,15 @@
     // add an INDENT class to indent where is needed and no longer to any container
     $('[container=sectionContent]').addClass('INDENT'); // container=sectionContent was the former definition
 
-    // since 1ba0c957100f7f3712b903f6a9ebc9c95a176662, [[CODE]] is has a [func] and contains the [[OUTPUT]] and [[TEST]] (templates/exec)
-    var codes = $('.CODE').not('[func]');
+    // since 1ba0c957100f7f3712b903f6a9ebc9c95a176662, [[CODE]] is has a [func] or the new [data-code] and contains the [[OUTPUT]] and [[TEST]] (templates/exec)
+    let codes = $('.CODE').not('[func]').not('[data-code]');  // now
     codes.each(function(i,e){
-      var code$ =$(e);
-      var func = tb.htmlToText(code$.html());
-      var codeId = code$.attr('id');
-      var out$ = $('#'+codeId.replace(/code/,'out')).removeAttr('id');
-      var test$ = $('#'+codeId.replace(/code/,'test')).removeAttr('id');
-      var newCode$;
+      let code$ =$(e);
+      let func = tb.htmlToText(code$.html());
+      let codeId = code$.attr('id');
+      let out$ = $('#'+codeId.replace(/code/,'out')).removeAttr('id');
+      let test$ = $('#'+codeId.replace(/code/,'test')).removeAttr('id');
+      let newCode$;
       if (code$.hasClass('EMBEDDED')){
         newCode$ = tb.templates['https://tablord.com/templates/codeSpan'].element$();
         newCode$.addClass('EMBEDDED');
@@ -944,19 +944,26 @@
         newCode$ = tb.templates['https://tablord.com/templates/code'].element$();
         newCode$.addClass('SHOW');
       }
-      newCode$.attr('func',func).attr('id',codeId);
+      newCode$.attr('data-code',func).attr('id',codeId);
       code$.replaceWith(newCode$);
       newCode$.children('.OUTPUT').replaceWith(out$);
       newCode$.append(test$);
     });
     
-    var ugglyEmbedded$ = $('div.EMBEDDED');
+    let ugglyEmbedded$ = $('div.EMBEDDED');
     ugglyEmbedded$.replaceTagName('span');
     
     $('.CODE').attr('contentEditable',false);
     
     $('[itemtype="https://tablord.com/template/codeSpan"]').attr('itemtype','https://tablord.com/templates/codeSpan');
     $('[itemtype="https://tablord.com/template/code"]').attr('itemtype','https://tablord.com/templates/code');
+
+    $('[func]').each(function (){
+      const e$=$(this);
+      const code = e$.attr('func');
+      e$.attr('data-code',code);
+
+    }).removeAttr('func');
     
   };
 

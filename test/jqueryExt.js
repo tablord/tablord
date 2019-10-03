@@ -35,14 +35,14 @@ describe('jQueryExt', function () {
 
     describe('.node$', function (){
         it('return an object with a node$ function that return the jQuery',function(){
-            var a$ = $('<div>Hello World</div>');
+            let a$ = $('<div>Hello World</div>');
             a$.asNode().node$().should.be.equal(a$);
         })
     });
 
     describe('.frozenCopy',function(){
         it('return a copy of the query, removing id= func= and FUNC CODE or ELEMENT', function(){
-            $('<div id=toto class="CODE ELEMENT yellow">Hello<span id="truc" func="mycode" class="FUNC">truc</span></div>')
+            $('<div id=toto class="CODE ELEMENT yellow">Hello<span id="truc" data-code="mycode" class="FUNC">truc</span></div>')
                 .frozenCopy().node$().inspectString().should.be.equal('[object JQuery] length:1\n0) <div class="yellow">Hello<span class="">truc</span></div>\n')
         })
     });
@@ -60,7 +60,7 @@ describe('jQueryExt', function () {
 
     describe('$.elementsByIds$',function(){
         it('return the parameter if the parameter is a jquery',function(){
-            var a$ = $('<div id="A"></div><div id="B"></div><div id="C" itemtype="TC"></div><div id="D"></div>');
+            let a$ = $('<div id="A"></div><div id="B"></div><div id="C" itemtype="TC"></div><div id="D"></div>');
             $('body').append(a$);
             $.elementsByIds$($('#A')).inspectString().should.be.equal('[object JQuery] length:1\n0) <div id="A"></div>\n')
         })
@@ -68,7 +68,7 @@ describe('jQueryExt', function () {
 
     describe('.getItems',function(){
         it('find all itemtype of a given url inside the jquery',function(){
-            var a$=$('<div><div id="e1" itemscope itemtype="T1"><div id="e2" itemscope itemtype="T2"></div></div></div>');
+            let a$=$('<div><div id="e1" itemscope itemtype="T1"><div id="e2" itemscope itemtype="T2"></div></div></div>');
             a$.getItems('T1').attr('id').should.be.equal('e1');
             a$.getItems('T2').attr('id').should.be.equal('e2');
         })
@@ -179,7 +179,7 @@ describe('jQueryExt', function () {
                 '<div itemprop="first"></div>' +
                 '<div itemprop="last"></div>' +
                 '</div>');
-            var microdata=
+            let microdata=
                  {items:
                          [
                              {

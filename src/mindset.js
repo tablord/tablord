@@ -37,16 +37,16 @@ tb.IWordCloud.clickHandler = function(event) {
 
 tb.IWordCloud.prototype.element$ = function() {
   // create the worldCloud Element and all neccessary internal IElements
-  var objIndex;
-  var wordRegExp = this.wordRegExp;
+  let objIndex;
+  let wordRegExp = this.wordRegExp;
 
   function scan(field,weight) {
     if (weight===0) return;
-    var word;
-    var duplicate = {};
+    let word;
+    let duplicate = {};
     if (typeof field === 'string') {  // TODO traiter les Array comme dans MongoDb???
       m = field.match(wordRegExp) || [];
-      for (var i = 0; i<m.length; i++) {
+      for (let i = 0; i<m.length; i++) {
         word = m[i];
         if (duplicate[word] === undefined) {
           objIndex[word] = (objIndex[word] || 0) + weight;
@@ -56,9 +56,9 @@ tb.IWordCloud.prototype.element$ = function() {
   }
 
 
-  for (var i = 0; i<this.objects.length;i++) {
-    var obj = this.objects[i];
-    var objIE = new tb.IElement(this.name+'_'+i,
+  for (let i = 0; i<this.objects.length;i++) {
+    let obj = this.objects[i];
+    let objIE = new tb.IElement(this.name+'_'+i,
                                {top:500+Math.random()*200,left:800+Math.random()*200},
                                this.objectCaption(obj),
                                this);
@@ -69,17 +69,17 @@ tb.IWordCloud.prototype.element$ = function() {
 
     objIndex = {};
     if (this.fieldSet) {
-      for (var f in fieldSet) {
+      for (let f in fieldSet) {
         scan(obj[f],fieldSet[f]);
       }
     }
     else {
-      for (var f in obj) {
+      for (let f in obj) {
         if (obj.hasOwnProperty(f)) scan(obj[f],1);
       }
     }
-    for (var word in objIndex) {
-      var e = this.wordsIE[word]
+    for (let word in objIndex) {
+      let e = this.wordsIE[word]
       if (e==undefined) {
         e = new tb.IElement(word,{top:300+Math.random()*200,left:300+Math.random()*200},word,this);
         e.$.addClass('CLOUD WORD');
@@ -105,13 +105,13 @@ tb.IWordCloud.prototype.focus = function(iE) {
 }
 
 tb.IWordCloud.prototype.animate = function(deltaT$ms){
-  var ei,ej,f;
-  var w = this.width();
-  var h = this.height();
-  for (var word in this.wordsIE) {
+  let ei,ej,f;
+  let w = this.width();
+  let h = this.height();
+  for (let word in this.wordsIE) {
     this.wordsIE[word].prepareAnimation();
   }
-  for (var i = 0;i<this.objsIE.length;i++) {
+  for (let i = 0;i<this.objsIE.length;i++) {
     this.objsIE[i].prepareAnimation();
   }
 
@@ -135,7 +135,7 @@ tb.IWordCloud.prototype.animate = function(deltaT$ms){
     .bounceOnBorders(0,0,h,w)
     .animate(deltaT$ms);
   }
-  for (var i = 0;i<this.objsIE.length;i++) {
+  for (let i = 0;i<this.objsIE.length;i++) {
     this.objsIE[i]
     .bounceOnBorders(0,0,h,w)
     .animate(deltaT$ms);

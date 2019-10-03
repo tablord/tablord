@@ -25,10 +25,10 @@
     //   (that can be element itself) as insert point
     // - itemprop if not '' or undefined will force the itemprop of the template
 
-    var element$ = $(element).neighbour$(where);
-    var newElement$ = this.element$();
+    let element$ = $(element).neighbour$(where);
+    let newElement$ = this.element$();
     if (itemprop) newElement$.attr('itemprop',itemprop);
-    var after = (where==='after' || where === 'afterItemscope');
+    let after = (where==='after' || where === 'afterItemscope');
     if (after) newElement$.insertAfter(element$);
     else       newElement$.insertBefore(element$);
     tb.selectElement(newElement$[0]);
@@ -38,15 +38,15 @@
   tb.Template.prototype.convert = function(element,itemprop) {
     // convert element to template(name) as itemprop
     itemprop = itemprop || 'item';
-    var e$ = $(element);
-    var microdata = $.extend(true,e$.data('itemData') || {},e$.getMicrodata());
-    var id = e$.attr('id');
-    var containers = $.extend(true,e$.data('containers') || {},tb.Template.getElement$Containers(e$));
-    var k = tb.keys(microdata);
+    let e$ = $(element);
+    let microdata = $.extend(true,e$.data('itemData') || {},e$.getMicrodata());
+    let id = e$.attr('id');
+    let containers = $.extend(true,e$.data('containers') || {},tb.Template.getElement$Containers(e$));
+    let k = tb.keys(microdata);
     if (k.length > 1) throw new Error('element.convert error: microdata has more than 1 head key\n'+tb.toJSCode(microdata));
-    var newData = {};
+    let newData = {};
     newData[itemprop] = microdata[k[0]] || {};
-    var new$ = this.element$(itemprop,id);
+    let new$ = this.element$(itemprop,id);
     if (this.convertData) {
       this.convertData(microdata,new$);
     }
@@ -74,7 +74,7 @@
   tb.Template.prototype.element$ = function(itemprop) {
     // return a jQuery containing a new instance of this Template as itemprop and setting its id
     if (this.html === undefined) throw new Error('in order to define a template at least define .fields, .html or .element$()');
-    var new$ = $(this.html).attr('id',tb.blockId(this.blockPrefix));
+    let new$ = $(this.html).attr('id',tb.blockId(this.blockPrefix));
     if (itemprop) new$.attr('itemprop',itemprop);
     new$.attr('itemscope','').attr('itemtype',this.url);
     return new$;
@@ -118,14 +118,14 @@
     // - fields: a [[fields]] selector object or undefined (all fields)
     // return the data of that element, possibly remaped, if itemtype correspond to 
     // a registered remplate
-    var itemtype = element$.attr('itemtype');
-    var remap;
+    let itemtype = element$.attr('itemtype');
+    let remap;
     if (itemtype) {
-      var t = tb.templates[itemtype];
+      let t = tb.templates[itemtype];
       remap = t && t.remap;
     }
-    var data = element$.getItemscopeData(remap);
-    var section = element$.parent().closest('.SECTION');
+    let data = element$.getItemscopeData(remap);
+    let section = element$.parent().closest('.SECTION');
     if (section.length === 1) {
       data._section = section.attr('id');
     }
@@ -150,8 +150,8 @@
     // - element$  a jQuery of 1 element that potentially has embedded containers
     // - containers an object {containerName:jQueryOfContentOfContainer,....}
     element$.children().each(function(i,e) {
-      var e$ = $(e);
-      var containerName = e$.attr('container');
+      let e$ = $(e);
+      let containerName = e$.attr('container');
       if (containerName) {
         e$.empty();
         if (containers[containerName]) {
@@ -170,7 +170,7 @@
     //    all containers found will be added to containers
     containers = containers || {};
     element$.children().each(function(i,e) {
-      var containerName = $(e).attr('container');
+      let containerName = $(e).attr('container');
       if (containerName) {
         containers[containerName] = $(e).children();
       }
@@ -220,12 +220,12 @@
     //         this can be used to have for example native Date object instead of a string or combining two fields in one etc..
 
     itemprop = itemprop || newTemplate.name;
-    var newT = new tb.Template(newTemplate.name);
+    let newT = new tb.Template(newTemplate.name);
     $.extend(newT,newTemplate);
     if (newTemplate.fields) {
-      var h = '<DIV class="ELEMENT" itemprop="'+itemprop+'" itemscope itemtype="'+newT.url+'"><TABLE width="100%">';
-      for (var f in newTemplate.fields) {
-        var label = f.label || f;
+      let h = '<DIV class="ELEMENT" itemprop="'+itemprop+'" itemscope itemtype="'+newT.url+'"><TABLE width="100%">';
+      for (let f in newTemplate.fields) {
+        let label = f.label || f;
         if (newTemplate.fields[f].container) {
           h += '<TR><TH>'+label+'</TH><TD class=LEFT><DIV container="'+f+'" templates="'+newTemplate.fields[f].container+'"></DIV></TD></TR>';
         }
@@ -237,7 +237,7 @@
     }
     tb.templates[newT.url] = newT;
     tb.updateTemplateChoice();
-    var elementsToConvert$ = $('[itemtype="'+newT.url+'"]');  //TODO not sure it's a good idea to always convert
+    let elementsToConvert$ = $('[itemtype="'+newT.url+'"]');  //TODO not sure it's a good idea to always convert
     elementsToConvert$.each(function(idx,e){newT.convert(e,e.itemprop || 'item')});
     return newT;
   };
@@ -273,7 +273,7 @@
   tb.template({
     url : 'https://tablord.com/templates/section',
     element$ : function() {
-      var n$ = $('<DIV  class="ELEMENT SECTION" id='+tb.blockId('sect')+'></DIV>')
+      let n$ = $('<DIV  class="ELEMENT SECTION" id='+tb.blockId('sect')+'></DIV>')
                .append('<H1 class="SECTIONTITLE EDITABLE"></H1>')
                .append('<DIV class="INDENT" container=""><DIV  class="ELEMENT RICHTEXT EDITABLE" id='+tb.blockId('rich')+'></DIV>');
       return n$;
@@ -290,7 +290,7 @@
   tb.template({
     url : 'https://tablord.com/templates/page_break',
     element$ : function() {
-      var n$ = $('<DIV  class="ELEMENT PAGEBREAK" id='+tb.blockId('page')+'></DIV>');
+      let n$ = $('<DIV  class="ELEMENT PAGEBREAK" id='+tb.blockId('page')+'></DIV>');
       return n$;
     }
   });
@@ -307,7 +307,7 @@
                 '<div container="item[]"></div>');
     },
     exec: function(element$) {
-      var data = element$.getItemscopeData();
+      let data = element$.getItemscopeData();
       // to ensure the data persistance when saved, set the value attr with the current value
       $('[itemprop=fromDate]',element$).attr('value',data.fromDate);
       $('[itemprop=fromTime]',element$).attr('value',data.fromTime);
@@ -322,9 +322,9 @@
       }
     },
     remap: function(data){
-      var from = moment(data.fromDate +' '+ data.fromTime);
-      var to   = moment(data.toDate + ' '+ data.toTime);
-      var duration = moment.duration(to-from);
+      let from = moment(data.fromDate +' '+ data.fromTime);
+      let to   = moment(data.toDate + ' '+ data.toTime);
+      let duration = moment.duration(to-from);
       $.extend(data,{from:from,to:to,duration:duration,title:data.title,_id:data._id});
       delete data.fromDate;
       delete data.fromTime;
@@ -343,7 +343,7 @@
                 '<div class="EDITABLE" itemprop="descr"></div>'+
             '</div>',
     exec: function(element$) {
-      var data = element$.getItemscopeData();
+      let data = element$.getItemscopeData();
       // to ensure the data persistance when saved, set the value attr with the current value
       $('[itemprop=date]',element$).attr('value',data.date);
       $('[itemprop=fromTime]',element$).attr('value',data.fromTime);
@@ -357,9 +357,9 @@
       }
     },
     remap: function(data){
-      var from = moment(data.date +' '+ data.fromTime);
-      var to   = moment(data.date + ' '+ data.toTime);
-      var duration = moment.duration(to-from);
+      let from = moment(data.date +' '+ data.fromTime);
+      let to   = moment(data.date + ' '+ data.toTime);
+      let duration = moment.duration(to-from);
       $.extend(data,{from:from,to:to,duration:duration,title:data.title,_id:data._id});
       delete data.date;
       delete data.fromTime;
