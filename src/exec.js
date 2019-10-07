@@ -14,7 +14,7 @@ tb.securedEval = function (code) {
     // a bit more secured than eval: since IE<9 executes localy, it was possible do destroy local variable by defining functions or var
     // with this trick, one can still create global variables by just assigning (eg: tb.vars='toto' destroys the global variable tb.vars)
     // to be checked what could be done to improve
-    code.replace(/^\s*\{(.*)\}\s*$/, '({$1})');  // if the code is just a litteral object {..} add brakets in order to deal with the with(tb.vars){ } statement
+    code.replace(/^\s*{(.*)}\s*$/, '({$1})');  // if the code is just a litteral object {..} add brakets in order to deal with the with(tb.vars){ } statement
 
     code = 'let output = tb.output; with (tb.vars) {\n' + code + '\n};';   //output becomes a closure, so finalize function can use it during finalizations
     return geval(code)
@@ -87,7 +87,7 @@ trace.span = function () {
         return new tb.HTML(h);
     }
     return '';
-}
+};
 
 tb.help.update({a: a, trace: trace}, '');
 tb.help.update(trace, 'trace.');
@@ -103,7 +103,7 @@ tb.Inspector = function Inspector(obj, depth, name) {
     this.obj = obj;
     this.name = name || '';
     this.depth = depth || 1;
-}
+};
 tb.Inspector.className = 'tb.Inspector';
 
 tb.Inspector.prototype.legend = function () {
@@ -125,7 +125,7 @@ tb.Inspector.prototype.legend = function () {
         l = 'special object';
     }
     return l;
-}
+};
 
 
 tb.Inspector.prototype.toString = function () {
@@ -159,9 +159,8 @@ tb.Inspector.prototype.toString = function () {
     for (let k in this.obj) {
         r += k + ':  ' + tb.summary(this.obj[k]) + '\n'
     }
-    ;
     return r;
-}
+};
 
 tb.Inspector.prototype.span = function (depth) {
     // return a HTML object to display the content of the inspector
@@ -189,15 +188,14 @@ tb.Inspector.prototype.span = function (depth) {
     r += '<table>';
     for (let k in this.obj) {
         if (k === 'constructor') continue;
-        r += '<tr><th valign="top">' + k + '</th><td valign="top" style="text-align:left;">' +
+        r += '<tr><th>' + k + '</th><td>' +
             ((typeof this.obj[k] == 'function') ? tb.help(this.obj[k]) :
-                    ((depth == 1) ? tb.toHtml(this.obj[k]) : tb.inspect(this.obj[k]).span(depth - 1))
+                    ((depth === 1) ? tb.toHtml(this.obj[k]) : tb.inspect(this.obj[k]).span(depth - 1))
             )
             + '</td></tr>';
     }
-    ;
     return new tb.HTML(r + '</table></fieldset></DIV>');
-}
+};
 
 
 tb.inspect = function (obj, depth, name) {
@@ -205,19 +203,19 @@ tb.inspect = function (obj, depth, name) {
     // - depth (default 1) give at what depth object properties are also inspected
     // - name (optional) gives a name to be shown in the display
     return new tb.Inspector(obj, depth, name);
-}
+};
 
 tb.codeExample = function (example) {
     // return an html object with example wrapped in span class=CODEEXAMPLE
     return tb.html('<span class=CODEEXAMPLE>' + example + '</span>');
-}
+};
 
 
 // navigation within document ////////////////////////////////////////////////////////
 tb.sectionBeingExecuted$ = function () {
     // returns a jQuery containing the deepest section that contains the code currently in execution
     return $(tb.currentElementBeingExecuted).closest('.SECTION');
-}
+};
 
 tb.testStatus = function () {
     // set a finalize function that will write to the current output the number of test Failure
@@ -229,273 +227,23 @@ tb.testStatus = function () {
             let numberOfSuccess = section.find('.TEST.SUCCESS').length;
             let numberOfErrors = section.find('.TEST.ERROR').length;
             output.html(
-                '<SPAN class=' + (numberOfErrors == 0 ? 'SUCCESS' : 'ERROR') + '>tests passed:' + numberOfSuccess + ' failed:' + numberOfErrors + '</SPAN>'
+                '<SPAN class=' + (numberOfErrors === 0 ? 'SUCCESS' : 'ERROR') + '>tests passed:' + numberOfSuccess + ' failed:' + numberOfErrors + '</SPAN>'
             )
         }
     );
     return 'test Status: ';
-}
+};
 
 tb.updateResultsTestStatus = function () {
     // updates tb.results.testStatus with the number of test passed vs failed
     tb.results.testStatus = {
+        error: tb.lastError,
         nbPassed: $('.TEST.SUCCESS').length,
         nbFailed: $('.TEST.ERROR').length,
         dateTime: new Date()
     };
     return tb.results;
-}
-
-
-// Editor ////////////////////////////////////////////////////////////////////////////
-tb.EditableObject = function () {
-    // tb.EditableObject is an interface that must be implemented by any object that want to be editable within the sheet
-    // [[tb.Table]] and [[tb.Var]] are typical class that implement the *EditableObject* interface
-    // all methods of this class are empty: the declarations are here only for documentation
-    //   .codeElement property that must be created by .edit() and must containt the [[CODE]] [[ELEMENT]] that contains the .edit() function
-    //                and that will be updated after edition and become also [[AUTOEDIT]]
-    //
-    throw new Error('abstract class: do not instanciate')
-}
-tb.EditableObject.className = 'tb.EditableObject';
-
-tb.EditableObject.prototype.edit = function () {
-    // similar to .span() but return html code representing the object in edition.
-    // usually .edit() calls [[tb.editor.html]](...) in order to get the necessary html code that will
-    // interact with tb.editor
-    throw new Error('abstract method')
-}
-
-tb.EditableObject.prototype.getEditableValue = function (editor) {
-    //  will be called by the editor when the user selects a given [[EDITOR]] element
-    //  this is the responsibility of the object to look on editor's properties that are specific to this
-    //  object to know how to get the value. the returned value can be a simple type (undefined,number,string)
-    //  or a function. if this function has a .code property, it is considered to be a tbFunc and .code represents
-    //  only the body of the function (usually an expression)
-    throw new Error('abstract method')
-}
-
-tb.EditableObject.prototype.setEditableValue = function (editor) {
-    // will be called by the editor when the user has finished to edit a given value.
-    // this method has the responsibility to upgrade the code
-    throw new Error('abstract method')
-}
-
-tb.EditableObject.prototype.updateCode = function () {
-    // this function must replace the code of the [[CODE]] [[ELEMENT]] (that is stored in .codeElement of this)
-
-}
-
-tb.Editor = function () {
-    // the goal of Editor is to offer a genenral mechanism in order to help implement
-    // tbObject edition capabilities.
-    // it is implemented as a class in order to get the documentation eventhought there is only one single instance [[tb.editor]]
-    // this mechanism is the following:
-    // an object that would like to propose edition capabilities has to offer the following [[TbObject]] interface
-    //   .codeElement this property must be created by edit() and must containt the codeElement that contains the .edit() function
-    //                and that will be updated after edition
-    //
-    //
-    //--------------
-    //  - tb.editor is a single instance object that provides most of the services and that dialogs with the DOM elements composing
-    //              the user interface.
-    //
-    //  - tb.editor.html(...) return html code needed to create the editor for a simple value
-    //                      if the value is simple (undefined, number, string or function) it will
-    //                      be handled natively.
-    //                      if value is an object, it will return the code of object.edit()
-    //                      TODO: provide mechanism for simple object / arrays
-    //
-    //  - tb.editor.simpleTypeToolBar$ a jQuery storing the necessary toolBar for the simple types
-    //
-
-    //participant IDE
-    //participant tb.editor
-    //note over .CODE: represents the CODE\nELEMENT containing\n "tbObject.edit()"
-    //note over .OUTPUT: the .OUTPUT that will\ncontain all .EDITOR\n for tbObject
-    //note over .EDITOR: is a child ELEMENT\n of .OUTPUT
-    //note over tbObject:name:'myVar'
-    //IDE -> IDE: .execCode
-    //IDE -> tbObject:edit()
-    //note right of tbObject:usually gets html code from tb.editor
-    //tbObject -> tb.editor: .html(value,{tbObject:'myVar'})
-    //tb.editor -->tbObject: <input class=EDITOR tbobject="myVar">
-    //tbObject --> IDE: <div...all .EDITORs needed to edit myVar>
-
-    // create a tool bar for the [[tb.Editor]]
-    this.toolBar$ = $('<div>')
-        .append('<input type="radio" name="type" value="string" autocomplete="off" onclick="tb.editor.force(\'string\');">String')
-        .append('<input type="radio" name="type" value="number" autocomplete="off" onclick="tb.editor.force(\'number\')">Number')
-        .append('<input type="radio" name="type" value="function" autocomplete="off" onclick="tb.editor.force(\'function\')">Function')
-        .append(this.funcCode$ = $('<input type="text"  name="funcCode" value="" onchange="tb.editor.funcCodeChange();" onclick="tb.editor.funcCodeClick();">'))
-        .append('<input type="radio" name="type" value="undefined" autocomplete="off" onclick="tb.editor.force(\'undefined\')">undefined')
-        .hide();
-    tb.menu.objectToolBar$.append(this.toolBar$);
-}
-tb.Editor.className = 'tb.Editor';
-
-tb.Editor.prototype.funcCodeClick = function () {
-    // click event handler of the code INPUT of the toolbar of the [[tb.Editor]]
-    this.force('function');
-    $('[value=function]', this.toolBar$).prop('checked', true);
-    this.funcCode$.focus();
-}
-
-tb.Editor.prototype.funcCodeChange = function () {
-    // change event handler of the code INPUT of the toolbar of the [[tb.Editor]]
-    this.value = f(this.funcCode$.val());
-    this.type = 'function';
-    this.tbObject.setEditableValue(this);
-    return false; //?????
-}
-
-
-tb.Editor.prototype.force = function (type) {
-    // force the [[tb.Editor]] to a given type
-    // type can be undefined, function, number or string
-    if (type == this.type) return;
-
-    let editor$ = $(this.currentEditor);
-    switch (type) {
-        case 'undefined':
-            this.value = undefined;
-            this.funcCode$.val('');
-            editor$.val('');
-            break;
-        case 'function':
-            let code = (this.value == undefined ? 'undefined' : this.value.toString());
-            this.funcCode$.val(code);
-            break;
-        case 'number':
-            if (this.value == undefined) {
-                this.value = 0;
-            }
-            let n = Number(this.value)
-            if (isNaN(n)) {
-                this.force('string');
-                return;
-            } else {
-                this.value = n;
-            }
-            this.funcCode$.val('');
-            break;
-        case 'string':
-            this.value = (this.value !== undefined) ? this.value.toString() : 'undefined';
-            this.funcCode$.val('');
-            break;
-    }
-    this.type = type;
-    tb.editorEventHandler({target: this.currentEditor, type: 'change'}); // synchronusly run the change event
-    //editor$.triggerHandler('change');  // will update the value, update the code, run the sheet and so updage the editors and tool bars
-    this.setCurrentEditor(this.currentEditor); // will refresh the toolbar and refocus the editor according to the new situation
-}
-
-
-tb.Editor.prototype.setCurrentEditor = function (editor) {
-    // set an editor as the current Editor
-    this.currentEditor = editor;
-    if (editor) {
-        this.tbObject = tb.vars[$(editor).attr('tbObject')];
-        this.value = this.tbObject.getEditableValue(this);
-        this.type = (this.value && this.value.isVar) ? 'function' : typeof this.value;
-        let radio$ = $('[value=' + this.type + ']', this.toolBar$);
-        radio$.prop('checked', true);
-        this.toolBar$.show();
-        if (this.type == 'function') {
-            this.funcCode$.val(this.value.code());
-            if (this.funcCode$[0] != window.document.activeElement) {
-                this.funcCode$.focus();
-            }
-        } else {
-            this.funcCode$.val('');
-            if (editor != window.document.activeElement) {
-                editor.focus();
-            }
-        }
-    } else {
-        this.toolBar$.hide();
-    }
-}
-
-tb.Editor.prototype.attr = function (attr) {
-    // return the attr value of the html editor
-    return $(this.currentEditor).attr(attr);
-}
-
-tb.Editor.prototype.html = function (value, params) {
-    // value : the initial value of the editor
-    // params : an object that at least has tbObject:nameOfTheObject in tb.vars
-
-    let type = typeof value;
-    if (value && value.isVar && value.code()) {
-        type = 'function ';
-        value = value.valueOf();
-        type += (typeof value == 'number') ? 'RIGHT' : 'LEFT';
-    } else if (value == undefined) {
-        value = '';
-    } else if (type == 'object') {
-        throw new Error('objects are not yet supported in edition')
-    }
-
-    let h = '<INPUT class="EDITOR ' + type + '"' + tb.htmlAttribute('value', value);
-    for (let p in params) {
-        h += tb.htmlAttribute(p, params[p]);
-    }
-    h += '>';
-    return h;
 };
-
-
-////////////
-//TODO: there is problem at least in IE7: when the users click on another control, first a change event is triggerd
-//normally it should be followed by a click envent, but as the control is destroyed and re-created, it seems to "capture" the next click
-//event
-// ?????? peut être qu'avec un setTimeout(0) on peut passer outre, en laissant d'abord le click se faire et en updatant le code via le timer
-//  pas mieux : l'evenement click n'arrive jamais sur l'endroit où on a cliqué et si dans le change on return true, c'est encore pire, on ne retrouve
-//              jamais le focus.  %*&@
-////////////
-
-tb.editorEventHandler = function (event) {
-    // the event handler for all .EDITOR that will recieve click, keypress and change event
-    let target$ = $(event.target);
-    let obj = tb.vars[target$.attr('tbObject')];
-    if (obj == undefined) throw new Error('event on a editor linked to a non existing object ' + $(event.target).attr('tbObject'));
-    switch (event.type) {
-        case 'click':
-            if (obj.codeElement !== tb.selected.element) {
-                tb.selectElement(obj.codeElement);
-            }
-            tb.editor.setCurrentEditor(event.target);
-            return false; // prevent bubbling
-
-        case 'change':
-            let value = target$.val();
-            switch (tb.editor.type) {
-                case 'number':
-                    if (!isNaN(Number(value))) {
-                        value = Number(value);
-                    } else {
-                        tb.editor.force('string');
-                        return false; // a new event will take place and finish the job
-                    }
-                    break;
-                case 'function':
-                    value = f(tb.editor.funcCode$.val());
-                    break;
-                case 'undefined':
-                    value = undefined;
-                    break;
-            }
-            tb.editor.value = value;
-            obj.setEditableValue(tb.editor);
-            return false;
-
-        default :
-            window.alert('unexpected event', event.type)
-            return true;
-    }
-}
-
 
 // Table of Content //////////////////////////////////////////////////////////////////
 tb.tableOfContent = {
@@ -540,7 +288,7 @@ tb.note = function (html, ref) {
     tb.notes.entries.push({html: html, ref: ref});
     if (ref) tb.notes.refs[ref] = {no: tb.notes.entries.length, nbRefs: 0};
     return tb.html('<a class=REF id=cite_ref' + tb.notes.entries.length + ' href="#cite_note' + tb.notes.entries.length + '" title="' + html + '"><sup>[' + tb.notes.entries.length + ']</sup></a>');
-}
+};
 
 tb.ref = function (ref) {
     // insert a reference to an already existing note
@@ -564,13 +312,13 @@ tb.notes = function () {
         h += e.html + '</div>';
     }
     return tb.html(h);
-}
+};
 
 tb.notes.reset = function () {
     // reset the notes
     tb.notes.entries = [];
     tb.notes.refs = {};
-}
+};
 
 tb.features.push(tb.notes);
 
@@ -588,7 +336,7 @@ tb.link = function (text, url) {
         return new tb.HTML('<a class=LINK href="#' + entry.sectionId + '">' + text + '</a>');
     }
     return new tb.HTML('<span class=INVALIDLINK title="#' + url + ' is not found in the table of content">' + text + '</span>');
-}
+};
 
 tb.elementBox = function (text, id) {
     // return an html object that has a clickable text that will open a box with the copy of the element id
@@ -605,12 +353,12 @@ tb.elementBox = function (text, id) {
         return new tb.HTML('<span class=BOXLINK data-showId="#' + entry.sectionId + '">' + text + '</span>');
     }
     return new tb.HTML('<span class=INVALIDLINK title="#' + id + ' is not found">' + text + '</span>');
-}
+};
 
 tb.openCloseBox = function (event) {
     //
     let boxTextElement = event.target;
-    let box$ = $('.BOX', boxTextElement)
+    let box$ = $('.BOX', boxTextElement);
     let open = box$.length === 0;
     box$.remove();
     if (open) {
@@ -618,14 +366,14 @@ tb.openCloseBox = function (event) {
         $('<DIV class=BOX>').html($(id).html()).appendTo(boxTextElement);
     }
     event.stopPropagation(); // prevent bubbling of the event
-}
+};
 
 tb.level = function (element) {
     // returns the level of the element = number of section between body and the element
     // please note that the first section has level = 0 according to this definition
     // (but the title will be a <H1>)
     return $(element).parentsUntil('BODY').filter('.SECTION').length;
-}
+};
 
 tb.findblockNumber = function () {
     // search the next block number in an existing document
@@ -636,18 +384,18 @@ tb.findblockNumber = function () {
         }
     });
     tb.blockNumber++;
-}
+};
 
 tb.blockId = function (prefix) {
     // increment tb.blockNumber and
     // return the block id using prefix which must be a 4 characters prefix
-    if (prefix.length !== 4) throw new Error('Element Id must hace a 4 char prefix for the id')
+    if (prefix.length !== 4) throw new Error('Element Id must hace a 4 char prefix for the id');
     return prefix + tb.pad(tb.blockNumber++, 4);
-}
+};
 
 tb.blockPrefix = function (id) {
     return id.slice(0, 4);
-}
+};
 
 //  display / execution ////////////////////////////////////////////////////
 
@@ -661,7 +409,7 @@ tb.displayResult = function (result, output) {
         )
         .prepend(output.toString())
         .before(trace.span().toString()) // traces are not part of the result
-}
+};
 
 tb.execCodeElement = function (element$) {
     // execute a CODE ELEMENT
@@ -703,7 +451,7 @@ tb.execCode = function (element) {
     // execute the code of element
     // skip all DELETED element
     let element$ = $(element);
-    if (element$.hasClass('DELETED')) throw new Error('should not call DELETED ELEMENT')
+    if (element$.hasClass('DELETED')) throw new Error('should not call DELETED ELEMENT');
 
     // if template, lauch exec method if any
     if (element$.attr('itemtype')) {
@@ -716,7 +464,7 @@ tb.execCode = function (element) {
     }
 
     throw new Error('all executable should be handled through itemtypes')
-}
+};
 
 tb.execCodes = function (fromCodeId, toCodeId) {
     // execute CODE element starting from fromCodeId and ending with toCodeId
@@ -733,7 +481,7 @@ tb.execCodes = function (fromCodeId, toCodeId) {
     code$.filterFromToId(fromCodeId, toCodeId).each(function (i, e) {
         return tb.execCode(e);
     });
-}
+};
 
 
 tb.runTests = function (/*files...*/) {
@@ -753,7 +501,7 @@ tb.runTests = function (/*files...*/) {
     return table().addRows(results).colStyle(function (r, c, value) {
         return (value !== 0) ? {backgroundColor: 'red'} : {}
     }, 'nbFailed');
-}
+};
 
 tb.animate = function (interval, fromCodeId, toCodeId, endCondition) {
     // run every "interval" all codes between fromCodeId to toCodeId
@@ -771,30 +519,28 @@ tb.animate = function (interval, fromCodeId, toCodeId, endCondition) {
             , interval));
     }
     return new Date().toString();
-}
+};
 
 tb.clearTimers = function () {
     // clear all existing intervalTimers used by [[tb.animate]]
     for (let i = 0; i < tb.intervalTimers.length; i++) {
         window.clearInterval(tb.intervalTimers[i]);
     }
-    ;
     tb.intervalTimers = [];
     tb.inAnimation = false;
     $('#stopAnimation').attr('disabled', true);
     $('.INANIMATION').removeClass('INANIMATION');
-}
+};
 
 tb.finalize = function () {
     // execute all finalization code
     for (let i = 0; i < tb.finalizations.length; i++) {
         let out = tb.finalizations[i];
-//todo suppress      tb.errorHandler.code = out.finalizationFunc.toString();
         out.finalizationFunc();
         out.finalizationFunc = undefined;  // so that displayResult will not show ... to be finalized...
         tb.displayResult(out, out);
     }
-}
+};
 
 tb.run = function () {
     // run either all CODE ELEMENT or the CODE ELEMENT from the first to the selected.element
@@ -803,13 +549,13 @@ tb.run = function () {
     } else {
         tb.execUntilSelected();
     }
-}
+};
 
 tb.updateContainers = function () {
     // make sure that containers are never empty (= at least have a RICHTEXT ELEMENT)
     let c$ = $('[container]:not(:has(> *))');
     if (c$.length) c$.append('<DIV class="ELEMENT EDITABLE RICHTEXT c-12" id=' + tb.blockId('rich') + '></DIV>');
-}
+};
 
 tb.createVarFromItemprop = function (i, element) {
     // create an instance of tb.Var or tb.Table depending on the type of element
@@ -837,7 +583,7 @@ tb.createVarFromItemprop = function (i, element) {
             tb.vars[itemprop] = _var;
         } else v(itemprop, _var);
     }
-}
+};
 
 tb.createVars = function () {
     // look in the DOM for itemprops that have no itemscope ancestor
@@ -854,7 +600,7 @@ tb.createVars = function () {
             $(this).closest('.DELETED').length === 0;  // nor be deleted or having a deleted parent
     });
     globalItemprops.each(tb.createVarFromItemprop);
-}
+};
 
 tb.updateFunctionElements = function () {
     // update every element that has an itemprop and a func attribute
@@ -869,7 +615,7 @@ tb.updateFunctionElements = function () {
             // do nothing, since the error has already been registred
         }
     })
-}
+};
 
 tb.prepareExec = function () {
     // reset the environement before so that no side effect
@@ -884,6 +630,7 @@ tb.prepareExec = function () {
     $('.TRACE').remove();
     $('.BOX').remove();
     $('[func]').removeProp('tbVar');
+    tb.lastError = undefined;
     tb.finalizations = [];
     tb.vars = {}; // run from fresh
     tb.createVars();
@@ -894,7 +641,7 @@ tb.prepareExec = function () {
         tb.reformatRichText(e)
     });
     tb.results.execStat.prepare$ms = Date.now() - tb.results.execStat.start;
-}
+};
 
 tb.execAll = function () {
     // execute all [[CODE]] [[ELEMENT]]

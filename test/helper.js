@@ -284,11 +284,6 @@ describe('helpers.js', function () {
             tb.signature(function toto(a,b){return a+b}).should.be.equal('function toto(a,b)');
         })
     });
-    describe('tb.functionName',function(){
-        it('return the name of a function',function(){
-            tb.functionName(function toto(a,b){return a+b}).should.be.equal('toto');
-        })
-    });
 
     describe('tb.isConstructorName',function(){
         it('return true if a constructor Name according to Tablord conventions',function(){

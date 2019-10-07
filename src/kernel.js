@@ -43,6 +43,7 @@ if (!process.browser) {
 
             vars:{},              // where all user variables are stored
             actions:{},           // all actions that can be used to manipulate the document.
+            ui:{},                // all event handler related to the User Interface
             autoRun:true,
             sheetOptions: {
               get showCode() {return tb.tbContent$.attr('showCode') || true},

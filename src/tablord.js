@@ -117,6 +117,7 @@ if (!process.browser) {
     return tb.html('<var>'+this.label+'</var> = <span class=VALUE>'+tb.format(this.valueOf(),options)+'</span>'+(this.unit?'&nbsp;<span class=UNIT>'+this.unit+'</span>':''));
   };
 
+  /*TODO editor
   tb.Var.prototype.edit = function() {
     // returns an HTML object with the necessary controls to edit the variable
     this.codeElement = tb.output.codeElement;
@@ -147,7 +148,7 @@ if (!process.browser) {
     let code = 'v('+tb.toJSCode(this.name)+','+this.toJSCode()+')';
     this.codeElement.innerHTML = tb.toHtml(code+'.edit()');
   };
-
+*/
 
   tb.Var.prototype.isVar = true;
 
@@ -1416,7 +1417,7 @@ if (!process.browser) {
   };
 
   tb.IElement.prototype.toString = function() {
-    return '[object '+tb.functionName(this.constructor)+' '+this.name+']';
+    return '[object '+this.constructor.name+' '+this.name+']';
   };
 
   tb.IElement.prototype.element$ = function() {

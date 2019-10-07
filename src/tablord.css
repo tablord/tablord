@@ -4,60 +4,57 @@
   --bginfo: #d1ecf1;
   --bgeditor : #b9a3c1;
   --bgwarning : #fff3cd;
-  --bgerror : var(--danger);
+  --bgerror : #dc3545;
   --bgdanger : #f8d7da;
 }
 
 body {
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   color: black;
 }
 tbody {
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   font-size: 1em;
 }
 thead {
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   font-size: 1em;
 }
 h1 {
   font-size: 18pt;
-  margin-bottom: 0px;
-  padding-bottom: 0px;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 h2 {
   font-size: 14pt;
-  margin-bottom: 0px;
-  padding-bottom: 0px;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 h3 {
   font-size: 12pt;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 h4 {
   font-size: 10pt;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 h5 {
   font-size: 10pt;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 h6 {
   font-size: 10pt;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
-h7 {
-  font-size: 10pt;
-  margin-bottom: 0px;
-}
+
 dt {
   font-weight: bold;
 }
 
 ol,ul,li {
-  padding:0em;
-  margin-top : 0em;
-  margin-bottom : 0em;
+  padding:0;
+  margin-top : 0;
+  margin-bottom : 0;
 }
 
 table {
@@ -226,19 +223,19 @@ pre {
 }
 
 .CODEVIEW {
-  font-family: courier;
+  font-family: courier, monospace;
   font-size: 0.85rem;
   background-color: var(--bgcode);
   border:solid green 1px;
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
 }
 
 .CODEEXAMPLE,
 .CODE {
   background-color: var(--bgcode);
   border: none;
-  margin: 0px;
+  margin: 0;
   padding-left:3px;
 }
 .SOURCE {
@@ -288,8 +285,8 @@ pre {
 .OUTPUT {
   background-color: #b7b7b7;
   color: #828282;
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
 }
 
 
@@ -366,7 +363,7 @@ pre {
 
 
 .CODEINERROR {
-  font-family: courier;
+  font-family: courier, monospace;
   font-size: 14px;
   background-color: yellow;
   border:solid yellow 1px;
@@ -379,19 +376,26 @@ pre {
 .HELP,
 .INSPECT {
   padding: 2px;
-  margin: 0px;
+  margin: 0 30px 0 0;
   font-size: 11px;
+}
+.HELP th,
+.HELP td,
+.INSPECT td,
+.INSPECT th {
+  vertical-align: top;
+  text-align: left;
 }
 .INSPECT legend,
 .HELP legend {
   width:initial;
-  margin: 0px;
-  padding: 0px 4px;
+  margin: 0;
+  padding: 0 4px;
   font-size: 1em;
 }
 
 .INSPECT fieldset,
-.HELP fielset {
+.HELP fieldset {
   border: 1px solid black;
 }
 
@@ -401,11 +405,11 @@ pre {
 }
 
 .INSPECTHTML {
-  padding: 0px;
-  margin: 0px;
-  color: 004129;
+  padding: 0;
+  margin: 0;
+  color: #004129;
   background-color: #00ffa2;
-  font-family: courier;
+  font-family: courier, monospace;
   font-size: 14px;
 }
 
@@ -422,7 +426,7 @@ pre {
 .CUT {
   box-shadow:0 0 0.5em 10px orange inset;
 }
-
+.SELECTED.ELEMENT.DELETED *,
 .DELETED {
   box-shadow:0 0 0.5em 10px red inset;
 }
@@ -634,7 +638,6 @@ td.RICHTEXT {
     color  :grey;
     background: #e0e0e0;
     content:'A4';
-    title:
   }
 }
 

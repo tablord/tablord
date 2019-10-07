@@ -363,21 +363,6 @@
 
   // helpers specific to Tablord ////////////////////////////////////////////////////////////////////
 
-//TODO check if this is still needed with the current jQuery
-  tb.purgeJQueryAttr = function(html) {
-    // supress all jqueryxxx="yy" attributes in html, since they are meaningless for the user and also compromise the testability
-    // since they depend on the context
-
-    let reg = /(.*?)(<.+?>)/g;
-    let res,lastIndex=0;
-    let result = '';
-    while ((res = reg.exec(html)) != null) {
-      result += res[1]+res[2].replace(/\s*?jQuery\d+="\d"/g,'');
-      lastIndex = res.lastIndex;
-    }
-    return result;
-  };
-
   tb.htmlToText = function(html) {
     // transform the html content (from innerHTML) to a string as if this content is a text editor
     // removes any tags other than <BR> and <P>
@@ -454,11 +439,9 @@
     }
   };
 
-  //TODO should be deprecated
   tb.htmlAttribute = function(attr,value) {
     // return a string as found in html tag for the attribute attr assigning a value
-    let h = ' '+attr+'='+(typeof value == 'number'?value:'"'+tb.toHtml(value).replace(/"/g,'&quote;')+'"');
-    return h;
+    return ' '+attr+'='+(typeof value == 'number'?value:'"'+tb.toHtml(value).replace(/"/g,'&quote;')+'"');
   };
 
   tb.trimHtml = function(html) {
@@ -471,7 +454,7 @@
   // first remove all tags having HIDDEN in class and then keeps the text only
   // TODO******** not ok for nested tags !!!! ********************************
   // PREFER [[$.text]]
-    return html.replace(/\<.*?style\="DISPLAY\: none".*?\<\/.*?\>/g,'').replace(/\<.*?\>/g,'');
+    return html.replace(/<.*?style="DISPLAY: none".*?<\/.*?>/g,'').replace(/<.*?>/g,'');
   };
 
   // helpers for functions /////////////////////////////////////////
@@ -483,11 +466,6 @@
     return func.toString();
   };
 
-  tb.functionName = function (func) {
-    // returns the name of the function or '' if an anonymous function
-    // TODO: decide if replace by func.name (doesn't work in IE)
-    return func.toString().match(/function *([a-zA-Z0-9_$]*)/)[1];
-  };
 
   tb.isConstructorName = function(name) {
   // returns if name is a constructor name for a function

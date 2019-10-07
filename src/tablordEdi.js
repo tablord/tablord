@@ -6,1009 +6,1096 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+//////////////////////////////////////////////////////////////////////////////////////
+// EDI ///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
 
-  //////////////////////////////////////////////////////////////////////////////////////
-  // EDI ///////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////////////
+tb.richedit = {
+  exec: function (command, value) {
+    window.document.execCommand(command, false, value || null)
+  },
+  bold: function () {
+    tb.richedit.exec('bold')
+  },
+  italic: function () {
+    tb.richedit.exec('italic')
+  },
+  underline: function () {
+    tb.richedit.exec('underline')
+  },
+  strike: function () {
+    tb.richedit.exec('strikeThrough')
+  },
+  h1: function () {
+    tb.richedit.exec('formatBlock', '<h1>')
+  },
+  h2: function () {
+    tb.richedit.exec('formatBlock', '<h2>')
+  },
+  div: function () {
+    tb.richedit.exec('formatBlock', '<div>')
+  },
+  p: function () {
+    tb.richedit.exec('formatBlock', '<p>')
+  },
+  ol: function () {
+    tb.richedit.exec('insertOrderedList')
+  },
+  ul: function () {
+    tb.richedit.exec('insertUnorderedList')
+  },
+  pre: function () {
+    tb.richedit.exec('formatBlock', '<pre>')
+  }
+};
 
-  tb.richedit = {
-    exec:      function(command,value) {window.document.execCommand(command,false,value || null)},
-    bold:      function(){tb.richedit.exec('bold')},
-    italic:    function(){tb.richedit.exec('italic')},
-    underline: function(){tb.richedit.exec('underline')},
-    strike:    function(){tb.richedit.exec('strikeThrough')},
-    h1:        function(){tb.richedit.exec('formatBlock','<h1>')},
-    h2:        function(){tb.richedit.exec('formatBlock','<h2>')},
-    div:       function(){tb.richedit.exec('formatBlock','<div>')},
-    p:         function(){tb.richedit.exec('formatBlock','<p>')},
-    ol:        function(){tb.richedit.exec('insertOrderedList')},
-    ul:        function(){tb.richedit.exec('insertUnorderedList')},
-    pre:       function(){tb.richedit.exec('formatBlock','<pre>')}
-  };
+tb.initMenu = function () {
+  // creates the menu of tablord
+  // see also [[menu and actions]]
+  tb.dialogs = {};
+  tb.dialogs.showHtml$ = $(
+    '<div id="showHtml" class="modal fade no_print" role="dialog">' +
+    '<div class="modal-dialog" role="document">' +
+    '<div class="modal-content">' +
+    '<div class="modal-header">' +
+    '<h5 class="modal-title" id="showHtmlTitle">Show Html</h5>' +
+    '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+    '<span aria-hidden="true">&times;</span>' +
+    '</button>' +
+    '</div>' +
+    '<div class="modal-body" id="showHtmlBody"></div>' +
+    '</div>' +
+    '</div>' +
+    '</div>'
+  );
 
-  tb.initMenu = function() {
-    // creates the menu of tablord
-    // see also [[menu and actions]]
-    tb.dialogs = {};
-    tb.dialogs.showHtml$ = $(
-    	'<div id="showHtml" class="modal fade no_print" role="dialog">'+
-    	  '<div class="modal-dialog" role="document">'+
-    		'<div class="modal-content">'+
-    		  '<div class="modal-header">'+
-    			'<h5 class="modal-title" id="showHtmlTitle">Show Html</h5>'+
-    			'<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
-    			  '<span aria-hidden="true">&times;</span>'+
-    			'</button>'+
-    		  '</div>'+
-    		  '<div class="modal-body" id="showHtmlBody"></div>'+
-    		'</div>'+
-    	  '</div>'+
-    	'</div>'
-    );
-    
-    tb.menu = {};
-    tb.menu.$ = $(
-    	'<div id="menu" class="TOOLBAR no_print">'+
-            '<div class="btn-toolbar mb-1" role="toolbar" aria-label="main buttons">'+
-                '<div class="btn-group btn-group-sm mr-2" role="group" aria-label="run btns">'+
-                    '<button id="runUntilSelected" type="button" class="btn btn-dark" style="color: #8dff60;" ><i class="fas fa-step-forward"></i></button>'+
-                    '<button id="runAll" type="button" class="btn btn-dark" style="color: #8dff60;" ><i class="fas fa-play"></i></button>'+
-                    '<button id="stopAnimation" type="button" class="btn btn-dark" style="color: red" disabled=true ><i class="fas fa-stop"></i></button>'+
-                '</div>'+
-                '<div class="btn-group btn-group-sm mr-2" role="group" aria-label="actions on sheet">'+
-                    '<button id="save" type="button" class="btn btn-dark"><i class="fas fa-cloud-upload-alt"></i></button>'+
-                    '<button id="print" type="button" class="btn btn-dark"><i class="fas fa-print"></i></button>'+
-                    '<button id="help" type="button" class="btn btn-dark"><i class="fas fa-question-circle"></i></button>'+
-                    '<button id="settingsGroupDrop" type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cog"></i></button>'+
-                    '<div class="dropdown-menu" aria-labelledby="settingsBtnGroupDrop">'+
-                        '<a class="dropdown-item" id="clearOutputs" onclick="tb.clearOutputs();" >clear outputs</a>'+
-                        '<input id="showCode" type=checkbox>code<br/>'+
-                        '<input id="showCut" type=checkbox>cut<br/>'+
-                        '<input id="showDeleted" type=checkbox>deleted<br/>'+
-                        '<input id="showTest" type=checkbox>test<br/>'+
-                        '<input id="showTrace" type=checkbox>trace<br/>'+
-                        '<input id="autoRun" type=checkbox>auto run'+
-                    '</div>'+
-                '</div>'+
-            '</div>'+
-            '<div id="selectionToolBar">'+
-        		'<div class="btn-toolbar" role="toolbar">'+
-        			'<div class="btn-group btn-group-sm mr-2" role="group">'+
-        				'<button id="codeId" type="button" class="btn btn-outline-dark">no selection</button>'+
-        				'<button id="mark" class="btn btn-dark" title="mark the selected element"><i class="far fa-check-square"></i></button>'+
-        				'<button id="cut" class="btn btn-dark" title="cut marked elements"><i class="fas fa-cut"></i></button>'+
-        				'<button id="paste" class="btn btn-dark" title="paste cut/marked elements" data-where="after"><i class="fas fa-paste"></i></button>'+
-        				'<button id="delete" class="btn btn-dark" title="delete marked/selected element"><i class="fas fa-trash"></i></button>'+
-        				'<button id="moveUp" class="btn btn-dark" title="move selected before previous block element"><i class="fas fa-arrow-up"></i></button>'+
-        				'<button id="moveDown" class="btn btn-dark" title="move selected after next block element"><i class="fas fa-arrow-down"></i></button>'+
-        				'<button id="moveLeft" class="btn btn-dark" title="move selected before previous element"><i class="fas fa-arrow-left"></i></button>'+
-        				'<button id="moveRight" class="btn btn-dark" title="move selected after next element"><i class="fas fa-arrow-right"></i></button>'+
-        				'<button id="showHtml" class="btn btn-dark">&#8594;html</button>'+
-        				'<button id="toTest" class="btn btn-dark">&#8594;test</button>'+
-                    '</div>'+
-        			'<div id="insertAfter" class="btn-group btn-group-sm mr-2" role="group" data-where="after">'+
-                        '<button id="insertSection" class="btn btn-dark" title="section" data-template="https://tablord.com/templates/section">'+
-        					'<i class="fas fa-heading"></i></button>'+
-        				'<button id="insertRichText" class="btn btn-dark" title="Text" data-template="https://tablord.com/templates/richText">'+
-        					'<i class="fas fa-paragraph"></i></button>'+
-        				'<button id="cloneEmpty" class="btn btn-dark" title="empty copy of selected element"><i class="far fa-clone"></i></button>'+
-                        '<button id="insertCode" class="btn btn-dark" title="code" data-template="https://tablord.com/templates/code">{}</button>'+
-                        '<button id="insertTemplate" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">...</button>'+
-        				'<div id="templateChoice" class="dropdown-menu"></div>'+
-        			'</div>'+
-        		'</div>'+
-        		'<div id="objectToolBar"></div>'+
-    			'<div>'+
-                  '<details id="properties"><summary>properties</summary>'+
-                    '<div id="item">'+
-                      '<input id="itemprop" type="text" placeholder="itemprop">'+
-                      '<input id="itemtype" placeholder="itemtype">'+
-                      '<input id="format" placeholder="format">'+
-                    '</div>'+
-                    '<div id="func" style="height:200px;"></div>'+
-                    '<div id="error" class="alert alert-danger"></div>'+
-                    '<div id="classes">'+
-                        '<input type="checkbox" value="SHOW">SHOW<br> '+
+  tb.menu = {};
+  tb.menu.$ = $(
+    '<div id="menu" class="TOOLBAR no_print">' +
+    '<div class="btn-toolbar mb-1" role="toolbar" aria-label="main buttons">' +
+    '<div class="btn-group btn-group-sm mr-2" role="group" aria-label="run btns">' +
+    '<button id="runUntilSelected" type="button" class="btn btn-dark" style="color: #8dff60;" ><i class="fas fa-step-forward"></i></button>' +
+    '<button id="runAll" type="button" class="btn btn-dark" style="color: #8dff60;" ><i class="fas fa-play"></i></button>' +
+    '<button id="stopAnimation" type="button" class="btn btn-dark" style="color: red" disabled=true ><i class="fas fa-stop"></i></button>' +
+    '</div>' +
+    '<div class="btn-group btn-group-sm mr-2" role="group" aria-label="actions on sheet">' +
+    '<button id="save" type="button" class="btn btn-dark"><i class="fas fa-cloud-upload-alt"></i></button>' +
+    '<button id="print" type="button" class="btn btn-dark"><i class="fas fa-print"></i></button>' +
+    '<button id="help" type="button" class="btn btn-dark"><i class="fas fa-question-circle"></i></button>' +
+    '<button id="settingsGroupDrop" type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cog"></i></button>' +
+    '<div class="dropdown-menu" aria-labelledby="settingsBtnGroupDrop">' +
+    '<a class="dropdown-item" id="clearOutputs" onclick="tb.clearOutputs();" >clear outputs</a>' +
+    '<input id="showCode" type=checkbox>code<br/>' +
+    '<input id="showCut" type=checkbox>cut<br/>' +
+    '<input id="showDeleted" type=checkbox>deleted<br/>' +
+    '<input id="showTest" type=checkbox>test<br/>' +
+    '<input id="showTrace" type=checkbox>trace<br/>' +
+    '<input id="autoRun" type=checkbox>auto run' +
+    '</div>' +
+    '</div>' +
+    '</div>' +
+    '<div id="selectionToolBar">' +
+    '<div class="btn-toolbar" role="toolbar">' +
+    '<div class="btn-group btn-group-sm mr-2" role="group">' +
+    '<button id="codeId" type="button" class="btn btn-outline-dark">no selection</button>' +
+    '<button id="mark" class="btn btn-dark" title="mark the selected element"><i class="far fa-check-square"></i></button>' +
+    '<button id="cut" class="btn btn-dark" title="cut marked elements"><i class="fas fa-cut"></i></button>' +
+    '<button id="paste" class="btn btn-dark" title="paste cut/marked elements" data-where="after"><i class="fas fa-paste"></i></button>' +
+    '<button id="delete" class="btn btn-dark" title="delete marked/selected element"><i class="fas fa-trash"></i></button>' +
+    '<button id="moveUp" class="btn btn-dark" title="move selected before previous block element"><i class="fas fa-arrow-up"></i></button>' +
+    '<button id="moveDown" class="btn btn-dark" title="move selected after next block element"><i class="fas fa-arrow-down"></i></button>' +
+    '<button id="moveLeft" class="btn btn-dark" title="move selected before previous element"><i class="fas fa-arrow-left"></i></button>' +
+    '<button id="moveRight" class="btn btn-dark" title="move selected after next element"><i class="fas fa-arrow-right"></i></button>' +
+    '<button id="showHtml" class="btn btn-dark">&#8594;html</button>' +
+    '<button id="toTest" class="btn btn-dark">&#8594;test</button>' +
+    '</div>' +
+    '<div id="insertAfter" class="btn-group btn-group-sm mr-2" role="group" data-where="after">' +
+    '<button id="insertSection" class="btn btn-dark" title="section" data-template="https://tablord.com/templates/section">' +
+    '<i class="fas fa-heading"></i></button>' +
+    '<button id="insertRichText" class="btn btn-dark" title="Text" data-template="https://tablord.com/templates/richText">' +
+    '<i class="fas fa-paragraph"></i></button>' +
+    '<button id="cloneEmpty" class="btn btn-dark" title="empty copy of selected element"><i class="far fa-clone"></i></button>' +
+    '<button id="insertCode" class="btn btn-dark" title="code" data-template="https://tablord.com/templates/code">{}</button>' +
+    '<button id="insertTemplate" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">...</button>' +
+    '<div id="templateChoice" class="dropdown-menu"></div>' +
+    '</div>' +
+    '</div>' +
+    '<div id="objectToolBar"></div>' +
+    '<div>' +
+    '<details id="properties"><summary>properties</summary>' +
+    '<div id="item">' +
+    '<input id="itemprop" type="text" placeholder="itemprop">' +
+    '<input id="itemtype" placeholder="itemtype">' +
+    '<input id="format" placeholder="format">' +
+    '</div>' +
+    '<div id="func" style="height:200px;"></div>' +
+    '<div id="error" class="alert alert-danger"></div>' +
+    '<div id="classes">' +
+    '<input type="checkbox" value="SHOW">SHOW<br> ' +
 
-                        '<input type="radio" name="type" value="number">number '+
-                        '<input type="radio" name="type" value="string">string '+
-                        '<input type="radio" name="type" value="date">date<br> '+
-                        
-                        'c-<input type="radio" name="layout" value="c-1">1 '+
-                        '<input type="radio" name="layout" value="c-2">2 '+
-                        '<input type="radio" name="layout" value="c-3">3 '+
-                        '<input type="radio" name="layout" value="c-4">4 '+
-                        '<input type="radio" name="layout" value="c-5">5 '+
-                        '<input type="radio" name="layout" value="c-6">6 '+
-                        '<input type="radio" name="layout" value="c-7">7 '+
-                        '<input type="radio" name="layout" value="c-8">8 '+
-                        '<input type="radio" name="layout" value="c-9">9 '+
-                        '<input type="radio" name="layout" value="c-10">10 '+
-                        '<input type="radio" name="layout" value="c-11">11 '+
-                        '<input type="radio" name="layout" value="c-12">12<br>'+
-                        
-                        '<input type="radio" name="severity" value="INFO">INFO '+
-                        '<input type="radio" name="severity" value="OK">OK '+
-                        '<input type="radio" name="severity" value="WARNING">WARNING '+
-                        '<input type="radio" name="severity" value="DANGER">DANGER '+
-                        '<input type="radio" name="severity" value="">--<br>'+
-                        '<input type="checkbox" value="FLEX">FLEX<br>'+
-                        '<input type="checkbox" value="NOTE">NOTE<br>'+
-                        '<input type="checkbox" value="ADDRESS">ADDRESS<br>'+
-                    '</div>'+
-                  '</details>'+
-                '</div>'+
-            '</div>'+
-			'<div id="helpPanel">'+
-				'<button id="hideHelp" style="color:red;cursor:pointer;">&nbsp;&#215;&nbsp;</button>'+
-				'<input id="helpSearch" placeholder="help search"/>'+
-			    '<div id="helpOutput" style="overflow:auto;max-height:400px;"></div>'+
-			'</div>'+
-			'<div id="debug" style="overflow:auto;max-height:400px;"></div>'+
-		'</div>'+
-        ''
-    );
+    '<input type="radio" name="type" value="number">number ' +
+    '<input type="radio" name="type" value="string">string ' +
+    '<input type="radio" name="type" value="date">date<br> ' +
 
-    tb.help.add('menu and actions','menu ',[
-        "for every DOM element that has an id inside the menu, [[tb.initMenu]] creates automatically",
-        "- a jQuery in tb.menu.<i>id</i>$ that points to the element",
-        "- try to find a tb.<i>id</i>Click method and if found bind it to the click event",
-        "  - if no tb.<i>id</i>Click is found, tries to find a tb.actions.<i>id</i> that should have no parameter and that will be bound to the click event",
-        "- try to find a tb.<i>id</i>Change method and if found bind it to the change event",
-        "normally the tb.<i>id</i>Click method will call an similar tb.actions.xxxx method that will perform the real action.",
-        "The click method has the responsibility to understand the UI (like click + altKey means some parameters of the action",
-        "the action is very close to the UI semantic (like finding the selected / marked elements), but can be used in a programable way.",
-        "- actions always return this, allowing for command chaining",
-        "- actions will have the responsibility of register the undo command",
-        "the action usually call one or more tb method that will perform the work"]);
+    'c-<input type="radio" name="layout" value="c-1">1 ' +
+    '<input type="radio" name="layout" value="c-2">2 ' +
+    '<input type="radio" name="layout" value="c-3">3 ' +
+    '<input type="radio" name="layout" value="c-4">4 ' +
+    '<input type="radio" name="layout" value="c-5">5 ' +
+    '<input type="radio" name="layout" value="c-6">6 ' +
+    '<input type="radio" name="layout" value="c-7">7 ' +
+    '<input type="radio" name="layout" value="c-8">8 ' +
+    '<input type="radio" name="layout" value="c-9">9 ' +
+    '<input type="radio" name="layout" value="c-10">10 ' +
+    '<input type="radio" name="layout" value="c-11">11 ' +
+    '<input type="radio" name="layout" value="c-12">12<br>' +
 
-    $('body').prepend(tb.menu.$);
-    // for easier access and better perf
-    $('[id]',tb.menu.$).each(function(){
-      const e$ = $(this);
-      if (tb[this.id+'Click']) e$.click(tb[this.id+'Click']); // if a corresponding function bind it
-      else if (tb.actions[this.id]) e$.click(tb.actions[this.id]); // else if a corresponding action is found, bind it to click
+    '<input type="radio" name="severity" value="INFO">INFO ' +
+    '<input type="radio" name="severity" value="OK">OK ' +
+    '<input type="radio" name="severity" value="WARNING">WARNING ' +
+    '<input type="radio" name="severity" value="DANGER">DANGER ' +
+    '<input type="radio" name="severity" value="">--<br>' +
+    '<input type="checkbox" value="FLEX">FLEX<br>' +
+    '<input type="checkbox" value="NOTE">NOTE<br>' +
+    '<input type="checkbox" value="ADDRESS">ADDRESS<br>' +
+    '</div>' +
+    '</details>' +
+    '</div>' +
+    '</div>' +
+    '<div id="helpPanel">' +
+    '<button id="hideHelp" style="color:red;cursor:pointer;">&nbsp;&#215;&nbsp;</button>' +
+    '<input id="helpSearch" placeholder="help search"/>' +
+    '<div id="helpOutput" style="overflow:auto;max-height:400px;"></div>' +
+    '</div>' +
+    '<div id="debug" style="overflow:auto;max-height:400px;"></div>' +
+    '</div>' +
+    ''
+  );
 
-      if (tb[this.id+'Change']) e$.click(tb[this.id+'Change']); // if a corresponding function bind it
-      
-      tb.menu[this.id+'$'] = e$;
-    });
+  tb.help.add('menu and actions', 'menu ', [
+    "for every DOM element that has an id inside the menu, [[tb.initMenu]] creates automatically",
+    "- a jQuery in tb.menu.<i>id</i>$ that points to the element",
+    "- try to find a tb.<i>id</i>Click method and if found bind it to the click event",
+    "  - if no tb.<i>id</i>Click is found, tries to find a tb.actions.<i>id</i> that should have no parameter and that will be bound to the click event",
+    "- try to find a tb.<i>id</i>Change method and if found bind it to the change event",
+    "normally the tb.<i>id</i>Click method will call an similar tb.actions.xxxx method that will perform the real action.",
+    "The click method has the responsibility to understand the UI (like click + altKey means some parameters of the action",
+    "the action is very close to the UI semantic (like finding the selected / marked elements), but can be used in a programable way.",
+    "- actions always return this, allowing for command chaining",
+    "- actions will have the responsibility of register the undo command",
+    "the action usually call one or more tb method that will perform the work"]);
+
+  $('body').prepend(tb.menu.$);
+  // for easier access and better perf
+  $('[id]', tb.menu.$).each(function () {
+    const e$ = $(this);
+    if (tb[this.id + 'Click']) e$.click(tb.ui[this.id + 'Click']); // if a corresponding function bind it
+    else if (tb.actions[this.id]) e$.click(tb.actions[this.id]); // else if a corresponding action is found, bind it to click
+
+    if (tb[this.id + 'Change']) e$.click(tb.ui[this.id + 'Change']); // if a corresponding function bind it
+
+    tb.menu[this.id + '$'] = e$;
+  });
 
 
-    tb.menu.runUntilSelected$.click(tb.execUntilSelected);
-    tb.menu.runAll$.click(tb.execAll);
-    tb.menu.stopAnimation$.click(tb.clearTimers);
-    tb.menu.save$.click(tb.save);
-    tb.menu.help$.click(function(){tb.menu.helpPanel$.toggle(100)});
+  tb.menu.runUntilSelected$.click(tb.execUntilSelected);
+  tb.menu.runAll$.click(tb.execAll);
+  tb.menu.stopAnimation$.click(tb.clearTimers);
+  tb.menu.save$.click(tb.save);
+  tb.menu.help$.click(function () {
+    tb.menu.helpPanel$.toggle(100)
+  });
 
-    tb.menu.showCode$.prop('checked',tb.sheetOptions.showCode);
-    tb.menu.showCut$.prop('checked',tb.sheetOptions.showCut);
-    tb.menu.showDeleted$.prop('checked',tb.sheetOptions.showDeleted);
-    tb.menu.showTest$.prop('checked',tb.sheetOptions.showTest);
-    tb.menu.showTrace$.prop('checked',tb.sheetOptions.showTrace);
-    tb.menu.autoRun$.prop('checked',tb.autoRun);
-    
-    tb.menu.insertAfter$.click(tb.templateButtonClick);
-    
-    tb.menu.selectionToolBar$.hide();
-    
-    tb.menu.error$.hide();
-    tb.menu.funcEditor = ace.edit('func');
-    //tb.menu.funcEditor.session.setMode("ace/mode/javascript"); TODO remove if it works
-    tb.menu.funcEditor.on('blur',function(){
-      const code = tb.menu.funcEditor.getValue();
-      if (code != tb.selected.element$.attr('data-code')) {
-        if (code) tb.selected.element$.attr('data-code',code);
-        else tb.selected.element$.removeAttr('data-code');
-        tb.run();
-        tb.setModified(true);
+  tb.menu.showCode$.prop('checked', tb.sheetOptions.showCode);
+  tb.menu.showCut$.prop('checked', tb.sheetOptions.showCut);
+  tb.menu.showDeleted$.prop('checked', tb.sheetOptions.showDeleted);
+  tb.menu.showTest$.prop('checked', tb.sheetOptions.showTest);
+  tb.menu.showTrace$.prop('checked', tb.sheetOptions.showTrace);
+  tb.menu.autoRun$.prop('checked', tb.autoRun);
+
+  tb.menu.insertAfter$.click(tb.ui.templateButton);
+
+  tb.menu.selectionToolBar$.hide();
+
+  tb.menu.error$.hide();
+  tb.menu.funcEditor = ace.edit('func');
+  //tb.menu.funcEditor.session.setMode("ace/mode/javascript"); TODO remove if it works
+  tb.menu.funcEditor.on('blur', function () {
+    const code = tb.menu.funcEditor.getValue();
+    if (code !== tb.selected.element$.attr('data-code')) {
+      if (code) tb.selected.element$.attr('data-code', code);
+      else tb.selected.element$.removeAttr('data-code');
+      tb.run();
+      tb.setModified(true);
+    }
+  });
+  tb.menu.funcEditor.commands.addCommand({
+    name: "run",
+    exec: tb.run,
+    bindKey: {mac: "Ctrl-Return", win: "Ctrl-Return"}
+  });
+  tb.menu.classes$.click(function (event) {
+    $(event.currentTarget).children().each(function () {
+      const className = $(this).val();
+      if (className) {
+        tb.selected.element$.toggleClass(className, $(this).prop('checked'));
       }
     });
-    tb.menu.funcEditor.commands.addCommand({
-        name: "run",
-        exec: tb.run,
-        bindKey: {mac: "Ctrl-Return", win: "Ctrl-Return"}
-    });
-    tb.menu.classes$.click(function(event){
-      $(event.currentTarget).children().each(function(){
-        const className = $(this).val();
-        if (className) {
-           tb.selected.element$.toggleClass(className,$(this).prop('checked'));
-        }
-      });
-      tb.setModified(true);
-    });
-    tb.menu.item$.focusout(function(event){
-      if (tb.menu.itemprop$.val()) tb.selected.element$.attr('itemprop',tb.menu.itemprop$.val());
-      else tb.selected.element$.removeAttr('itemprop');
-      if (tb.menu.itemtype$.val()) tb.selected.element$.attr('itemtype',tb.menu.itemtype$.val());
-      else tb.selected.element$.removeAttr('itemtype');
-      if (tb.menu.format$.val()) tb.selected.element$.attr('format',tb.menu.format$.val());
-      else tb.selected.element$.removeAttr('format');
-      tb.run();
-      tb.setModified(true);
-    });
- 
-    tb.updateTemplateChoice();
-    
-    tb.menu.helpSearch$.keyup(tb.helpSearchKeyup);
-  };
-  //////////////////////////////////////////////////////////////////////////////
-  // event handler for button input etc ////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////
-  // a function that is xxxxxxClick or xxxxxxChange is automatically bound to the 
-  // click or change event of the button id="xxxxxx"
-
-  tb.showCodeClick = function(event) {
-    // click event handler for the show Code checkbox
-    const button = event.target;
-    $('.CODE').toggleClass('HIDDEN',!button.checked);
-    tb.sheetOptions.showCode = button.checked;
-  };
-
-  tb.showCutClick = function(event) {
-    // click event handler for the show cut checkbox
-    const button = event.target;
-    $('.CUT').toggleClass('HIDDEN',!button.checked);
-    tb.sheetOptions.showCut = button.checked;
-  };
-
-  tb.showDeletedClick = function(event) {
-    // click event handler for the show cut checkbox
-    const checkbox = event.target;
-    if (checkbox.checked) $('.DELETED').show(300);
-    else $('.DELETED').hide(300);
-    tb.sheetOptions.showDeleted = checkbox.checked;
-  };
-  
-  tb.showTestClick = function(event) {
-    // click event handler for the show test checkbox
-    const button = event.target;
-    $('.TEST').toggleClass('HIDDEN',!button.checked);
-    tb.sheetOptions.showTest = button.checked;
-  };
-
-  tb.showTraceClick = function(event) {
-    // click event handler for the show trace checkbox
-    const button = event.target;
-    $('.TRACE').toggleClass('HIDDEN',!button.checked);
-    tb.sheetOptions.showTrace = button.checked;
-  };
-
-  tb.setAutoRunClick = function(event) {
-    // click event handler for the auto run checkbox
-    const button = event.target;
-    tb.autoRun = button.checked;
-    $('body').attr('autoRun',tb.autoRun);
-  };
-
-  tb.printClick = function(event) {
-    // click event handler for the print button
-    tb.selectElement(undefined);
-    window.print();
-  };
-
-  tb.actions.paste = function(intoItemscope){
-    // paste cut elements after the selected element
-    // if intoItemscope == true it will paste right after the selected element even if target$ is inside an itemscope
-    // otherwise will paste after the parent itemscope
-    const elements$ = $('.CUT').removeClass('CUT');
-    if (elements$.length === 0) elements$ = tb.cloneElements$($('.MARKED').removeClass('MARKED'));
-    const target$ = intoItemscope?tb.selected.element$:tb.selected.element$.itemscopeOrThis$().last();
-    elements$.insertAfter(target$);
-  };
-
-  tb.pasteClick = function(event) {
-    // paste
-    tb.actions.paste(event.altKey);
-    return this;
-  };
-
-  tb.actions.moveUp = function() {
-    // move the itemscope of the selected element up one itemscope level
-    tb.moveElement(tb.selected.element$.itemscopeOrThis$(),'before');
-
-  };
-
-  tb.actions.moveDown = function() {
-    // simple version: at itemscope boundaries
-    tb.moveElement(tb.selected.element$.itemscopeOrThis$(),'after');
-    return this;
-  };
-
-  tb.actions.moveLeft = function() {
-    // simple version: at element boundaries
-    tb.moveElement(tb.selected.element$,'before');
-    return this;
-  };
-
-  tb.actions.moveRight = function() {
-    // simple version: at element boundaries
-    tb.moveElement(tb.selected.element$,'after');
-    return this;
-  };
-  
-  tb.actions.toTest = function() {
-    tb.copyOutputToTest();
-    return this;
-  };
-  
-  tb.actions.hideHelp = function() {
-    tb.menu.helpPanel$.hide(300);
-    return this;
-  };
-  
-  tb.helpSearchKeyup = function(event) {
-    // event handler for the help search box
-    tb.menu.helpOutput$.html(tb.help.index.help$(event.currentTarget.value));
-  };
-
-  tb.markClick = function(event) {
-    // simple version marks only Selected Element
-    const target$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
-    tb.actions.mark(target$);
-  };
-  
-  tb.cutClick = function(event) {
-    // simple version
-    // if there are [[MARKED]] [[ELEMENT]], will cut them
-    // if element is inside an [[itemscope]], will cut the entire itemscope
-    // except if the Alt Key is pressed where it will only take the ELEMENT
-    let elements$ = $('.MARKED');
-    if (elements$.length ===0) elements$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
-    tb.actions.cutBlock(elements$);
-  };
-
-  tb.actions.delete = function(intoItemscope) {
-    // look for MARKED elements or if none for SELECTED element
-    // and add the DELETED class
-    let elements$ = $('.MARKED');
-    if (elements$.length === 0) elements$ = intoItemscope?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
-    const deleted$ = elements$.find('.DELETED').addBack('.DELETED'); // search for deleted elements including itself
-    if (deleted$.length) { // some elements in the selection are deleted, so undelete those
-      deleted$.removeClass('DELETED').show(500);
-      return;
-    }
-    if ($('.SELECTED',elements$).length) tb.selectElement(undefined);
-    elements$.removeClass('MARKED').addClass('DELETED');
-    if (!tb.sheetOptions.showDeleted) elements$.hide(500)
-  };
-
-  tb.actions.killMarked = function() {
-      // look for MARKED elements
-      // and remove those elements forever (no possible undo)
-      // useful in conjunction with actions.mark and actions.invertMarked
-      // to create test sheets
-
-    let elements$ = $('.MARKED');
-    if ($('.SELECTED',elements$).length) tb.selectElement(undefined);
-    elements$.remove();
-    return this;
-  };
-
-  tb.actions.cloneEmpty = function(intoItemscope) {
-    // clone MARKED or the selected.element$
-    // the text of the cloned element are cleared
-    // if intoItemscope is true, work at the element level, not itemscope level
-    let elements$ = $('.MARKED');
-    if (elements$.length === 0) elements$ = event.altKey?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
-    let target$ = intoItemscope?tb.selected.element$:tb.selected.element$.itemscopeOrThis$();
-    tb.cloneElements$(elements$,true).insertAfter(target$);
-  };
-
-  tb.cloneEmptyClick = function(event) {
-    // clone MARKED or the selected.element$
-    tb.actions.cloneEmpty(event.altKey);
-  };
-
-  tb.actions.insertTemplate = function(template,where) {
-    // insert a template
-    // - template is the url of the template
-    // - where is one of "after" "afterItemscope"(default) "before" "beforeItemscope"
-    // TODO consolider pour traiter tous les cas (pas de selected...)
-    where = where || 'afterItemscope';
-    if (template === undefined) return this;
-    tb.templates[template].insertNew(tb.selected.element,where,tb.selected.container$.attr('container'));
-    return this;
-  };
-
-  tb.templateButtonClick = function(event) {
-    let where = $(event.target).closest('[data-where]').attr('data-where');
-    if (!event.altKey) where += 'Itemscope';
-    let template = $(event.target).closest('[data-template]').attr('data-template');
-    tb.actions.insertTemplate(template,where);
-    //event.stopPropagation(); // in order to have embedded buttons like the drop down menu
-                             // otherwise the event will be treated twice issue #13
-  };
-
-  tb.showHtmlClick = function(event) {
-    //TODO prettify the html before compare
-    if (tb.selected.element$.hasClass('CODE')) {
-      let out = tb.selected.element$.children('.OUTPUT')[0] || {id:'no output',innerHTML:''};
-      let test = tb.selected.element$.children('.TEST')[0] || {id:'no test',innerHTML:''};
-      let hout  = out.innerHTML;
-      let htest = test.innerHTML;
-      diff = tb.diff(hout,htest).span().toString();
-      $('#showHtmlBody').html(
-        '<fieldset><legend>'+tb.selected.element.id+'</div></legend><div  class=CODEEXAMPLE>'+tb.toHtml(tb.selected.element.outerHTML)+'</fieldset>'+
-        '<fieldset><legend>diff <span class="DIFF DEL">output</span> vs <span class="DIFF ADD">test</legend>'+diff+'</fieldset>')
-    }
-    else {
-      $('#showHtmlBody').html(
-        '<fieldset><legend>'+tb.selected.element.id+'</legend>'+tb.toHtml(tb.selected.element.outerHTML)+'</fieldset>')
-    }
-    $('#showHtml').modal()
-  };
-
-
-  tb.bodyKeyDown = function(event) {
-    // special keys at EDI level
-    switch (event.keyCode) {
-      case 112:
-        tb.help.index.show(window.document.selection.createRange().text); //TODO: works only with IE7
-        break;
-    }
-    return true;
-  };
-
-  tb.bodyKeyUp = function(event) {
-    tb.menu.debug$.html(tb.inspect(window.document.selection).span().toString())
-  };
-
-
-  tb.elementClick = function(event) {
-    // event handler for click on an ELEMENT
-    let element$ = $(event.currentTarget); // not target, since target can be an child element, not the div itself
-    if (event.ctrlKey) {
-      tb.actions.mark(event.altKey?element$:element$.itemscopeOrThis$());
-      return false;
-    }
-    else if (event.shiftKey){
-      return false;
-    }
-    tb.selectElement(element$);
-    return false;  // prevent bubbling
-  };
-
-  tb.editableKeyDown = function(event) {
-    // keyDown event handler for EDITABLE ELEMENT in order to see if the ELEMENT is modified and so the sheet
-    // also treat ctrl-enter as a run key
-    if ($.inArray(event.keyCode,[16,17,18,20,27,33,34,35,36,37,38,39,40,45,91,92,93]) !== -1) return; // non modifying keys like shift..
     tb.setModified(true);
-    tb.setUpToDate(false);
-    if ((event.keyCode===13) && event.ctrlKey) {
-      event.stopPropagation();
-      tb.run();
-    }
-  };
+  });
+  tb.menu.item$.focusout(function (event) {
+    if (tb.menu.itemprop$.val()) tb.selected.element$.attr('itemprop', tb.menu.itemprop$.val());
+    else tb.selected.element$.removeAttr('itemprop');
+    if (tb.menu.itemtype$.val()) tb.selected.element$.attr('itemtype', tb.menu.itemtype$.val());
+    else tb.selected.element$.removeAttr('itemtype');
+    if (tb.menu.format$.val()) tb.selected.element$.attr('format', tb.menu.format$.val());
+    else tb.selected.element$.removeAttr('format');
+    tb.run();
+    tb.setModified(true);
+  });
 
-  tb.elementEditor = function(event) {
-    // generic editor event handler for click and keypress
-    // assumes that the DOM element that has a class=EDITOR also has an id="name of the corresponding Tablord element"
-    // this handler just dispatch the event at the right object eventHandler
-    const element = event.currentTarget;
-    const tbObject = tb.vars[element.tbObject];
-    return tbObject.editorEvent(event);
-  };
-  
-  //////////////////////////////////////////////////////////////////////////////
-  // method to display changes
-  //////////////////////////////////////////////////////////////////////////////
+  tb.updateTemplateChoice();
+
+  tb.menu.helpSearch$.keyup(tb.helpSearchKeyup);
+};
 
 
-  tb.setModified = function(state) {
-    // set the modified state and modify the save button accordingly
-    tb.modified = state;
-    tb.menu.save$.toggleClass('btn-warning',state).toggleClass('btn-dark',!state);
-  };
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// tb.ui
+// regroups all event handlers of the User Interface
+//
+// a function that is xxxxxxClick or xxxxxxChange is automatically bound to the
+// click or change event of the button id="xxxxxx"
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  tb.setUpToDate = function(state) {
-    // set if the sheet is up to date or not (has to be re-run)
-    if (state === tb.setUpToDate.state) return;
-    if (state) {
-      tb.menu.runAll$.removeClass('btn-warning').addClass('btn-dark');
-    }
-    else {
-      tb.menu.runAll$.removeClass('btn-dark').addClass('btn-warning');
-      $('.OUTPUT').add('.TEST').removeClass('SUCCESS ERROR');
-    }
-    tb.setUpToDate.state = state;
-  };
+tb.ui.showCodeClick = function (event) {
+  // click event handler for the show Code checkbox
+  const button = event.target;
+  $('.CODE').toggleClass('HIDDEN', !button.checked);
+  tb.sheetOptions.showCode = button.checked;
+};
 
-  
-  tb.showElementError = function(element,error) {
-    // report an error that occured inside an element
-    // like getting the valueof a tb.Var
-    let element$ = $(element);
-    let output$ = element$;
-    if (element$.hasClass('CODE')) output$ = $('.OUTPUT',element);
-    output$.removeClass('SUCCESS').html('<span class="badge badge-pill badge-warning">'+(error.cascade || 'error')+'</span>');
-    element$.addClass('ERROR')
-    .prop('error',{message:error.message,
-                   stack:error.stack,
-                   lineNumber:error.lineNumber,
-                   columnNumber:error.columnNumber,
-                   cascade:error.cascade
-    });
-    if (!error.cascade) {
-      tb.selectElement(element);
-      tb.menu.properties$.prop('open',true);
-    }
-  };
-  
-  tb.showItempropError = function(element,error) {
-    // report an error that occured at the variable creation
-    let element$ = $(element);
-    element$.addClass('ERROR')
-    .prop('error',error);
+tb.ui.showCutClick = function (event) {
+  // click event handler for the show cut checkbox
+  const button = event.target;
+  $('.CUT').toggleClass('HIDDEN', !button.checked);
+  tb.sheetOptions.showCut = button.checked;
+};
+
+tb.ui.showDeletedClick = function (event) {
+  // click event handler for the show cut checkbox
+  const checkbox = event.target;
+  if (checkbox.checked) $('.DELETED').show(300);
+  else $('.DELETED').hide(300);
+  tb.sheetOptions.showDeleted = checkbox.checked;
+};
+
+tb.ui.showTestClick = function (event) {
+  // click event handler for the show test checkbox
+  const button = event.target;
+  $('.TEST').toggleClass('HIDDEN', !button.checked);
+  tb.sheetOptions.showTest = button.checked;
+};
+
+tb.ui.showTraceClick = function (event) {
+  // click event handler for the show trace checkbox
+  const button = event.target;
+  $('.TRACE').toggleClass('HIDDEN', !button.checked);
+  tb.sheetOptions.showTrace = button.checked;
+};
+
+tb.ui.setAutoRunClick = function (event) {
+  // click event handler for the auto run checkbox
+  const button = event.target;
+  tb.autoRun = button.checked;
+  $('body').attr('autoRun', tb.autoRun);
+};
+
+tb.ui.printClick = function (event) {
+  // click event handler for the print button
+  tb.selectElement(undefined);
+  window.print();
+};
+
+tb.ui.pasteClick = function (event) {
+  // paste
+  tb.actions.paste(event.altKey);
+  return this;
+};
+
+
+tb.ui.helpSearchKeyup = function (event) {
+  // event handler for the help search box
+  tb.menu.helpOutput$.html(tb.help.index.help$(event.currentTarget.value));
+};
+
+tb.ui.markClick = function (event) {
+  // simple version marks only Selected Element
+  const target$ = event.altKey ? tb.selected.element$ : tb.selected.element$.itemscopeOrThis$();
+  tb.actions.mark(target$);
+};
+
+tb.ui.cutClick = function (event) {
+  // simple version
+  // if there are [[MARKED]] [[ELEMENT]], will cut them
+  // if element is inside an [[itemscope]], will cut the entire itemscope
+  // except if the Alt Key is pressed where it will only take the ELEMENT
+  let elements$ = $('.MARKED');
+  if (elements$.length === 0) elements$ = event.altKey ? tb.selected.element$ : tb.selected.element$.itemscopeOrThis$();
+  tb.actions.cutBlock(elements$);
+};
+
+tb.ui.cloneEmptyClick = function (event) {
+  // clone MARKED or the selected.element$
+  tb.actions.cloneEmpty(event.altKey);
+};
+
+
+tb.ui.templateButtonClick = function (event) {
+  let where = $(event.target).closest('[data-where]').attr('data-where');
+  if (!event.altKey) where += 'Itemscope';
+  let template = $(event.target).closest('[data-template]').attr('data-template');
+  tb.actions.insertTemplate(template, where);
+  //event.stopPropagation(); // in order to have embedded buttons like the drop down menu
+  // otherwise the event will be treated twice issue #13
+};
+
+tb.ui.showHtmlClick = function (event) {
+  //TODO prettify the html before compare
+  if (tb.selected.element$.hasClass('CODE')) {
+    let out = tb.selected.element$.children('.OUTPUT')[0] || {id: 'no output', innerHTML: ''};
+    let test = tb.selected.element$.children('.TEST')[0] || {id: 'no test', innerHTML: ''};
+    let hout = out.innerHTML;
+    let htest = test.innerHTML;
+    diff = tb.diff(hout, htest).span().toString();
+    $('#showHtmlBody').html(
+      '<fieldset><legend>' + tb.selected.element.id + '</div></legend><div  class=CODEEXAMPLE>' + tb.toHtml(tb.selected.element.outerHTML) + '</fieldset>' +
+      '<fieldset><legend>diff <span class="DIFF DEL">output</span> vs <span class="DIFF ADD">test</legend>' + diff + '</fieldset>')
+  } else {
+    $('#showHtmlBody').html(
+      '<fieldset><legend>' + tb.selected.element.id + '</legend>' + tb.toHtml(tb.selected.element.outerHTML) + '</fieldset>')
+  }
+  $('#showHtml').modal()
+};
+
+
+tb.ui.bodyKeyDown = function (event) {
+  // special keys at EDI level
+  switch (event.keyCode) {
+    case 112:
+      tb.help.index.show(window.document.selection.createRange().text); //TODO: works only with IE7
+      break;
+  }
+  return true;
+};
+
+tb.ui.bodyKeyUp = function (event) {
+  tb.menu.debug$.html(tb.inspect(window.document.selection).span().toString())
+};
+
+
+tb.ui.elementClick = function (event) {
+  // event handler for click on an ELEMENT
+  let element$ = $(event.currentTarget); // not target, since target can be an child element, not the div itself
+  if (event.ctrlKey) {
+    tb.actions.mark(event.altKey ? element$ : element$.itemscopeOrThis$());
+    return false;
+  } else if (event.shiftKey) {
+    return false;
+  }
+  tb.selectElement(element$);
+  return false;  // prevent bubbling
+};
+
+tb.ui.editableKeyDown = function (event) {
+  // keyDown event handler for EDITABLE ELEMENT in order to see if the ELEMENT is modified and so the sheet
+  // also treat ctrl-enter as a run key
+  if ($.inArray(event.keyCode, [16, 17, 18, 20, 27, 33, 34, 35, 36, 37, 38, 39, 40, 45, 91, 92, 93]) !== -1) return; // non modifying keys like shift..
+  tb.setModified(true);
+  tb.setUpToDate(false);
+  if ((event.keyCode === 13) && event.ctrlKey) {
+    event.stopPropagation();
+    tb.run();
+  }
+};
+
+// methods to update User Interface
+tb.updateTemplateChoice = function () {
+  // update the template selection box according to the context i.e. the acceptedTemplate of the current container
+  tb.menu.templateChoice$.empty();
+  let acceptedTemplates = tb.selected.container$.attr('templates');
+  if (acceptedTemplates) {
+    acceptedTemplates = acceptedTemplates.split(' ');
+  } else {
+    acceptedTemplates = tb.keys(tb.templates);
+  }
+  for (let i = 0; i < acceptedTemplates.length; i++) {
+    let template = tb.templates[acceptedTemplates[i]];
+    if (template) tb.menu.templateChoice$.append(
+      '<button class="dropdown-item" data-template="' + template.url + '">' + template.name + '</button>'
+    );
+  }
+};
+
+
+// tb.actions /////////////////////////////////////////////////////////////////////////////////////////////////////////
+// actions are intended to be used some time by the final user
+// actions can always chain, TODO will be undoable
+// actions should never implicitly call a run / executeAll etc.. but are responsible to setModified(true) if needed
+
+tb.actions.paste = function (intoItemscope) {
+  // paste cut elements after the selected element
+  // if intoItemscope == true it will paste right after the selected element even if target$ is inside an itemscope
+  // otherwise will paste after the parent itemscope
+  let elements$ = $('.CUT').removeClass('CUT');
+  if (elements$.length === 0) elements$ = tb.cloneElements$($('.MARKED').removeClass('MARKED'));
+  const target$ = intoItemscope ? tb.selected.element$ : tb.selected.element$.itemscopeOrThis$().last();
+  if (elements$.length && target$.length) return this; // nothing to do
+  elements$.insertAfter(target$);
+  tb.setModified(true);
+  return this;
+};
+
+tb.actions.moveUp = function () {
+  // move the itemscope of the selected element up one itemscope level
+  tb.setModified(tb.moveElement(tb.selected.element$.itemscopeOrThis$(), 'before'));
+  return this;
+};
+
+tb.actions.moveDown = function () {
+  // simple version: at itemscope boundaries
+  tb.setModified(tb.moveElement(tb.selected.element$.itemscopeOrThis$(), 'after'));
+  return this;
+};
+
+tb.actions.moveLeft = function () {
+  // simple version: at element boundaries
+  tb.setModified(tb.moveElement(tb.selected.element$, 'before'));
+  return this;
+};
+
+tb.actions.moveRight = function () {
+  // simple version: at element boundaries
+  tb.setModified(tb.moveElement(tb.selected.element$, 'after'));
+  return this;
+};
+
+tb.actions.toTest = function () {
+  tb.copyOutputToTest();
+  tb.setModified(true);
+  return this;
+};
+
+tb.actions.hideHelp = function () {
+  tb.menu.helpPanel$.hide(300);
+  return this;
+};
+
+
+tb.actions.delete = function (intoItemscope) {
+  // look for MARKED elements or if none for SELECTED element if any
+  // and add the DELETED class to those elements
+  let elements$ = $('.MARKED');
+  if (elements$.length === 0) {
+    if (!tb.selected.element) return this;
+    elements$ = intoItemscope ? tb.selected.element$ : tb.selected.element$.itemscopeOrThis$();
+  }
+  if (elements$.length === 0) return this;
+  tb.setModified(true);
+  const deleted$ = elements$.find('.DELETED').addBack('.DELETED'); // search for deleted elements including itself
+  if (deleted$.length) { // some elements in the selection are deleted, so undelete those
+    deleted$.removeClass('DELETED').show(500);
+    let selectedAndDeleted$ = $('.SELECTED', deleted$);  // this can happen since DELETED element can be visible and so can be selected.
+    if (selectedAndDeleted$.length) tb.selectElement(selectedAndDeleted$);
+    return this;
+  }
+  if ($('.SELECTED', elements$).length) tb.selectElement(undefined);
+  elements$.removeClass('MARKED').addClass('DELETED');
+  if (!tb.sheetOptions.showDeleted) elements$.hide(500)
+  return this;
+};
+
+tb.actions.killMarked = function () {
+  // look for MARKED elements
+  // and remove those elements forever (no possible undo)
+  // useful in conjunction with actions.mark and actions.invertMarked
+  // to create test sheets
+
+  let elements$ = $('.MARKED');
+  if ($('.SELECTED', elements$).length) tb.selectElement(undefined);
+  elements$.remove();
+  tb.setModified(true);
+  return this;
+};
+
+tb.actions.cloneEmpty = function (intoItemscope) {
+  // clone MARKED or the selected.element$
+  // the text of the cloned element are cleared
+  // if intoItemscope is true, work at the element level, not itemscope level
+  let elements$ = $('.MARKED');
+  if (elements$.length === 0) elements$ = event.altKey ? tb.selected.element$ : tb.selected.element$.itemscopeOrThis$();
+  let target$ = intoItemscope ? tb.selected.element$ : tb.selected.element$.itemscopeOrThis$();
+  tb.cloneElements$(elements$, true).insertAfter(target$);
+  tb.setModifed(true);
+  return this;
+};
+
+tb.actions.insertTemplate = function (template, where) {
+  // insert a template
+  // - template is the url of the template
+  // - where is one of "after" "afterItemscope"(default) "before" "beforeItemscope"
+  // TODO consolider pour traiter tous les cas (pas de selected...)
+  where = where || 'afterItemscope';
+  if (template === undefined) return this;
+  tb.templates[template].insertNew(tb.selected.element, where, tb.selected.container$.attr('container'));
+  return this;
+};
+
+// end of tb.actions ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+tb.setModified = function (state) {
+  // set the modified state and modify the save button accordingly
+  tb.modified = state;
+  tb.menu.save$.toggleClass('btn-warning', state).toggleClass('btn-dark', !state);
+};
+
+tb.setUpToDate = function (state) {
+  // set if the sheet is up to date or not (has to be re-run)
+  if (state === tb.setUpToDate.state) return;
+  if (state) {
+    tb.menu.runAll$.removeClass('btn-warning').addClass('btn-dark');
+  } else {
+    tb.menu.runAll$.removeClass('btn-dark').addClass('btn-warning');
+    $('.OUTPUT').add('.TEST').removeClass('SUCCESS ERROR');
+  }
+  tb.setUpToDate.state = state;
+};
+
+
+tb.showElementError = function (element, error) {
+  // report an error that occured inside an element
+  // like getting the valueof a tb.Var
+  let element$ = $(element);
+  let output$ = element$;
+  if (element$.hasClass('CODE')) output$ = $('.OUTPUT', element);
+  output$.removeClass('SUCCESS').html('<span class="badge badge-pill badge-warning">' + (error.cascade || 'error') + '</span>');
+  element$.addClass('ERROR')
+  .prop('error', {
+    message: error.message,
+    stack: error.stack,
+    lineNumber: error.lineNumber,
+    columnNumber: error.columnNumber,
+    cascade: error.cascade
+  });
+  if (!error.cascade) {
+    tb.lastError = error;
     tb.selectElement(element);
-    tb.menu.properties$.prop('open',true);
-    tb.menu.itemprop$[0].focus();
-  };
-  
-  tb.showInternalError = function(html) {
-    tb.menu.debug$.html(html).show();
-  };
-  //////////////////////////////////////////////////////////////////////////////
-  // method to manipulate the document /////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////
+    tb.menu.properties$.prop('open', true);
+  }
+};
 
-  tb.updateTemplateChoice = function() {
-    // update the template selection box according to the context i.e. the acceptedTemplate of the current container
-    tb.menu.templateChoice$.empty();
-    let acceptedTemplates = tb.selected.container$.attr('templates');
-    if (acceptedTemplates) {
-      acceptedTemplates = acceptedTemplates.split(' ');
-    }
-    else {
-      acceptedTemplates = tb.keys(tb.templates);
-    }
-    for (let i=0;i<acceptedTemplates.length;i++) {
-      let template = tb.templates[acceptedTemplates[i]];
-      if (template) tb.menu.templateChoice$.append(
-        '<button class="dropdown-item" data-template="'+template.url+'">'+template.name+'</button>'
-      );
-    }
-  };
+tb.showItempropError = function (element, error) {
+  // report an error that occured at the variable creation
+  let element$ = $(element);
+  element$.addClass('ERROR')
+  .prop('error', error);
+  tb.selectElement(element);
+  tb.menu.properties$.prop('open', true);
+  tb.menu.itemprop$[0].focus();
+};
 
-  tb.clearOutputs = function() {
-    // remove all outputs
-    $('.OUTPUT').remove();
-  };
-
-  tb.saveRemote = function() {
-    // save to a remote server
-    let csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
-    tb.removeDeletedBlocks();
-    tb.selectElement(undefined);
-    $.post(window.location,
-            {csrfmiddlewaretoken:csrftoken,
-             toBeSaved:$('#tbContent').html()},
-            function(data){
-                tb.menu.debug$.html(data);
-                tb.setModified(false);
-            })
-    .fail(function(data){tb.menu.debug$.html(data)})
-  };
-
-  tb.save = tb.saveRemote;
+tb.showInternalError = function (html) {
+  tb.menu.debug$.html(html).show();
+};
+//////////////////////////////////////////////////////////////////////////////
+// method to manipulate the document /////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
 
-  tb.pushTestResults = function() {
-    // send the test result to the server
-    let csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
-    $.post(window.location,
-            {csrfmiddlewaretoken:csrftoken,
-             passed:tb.results.testStatus.nbPassed,
-             failed:tb.results.testStatus.nbFailed,
-             testTime:tb.results.testStatus.dateTime.toISOString()},
-            function(data){
-                if (tb.url.arguments.test_close) {
-                    tb.canClose=true; // this will be polled by the test laucher
-                }
-                tb.menu.debug$.html(data);
-            })
-    .fail(function(data){tb.menu.debug$.html(data)})
-  };
+tb.clearOutputs = function () {
+  // remove all outputs
+  $('.OUTPUT').remove();
+};
+
+tb.saveRemote = function () {
+  // save to a remote server
+  let csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+  tb.removeDeletedBlocks();
+  tb.selectElement(undefined);
+  $.post(window.location,
+    {
+      csrfmiddlewaretoken: csrftoken,
+      toBeSaved: $('#tbContent').html()
+    },
+    function (data) {
+      tb.menu.debug$.html(data);
+      tb.setModified(false);
+    })
+  .fail(function (data) {
+    tb.menu.debug$.html(data)
+  })
+};
+
+tb.save = tb.saveRemote;
 
 
-  tb.copyOutputToTest = function() {
-    // set the current element's output as the test element if no test element existed or if it failed
-    // if a SUCCESS test existed, remove the test
-    
-    if (tb.selected.element === undefined) return;
+tb.pushTestResults = function () {
+  // send the test result to the server
+  let csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+  $.post(window.location,
+    {
+      csrfmiddlewaretoken: csrftoken,
+      passed: tb.results.testStatus.nbPassed,
+      failed: tb.results.testStatus.nbFailed,
+      testTime: tb.results.testStatus.dateTime.toISOString()
+    },
+    function (data) {
+      if (tb.url.arguments.test_close) {
+        tb.canClose = true; // this will be polled by the test laucher
+      }
+      tb.menu.debug$.html(data);
+    })
+  .fail(function (data) {
+    tb.menu.debug$.html(data)
+  })
+};
 
-    let out$ = tb.selected.element$.children('.OUTPUT');
-    let test$ = tb.selected.element$.children('.TEST');
-    if (test$.length === 0) {
-      out$.after($('<div class="TEST SUCCESS">'+out$.html()+'</div>'));
-    }
-    else if (!test$.hasClass('SUCCESS')) {
-      test$.html(out$.html()).removeClass('ERROR').addClass('SUCCESS');
-    }
-    else {
-      test$.remove();
-    }
-    tb.setModified(true);
-    
-  };
 
-  tb.mark = function(elements$,marked){
-    // mark all elements$ (a jQuery of [[ELEMENT]]). if marked is specified (true or false) it will force to be marked or unmarked
-    elements$.toggleClass('MARKED',marked);
-  };
+tb.copyOutputToTest = function () {
+  // set the current element's output as the test element if no test element existed or if it failed
+  // if a SUCCESS test existed, remove the test
 
-  tb.actions.mark = function(elements$,marked){
-    // mark all elements
-    // - elements$ can either be a jquery that contains [[ELEMENT]]
-    // or a string with a list of id spaced separated or with * for all elements
-    // - marked if undefined toggle marked / unmarked
-    //          if true or false, set / remove the [[MARKED]] class
-    elements$ = $.elementsByIds$(elements$);
-    tb.mark(elements$,marked);
-    return this;
-  };
+  if (tb.selected.element === undefined) return;
 
-  tb.actions.invertMarked = function(){
-    // invert all [[ELEMENT]] regarding [[MARKED]]
-    // return this for method chaining
-    let marked$ = $('.MARKED');
-    let unmarked$ = $('.ELEMENT').not('.MARKED');
-    unmarked$.addClass('MARKED');
-    marked$.removeClass('MARKED');
-    return this;
-  };
+  let out$ = tb.selected.element$.children('.OUTPUT');
+  let test$ = tb.selected.element$.children('.TEST');
+  if (test$.length === 0) {
+    out$.after($('<div class="TEST SUCCESS">' + out$.html() + '</div>'));
+  } else if (!test$.hasClass('SUCCESS')) {
+    test$.html(out$.html()).removeClass('ERROR').addClass('SUCCESS');
+  } else {
+    test$.remove();
+  }
+  tb.setModified(true);
 
-  tb.actions.cutBlock = function(element$,cut) {
-    // cut or "uncut" element
-    // if cut is true or false, set the cut state
-    // if cut is undefined, toggle the cut state
-    cut = cut || !element$.hasClass('CUT');
-    element$.toggleClass('CUT',cut).removeClass('MARKED');
-    tb.setModified(true);
-    tb.setUpToDate(false);
-  };
+};
 
-  tb.removeDeletedBlocks = function() {
-    // remove all DELETED elements
-    $('.DELETED').remove();
-  };
+tb.mark = function (elements$, marked) {
+  // mark all elements$ (a jQuery of [[ELEMENT]]). if marked is specified (true or false) it will force to be marked or unmarked
+  elements$.toggleClass('MARKED', marked);
+};
 
-  tb.cloneElements$ = function(elements$,empty) {
+tb.actions.mark = function (elements$, marked) {
+  // mark all elements
+  // - elements$ can either be a jquery that contains [[ELEMENT]]
+  // or a string with a list of id spaced separated or with * for all elements
+  // - marked if undefined toggle marked / unmarked
+  //          if true or false, set / remove the [[MARKED]] class
+  elements$ = $.elementsByIds$(elements$);
+  tb.mark(elements$, marked);
+  return this;
+};
+
+tb.actions.invertMarked = function () {
+  // invert all [[ELEMENT]] regarding [[MARKED]]
+  // return this for method chaining
+  let marked$ = $('.MARKED');
+  let unmarked$ = $('.ELEMENT').not('.MARKED');
+  unmarked$.addClass('MARKED');
+  marked$.removeClass('MARKED');
+  return this;
+};
+
+tb.actions.cutBlock = function (element$, cut) {
+  // cut or "uncut" element
+  // if cut is true or false, set the cut state
+  // if cut is undefined, toggle the cut state
+  cut = cut || !element$.hasClass('CUT');
+  element$.toggleClass('CUT', cut).removeClass('MARKED');
+  tb.setModified(true);
+  tb.setUpToDate(false);
+};
+
+tb.removeDeletedBlocks = function () {
+  // remove all DELETED elements
+  $('.DELETED').remove();
+};
+
+tb.cloneElements$ = function (elements$, empty) {
   // clone the elements$ making sure the ids are renamed properly
   // - empty: if true, clone the elements but remove any text
-    function prepare(clones$) {
-      // renumber the ids found
-      // and clear text if empty is true
-      if (clones$.length === 0) return;
-      clones$.filter('[id]').attr('id',function(i,id){
-        return tb.blockId(tb.blockPrefix(id));
-      });
-      if (empty) {clones$.contents().filter(function() {
-          return this.nodeType === 3; //Node.TEXT_NODE
-        }).remove();
-      }
-      clones$.removeClass('SELECTED');
-      prepare(clones$.children());
-    }
-    
-    let newElements$ = elements$.clone();
-    prepare(newElements$);
-    tb.setUpToDate(false);
-    tb.setModified(true);
-    return newElements$;
-  };
-
-
-  tb.editables$ = function(element) {
-    // returns a JQuery of the tags that are editable in element (JQuery can be .length==0 if nothing is editable)
-    let e$ = $(element);
-    if (e$.hasClass('EDITABLE')) return e$;
-    return e$.find('.EDITABLE');
-  };
-
-  tb.storeEditorSession = function(element$) {
-    // store properly the editor session if needed
-    // - element$: if empty (length == 0) simply return
-    //            otherwise attach the session to this element$ (jquery of 1 element)
-    if (element$.length === 0) return;
-    element$.data('editSession',tb.menu.funcEditor.getSession());
-  };
-
-  tb.restoreEditorSession = function() {
-    // update the editor with the content of tb.selected.element
-    // if no selected element, clear the editor
-    if (!tb.selected.element) {
-      tb.menu.funcEditor.setSession(ace.createEditSession('',"ace/mode/text"));
-      return;
-    }
-    let editSession = tb.selected.element$.data('editSession');
-    let func = tb.selected.element$.attr('data-code');
-
-    if (editSession) {
-      tb.menu.funcEditor.setSession(editSession);
-    }
-    else {
-      tb.menu.funcEditor.setSession(ace.createEditSession(func || '',"ace/mode/javascript"));
-    }
-    let error = tb.selected.element$.prop('error');
-    if (error) {
-      let line = error.lineNumber;
-      let col = error.columnNumber;
-      tb.menu.error$.html('<details><summary>'+error.message+'</summary>'+error.stack.replace('/\n/g','<br>').replace(/ at /g,'<br>at ')+'</details>').show();
-      tb.menu.funcEditor.gotoLine(line,col-1);
-    }
-    else tb.menu.error$.hide();
-    if (func) {
-      tb.menu.properties$.prop('open',true);
-      tb.menu.funcEditor.focus();
-    }
-  };
-
-  tb.updateMenu = function() {
-    // update the menu with the content of tb.selected.element
-    // which can be undefined and it will hide the selectionToolBar
-    let element = tb.selected.element;
-    if (element === undefined){
-      tb.menu.selectionToolBar$.hide();
-      return;
-    }
-    tb.menu.codeId$.html(element.id+'<SPAN style="color:red;cursor:pointer;" onclick="tb.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
-    let flexParent = tb.selected.element$.parent().hasClass('FLEX');
-    tb.menu.moveLeft$.prop('disabled',!flexParent);
-    tb.menu.moveRight$.prop('disabled',!flexParent);
-    
-    let isCode = tb.selected.element$.hasClass('CODE');
-    tb.menu.showHtml$.prop('disabled',!isCode);
-    tb.menu.toTest$.prop('disabled',!isCode);
-
-    tb.menu.classes$.children().each(function(){
-      let checkbox$ = $(this);
-      let c = checkbox$.val();
-      if (c) {
-        checkbox$.prop('checked',tb.selected.element$.hasClass(c));
-      }
+  function prepare(clones$) {
+    // renumber the ids found
+    // and clear text if empty is true
+    if (clones$.length === 0) return;
+    clones$.filter('[id]').attr('id', function (i, id) {
+      return tb.blockId(tb.blockPrefix(id));
     });
-    tb.menu.itemprop$.val(tb.selected.element$.attr('itemprop'));
-    tb.menu.itemtype$.val(tb.selected.element$.attr('itemtype'));
-    tb.menu.format$.val(tb.selected.element$.attr('format'));
-    tb.restoreEditorSession();
-    tb.updateTemplateChoice();
-    tb.menu.$.show();
-    tb.menu.selectionToolBar$.show(500,function(){tb.menu.funcEditor.resize()});
-    if (tb.selected.element$.prop('error')) {
-      element.scrollIntoView();
-      tb.menu.funcEditor.focus();
+    if (empty) {
+      clones$.contents().filter(function () {
+        return this.nodeType === 3; //Node.TEXT_NODE
+      }).remove();
     }
-    else {
-      element.focus();
-    }
-  };
+    clones$.removeClass('SELECTED');
+    prepare(clones$.children());
+  }
 
-  tb.selectElement = function(element) {
-    // select element as tb.selected.element and update the EDI accordingly
-    // - element can either be a DOM element or a jQuery of 1 element or a string representing the id of the element
-    if (typeof element === 'string') element = $('#'+element)[0];
-    else if (element instanceof $) element = element[0];
-    tb.editor.setCurrentEditor(undefined); //TODO suppress editors?
-    let e = tb.selected.element;
-    if (e) {
-      if (element && (e === element) && !e.error) { // if already selected nothing to do but make sure it is visible
-        tb.menu.error$.hide();
-        e.focus();
-        return;
-      }
-
-      // remove the old selection
-      let e$ = $(e);
-      e$.removeClass('SELECTED');
-      tb.storeEditorSession(e$);
-      tb.editables$(e)
-        .attr('contentEditable',false)
-        .each(function(i,e){tb.reformatRichText(e)});
-    }
-
-    // set the new selection
-    tb.selected.element = element;
-    tb.selected.element$ = $(element);
-    tb.selected.itemscope$ =  tb.selected.element$.closest('[itemscope]');
-    tb.selected.container$ =  tb.selected.element$.parent().closest('[container]');
-    
-    tb.selected.element$.addClass('SELECTED');
-
-    tb.updateMenu();
-    tb.editables$(element).attr('contentEditable',true);
-    return this;
-  };
-
-  tb.actions.select = function(element){
-    tb.selectElement(element);
-    return this;
-  };
-
-  tb.moveElement = function(element$,where) {
-    // moves element$ at a position defined by where
-    // -element$: the element to move
-    // - where : cf [$.fn.neighbour]
-    if (element$.length===0) return;
-    let whereToInsert$ = element$;
-    if (where==='before' || where==='beforeItemscope') {
-      do {
-        whereToInsert$ = whereToInsert$.first().prev();
-      } while (whereToInsert$.length && !whereToInsert$.hasClass('ELEMENT')); // also skip any decorative tags
-      element$.insertBefore(whereToInsert$);
-    }
-    else {
-      whereToInsert$ = whereToInsert$.last().next();
-      let traillingTags$ = whereToInsert$.nextUntil('.ELEMENT');
-      if (traillingTags$.length) whereToInsert$ = traillingTags$.last();
-      element$.insertAfter(whereToInsert$);
-    }
-    tb.setModified(true);
-  };
-
-  // EDI eventHandlers ///////////////////////////////////////////////////////////////
-
-  tb.beforeUnload = function(event) {  //TODO avec hta, ne fonctionne pas bien
-    // event handler before closing check if a save is needed and desired
-    if (tb.modified) {
-      event.returnValue='ouups?';
-      return 'ouups?'
-    }
-  };
+  let newElements$ = elements$.clone();
+  prepare(newElements$);
+  tb.setUpToDate(false);
+  tb.setModified(true);
+  return newElements$;
+};
 
 
-  tb.reformatRichText = function(element) {
-    // reformat a [[RICHTEXT]] [[ELEMENT]] in order to create [[EMBEDDED]] [[CODE]] out of {{ }} pattern
-    // {{code}} will create an ELEMENT EMBEDDED CODE with that code
-    // {{#link}} will create a LINK to a section title
-    // {{##elementBox}} will create an elementBox
-    // {{variable=value}} will create an ELEMENT with variable as itemprop and value as content
-    if ((element === undefined) || ($(element).hasClass('CODE'))) return;
+tb.editables$ = function (element) {
+  // returns a JQuery of the tags that are editable in element (JQuery can be .length==0 if nothing is editable)
+  let e$ = $(element);
+  if (e$.hasClass('EDITABLE')) return e$;
+  return e$.find('.EDITABLE');
+};
 
-    let change = false;
-    $(element).replaceText(/{{([#]{0,2})(.*?)}}/g,
-                           function(s,command,code) {
-                             change = true;  // if called, this function will change the document
-                             let code$ = tb.templates['https://tablord.com/templates/codeSpan'].element$();
-                             switch (command) {
-                               case ''   : 
-                                 let m = code.match(/(\w+):(.*)/);
-                                 if (m) {
-                                   let n = Number(m[2]);
-                                   return '<span class="ELEMENT EDITABLE'+(Number.isNaN(n)?'':' number')+'" itemprop="'+m[1]+'">'+m[2]+'</span>&nbsp;';
-                                 }
-                                 m = code.match(/(\w+)=(.*)/);
-                                 if (m) return '<span class="ELEMENT FUNC" itemprop="'+m[1]+'" func="'+m[2]+'"></span>&nbsp;';
-                                 return code$.attr('data-code',code)[0].outerHTML;
-                               case '##' : return code$.attr('data-code',"tb.elementBox('"+code+"');")[0].outerHTML;
-                               case '#'  : return code$.attr('data-code',"tb.link('"+code+"');")[0].outerHTML;
-                             }
-                           },
-                           function(e) {  //replace in any tag except those inside CODE
-                             return !$(e).hasClass('CODE');
-                           });
-    if (change) {
-      element.normalize();
-      tb.setUpToDate(false);
-    }
-  };
+tb.storeEditorSession = function (element$) {
+  // store properly the editor session if needed
+  // - element$: if empty (length == 0) simply return
+  //            otherwise attach the session to this element$ (jquery of 1 element)
+  if (element$.length === 0) return;
+  element$.data('editSession', tb.menu.funcEditor.getSession());
+};
 
+tb.restoreEditorSession = function () {
+  // update the editor with the content of tb.selected.element
+  // if no selected element, clear the editor
+  if (!tb.selected.element) {
+    tb.menu.funcEditor.setSession(ace.createEditSession('', "ace/mode/text"));
+    return;
+  }
+  let editSession = tb.selected.element$.data('editSession');
+  let func = tb.selected.element$.attr('data-code');
 
-  // upgrades from previous versions ////////////////////////////////////////////////////////////////////////////////
-    tb.upgradeModules = function() {
-    // checks that this is the lastest modules and if not replaces what is needed
-    let modulesNeeded = ['jquery-1.5.1.min.js','tablordEdi.js','units.js','tablord.js','axe.js','simulation.js','sys.js','ocrRdy.js','finance.js','diff.js'];
-    let allModules = modulesNeeded.concat('jquery.js'); // including deprecated modules
-    let modules = [];
-    let $script = $('SCRIPT').filter(function(){return $.inArray(tb.fileName(this.src),allModules)!==-1});
-    $script.each(function(i,e){modules.push(tb.fileName(e.src))});
-    if (modules.toString() === modulesNeeded.toString()) return; // everything is just as expected
+  if (editSession) {
+    tb.menu.funcEditor.setSession(editSession);
+  } else {
+    tb.menu.funcEditor.setSession(ace.createEditSession(func || '', "ace/mode/javascript"));
+  }
 
-    // otherwise we have to upgrade
-    let h = '';
-    $.each(modulesNeeded,function(i,m){h+='<SCRIPT src="'+m+'"></SCRIPT>'});
-    window.prompt(/*'your need to edit your scripts to upgrade\n'+*/modules+'\n'+modulesNeeded,h);
-  };
-
-
-  tb.upgradeFramework = function() {
-    // upgrades the sheet framework from previous versions
-    // the past before v1.0.0 has been forgotten since no real sheet in production before
-
-    // in order to fix issue #1
-    $('.EMBEDDED').css('display','');
-    $('.EMBEDDED[style=""]').removeAttr('style');
-
-    // EMPTY element are not longer in use but might still be present in existing sheets
-    $('.ELEMENT.EMPTY:not(:only-child)').remove();
-    tb.updateContainers();
-
-    // add an INDENT class to indent where is needed and no longer to any container
-    $('[container=sectionContent]').addClass('INDENT'); // container=sectionContent was the former definition
-
-    // since 1ba0c957100f7f3712b903f6a9ebc9c95a176662, [[CODE]] is has a [func] or the new [data-code] and contains the [[OUTPUT]] and [[TEST]] (templates/exec)
-    let codes = $('.CODE').not('[func]').not('[data-code]');  // now
-    codes.each(function(i,e){
-      let code$ =$(e);
-      let func = tb.htmlToText(code$.html());
-      let codeId = code$.attr('id');
-      let out$ = $('#'+codeId.replace(/code/,'out')).removeAttr('id');
-      let test$ = $('#'+codeId.replace(/code/,'test')).removeAttr('id');
-      let newCode$;
-      if (code$.hasClass('EMBEDDED')){
-        newCode$ = tb.templates['https://tablord.com/templates/codeSpan'].element$();
-        newCode$.addClass('EMBEDDED');
-      }
-      else {
-        newCode$ = tb.templates['https://tablord.com/templates/code'].element$();
-        newCode$.addClass('SHOW');
-      }
-      newCode$.attr('data-code',func).attr('id',codeId);
-      code$.replaceWith(newCode$);
-      newCode$.children('.OUTPUT').replaceWith(out$);
-      newCode$.append(test$);
+  if (tb.selected.element$.hasClass('DELETED')) {
+    tb.menu.funcEditor.setOptions({
+      readOnly: true,
+      highlightActiveLine: false,
+      highlightGutterLine: false,
+      theme:"ace/theme/pastel_on_dark"
     });
-    
-    let ugglyEmbedded$ = $('div.EMBEDDED');
-    ugglyEmbedded$.replaceTagName('span');
-    
-    $('.CODE').attr('contentEditable',false);
-    
-    $('[itemtype="https://tablord.com/template/codeSpan"]').attr('itemtype','https://tablord.com/templates/codeSpan');
-    $('[itemtype="https://tablord.com/template/code"]').attr('itemtype','https://tablord.com/templates/code');
+  }
+  else {
+    tb.menu.funcEditor.setOptions({
+      readOnly: false,
+      highlightActiveLine: true,
+      highlightGutterLine: true,
+      theme:"ace/theme/chrome"
+    });
+  }
 
-    $('[func]').each(function (){
-      const e$=$(this);
-      const code = e$.attr('func');
-      e$.attr('data-code',code);
+  let error = tb.selected.element$.prop('error');
+  if (error) {
+    let line = error.lineNumber;
+    let col = error.columnNumber;
+    tb.menu.error$.html('<details><summary>' + error.message + '</summary>' + error.stack.replace('/\n/g', '<br>').replace(/ at /g, '<br>at ') + '</details>').show();
+    tb.menu.funcEditor.gotoLine(line, col - 1);
+  } else tb.menu.error$.hide();
+  if (func) {
+    tb.menu.properties$.prop('open', true);
+    tb.menu.funcEditor.focus();
+  }
+};
 
-    }).removeAttr('func');
-    
-  };
+tb.updateMenu = function () {
+  // update the menu with the content of tb.selected.element
+  // which can be undefined and it will hide the selectionToolBar
+  let element = tb.selected.element;
+  if (element === undefined) {
+    tb.menu.selectionToolBar$.hide();
+    return;
+  }
+  tb.menu.codeId$.html(element.id + '<SPAN style="color:red;cursor:pointer;" onclick="tb.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
+  let flexParent = tb.selected.element$.parent().hasClass('FLEX');
+  tb.menu.moveLeft$.prop('disabled', !flexParent);
+  tb.menu.moveRight$.prop('disabled', !flexParent);
 
+  let isCode = tb.selected.element$.hasClass('CODE');
+  tb.menu.showHtml$.prop('disabled', !isCode);
+  tb.menu.toTest$.prop('disabled', !isCode);
 
-  $(function () {
-    // upgrades ////////////////////////////////////////////////////
-    tb.tbContent$ = $('#tbContent');
-    tb.initMenu();
-    window.onerror = function(message,url,lineNo,colNo,error) {
-      tb.showInternalError('Internal Error :'+message+'<br>'+error.stack);
-    };
-
-    //tb.upgradeModules();
-    tb.upgradeFramework();
-    if (window.document.compatMode !== 'CSS1Compat') {
-      window.alert('your document must have <!DOCTYPE html> as first line in order to run properly: please save and re-run it');
+  tb.menu.classes$.children().each(function () {
+    let checkbox$ = $(this);
+    let c = checkbox$.val();
+    if (c) {
+      checkbox$.prop('checked', tb.selected.element$.hasClass(c));
     }
-    // prepare the sheet ///////////////////////////////////////////
-    tb.url = tb.urlComponents(window.document.location.href);
-
-    $('.SELECTED').removeClass('SELECTED');
-    $(document)
-    .on("click",'.ELEMENT',tb.elementClick)
-    .on("keydown",'.EDITABLE',tb.editableKeyDown)
-    .on("change",'.EDITOR',tb.editorEventHandler)
-    .on("click",'.EDITOR',tb.editorEventHandler)
-    .on("click",'.SCENE',function(event){event.stopPropagation()})       // cancel bubbling of click to let the user control clicks
-    .on("click",'.INTERACTIVE',function(event){event.stopPropagation()}) // cancel bubbling of click to let the user control clicks
-    .on("click",'.LINK',function(event){event.stopPropagation()})        // cancel bubbling of click to let the user control clicks
-    .on("click",'.HELPLINK',function(event){tb.help.index.show(event.target.innerHTML)})
-    .on("click",'.BOXLINK',tb.openCloseBox)                              // open or close Box and cancel bubbling of click since it is only to open close
-    .on("click",'.BOX',function(event){event.stopPropagation()});    // cancel bubbling of click
-
-    $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR');
-    $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
-
-    tb.findblockNumber();
-    
-    tb.editor = new tb.Editor();
-    $(window).bind('beforeunload',tb.beforeUnload);      
-    $('body').keydown(tb.bodyKeyDown);//.keyup(tb.bodyKeyUp);
-    tb.autoRun = !tb.url.arguments.no_run;
-    tb.help.update(tb,'tb.');
-    tb.updateContainers();
-
-    if (tb.autoRun) tb.execAll();
   });
+  tb.menu.itemprop$.val(tb.selected.element$.attr('itemprop'));
+  tb.menu.itemtype$.val(tb.selected.element$.attr('itemtype'));
+  tb.menu.format$.val(tb.selected.element$.attr('format'));
+  tb.restoreEditorSession();
+  tb.updateTemplateChoice();
+  tb.menu.$.show();
+  tb.menu.selectionToolBar$.show(500, function () {
+    tb.menu.funcEditor.resize()
+  });
+  if (tb.selected.element$.prop('error') || isCode) {
+    tb.menu.properties$.attr('open', true);
+    element.scrollIntoView();
+    tb.menu.funcEditor.focus();
+  } else {
+    element.focus();
+  }
+};
+
+tb.selectElement = function (element) {
+  // select element as tb.selected.element and update the EDI accordingly
+  // - element can either be a DOM element or a jQuery of 1 element or a string representing the id of the element
+  if (typeof element === 'string') element = $('#' + element)[0];
+  else if (element instanceof $) element = element[0];
+  //tb.editor.setCurrentEditor(undefined); //TODO suppress editors?
+  let e = tb.selected.element;
+  if (e) {
+    if (element && (e === element) && !e.error) { // if already selected nothing to do but make sure it is visible
+      tb.menu.error$.hide();
+      e.focus();
+      return;
+    }
+
+    // remove the old selection
+    let e$ = $(e);
+    e$.removeClass('SELECTED');
+    tb.storeEditorSession(e$);
+    tb.editables$(e)
+    .attr('contentEditable', false)
+    .each(function (i, e) {
+      tb.reformatRichText(e)
+    });
+  }
+
+  // set the new selection
+  tb.selected.element = element;
+  tb.selected.element$ = $(element);
+  tb.selected.itemscope$ = tb.selected.element$.closest('[itemscope]');
+  tb.selected.container$ = tb.selected.element$.parent().closest('[container]');
+
+  tb.selected.element$.addClass('SELECTED');
+
+  tb.updateMenu();
+  tb.editables$(element).attr('contentEditable', true);
+  return this;
+};
+
+tb.actions.select = function (element) {
+  tb.selectElement(element);
+  return this;
+};
+
+tb.moveElement = function (element$, where) {
+  // moves element$ at a position defined by where
+  // -element$: the element to move
+  // - where : cf [$.fn.neighbour]
+  // return true if something moved false otherwise
+  if (element$.length === 0) return false;
+  let whereToInsert$ = element$;
+  if (where === 'before' || where === 'beforeItemscope') {
+    do {
+      whereToInsert$ = whereToInsert$.first().prev();
+    } while (whereToInsert$.length && !whereToInsert$.hasClass('ELEMENT')); // also skip any decorative tags
+    if (whereToInsert$.length === 0) return false;
+    element$.insertBefore(whereToInsert$);
+  } else {
+    whereToInsert$ = whereToInsert$.last().next();
+    let traillingTags$ = whereToInsert$.nextUntil('.ELEMENT');
+    if (traillingTags$.length) whereToInsert$ = traillingTags$.last();
+    if (whereToInsert$.length === 0) return false;
+    element$.insertAfter(whereToInsert$);
+  }
+  return true;
+};
+
+// EDI eventHandlers ///////////////////////////////////////////////////////////////
+
+tb.beforeUnload = function (event) {  //TODO avec hta, ne fonctionne pas bien
+  // event handler before closing check if a save is needed and desired
+  if (tb.modified) {
+    event.returnValue = 'ouups?';
+    return 'ouups?'
+  }
+};
+
+
+tb.reformatRichText = function (element) {
+  // reformat a [[RICHTEXT]] [[ELEMENT]] in order to create [[EMBEDDED]] [[CODE]] out of {{ }} pattern
+  // {{code}} will create an ELEMENT EMBEDDED CODE with that code
+  // {{#link}} will create a LINK to a section title
+  // {{##elementBox}} will create an elementBox
+  // {{variable=value}} will create an ELEMENT with variable as itemprop and value as content
+  if ((element === undefined) || ($(element).hasClass('CODE'))) return;
+
+  let change = false;
+  $(element).replaceText(/{{([#]{0,2})(.*?)}}/g,
+    function (s, command, code) {
+      change = true;  // if called, this function will change the document
+      let code$ = tb.templates['https://tablord.com/templates/codeSpan'].element$();
+      switch (command) {
+        case ''   :
+          let m = code.match(/(\w+):(.*)/);
+          if (m) {
+            let n = Number(m[2]);
+            return '<span class="ELEMENT EDITABLE' + (Number.isNaN(n) ? '' : ' number') + '" itemprop="' + m[1] + '">' + m[2] + '</span>&nbsp;';
+          }
+          m = code.match(/(\w+)=(.*)/);
+          if (m) return '<span class="ELEMENT FUNC" itemprop="' + m[1] + '" func="' + m[2] + '"></span>&nbsp;';
+          return code$.attr('data-code', code)[0].outerHTML;
+        case '##' :
+          return code$.attr('data-code', "tb.elementBox('" + code + "');")[0].outerHTML;
+        case '#'  :
+          return code$.attr('data-code', "tb.link('" + code + "');")[0].outerHTML;
+      }
+    },
+    function (e) {  //replace in any tag except those inside CODE
+      return !$(e).hasClass('CODE');
+    });
+  if (change) {
+    element.normalize();
+    tb.setUpToDate(false);
+  }
+};
+
+
+// upgrades from previous versions ////////////////////////////////////////////////////////////////////////////////
+tb.upgradeModules = function () {
+  // checks that this is the lastest modules and if not replaces what is needed
+  let modulesNeeded = ['jquery-1.5.1.min.js', 'tablordEdi.js', 'units.js', 'tablord.js', 'axe.js', 'simulation.js', 'sys.js', 'ocrRdy.js', 'finance.js', 'diff.js'];
+  let allModules = modulesNeeded.concat('jquery.js'); // including deprecated modules
+  let modules = [];
+  let $script = $('SCRIPT').filter(function () {
+    return $.inArray(tb.fileName(this.src), allModules) !== -1
+  });
+  $script.each(function (i, e) {
+    modules.push(tb.fileName(e.src))
+  });
+  if (modules.toString() === modulesNeeded.toString()) return; // everything is just as expected
+
+  // otherwise we have to upgrade
+  let h = '';
+  $.each(modulesNeeded, function (i, m) {
+    h += '<SCRIPT src="' + m + '"></SCRIPT>'
+  });
+  window.prompt(/*'your need to edit your scripts to upgrade\n'+*/modules + '\n' + modulesNeeded, h);
+};
+
+
+tb.upgradeFramework = function () {
+  // upgrades the sheet framework from previous versions
+  // the past before v1.0.0 has been forgotten since no real sheet in production before
+
+  // in order to fix issue #1
+  $('.EMBEDDED').css('display', '');
+  $('.EMBEDDED[style=""]').removeAttr('style');
+
+  // EMPTY element are not longer in use but might still be present in existing sheets
+  $('.ELEMENT.EMPTY:not(:only-child)').remove();
+  tb.updateContainers();
+
+  // add an INDENT class to indent where is needed and no longer to any container
+  $('[container=sectionContent]').addClass('INDENT'); // container=sectionContent was the former definition
+
+  // since 1ba0c957100f7f3712b903f6a9ebc9c95a176662, [[CODE]] is has a [func] or the new [data-code] and contains the [[OUTPUT]] and [[TEST]] (templates/exec)
+  let codes = $('.CODE').not('[func]').not('[data-code]');  // now
+  codes.each(function (i, e) {
+    let code$ = $(e);
+    let func = tb.htmlToText(code$.html());
+    let codeId = code$.attr('id');
+    let out$ = $('#' + codeId.replace(/code/, 'out')).removeAttr('id');
+    let test$ = $('#' + codeId.replace(/code/, 'test')).removeAttr('id');
+    let newCode$;
+    if (code$.hasClass('EMBEDDED')) {
+      newCode$ = tb.templates['https://tablord.com/templates/codeSpan'].element$();
+      newCode$.addClass('EMBEDDED');
+    } else {
+      newCode$ = tb.templates['https://tablord.com/templates/code'].element$();
+      newCode$.addClass('SHOW');
+    }
+    newCode$.attr('data-code', func).attr('id', codeId);
+    code$.replaceWith(newCode$);
+    newCode$.children('.OUTPUT').replaceWith(out$);
+    newCode$.append(test$);
+  });
+
+  let ugglyEmbedded$ = $('div.EMBEDDED');
+  ugglyEmbedded$.replaceTagName('span');
+
+  $('.CODE').attr('contentEditable', false);
+
+  $('[itemtype="https://tablord.com/template/codeSpan"]').attr('itemtype', 'https://tablord.com/templates/codeSpan');
+  $('[itemtype="https://tablord.com/template/code"]').attr('itemtype', 'https://tablord.com/templates/code');
+
+  $('[func]').each(function () {
+    const e$ = $(this);
+    const code = e$.attr('func');
+    e$.attr('data-code', code);
+
+  }).removeAttr('func');
+
+};
+
+
+$(function () {
+  // upgrades ////////////////////////////////////////////////////
+  tb.tbContent$ = $('#tbContent');
+  tb.initMenu();
+  window.onerror = function (message, url, lineNo, colNo, error) {
+    tb.showInternalError('Internal Error :' + message + '<br>' + error.stack);
+  };
+
+  //tb.upgradeModules();
+  tb.upgradeFramework();
+  if (window.document.compatMode !== 'CSS1Compat') {
+    window.alert('your document must have <!DOCTYPE html> as first line in order to run properly: please save and re-run it');
+  }
+  // prepare the sheet ///////////////////////////////////////////
+  tb.url = tb.urlComponents(window.document.location.href);
+
+  $('.SELECTED').removeClass('SELECTED');
+  $(document)
+  .on("click", '.ELEMENT', tb.ui.elementClick)
+  .on("keydown", '.EDITABLE', tb.ui.editableKeyDown)
+  //TODO editor    .on("change",'.EDITOR',tb.editorEventHandler)
+  //               .on("click",'.EDITOR',tb.editorEventHandler)
+  .on("click", '.SCENE', function (event) {
+    event.stopPropagation()
+  })       // cancel bubbling of click to let the user control clicks
+  .on("click", '.INTERACTIVE', function (event) {
+    event.stopPropagation()
+  }) // cancel bubbling of click to let the user control clicks
+  .on("click", '.LINK', function (event) {
+    event.stopPropagation()
+  })        // cancel bubbling of click to let the user control clicks
+  .on("click", '.HELPLINK', function (event) {
+    tb.help.index.show(event.target.innerHTML)
+  })
+  .on("click", '.BOXLINK', tb.openCloseBox)                              // open or close Box and cancel bubbling of click since it is only to open close
+  .on("click", '.BOX', function (event) {
+    event.stopPropagation()
+  });    // cancel bubbling of click
+
+  $('.OUTPUT').removeClass('SUCCESS').removeClass('ERROR');
+  $('.TEST').removeClass('SUCCESS').removeClass('ERROR');
+
+  tb.findblockNumber();
+
+//TODO editor    tb.editor = new tb.Editor();
+  $(window).bind('beforeunload', tb.beforeUnload);
+  $('body').keydown(tb.ui.bodyKeyDown);
+  tb.autoRun = !tb.url.arguments.no_run;
+  tb.help.update(tb, 'tb.');
+  tb.updateContainers();
+
+  if (tb.autoRun) tb.execAll();
+});
 

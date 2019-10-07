@@ -90,7 +90,7 @@ if (!process.browser) {
     name = name.replace(/[\$\^\[\]\(\)\\]/g,'\\$&'); // fix chars that have a special meaning for regExp
     let regExp = new RegExp('^(.*)('+name+')(.*)$','i');
     let res = this.find(name);
-    let n$ = $('<table style="margin-right:30px">');  //TODO: remove this magic number that reserves the space for the scroll bar (check with HTML5)
+    let n$ = $('<table class="HELP">');
     try {
       let l = res.length;
       if (l>30) {
@@ -101,7 +101,7 @@ if (!process.browser) {
       for (let i = 0; i<l; i++) {
         let path = res[i].path.replace(/([\$\w]+)/ig,'<span class=HELPLINK>$1</span>');
         let desc = res[i].func?tb.help(res[i].func):tb.help.markDownToHtml(res[i].desc);
-        n$.append($('<TR><TD valign="top" class=LEFT>'+path+res[i].prop.replace(regExp,'$1<b>$2</b>$3')+'</TD><TD class=LEFT>'+desc+'</TD></TR>'));
+        n$.append($('<TR><TD>'+path+res[i].prop.replace(regExp,'$1<b>$2</b>$3')+'</TD><TD>'+desc+'</TD></TR>'));
       }
     }
     catch (e) {
