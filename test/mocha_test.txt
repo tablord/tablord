@@ -12,3 +12,7 @@
 {{lib_url}}../test/jqueryExt.js
 {{lib_url}}../modules/ElementCompare/src/elementcompare.js
 {{lib_url}}../modules/ElementCompare/test/elementcompare.js
+{{lib_url}}../modules/nestedundomanager/js/nestedundomanager.js
+{{lib_url}}../modules/nestedundomanager/test/nestedundomanager.js
+{{lib_url}}../modules/nestedundomanager/js/undoablejquery.js
+{{lib_url}}../modules/nestedundomanager/test/undoablejquery.js

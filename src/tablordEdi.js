@@ -98,7 +98,7 @@ tb.initMenu = function () {
     '<div class="btn-toolbar" role="toolbar">' +
     '<div class="btn-group btn-group-sm mr-2" role="group">' +
     '<button id="codeId" type="button" class="btn btn-outline-dark">no selection</button>' +
-    '<button id="mark" class="btn btn-dark" title="mark the selected element"><i class="far fa-check-square"></i></button>' +
+    '<button id="undoableMark" class="btn btn-dark" title="undoableMark the selected element"><i class="far fa-check-square"></i></button>' +
     '<button id="cut" class="btn btn-dark" title="cut marked elements"><i class="fas fa-cut"></i></button>' +
     '<button id="paste" class="btn btn-dark" title="paste cut/marked elements" data-where="after"><i class="fas fa-paste"></i></button>' +
     '<button id="delete" class="btn btn-dark" title="delete marked/selected element"><i class="fas fa-trash"></i></button>' +
@@ -116,7 +116,7 @@ tb.initMenu = function () {
     '<i class="fas fa-paragraph"></i></button>' +
     '<button id="cloneEmpty" class="btn btn-dark" title="empty copy of selected element"><i class="far fa-clone"></i></button>' +
     '<button id="insertCode" class="btn btn-dark" title="code" data-template="https://tablord.com/templates/code">{}</button>' +
-    '<button id="insertTemplate" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">...</button>' +
+    '<button id="insertTemplate__" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">...</button>' +
     '<div id="templateChoice" class="dropdown-menu"></div>' +
     '</div>' +
     '</div>' +
@@ -167,7 +167,11 @@ tb.initMenu = function () {
     '<input id="helpSearch" placeholder="help search"/>' +
     '<div id="helpOutput" style="overflow:auto;max-height:400px;"></div>' +
     '</div>' +
-    '<div id="debug" style="overflow:auto;max-height:400px;"></div>' +
+    '<div style="overflow:auto;max-height:400px;">' +
+    '<details>' +
+    '<summary id="message" ></summary>' +
+    '<div id="oldMessages"></div>' +
+    '</details>' +
     '</div>' +
     ''
   );
@@ -213,25 +217,34 @@ tb.initMenu = function () {
   tb.menu.showTrace$.prop('checked', tb.sheetOptions.showTrace);
   tb.menu.autoRun$.prop('checked', tb.autoRun);
 
-  tb.menu.insertAfter$.click(tb.ui.templateButton);
+  tb.menu.insertAfter$.click(tb.ui.templateButtonClick);
 
   tb.menu.selectionToolBar$.hide();
 
   tb.menu.error$.hide();
   tb.menu.funcEditor = ace.edit('func');
-  //tb.menu.funcEditor.session.setMode("ace/mode/javascript"); TODO remove if it works
-  tb.menu.funcEditor.on('blur', function () {
+  tb.menu.updateCode = function () {
     const code = tb.menu.funcEditor.getValue();
-    if (code !== tb.selected.element$.attr('data-code')) {
+    const oldCode = tb.selected.element$.attr('data-code') || '';
+    if (code !== oldCode) {
       if (code) tb.selected.element$.attr('data-code', code);
       else tb.selected.element$.removeAttr('data-code');
       tb.run();
       tb.setModified(true);
     }
+  };
+  tb.menu.funcEditor.on('blur', function () {
+    tb.menu.updateCode();
+  });
+  tb.menu.funcEditor.on('change', function (e) {
+    tb.console.debug('change ' + tb.inspect(e, 2).span());
   });
   tb.menu.funcEditor.commands.addCommand({
     name: "run",
-    exec: tb.run,
+    exec: function () {
+      tb.menu.updateCode();
+      tb.run();
+    },
     bindKey: {mac: "Ctrl-Return", win: "Ctrl-Return"}
   });
   tb.menu.classes$.click(function (event) {
@@ -254,9 +267,31 @@ tb.initMenu = function () {
     tb.setModified(true);
   });
 
+  tb.console = {};
+  tb.console.message = function (message, classes) {
+    let oldMessage = '<div class="' + tb.menu.message$.attr('class') + '">' + tb.menu.message$.html() + '</div>';
+    tb.menu.oldMessages$.prepend(oldMessage);
+    tb.menu.message$.html(message).attr('class', classes);
+  };
+  tb.console.info = function (message) {
+    tb.console.message(message, 'alert alert-info');
+  };
+  tb.console.debug = function (message) {
+    tb.console.message(message, 'alert alert-secondary');
+  };
+  tb.console.success = function (message) {
+    tb.console.message(message, 'alert alert-success');
+  };
+  tb.console.warn = function (message) {
+    tb.console.message(message, 'alert alert-warning');
+  };
+  tb.console.error = function (message) {
+    tb.console.message(message, 'alert alert-error');
+  };
+
   tb.updateTemplateChoice();
 
-  tb.menu.helpSearch$.keyup(tb.helpSearchKeyup);
+  tb.menu.helpSearch$.keyup(tb.ui.helpSearchKeyUp);
 };
 
 
@@ -266,6 +301,7 @@ tb.initMenu = function () {
 //
 // a function that is xxxxxxClick or xxxxxxChange is automatically bound to the
 // click or change event of the button id="xxxxxx"
+// tb.ui.xxx translate user event (click key pressed...) into Actions that are UI independent
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 tb.ui.showCodeClick = function (event) {
@@ -295,6 +331,7 @@ tb.ui.showTestClick = function (event) {
   const button = event.target;
   $('.TEST').toggleClass('HIDDEN', !button.checked);
   tb.sheetOptions.showTest = button.checked;
+  tb.run();
 };
 
 tb.ui.showTraceClick = function (event) {
@@ -302,6 +339,7 @@ tb.ui.showTraceClick = function (event) {
   const button = event.target;
   $('.TRACE').toggleClass('HIDDEN', !button.checked);
   tb.sheetOptions.showTrace = button.checked;
+  tb.run();
 };
 
 tb.ui.setAutoRunClick = function (event) {
@@ -309,22 +347,23 @@ tb.ui.setAutoRunClick = function (event) {
   const button = event.target;
   tb.autoRun = button.checked;
   $('body').attr('autoRun', tb.autoRun);
+  tb.run();
 };
 
 tb.ui.printClick = function (event) {
   // click event handler for the print button
-  tb.selectElement(undefined);
+  tb.actions.select(undefined);
   window.print();
 };
 
 tb.ui.pasteClick = function (event) {
   // paste
   tb.actions.paste(event.altKey);
-  return this;
+  tb.run();
 };
 
 
-tb.ui.helpSearchKeyup = function (event) {
+tb.ui.helpSearchKeyUp = function (event) {
   // event handler for the help search box
   tb.menu.helpOutput$.html(tb.help.index.help$(event.currentTarget.value));
 };
@@ -348,6 +387,7 @@ tb.ui.cutClick = function (event) {
 tb.ui.cloneEmptyClick = function (event) {
   // clone MARKED or the selected.element$
   tb.actions.cloneEmpty(event.altKey);
+  tb.run();
 };
 
 
@@ -356,8 +396,7 @@ tb.ui.templateButtonClick = function (event) {
   if (!event.altKey) where += 'Itemscope';
   let template = $(event.target).closest('[data-template]').attr('data-template');
   tb.actions.insertTemplate(template, where);
-  //event.stopPropagation(); // in order to have embedded buttons like the drop down menu
-  // otherwise the event will be treated twice issue #13
+  tb.run();
 };
 
 tb.ui.showHtmlClick = function (event) {
@@ -385,12 +424,24 @@ tb.ui.bodyKeyDown = function (event) {
     case 112:
       tb.help.index.show(window.document.selection.createRange().text); //TODO: works only with IE7
       break;
+    case 89: // y
+      if (event.ctrlKey) {
+        tb.undo.redo();
+      }
+      ;
+      break;
+    case 90: // z
+      if (event.ctrlKey) {
+        tb.undo.undo();
+      }
+      ;
+      break;
   }
   return true;
 };
 
 tb.ui.bodyKeyUp = function (event) {
-  tb.menu.debug$.html(tb.inspect(window.document.selection).span().toString())
+  tb.console.debug(tb.inspect(window.document.selection).span().toString())
 };
 
 
@@ -403,7 +454,7 @@ tb.ui.elementClick = function (event) {
   } else if (event.shiftKey) {
     return false;
   }
-  tb.selectElement(element$);
+  tb.actions.select(element$);
   return false;  // prevent bubbling
 };
 
@@ -443,40 +494,98 @@ tb.updateTemplateChoice = function () {
 // actions can always chain, TODO will be undoable
 // actions should never implicitly call a run / executeAll etc.. but are responsible to setModified(true) if needed
 
+tb.actions.select = function (element) {
+  // select element as tb.selected.element and update the EDI accordingly
+  // - element can either be a DOM element or a jQuery of 1 element or a string representing the id of the element
+  let oldSelectedElement = tb.selected.element;
+  tb.selectElement(element);
+  tb.undo.add({
+    caption: 'select element',
+    undo: function () {
+      tb.selectElement(oldSelectedElement);
+    },
+    redo: function () {
+      tb.selectElement(element);
+    }
+  });
+  return this;
+};
+
+tb.actions.mark = function (elements$, marked) {
+  // undoableMark all elements
+  // - elements$ can either be a jquery that contains [[ELEMENT]]
+  // or a string with a list of id spaced separated or with * for all elements
+  // - marked if undefined toggle marked / unmarked
+  //          if true or false, set / remove the [[MARKED]] class
+  elements$ = $.elementsByIds$(elements$);
+  elements$.undoableToggleClass('MARKED', marked);
+  tb.setModified(true);
+  return this;
+};
+
+tb.actions.invertMarked = function () {
+  // invert all [[ELEMENT]] regarding [[MARKED]]
+  // return this for method chaining
+  tb.undo.begin('invert MARKED');
+  let marked$ = $('.MARKED');
+  let unmarked$ = $('.ELEMENT').not('.MARKED');
+  unmarked$.undoableAddClass('MARKED');
+  marked$.undoableRemoveClass('MARKED');
+  tb.undo.end();
+  tb.setModified(true);
+  return this;
+};
+
 tb.actions.paste = function (intoItemscope) {
   // paste cut elements after the selected element
   // if intoItemscope == true it will paste right after the selected element even if target$ is inside an itemscope
   // otherwise will paste after the parent itemscope
-  let elements$ = $('.CUT').removeClass('CUT');
-  if (elements$.length === 0) elements$ = tb.cloneElements$($('.MARKED').removeClass('MARKED'));
+  tb.undo.begin('paste');
+  let elements$ = $('.CUT').undoableRemoveClass('CUT');
+  if (elements$.length === 0) {
+    elements$ = tb.undoableCloneElements$($('.MARKED').undoableRemoveClass('MARKED'));
+  }
   const target$ = intoItemscope ? tb.selected.element$ : tb.selected.element$.itemscopeOrThis$().last();
-  if (elements$.length && target$.length) return this; // nothing to do
-  elements$.insertAfter(target$);
+  if (elements$.length===0 || target$.length===0){
+    tb.undo.end();
+    return this; // nothing to do
+  };
+  elements$.undoableInsertAfter(target$);
+  tb.undo.end();
   tb.setModified(true);
+  tb.setUpToDate(false);
   return this;
 };
 
 tb.actions.moveUp = function () {
   // move the itemscope of the selected element up one itemscope level
-  tb.setModified(tb.moveElement(tb.selected.element$.itemscopeOrThis$(), 'before'));
+  let modified = tb.moveElement(tb.selected.element$.itemscopeOrThis$(), 'before');
+  tb.setModified(modified);
+  tb.setUpToDate(!modified);
   return this;
 };
 
 tb.actions.moveDown = function () {
   // simple version: at itemscope boundaries
-  tb.setModified(tb.moveElement(tb.selected.element$.itemscopeOrThis$(), 'after'));
+  let modified = tb.moveElement(tb.selected.element$.itemscopeOrThis$(), 'after');
+  tb.setModified(modified);
+  tb.setUpToDate(!modified);
   return this;
 };
 
 tb.actions.moveLeft = function () {
   // simple version: at element boundaries
-  tb.setModified(tb.moveElement(tb.selected.element$, 'before'));
+  let modified = tb.moveElement(tb.selected.element$, 'before');
+  tb.setModified(modified);
+  tb.setUpToDate(!modified);
   return this;
 };
 
 tb.actions.moveRight = function () {
   // simple version: at element boundaries
-  tb.setModified(tb.moveElement(tb.selected.element$, 'after'));
+  let modified = tb.moveElement(tb.selected.element$, 'after');
+  tb.setModified(modified);
+  tb.setUpToDate(!modified);
   return this;
 };
 
@@ -491,6 +600,16 @@ tb.actions.hideHelp = function () {
   return this;
 };
 
+tb.actions.cutBlock = function (element$, cut) {
+  // cut or "uncut" element
+  // if cut is true or false, set the cut state
+  // if cut is undefined, toggle the cut state
+  cut = cut || !element$.hasClass('CUT');
+  element$.toggleClass('CUT', cut).removeClass('MARKED');
+  tb.setModified(true);
+  tb.setUpToDate(false);
+  return this;
+};
 
 tb.actions.delete = function (intoItemscope) {
   // look for MARKED elements or if none for SELECTED element if any
@@ -501,30 +620,34 @@ tb.actions.delete = function (intoItemscope) {
     elements$ = intoItemscope ? tb.selected.element$ : tb.selected.element$.itemscopeOrThis$();
   }
   if (elements$.length === 0) return this;
-  tb.setModified(true);
   const deleted$ = elements$.find('.DELETED').addBack('.DELETED'); // search for deleted elements including itself
   if (deleted$.length) { // some elements in the selection are deleted, so undelete those
     deleted$.removeClass('DELETED').show(500);
     let selectedAndDeleted$ = $('.SELECTED', deleted$);  // this can happen since DELETED element can be visible and so can be selected.
     if (selectedAndDeleted$.length) tb.selectElement(selectedAndDeleted$);
+    tb.setModified(true);
+    tb.setUpToDate(false);
     return this;
   }
   if ($('.SELECTED', elements$).length) tb.selectElement(undefined);
   elements$.removeClass('MARKED').addClass('DELETED');
-  if (!tb.sheetOptions.showDeleted) elements$.hide(500)
+  if (!tb.sheetOptions.showDeleted) elements$.hide(500);
+  tb.setModified(true);
+  tb.setUpToDate(false);
   return this;
 };
 
 tb.actions.killMarked = function () {
   // look for MARKED elements
   // and remove those elements forever (no possible undo)
-  // useful in conjunction with actions.mark and actions.invertMarked
+  // useful in conjunction with actions.undoableMark and actions.invertMarked
   // to create test sheets
 
   let elements$ = $('.MARKED');
   if ($('.SELECTED', elements$).length) tb.selectElement(undefined);
   elements$.remove();
   tb.setModified(true);
+  tb.setUpToDate(false);
   return this;
 };
 
@@ -536,7 +659,8 @@ tb.actions.cloneEmpty = function (intoItemscope) {
   if (elements$.length === 0) elements$ = event.altKey ? tb.selected.element$ : tb.selected.element$.itemscopeOrThis$();
   let target$ = intoItemscope ? tb.selected.element$ : tb.selected.element$.itemscopeOrThis$();
   tb.cloneElements$(elements$, true).insertAfter(target$);
-  tb.setModifed(true);
+  tb.setModified(true);
+  tb.setUpToDate(false);
   return this;
 };
 
@@ -544,10 +668,12 @@ tb.actions.insertTemplate = function (template, where) {
   // insert a template
   // - template is the url of the template
   // - where is one of "after" "afterItemscope"(default) "before" "beforeItemscope"
-  // TODO consolider pour traiter tous les cas (pas de selected...)
   where = where || 'afterItemscope';
-  if (template === undefined) return this;
-  tb.templates[template].insertNew(tb.selected.element, where, tb.selected.container$.attr('container'));
+  if (template && tb.templates[template] && tb.selected.element) {
+    tb.templates[template].insertNew(tb.selected.element, where, tb.selected.container$.attr('container'));
+  }
+  tb.setModified(true);
+  tb.setUpToDate(false);
   return this;
 };
 
@@ -605,12 +731,8 @@ tb.showItempropError = function (element, error) {
 };
 
 tb.showInternalError = function (html) {
-  tb.menu.debug$.html(html).show();
+  tb.console.error(html);
 };
-//////////////////////////////////////////////////////////////////////////////
-// method to manipulate the document /////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
-
 
 tb.clearOutputs = function () {
   // remove all outputs
@@ -628,11 +750,11 @@ tb.saveRemote = function () {
       toBeSaved: $('#tbContent').html()
     },
     function (data) {
-      tb.menu.debug$.html(data);
+      tb.console.success(data);
       tb.setModified(false);
     })
   .fail(function (data) {
-    tb.menu.debug$.html(data)
+    tb.console.error(data)
   })
 };
 
@@ -653,10 +775,10 @@ tb.pushTestResults = function () {
       if (tb.url.arguments.test_close) {
         tb.canClose = true; // this will be polled by the test laucher
       }
-      tb.menu.debug$.html(data);
+      tb.console.success(data);
     })
   .fail(function (data) {
-    tb.menu.debug$.html(data)
+    tb.console.error(data)
   })
 };
 
@@ -680,68 +802,43 @@ tb.copyOutputToTest = function () {
 
 };
 
-tb.mark = function (elements$, marked) {
-  // mark all elements$ (a jQuery of [[ELEMENT]]). if marked is specified (true or false) it will force to be marked or unmarked
-  elements$.toggleClass('MARKED', marked);
-};
-
-tb.actions.mark = function (elements$, marked) {
-  // mark all elements
-  // - elements$ can either be a jquery that contains [[ELEMENT]]
-  // or a string with a list of id spaced separated or with * for all elements
-  // - marked if undefined toggle marked / unmarked
-  //          if true or false, set / remove the [[MARKED]] class
-  elements$ = $.elementsByIds$(elements$);
-  tb.mark(elements$, marked);
-  return this;
-};
-
-tb.actions.invertMarked = function () {
-  // invert all [[ELEMENT]] regarding [[MARKED]]
-  // return this for method chaining
-  let marked$ = $('.MARKED');
-  let unmarked$ = $('.ELEMENT').not('.MARKED');
-  unmarked$.addClass('MARKED');
-  marked$.removeClass('MARKED');
-  return this;
-};
-
-tb.actions.cutBlock = function (element$, cut) {
-  // cut or "uncut" element
-  // if cut is true or false, set the cut state
-  // if cut is undefined, toggle the cut state
-  cut = cut || !element$.hasClass('CUT');
-  element$.toggleClass('CUT', cut).removeClass('MARKED');
-  tb.setModified(true);
-  tb.setUpToDate(false);
-};
-
 tb.removeDeletedBlocks = function () {
   // remove all DELETED elements
   $('.DELETED').remove();
 };
 
-tb.cloneElements$ = function (elements$, empty) {
+tb.undoableCloneElements$ = function (elements$, empty) {
   // clone the elements$ making sure the ids are renamed properly
   // - empty: if true, clone the elements but remove any text
-  function prepare(clones$) {
-    // renumber the ids found
-    // and clear text if empty is true
-    if (clones$.length === 0) return;
-    clones$.filter('[id]').attr('id', function (i, id) {
-      return tb.blockId(tb.blockPrefix(id));
-    });
-    if (empty) {
-      clones$.contents().filter(function () {
-        return this.nodeType === 3; //Node.TEXT_NODE
-      }).remove();
+  let newElements$;
+  let action = {
+    caption: 'CloneElement',
+    redo: function () {
+      function prepare(clones$) {
+        // renumber the ids found
+        // and clear text if empty is true
+        if (clones$.length === 0) return;
+        clones$.filter('[id]').attr('id', function (i, id) {
+          return tb.blockId(tb.blockPrefix(id));
+        });
+        if (empty) {
+          clones$.contents().filter(function () {
+            return this.nodeType === 3; //Node.TEXT_NODE
+          }).remove();
+        }
+        clones$.removeClass('SELECTED');
+        prepare(clones$.children());
+      }
+      newElements$ = elements$.clone();
+      prepare(newElements$);
+    },
+    undo: function () {
+      newElements$.remove();
     }
-    clones$.removeClass('SELECTED');
-    prepare(clones$.children());
-  }
+  };
+  action.redo();
+  tb.undo.add(action);
 
-  let newElements$ = elements$.clone();
-  prepare(newElements$);
   tb.setUpToDate(false);
   tb.setModified(true);
   return newElements$;
@@ -763,6 +860,14 @@ tb.storeEditorSession = function (element$) {
   element$.data('editSession', tb.menu.funcEditor.getSession());
 };
 
+//todo remove: just for proof of concept.
+var patched = function(fn){
+  return function(){
+    console.info('patched "%s" (%o,%s) hasUndo=%s',fn.name, arguments[0], arguments[1],this.hasUndo());
+    return fn.apply(this, arguments);
+  };
+};
+
 tb.restoreEditorSession = function () {
   // update the editor with the content of tb.selected.element
   // if no selected element, clear the editor
@@ -776,7 +881,13 @@ tb.restoreEditorSession = function () {
   if (editSession) {
     tb.menu.funcEditor.setSession(editSession);
   } else {
-    tb.menu.funcEditor.setSession(ace.createEditSession(func || '', "ace/mode/javascript"));
+    let session = ace.createEditSession(func || '', "ace/mode/javascript");
+    //todo check if ok
+    console.info('%s',session);
+    let um = session.getUndoManager();
+    um.undo = patched(um.undo);
+    /////
+    tb.menu.funcEditor.setSession(session);
   }
 
   if (tb.selected.element$.hasClass('DELETED')) {
@@ -784,15 +895,14 @@ tb.restoreEditorSession = function () {
       readOnly: true,
       highlightActiveLine: false,
       highlightGutterLine: false,
-      theme:"ace/theme/pastel_on_dark"
+      theme: "ace/theme/pastel_on_dark"
     });
-  }
-  else {
+  } else {
     tb.menu.funcEditor.setOptions({
       readOnly: false,
       highlightActiveLine: true,
       highlightGutterLine: true,
-      theme:"ace/theme/chrome"
+      theme: "ace/theme/chrome"
     });
   }
 
@@ -889,10 +999,6 @@ tb.selectElement = function (element) {
   return this;
 };
 
-tb.actions.select = function (element) {
-  tb.selectElement(element);
-  return this;
-};
 
 tb.moveElement = function (element$, where) {
   // moves element$ at a position defined by where
@@ -1097,5 +1203,9 @@ $(function () {
   tb.updateContainers();
 
   if (tb.autoRun) tb.execAll();
+
+  //todo remove startObserver();
+  tb.undo = new UndoManager('main');
+  $.setUndoManager(tb.undo);
 });
 

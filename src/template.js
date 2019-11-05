@@ -253,7 +253,7 @@
   tb.template({
     url : 'https://tablord.com/templates/code',
     blockPrefix : 'code',
-    html: '<div class="ELEMENT CODE" func="" contentEditable="false">'+
+    html: '<div class="ELEMENT CODE" data-code="" contentEditable="false">'+
              '<pre class="SOURCE"></pre>'+
              '<div class="OUTPUT">no output</div>'+
            '</div>',
@@ -263,7 +263,7 @@
   tb.template({
     url : 'https://tablord.com/templates/codeSpan',
     blockPrefix : 'code',
-    html: '<span class="ELEMENT EMBEDDED CODE" func="" contentEditable="false">'+
+    html: '<span class="ELEMENT EMBEDDED CODE" data-code="" contentEditable="false">'+
              '<pre class="SOURCE"></pre>'+
              '<span class="OUTPUT">no output</span>'+
            '</span>',
@@ -384,7 +384,7 @@
            '<div class="ELEMENT EDITABLE c-9" itemprop="description"></div>'+
            '<div class="ELEMENT EDITABLE number c-1" itemprop="quantity"></div>'+
            '<div class="ELEMENT EDITABLE number c-1" itemprop="pricePerUnit"></div>'+
-           '<div class="ELEMENT VIEW     number c-1" itemprop="totalLine" func="quantity*pricePerUnit" format="0,000.00"></div>'+
+           '<div class="ELEMENT VIEW     number c-1" itemprop="totalLine" data-code="quantity*pricePerUnit" format="0,000.00"></div>'+
          '</div>'
   });
   
@@ -392,7 +392,7 @@
     url:'https://tablord.com/templates/quoteTotal',
     html:'<div class="ELEMENT FLEX" itemprop="quote" itemscope>'+
            '<div class="ELEMENT EDITABLE c-11" itemprop="description">Total</div>'+
-           '<div class="ELEMENT VIEW     number c-1" itemprop="total" func="item.sum(\'totalLine\')" format="0,000.00"></div>'+
+           '<div class="ELEMENT VIEW     number c-1" itemprop="total" data-code="item.sum(\'totalLine\')" format="0,000.00"></div>'+
          '</div>'
   });
   
@@ -400,6 +400,6 @@
     url:'https://tablord.com/templates/quoteSectionTotal',
     html:'<div class="ELEMENT FLEX" itemprop="quote" itemscope>'+
            '<div class="ELEMENT EDITABLE c-11" itemprop="description">Total</div>'+
-           '<div class="ELEMENT VIEW     number c-1" itemprop="total" func="item.sum(\'totalLine\',{_section:\'change here\')" format="0,000.00"></div>'+
+           '<div class="ELEMENT VIEW     number c-1" itemprop="total" data-code="item.sum(\'totalLine\',{_section:\'change here\')" format="0,000.00"></div>'+
          '</div>'
   });

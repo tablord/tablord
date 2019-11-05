@@ -1,3 +1,6 @@
 [submodule "modules/elementcompare"]
 	path = modules/elementcompare
 	url = https://github.com/tablord/elementcompare.git
+[submodule "modules/nestedundomanager"]
+	path = modules/nestedundomanager
+	url = https://github.com/tablord/nestedundomanager.git

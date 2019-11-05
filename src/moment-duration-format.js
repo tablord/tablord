@@ -1532,7 +1532,7 @@
             // A moment token string, a delimited set of moment token strings,
             // or an array of moment token strings. Trimming will stop when a token
             // listed in this option is reached. A "*" character in the format
-            // template string will also mark a moment token as stopTrim.
+            // template string will also undoableMark a moment token as stopTrim.
             // e.g. "d [days] *h:mm:ss" will always stop trimming at the 'hours' token.
             stopTrim: null,
 

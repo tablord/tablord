@@ -842,7 +842,7 @@ if (!process.browser) {
     return {node$:function(){return $('<div>').append('<var>'+table.name+'</var>').append(table.node$())}};
   };
 
-
+/*TODO remove all
   // editor interface ////////////////////////////////////////////////////
 
   tb.Table.prototype.edit = function(options) {
@@ -871,6 +871,7 @@ if (!process.browser) {
     return tb.html(h);
   };
 
+  //TODO remove editor related methods
   tb.Table.prototype.getEditableValue = function(editor) {
     return this.cell(Number(editor.attr('tbRow')),editor.attr('tbCol'));
   };
@@ -893,7 +894,7 @@ if (!process.browser) {
     this.codeElement.innerHTML = tb.toHtml(code+'.edit()');
   };
 
-
+*/
   // factory ////////////////////////////////////////////////
   tb.table = function(name,local) {
     // returns an already existing table or creates a new table

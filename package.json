@@ -1,7 +1,7 @@
 {
   "name": "tablord",
   "version": "1.0.0",
-  "description": "a library that compares 2 DOM Elements and find significant differences and avoids non relevent differences like different orders of attributes or extra spaces in text nodes",
+  "description": "a library in order to havehtml pages the can calculate a bit like excel / python notebook",
   "main": "index.js",
   "scripts": {
     "test": "mocha --reporter list"

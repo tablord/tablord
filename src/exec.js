@@ -7,7 +7,7 @@
 
 
 // edi related functions ////////////////////////////////////////////
-var geval = eval;
+const geval = eval;
 
 tb.securedEval = function (code) {
     // execute code
@@ -212,10 +212,13 @@ tb.codeExample = function (example) {
 
 
 // navigation within document ////////////////////////////////////////////////////////
+/* todo remove
 tb.sectionBeingExecuted$ = function () {
     // returns a jQuery containing the deepest section that contains the code currently in execution
     return $(tb.currentElementBeingExecuted).closest('.SECTION');
 };
+
+ */
 
 tb.testStatus = function () {
     // set a finalize function that will write to the current output the number of test Failure
@@ -262,7 +265,7 @@ tb.tableOfContent = {
             currentNumbers[level] = (currentNumbers[level] || 0) + 1;
             currentNumbers.length = level + 1;
             let number = currentNumbers.join('.');
-            let t = $.trim(title.innerHTML).replace(/^[\d\.]*(\s|\&nbsp;)*/, '');
+            let t = $.trim(title.innerHTML).replace(/^[\d\.]*(\s|&nbsp;)*/, '');
             title.outerHTML = '<H' + (level + 1) + ' class="SECTIONTITLE EDITABLE" contentEditable=' + (e === tb.selected.element) + '>' + number + ' ' + t + '</H' + (level + 1) + '>';
             tb.tableOfContent.toc.push({number: number, level: level, title: tb.textContent(t), sectionId: e.id});
         });
@@ -328,7 +331,7 @@ tb.link = function (text, url) {
     // TODO: futur version will accept http url
     url = url || text;
     let e$ = $('#' + url);
-    if (e$.length == 1) {
+    if (e$.length === 1) {
         return new tb.HTML('<a class=LINK href="#' + url + '">' + text + '</a>');
     }
     let entry = tb.tableOfContent.find(url);
@@ -345,7 +348,7 @@ tb.elementBox = function (text, id) {
     //       if id == undefined text is used as id or title
     id = id || text;
     let e$ = $('#' + id);
-    if (e$.length == 1) {
+    if (e$.length === 1) {
         return tb.html('<span class=BOXLINK data-showId="#' + id + '">' + text + '</span>');
     }
     let entry = tb.tableOfContent.find(id);
@@ -432,7 +435,7 @@ tb.execCodeElement = function (element$) {
         let res = tb.securedEval(code);
         tb.displayResult(res, tb.output);
         if (test$.length) {
-            if ((tb.trimHtml(out$.html()) == tb.trimHtml(test$.html()))) {   //TODO rethink how to compare
+            if ((tb.trimHtml(out$.html()) === tb.trimHtml(test$.html()))) {   //TODO rethink how to compare
                 test$.removeClass('ERROR').addClass('SUCCESS');
             } else {
                 test$.removeClass('SUCCESS').addClass('ERROR');
@@ -483,32 +486,12 @@ tb.execCodes = function (fromCodeId, toCodeId) {
     });
 };
 
-
-tb.runTests = function (/*files...*/) {
-    // run every specified files as test files and return a table with all results
-    let results = [];
-    for (let i = 0; i < arguments.length; i++) {
-        let res = tb.runHtaFile(arguments[i]);
-        results.push({
-            file: arguments[i],
-            errCode: res.errCode,
-            nbPassed: res.testStatus && res.testStatus.nbPassed,
-            nbFailed: res.testStatus && res.testStatus.nbFailed,
-            dateTime: res.testStatus && res.testStatus.dateTime,
-            exec$ms: res.execStat.execAll$ms
-        });
-    }
-    return table().addRows(results).colStyle(function (r, c, value) {
-        return (value !== 0) ? {backgroundColor: 'red'} : {}
-    }, 'nbFailed');
-};
-
-tb.animate = function (interval, fromCodeId, toCodeId, endCondition) {
+tb.animate = function (interval, fromCodeId, toCodeId) {
     // run every "interval" all codes between fromCodeId to toCodeId
     // if fromCodeId is undefined, the CODE element where this function is called will be used
     fromCodeId = fromCodeId || tb.output.codeElement.id;
     toCodeId = toCodeId || fromCodeId;
-    if (tb.inAnimation == false) {
+    if (tb.inAnimation === false) {
         $('#stopAnimation').attr('disabled', false);
         $('.CODE').filterFromToId(fromCodeId, toCodeId).addClass('INANIMATION');
         tb.intervalTimers.push(window.setInterval(function () {
@@ -543,12 +526,14 @@ tb.finalize = function () {
 };
 
 tb.run = function () {
+
     // run either all CODE ELEMENT or the CODE ELEMENT from the first to the selected.element
     if (tb.autoRun) {
         tb.execAll();
     } else {
-        tb.execUntilSelected();
+        //tb.execUntilSelected();
     }
+
 };
 
 tb.updateContainers = function () {
@@ -577,7 +562,7 @@ tb.createVarFromItemprop = function (i, element) {
             tb.showItempropError(element, err);
             throw err;
         }
-        _var = e$.getItempropValue();
+        let _var = e$.getItempropValue();
         if (_var.isVar) { // this is a function
             _var.name = itemprop;
             tb.vars[itemprop] = _var;
@@ -588,12 +573,12 @@ tb.createVarFromItemprop = function (i, element) {
 tb.createVars = function () {
     // look in the DOM for itemprops that have no itemscope ancestor
     // for each create a tb.vars.<that itemprop> with the itemprop name with the content of that itemprop
-    // 1) if the itemprop ends with [], it is forced to an array (but the name of the array has not the []) 
+    // 1) if the itemprop ends with [], it is forced to an array (but the name of the array has not the [])
     //    and the value is pushed into it
     // 2) if the itemprop has the same name of an already existing tb.vars that is not an array,
     //    the var is first converted to an array with the already existing var as [0]
     //    the new itemprop is pushed into it
-    // 3) the content of the variable depends on the itemprop tag according to 
+    // 3) the content of the variable depends on the itemprop tag according to
     //    [tb.createVarFromItemprop]
     let globalItemprops = $('[itemprop]').filter(function () {
         return $(this).parents('[itemscope]').length === 0 && // must not be inside a itemscope
@@ -604,7 +589,7 @@ tb.createVars = function () {
 
 tb.updateFunctionElements = function () {
     // update every element that has an itemprop and a func attribute
-    let elements$ = $('[func]').not('.CODE'); //todo à voir si c'est la bonne solution où si on met une class FUNC aux fonctions
+    let elements$ = $('[data-code]').not('.CODE');
     elements$.each(function () {
         try {
             let this$ = $(this);
@@ -644,6 +629,8 @@ tb.prepareExec = function () {
 };
 
 tb.execAll = function () {
+    //todo remove stopObserver();
+    
     // execute all [[CODE]] [[ELEMENT]]
     tb.prepareExec();
     let elements$ = $('.CODE').add('[itemtype]').not('.DELETED');
@@ -656,6 +643,7 @@ tb.execAll = function () {
     tb.updateFunctionElements();
     tb.setUpToDate(true);
     tb.selectElement(tb.selected.element); // update properties / error...
+    //todo remove startObserver();
 };
 
 tb.execUntilSelected = function () {
@@ -669,12 +657,12 @@ tb.execUntilSelected = function () {
         let $last = $('.CODE', tb.selected.element).last();
         if ($last.length === 0) { // selected element is a section or rich text that has no internal CODE element
             $codes.add(tb.selected.element); // we add this element (even if not a code) just to know where to stop
-            let lastI = $codes.index(tb.selected.element) - 1;
+            lastI = $codes.index(tb.selected.element) - 1;
         } else {
             lastI = $codes.index($last);
         }
     }
-    $('.CODE').each(function (i, e) {
+    $codes.each(function (i, e) {
         if (i > lastI) return false;
         tb.execCode(e);
     });
