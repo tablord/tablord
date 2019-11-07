@@ -13,7 +13,7 @@ if (!process.browser) {
             version:'1.0',
             authors:['Marc Nicole'],
             rights:'CC-BY-SA-4.0 2018',
-            selected: {   // is updated by selectElement 
+            selected: {   // is updated by undoableSelectElement 
               element:undefined,
               element$:$(),    // element as a jQuery of 0 or 1 element
               itemscope$:$(),  // the containing itemscope (can be the element itself)

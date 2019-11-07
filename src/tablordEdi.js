@@ -233,12 +233,11 @@ tb.initMenu = function () {
       tb.setModified(true);
     }
   };
+
   tb.menu.funcEditor.on('blur', function () {
     tb.menu.updateCode();
   });
-  tb.menu.funcEditor.on('change', function (e) {
-    tb.console.debug('change ' + tb.inspect(e, 2).span());
-  });
+
   tb.menu.funcEditor.commands.addCommand({
     name: "run",
     exec: function () {
@@ -426,13 +425,13 @@ tb.ui.bodyKeyDown = function (event) {
       break;
     case 89: // y
       if (event.ctrlKey) {
-        tb.undo.redo();
+        console.info('tb.undo.redo() =>'+tb.undo.redo());
       }
       ;
       break;
     case 90: // z
       if (event.ctrlKey) {
-        tb.undo.undo();
+        console.info('tb.undo.undo() =>'+tb.undo.undo());
       }
       ;
       break;
@@ -497,17 +496,7 @@ tb.updateTemplateChoice = function () {
 tb.actions.select = function (element) {
   // select element as tb.selected.element and update the EDI accordingly
   // - element can either be a DOM element or a jQuery of 1 element or a string representing the id of the element
-  let oldSelectedElement = tb.selected.element;
-  tb.selectElement(element);
-  tb.undo.add({
-    caption: 'select element',
-    undo: function () {
-      tb.selectElement(oldSelectedElement);
-    },
-    redo: function () {
-      tb.selectElement(element);
-    }
-  });
+  tb.undoableSelectElement(element);
   return this;
 };
 
@@ -546,10 +535,11 @@ tb.actions.paste = function (intoItemscope) {
     elements$ = tb.undoableCloneElements$($('.MARKED').undoableRemoveClass('MARKED'));
   }
   const target$ = intoItemscope ? tb.selected.element$ : tb.selected.element$.itemscopeOrThis$().last();
-  if (elements$.length===0 || target$.length===0){
+  if (elements$.length === 0 || target$.length === 0) {
     tb.undo.end();
     return this; // nothing to do
-  };
+  }
+  ;
   elements$.undoableInsertAfter(target$);
   tb.undo.end();
   tb.setModified(true);
@@ -624,12 +614,12 @@ tb.actions.delete = function (intoItemscope) {
   if (deleted$.length) { // some elements in the selection are deleted, so undelete those
     deleted$.removeClass('DELETED').show(500);
     let selectedAndDeleted$ = $('.SELECTED', deleted$);  // this can happen since DELETED element can be visible and so can be selected.
-    if (selectedAndDeleted$.length) tb.selectElement(selectedAndDeleted$);
+    if (selectedAndDeleted$.length) tb.undoableSelectElement(selectedAndDeleted$);
     tb.setModified(true);
     tb.setUpToDate(false);
     return this;
   }
-  if ($('.SELECTED', elements$).length) tb.selectElement(undefined);
+  if ($('.SELECTED', elements$).length) tb.undoableSelectElement(undefined);
   elements$.removeClass('MARKED').addClass('DELETED');
   if (!tb.sheetOptions.showDeleted) elements$.hide(500);
   tb.setModified(true);
@@ -644,7 +634,7 @@ tb.actions.killMarked = function () {
   // to create test sheets
 
   let elements$ = $('.MARKED');
-  if ($('.SELECTED', elements$).length) tb.selectElement(undefined);
+  if ($('.SELECTED', elements$).length) tb.undoableSelectElement(undefined);
   elements$.remove();
   tb.setModified(true);
   tb.setUpToDate(false);
@@ -715,7 +705,7 @@ tb.showElementError = function (element, error) {
   });
   if (!error.cascade) {
     tb.lastError = error;
-    tb.selectElement(element);
+    tb.undoableSelectElement(element);
     tb.menu.properties$.prop('open', true);
   }
 };
@@ -725,7 +715,7 @@ tb.showItempropError = function (element, error) {
   let element$ = $(element);
   element$.addClass('ERROR')
   .prop('error', error);
-  tb.selectElement(element);
+  tb.undoableSelectElement(element);
   tb.menu.properties$.prop('open', true);
   tb.menu.itemprop$[0].focus();
 };
@@ -743,7 +733,7 @@ tb.saveRemote = function () {
   // save to a remote server
   let csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
   tb.removeDeletedBlocks();
-  tb.selectElement(undefined);
+  tb.undoableSelectElement(undefined);
   $.post(window.location,
     {
       csrfmiddlewaretoken: csrftoken,
@@ -829,6 +819,7 @@ tb.undoableCloneElements$ = function (elements$, empty) {
         clones$.removeClass('SELECTED');
         prepare(clones$.children());
       }
+
       newElements$ = elements$.clone();
       prepare(newElements$);
     },
@@ -852,44 +843,22 @@ tb.editables$ = function (element) {
   return e$.find('.EDITABLE');
 };
 
-tb.storeEditorSession = function (element$) {
-  // store properly the editor session if needed
+tb.undoableStoreEditorSession = function (element$, session) {
+  // store the session in its corresponding element
+  // can be undone
   // - element$: if empty (length == 0) simply return
   //            otherwise attach the session to this element$ (jquery of 1 element)
+  // - session: the editor session that has to be stored in element$
   if (element$.length === 0) return;
-  element$.data('editSession', tb.menu.funcEditor.getSession());
+  let previousSession = element$.data('editSession');
+  tb.undo.execute('store session',
+                  function () {element$.data('editSession', previousSession);},
+                  function () {element$.data('editSession', session);});
 };
 
-//todo remove: just for proof of concept.
-var patched = function(fn){
-  return function(){
-    console.info('patched "%s" (%o,%s) hasUndo=%s',fn.name, arguments[0], arguments[1],this.hasUndo());
-    return fn.apply(this, arguments);
-  };
-};
 
-tb.restoreEditorSession = function () {
-  // update the editor with the content of tb.selected.element
-  // if no selected element, clear the editor
-  if (!tb.selected.element) {
-    tb.menu.funcEditor.setSession(ace.createEditSession('', "ace/mode/text"));
-    return;
-  }
-  let editSession = tb.selected.element$.data('editSession');
-  let func = tb.selected.element$.attr('data-code');
-
-  if (editSession) {
-    tb.menu.funcEditor.setSession(editSession);
-  } else {
-    let session = ace.createEditSession(func || '', "ace/mode/javascript");
-    //todo check if ok
-    console.info('%s',session);
-    let um = session.getUndoManager();
-    um.undo = patched(um.undo);
-    /////
-    tb.menu.funcEditor.setSession(session);
-  }
-
+tb.updateEditor = function (element$) {
+  // set the style / read only according to the selected element
   if (tb.selected.element$.hasClass('DELETED')) {
     tb.menu.funcEditor.setOptions({
       readOnly: true,
@@ -906,18 +875,83 @@ tb.restoreEditorSession = function () {
     });
   }
 
-  let error = tb.selected.element$.prop('error');
+  let error = element$.prop('error');
   if (error) {
     let line = error.lineNumber;
     let col = error.columnNumber;
     tb.menu.error$.html('<details><summary>' + error.message + '</summary>' + error.stack.replace('/\n/g', '<br>').replace(/ at /g, '<br>at ') + '</details>').show();
     tb.menu.funcEditor.gotoLine(line, col - 1);
   } else tb.menu.error$.hide();
+
+  let func = element$.attr('data-code');
   if (func) {
     tb.menu.properties$.prop('open', true);
     tb.menu.funcEditor.focus();
   }
+
 };
+
+//todo proof of concept, but to be put in a class for ace management.... tbd
+var patchedUndo = function (fn) {
+  return function () {
+    console.info('patched undo hasUndo=%s', this.hasUndo());
+    if (!this.hasUndo()) {
+      console.info('nothing to undo anymore. setTimeout to global undo');
+      window.setTimeout(function(){
+        console.info('will global undo');
+        console.info(tb.undo.undo());
+      })
+    }
+    return fn.apply(this, arguments);
+  };
+};
+var patchedRedo = function (fn) {
+  return function () {
+    console.info('patched redo hasRedo=%s', this.hasRedo());
+    if (!this.hasRedo()) {
+      console.info('nothing to redo anymore. setTimeout to global redo');
+      window.setTimeout(function(){
+        console.info('will global redo');
+        console.info(tb.undo.redo());
+      })
+    }
+    return fn.apply(this, arguments);
+  };
+};
+
+tb.createNewEditorSession = function (element$) {
+  // create a new editor session with the content of the element$ passed in parameter
+  // using a patched undo manager in order to communicate with the global undoManager
+  let func = element$.attr('data-code');
+  let session = ace.createEditSession(func || '', "ace/mode/javascript");
+  console.info('create new editor session with "%s"', func);
+  let um = session.getUndoManager();
+  um.undo = patchedUndo(um.undo);
+  um.redo = patchedRedo(um.redo);
+  tb.menu.funcEditor.setSession(session);
+};
+
+/* todo remove
+tb.restoreEditorSession = function (element$) {
+  // update the editor with the content of element$
+  // element$.length==0, clear the editor
+  if (element$.length === 0) {
+    tb.menu.funcEditor.setSession(ace.createEditSession('', "ace/mode/text"));
+    tb.menu.func$.hide();
+    return;
+  }
+  tb.menu.func$.show();
+  let editSession = element$.data('editSession');
+  let func = element$.attr('data-code');
+
+  if (editSession) {
+    tb.menu.funcEditor.setSession(editSession);
+  } else {
+    tb.menu.funcEditor.setSession(tb.createNewEditorSession(func));
+  }
+  tb.updateEditor(element$)
+};
+*/
 
 tb.updateMenu = function () {
   // update the menu with the content of tb.selected.element
@@ -927,7 +961,7 @@ tb.updateMenu = function () {
     tb.menu.selectionToolBar$.hide();
     return;
   }
-  tb.menu.codeId$.html(element.id + '<SPAN style="color:red;cursor:pointer;" onclick="tb.selectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
+  tb.menu.codeId$.html(element.id + '<SPAN style="color:red;cursor:pointer;" onclick="tb.undoableSelectElement(undefined);">&nbsp;&#215;&nbsp;</SPAN>');
   let flexParent = tb.selected.element$.parent().hasClass('FLEX');
   tb.menu.moveLeft$.prop('disabled', !flexParent);
   tb.menu.moveRight$.prop('disabled', !flexParent);
@@ -946,7 +980,7 @@ tb.updateMenu = function () {
   tb.menu.itemprop$.val(tb.selected.element$.attr('itemprop'));
   tb.menu.itemtype$.val(tb.selected.element$.attr('itemtype'));
   tb.menu.format$.val(tb.selected.element$.attr('format'));
-  tb.restoreEditorSession();
+  tb.createNewEditorSession(tb.selected.element$);
   tb.updateTemplateChoice();
   tb.menu.$.show();
   tb.menu.selectionToolBar$.show(500, function () {
@@ -961,12 +995,24 @@ tb.updateMenu = function () {
   }
 };
 
-tb.selectElement = function (element) {
+tb.undoableSelectElement = function (element) {
   // select element as tb.selected.element and update the EDI accordingly
   // - element can either be a DOM element or a jQuery of 1 element or a string representing the id of the element
+  // this can be undone
   if (typeof element === 'string') element = $('#' + element)[0];
   else if (element instanceof $) element = element[0];
-  //tb.editor.setCurrentEditor(undefined); //TODO suppress editors?
+
+  tb.undo.begin('select '+(element?(element.id || 'id=""'):'nothing'));
+  let e$ = tb.selected.element$;
+  tb.undoableStoreEditorSession(e$,tb.menu.funcEditor.getSession());
+  tb.undo.execute('select',function(){tb.selectElement(e$)},function(){tb.selectElement(element)});
+  tb.undo.end();
+};
+
+tb.selectElement = function (element) {
+  if (typeof element === 'string') element = $('#' + element)[0];
+  else if (element instanceof $) element = element[0];
+
   let e = tb.selected.element;
   if (e) {
     if (element && (e === element) && !e.error) { // if already selected nothing to do but make sure it is visible
@@ -978,7 +1024,7 @@ tb.selectElement = function (element) {
     // remove the old selection
     let e$ = $(e);
     e$.removeClass('SELECTED');
-    tb.storeEditorSession(e$);
+
     tb.editables$(e)
     .attr('contentEditable', false)
     .each(function (i, e) {
@@ -1201,11 +1247,13 @@ $(function () {
   tb.autoRun = !tb.url.arguments.no_run;
   tb.help.update(tb, 'tb.');
   tb.updateContainers();
+  tb.undo = new UndoManager('main');
+  tb.undo.span = function() {return tb.html(this.debugHtml())};
+  $.setUndoManager(tb.undo);
 
   if (tb.autoRun) tb.execAll();
 
   //todo remove startObserver();
-  tb.undo = new UndoManager('main');
-  $.setUndoManager(tb.undo);
+
 });
 

@@ -31,7 +31,7 @@
     let after = (where==='after' || where === 'afterItemscope');
     if (after) newElement$.insertAfter(element$);
     else       newElement$.insertBefore(element$);
-    tb.selectElement(newElement$[0]);
+    tb.undoableSelectElement(newElement$[0]);
     tb.setModified(true);
   };
 
@@ -61,7 +61,7 @@
 
     if (tb.selected.element===element) {
       e$.replaceWith(new$);
-      tb.selectElement(new$[0]);
+      tb.undoableSelectElement(new$[0]);
     }
     else {
       e$.replaceWith(new$);
