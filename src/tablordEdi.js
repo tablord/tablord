@@ -78,6 +78,10 @@ tb.initMenu = function () {
     '<button id="runAll" type="button" class="btn btn-dark" style="color: #8dff60;" ><i class="fas fa-play"></i></button>' +
     '<button id="stopAnimation" type="button" class="btn btn-dark" style="color: red" disabled=true ><i class="fas fa-stop"></i></button>' +
     '</div>' +
+    '<div class="btn-group btn-group-sm mr-2" role="group" aria-label="undoClick btns">' +
+    '<button id="undo" type="button" class="btn btn-dark"><i class="fas fa-undo"></i></button>' +
+    '<button id="redo" type="button" class="btn btn-dark"><i class="fas fa-redo"></i></button>' +
+    '</div>' +
     '<div class="btn-group btn-group-sm mr-2" role="group" aria-label="actions on sheet">' +
     '<button id="save" type="button" class="btn btn-dark"><i class="fas fa-cloud-upload-alt"></i></button>' +
     '<button id="print" type="button" class="btn btn-dark"><i class="fas fa-print"></i></button>' +
@@ -186,18 +190,38 @@ tb.initMenu = function () {
     "The click method has the responsibility to understand the UI (like click + altKey means some parameters of the action",
     "the action is very close to the UI semantic (like finding the selected / marked elements), but can be used in a programable way.",
     "- actions always return this, allowing for command chaining",
-    "- actions will have the responsibility of register the undo command",
+    "- actions will have the responsibility of register the undoClick command",
     "the action usually call one or more tb method that will perform the work"]);
 
   $('body').prepend(tb.menu.$);
   // for easier access and better perf
+  tb.ui.bindings = []; // to keep track of what calls what
+  tb.userAction = function(action){
+    // wraps the action so that any action triggered by a user ends with a run
+    return function(event) {
+      tb.ui.inUserTriggeredAction = true;
+      action(event);
+      tb.ui.inUserTriggeredAction = false;
+      tb.run();
+    }
+
+  };
+
   $('[id]', tb.menu.$).each(function () {
     const e$ = $(this);
-    if (tb[this.id + 'Click']) e$.click(tb.ui[this.id + 'Click']); // if a corresponding function bind it
-    else if (tb.actions[this.id]) e$.click(tb.actions[this.id]); // else if a corresponding action is found, bind it to click
-
-    if (tb[this.id + 'Change']) e$.click(tb.ui[this.id + 'Change']); // if a corresponding function bind it
-
+    let funcName = this.id + 'Click';
+    if (tb.ui[funcName]) { // if a corresponding function bind it
+      e$.click(tb.userAction(tb.ui[funcName]));
+      tb.ui.bindings.push({id: this.id, element: this, funcName: 'tb.ui.' + funcName, func: tb.ui[funcName]});
+    } else if (tb.actions[this.id]) { // else if a corresponding action is found, bind it to click}
+      e$.click(tb.userAction(tb.actions[this.id]));
+      tb.ui.bindings.push({id: this.id, element: this, funcName: 'tb.actions.' + this.id, func: tb.ui[this.id]});
+    }
+    funcName = this.id + 'Change';
+    if (tb.ui[funcName]) {    // if a corresponding function bind it}
+      e$.click(tb.userAction(tb.ui[funcName]));
+      tb.ui.bindings.push({id: this.id, element: this, funcName: 'tb.ui.' + funcName, func: tb.ui[funcName]});
+    }
     tb.menu[this.id + '$'] = e$;
   });
 
@@ -222,26 +246,20 @@ tb.initMenu = function () {
   tb.menu.selectionToolBar$.hide();
 
   tb.menu.error$.hide();
-  tb.menu.funcEditor = ace.edit('func');
-  tb.menu.updateCode = function () {
-    const code = tb.menu.funcEditor.getValue();
-    const oldCode = tb.selected.element$.attr('data-code') || '';
-    if (code !== oldCode) {
-      if (code) tb.selected.element$.attr('data-code', code);
-      else tb.selected.element$.removeAttr('data-code');
-      tb.run();
-      tb.setModified(true);
-    }
-  };
+  tb.menu.codeEditor = ace.edit('func');
+  delete tb.menu.codeEditor.keyBinding.$defaultHandler.commandKeyBinding['crtl-z']; // remove undoClick
+  delete tb.menu.codeEditor.keyBinding.$defaultHandler.commandKeyBinding['crtl-y']; // and redoClick
 
-  tb.menu.funcEditor.on('blur', function () {
-    tb.menu.updateCode();
+
+  tb.menu.codeEditor.on('blur', function () {
+    tb.storeEditorSession(tb.selected.element$, tb.menu.codeEditor.getSession());
+    tb.run();
   });
 
-  tb.menu.funcEditor.commands.addCommand({
+  tb.menu.codeEditor.commands.addCommand({
     name: "run",
     exec: function () {
-      tb.menu.updateCode();
+      tb.storeEditorSession(tb.selected.element$, tb.menu.codeEditor.getSession());
       tb.run();
     },
     bindKey: {mac: "Ctrl-Return", win: "Ctrl-Return"}
@@ -262,7 +280,6 @@ tb.initMenu = function () {
     else tb.selected.element$.removeAttr('itemtype');
     if (tb.menu.format$.val()) tb.selected.element$.attr('format', tb.menu.format$.val());
     else tb.selected.element$.removeAttr('format');
-    tb.run();
     tb.setModified(true);
   });
 
@@ -330,7 +347,6 @@ tb.ui.showTestClick = function (event) {
   const button = event.target;
   $('.TEST').toggleClass('HIDDEN', !button.checked);
   tb.sheetOptions.showTest = button.checked;
-  tb.run();
 };
 
 tb.ui.showTraceClick = function (event) {
@@ -338,7 +354,6 @@ tb.ui.showTraceClick = function (event) {
   const button = event.target;
   $('.TRACE').toggleClass('HIDDEN', !button.checked);
   tb.sheetOptions.showTrace = button.checked;
-  tb.run();
 };
 
 tb.ui.setAutoRunClick = function (event) {
@@ -346,7 +361,6 @@ tb.ui.setAutoRunClick = function (event) {
   const button = event.target;
   tb.autoRun = button.checked;
   $('body').attr('autoRun', tb.autoRun);
-  tb.run();
 };
 
 tb.ui.printClick = function (event) {
@@ -358,7 +372,6 @@ tb.ui.printClick = function (event) {
 tb.ui.pasteClick = function (event) {
   // paste
   tb.actions.paste(event.altKey);
-  tb.run();
 };
 
 
@@ -386,7 +399,6 @@ tb.ui.cutClick = function (event) {
 tb.ui.cloneEmptyClick = function (event) {
   // clone MARKED or the selected.element$
   tb.actions.cloneEmpty(event.altKey);
-  tb.run();
 };
 
 
@@ -395,7 +407,6 @@ tb.ui.templateButtonClick = function (event) {
   if (!event.altKey) where += 'Itemscope';
   let template = $(event.target).closest('[data-template]').attr('data-template');
   tb.actions.insertTemplate(template, where);
-  tb.run();
 };
 
 tb.ui.showHtmlClick = function (event) {
@@ -416,6 +427,14 @@ tb.ui.showHtmlClick = function (event) {
   $('#showHtml').modal()
 };
 
+tb.ui.undoClick = function (event) {
+  console.info('tb.undoClick.undoClick() =>' + tb.undo.undo());
+};
+
+tb.ui.redoClick = function (event) {
+  console.info('tb.undoClick.redoClick() =>' + tb.undo.redo());
+};
+
 
 tb.ui.bodyKeyDown = function (event) {
   // special keys at EDI level
@@ -425,16 +444,18 @@ tb.ui.bodyKeyDown = function (event) {
       break;
     case 89: // y
       if (event.ctrlKey) {
-        console.info('tb.undo.redo() =>'+tb.undo.redo());
+        tb.ui.redoClick(event);
       }
-      ;
       break;
     case 90: // z
       if (event.ctrlKey) {
-        console.info('tb.undo.undo() =>'+tb.undo.undo());
+        tb.ui.undoClick();
       }
-      ;
       break;
+    case 13: // return
+      if (event.ctrlKey) {
+        tb.run();
+      }
   }
   return true;
 };
@@ -629,7 +650,7 @@ tb.actions.delete = function (intoItemscope) {
 
 tb.actions.killMarked = function () {
   // look for MARKED elements
-  // and remove those elements forever (no possible undo)
+  // and remove those elements forever (no possible undoClick)
   // useful in conjunction with actions.undoableMark and actions.invertMarked
   // to create test sheets
 
@@ -843,31 +864,18 @@ tb.editables$ = function (element) {
   return e$.find('.EDITABLE');
 };
 
-tb.undoableStoreEditorSession = function (element$, session) {
-  // store the session in its corresponding element
-  // can be undone
-  // - element$: if empty (length == 0) simply return
-  //            otherwise attach the session to this element$ (jquery of 1 element)
-  // - session: the editor session that has to be stored in element$
-  if (element$.length === 0) return;
-  let previousSession = element$.data('editSession');
-  tb.undo.execute('store session',
-                  function () {element$.data('editSession', previousSession);},
-                  function () {element$.data('editSession', session);});
-};
-
 
 tb.updateEditor = function (element$) {
   // set the style / read only according to the selected element
   if (tb.selected.element$.hasClass('DELETED')) {
-    tb.menu.funcEditor.setOptions({
+    tb.menu.codeEditor.setOptions({
       readOnly: true,
       highlightActiveLine: false,
       highlightGutterLine: false,
       theme: "ace/theme/pastel_on_dark"
     });
   } else {
-    tb.menu.funcEditor.setOptions({
+    tb.menu.codeEditor.setOptions({
       readOnly: false,
       highlightActiveLine: true,
       highlightGutterLine: true,
@@ -880,78 +888,51 @@ tb.updateEditor = function (element$) {
     let line = error.lineNumber;
     let col = error.columnNumber;
     tb.menu.error$.html('<details><summary>' + error.message + '</summary>' + error.stack.replace('/\n/g', '<br>').replace(/ at /g, '<br>at ') + '</details>').show();
-    tb.menu.funcEditor.gotoLine(line, col - 1);
+    tb.menu.codeEditor.gotoLine(line, col - 1);
   } else tb.menu.error$.hide();
 
   let func = element$.attr('data-code');
   if (func) {
     tb.menu.properties$.prop('open', true);
-    tb.menu.funcEditor.focus();
+    tb.menu.codeEditor.focus();
   }
 
 };
 
-//todo proof of concept, but to be put in a class for ace management.... tbd
-var patchedUndo = function (fn) {
-  return function () {
-    console.info('patched undo hasUndo=%s', this.hasUndo());
-    if (!this.hasUndo()) {
-      console.info('nothing to undo anymore. setTimeout to global undo');
-      window.setTimeout(function(){
-        console.info('will global undo');
-        console.info(tb.undo.undo());
-      })
-    }
-    return fn.apply(this, arguments);
-  };
-};
-var patchedRedo = function (fn) {
-  return function () {
-    console.info('patched redo hasRedo=%s', this.hasRedo());
-    if (!this.hasRedo()) {
-      console.info('nothing to redo anymore. setTimeout to global redo');
-      window.setTimeout(function(){
-        console.info('will global redo');
-        console.info(tb.undo.redo());
-      })
-    }
-    return fn.apply(this, arguments);
-  };
+tb.storeEditorSession = function (element$, session) {
+  if (element$.length !== 1) return;
+  element$.data('editSession', session);
+  let oldCode = element$.attr('data-code');
+  let newCode = session.getValue();
+  if (oldCode !== newCode) {
+    element$.attr('data-code', newCode);
+    tb.setModified(true);
+  }
 };
 
-tb.createNewEditorSession = function (element$) {
-  // create a new editor session with the content of the element$ passed in parameter
-  // using a patched undo manager in order to communicate with the global undoManager
-  let func = element$.attr('data-code');
-  let session = ace.createEditSession(func || '', "ace/mode/javascript");
-  console.info('create new editor session with "%s"', func);
-  let um = session.getUndoManager();
-  um.undo = patchedUndo(um.undo);
-  um.redo = patchedRedo(um.redo);
-  tb.menu.funcEditor.setSession(session);
-};
-
-/* todo remove
 tb.restoreEditorSession = function (element$) {
-  // update the editor with the content of element$
-  // element$.length==0, clear the editor
-  if (element$.length === 0) {
-    tb.menu.funcEditor.setSession(ace.createEditSession('', "ace/mode/text"));
-    tb.menu.func$.hide();
-    return;
-  }
-  tb.menu.func$.show();
-  let editSession = element$.data('editSession');
-  let func = element$.attr('data-code');
+  // restore the editor session with the content of the element$ passed in parameter
+  let session = element$.data('editSession');
+  if (!session) {
+    let func = element$.attr('data-code');
+    session = ace.createEditSession(func || '', "ace/mode/javascript");
+    let aceUndoManager = new AceUndoManager(tb.undo);
+    /* todo remove
+    aceUndoManager.undoClick = function () {
+      tb.ui.undoClick()
+    };
+    aceUndoManager.redoClick = function () {
+      tb.ui.redoClick()
+    };
 
-  if (editSession) {
-    tb.menu.funcEditor.setSession(editSession);
+     */
+    session.setUndoManager(aceUndoManager);
+    console.info('create new editor session with "%s" for %s', func, element$.attr('id'));
   } else {
-    tb.menu.funcEditor.setSession(tb.createNewEditorSession(func));
+    console.info('restore the editor session from "%s"', element$.attr('id'));
   }
-  tb.updateEditor(element$)
+  tb.menu.codeEditor.setSession(session);
 };
-*/
 
 tb.updateMenu = function () {
   // update the menu with the content of tb.selected.element
@@ -980,16 +961,16 @@ tb.updateMenu = function () {
   tb.menu.itemprop$.val(tb.selected.element$.attr('itemprop'));
   tb.menu.itemtype$.val(tb.selected.element$.attr('itemtype'));
   tb.menu.format$.val(tb.selected.element$.attr('format'));
-  tb.createNewEditorSession(tb.selected.element$);
+  tb.restoreEditorSession(tb.selected.element$);
   tb.updateTemplateChoice();
   tb.menu.$.show();
   tb.menu.selectionToolBar$.show(500, function () {
-    tb.menu.funcEditor.resize()
+    tb.menu.codeEditor.resize()
   });
   if (tb.selected.element$.prop('error') || isCode) {
     tb.menu.properties$.attr('open', true);
     element.scrollIntoView();
-    tb.menu.funcEditor.focus();
+    tb.menu.codeEditor.focus();
   } else {
     element.focus();
   }
@@ -1002,11 +983,13 @@ tb.undoableSelectElement = function (element) {
   if (typeof element === 'string') element = $('#' + element)[0];
   else if (element instanceof $) element = element[0];
 
-  tb.undo.begin('select '+(element?(element.id || 'id=""'):'nothing'));
   let e$ = tb.selected.element$;
-  tb.undoableStoreEditorSession(e$,tb.menu.funcEditor.getSession());
-  tb.undo.execute('select',function(){tb.selectElement(e$)},function(){tb.selectElement(element)});
-  tb.undo.end();
+
+  tb.undo.execute('select', function () {
+    tb.selectElement(e$)
+  }, function () {
+    tb.selectElement(element)
+  });
 };
 
 tb.selectElement = function (element) {
@@ -1023,6 +1006,8 @@ tb.selectElement = function (element) {
 
     // remove the old selection
     let e$ = $(e);
+    let editorSession = tb.menu.codeEditor.getSession();
+    tb.storeEditorSession(e$, editorSession);
     e$.removeClass('SELECTED');
 
     tb.editables$(e)
@@ -1248,7 +1233,9 @@ $(function () {
   tb.help.update(tb, 'tb.');
   tb.updateContainers();
   tb.undo = new UndoManager('main');
-  tb.undo.span = function() {return tb.html(this.debugHtml())};
+  tb.undo.span = function () {
+    return tb.html(this.debugHtml())
+  };
   $.setUndoManager(tb.undo);
 
   if (tb.autoRun) tb.execAll();

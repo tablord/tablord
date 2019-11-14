@@ -1,322 +1,352 @@
 :root {
-  --bgsuccess: #d4edda;
-  --bgcode: #f2f9a8;
-  --bginfo: #d1ecf1;
-  --bgeditor : #b9a3c1;
-  --bgwarning : #fff3cd;
-  --bgerror : #dc3545;
-  --bgdanger : #f8d7da;
+    --bgsuccess: #d4edda;
+    --bgcode: #f2f9a8;
+    --bginfo: #d1ecf1;
+    --bgeditor: #b9a3c1;
+    --bgwarning: #fff3cd;
+    --bgerror: #dc3545;
+    --bgdanger: #f8d7da;
 }
 
 body {
-  font-family: Arial, sans-serif;
-  color: black;
+    font-family: Arial, sans-serif;
+    color: black;
 }
+
 tbody {
-  font-family: Arial, sans-serif;
-  font-size: 1em;
+    font-family: Arial, sans-serif;
+    font-size: 1em;
 }
+
 thead {
-  font-family: Arial, sans-serif;
-  font-size: 1em;
+    font-family: Arial, sans-serif;
+    font-size: 1em;
 }
+
 h1 {
-  font-size: 18pt;
-  margin-bottom: 0;
-  padding-bottom: 0;
+    font-size: 18pt;
+    margin-bottom: 0;
+    padding-bottom: 0;
 }
+
 h2 {
-  font-size: 14pt;
-  margin-bottom: 0;
-  padding-bottom: 0;
+    font-size: 14pt;
+    margin-bottom: 0;
+    padding-bottom: 0;
 }
+
 h3 {
-  font-size: 12pt;
-  margin-bottom: 0;
+    font-size: 12pt;
+    margin-bottom: 0;
 }
+
 h4 {
-  font-size: 10pt;
-  margin-bottom: 0;
+    font-size: 10pt;
+    margin-bottom: 0;
 }
+
 h5 {
-  font-size: 10pt;
-  margin-bottom: 0;
+    font-size: 10pt;
+    margin-bottom: 0;
 }
+
 h6 {
-  font-size: 10pt;
-  margin-bottom: 0;
+    font-size: 10pt;
+    margin-bottom: 0;
 }
 
 dt {
-  font-weight: bold;
+    font-weight: bold;
 }
 
-ol,ul,li {
-  padding:0;
-  margin-top : 0;
-  margin-bottom : 0;
+ol, ul, li {
+    padding: 0;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 table {
-  border: none;
+    border: none;
 }
 
 th {
-  text-align: left;
-  vertical-align: top;
+    text-align: left;
+    vertical-align: top;
 }
 
 td {
-  text-align: right;
-  vertical-align: top;
+    text-align: right;
+    vertical-align: top;
 }
 
 .LEFT {
-  text-align: left;
+    text-align: left;
 }
+
 .RIGHT {
-  text-align: right;
+    text-align: right;
 }
 
 .TRACE {
-  border: 1px solid #000080;
-  text-align: left;
-  vertical-align: top;
+    border: 1px solid #000080;
+    text-align: left;
+    vertical-align: top;
 }
 
 p {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 pre {
-  margin:0;
+    margin: 0;
 }
 
 .FIELD p,
 .RICHTEXT p {
-  padding-bottom:0.5em;
+    padding-bottom: 0.5em;
 }
 
 .ELEMENT {
-  position:relative;    
-  padding: 3px;
-  margin-bottom:0.5em;
+    position: relative;
+    padding: 3px;
+    margin-bottom: 0.5em;
 }
 
 @media screen {
     .ELEMENT.EMPTY {
-      color: grey;
+        color: grey;
     }
+
     .ELEMENT.SELECTED,
-    .ELEMENT.SELECTED[itemprop]{
-      padding:0;
-      border: 3px solid grey;
+    .ELEMENT.SELECTED[itemprop] {
+        padding: 0;
+        border: 3px solid grey;
     }
+
     .ELEMENT:hover {
-      outline:1px dotted grey;
+        outline: 1px dotted grey;
     }
+
     .ELEMENT[itemprop]:not(.VIEW) {
-      border: 1px solid blue;
+        border: 1px solid blue;
     }
-    
+
     .ELEMENT.SHOW[itemprop]::before {
-      content:attr(itemprop)": ";
-      font-style:italic;
-      color:grey;  
+        content: attr(itemprop) ": ";
+        font-style: italic;
+        color: grey;
     }
+
     .ELEMENT[itemprop]:hover::after {
-      position:absolute;
-      top:-2em;
-      right:0;
-      color:white;
-      background-color: rgba(169, 169, 169,0.6);
-      font-size:0.6em;
-      padding:3px;
-      content:attr(itemprop);
+        position: absolute;
+        top: -2em;
+        right: 0;
+        color: white;
+        background-color: rgba(169, 169, 169, 0.6);
+        font-size: 0.6em;
+        padding: 3px;
+        content: attr(itemprop);
     }
 
     .ELEMENT.SELECTED::after {
-      position:absolute;
-      top:-2em;
-      right:0;
-      outline:none;
-      color:white;
-      background-color: rgba(169, 169, 169,0.6);
-      font-size:0.6em;
-      padding:3px;
-      content:attr(itemprop);
+        position: absolute;
+        top: -2em;
+        right: 0;
+        outline: none;
+        color: white;
+        background-color: rgba(169, 169, 169, 0.6);
+        font-size: 0.6em;
+        padding: 3px;
+        content: attr(itemprop);
     }
 
     .ELEMENT.EDITABLE:empty::before {
-      content:"empty";
-      font-style:italic;
-      color:grey;
+        content: "empty";
+        font-style: italic;
+        color: grey;
     }
+
     .ELEMENT[itemprop]:empty::before {
-      content:attr(itemprop);
-      font-style:italic;
-      color:grey;
+        content: attr(itemprop);
+        font-style: italic;
+        color: grey;
     }
 }
 
 .ELEMENT.c-1 {
-  width:calc(100%/12);
+    width: calc(100% / 12);
 }
+
 .ELEMENT.c-2 {
-  width:calc(100%/12*2);
+    width: calc(100% / 12 * 2);
 }
+
 .ELEMENT.c-3 {
-  width:calc(100%/12*3);
+    width: calc(100% / 12 * 3);
 }
+
 .ELEMENT.c-4 {
-  width:calc(100%/12*4);
+    width: calc(100% / 12 * 4);
 }
+
 .ELEMENT.c-5 {
-  width:calc(100%/12*5);
+    width: calc(100% / 12 * 5);
 }
+
 .ELEMENT.c-6 {
-  width:calc(100%/12*6);
+    width: calc(100% / 12 * 6);
 }
+
 .ELEMENT.c-7 {
-  width:calc(100%/12*7);
+    width: calc(100% / 12 * 7);
 }
+
 .ELEMENT.c-8 {
-  width:calc(100%/12*8);
+    width: calc(100% / 12 * 8);
 }
+
 .ELEMENT.c-9 {
-  width:calc(100%/12*9);
+    width: calc(100% / 12 * 9);
 }
+
 .ELEMENT.c-10 {
-  width:calc(100%/12*10);
+    width: calc(100% / 12 * 10);
 }
+
 .ELEMENT.c-11 {
-  width:calc(100%/12*11);
+    width: calc(100% / 12 * 11);
 }
+
 .ELEMENT.c-12 {
-  width:100%;
+    width: 100%;
 }
 
 
 .FIELD.EDITABLE {
-  border-bottom: solid grey 1px;
-  display:inline-block;
-  width:100%;
+    border-bottom: solid grey 1px;
+    display: inline-block;
+    width: 100%;
 }
 
 
 .COLLAPSED {
-  height: 100px;
-  overflow: scroll;
+    height: 100px;
+    overflow: scroll;
 }
 
 .HIDDEN {
-  display: none;
+    display: none;
 }
 
 .HIDDEN.SELECTED {
-  display:block;
+    display: block;
 }
 
 .FLOATLEFT {
-  float:left;
+    float: left;
 }
 
 .CODEVIEW {
-  font-family: courier, monospace;
-  font-size: 0.85rem;
-  background-color: var(--bgcode);
-  border:solid green 1px;
-  margin: 0;
-  padding: 0;
+    font-family: courier, monospace;
+    font-size: 0.85rem;
+    background-color: var(--bgcode);
+    border: solid green 1px;
+    margin: 0;
+    padding: 0;
 }
 
 .CODEEXAMPLE,
 .CODE {
-  background-color: var(--bgcode);
-  border: none;
-  margin: 0;
-  padding-left:3px;
+    background-color: var(--bgcode);
+    border: none;
+    margin: 0;
+    padding-left: 3px;
 }
+
 .SOURCE {
-  font-size: 0.75rem;
+    font-size: 0.75rem;
+    text-align: left;
 }
 
 .INANIMATION {
-  color: red;
+    color: red;
 }
 
 .AUTOEDIT {
-  color: red;
+    color: red;
 }
 
 
 .EMBEDDED,
 .EMBEDDED .OUTPUT,
 .EMBEDDED .SOURCE {
-  display:inline;
+    display: inline;
 }
 
 .EDITOR {
-  background-color:  var(--bgeditor);
-  border: 1px solid black;
+    background-color: var(--bgeditor);
+    border: 1px solid black;
 }
 
 .EDITOR.undefined {
-  background-color:  var(--bgeditor);
-  color : white;
+    background-color: var(--bgeditor);
+    color: white;
 }
 
 .EDITOR.number {
-  background-color:  var(--bgeditor);
-  color : blue;
-  text-align: right;
+    background-color: var(--bgeditor);
+    color: blue;
+    text-align: right;
 }
+
 .EDITOR.string {
-  background-color: var(--bgeditor);
-  color : red;
-  text-align: left;
+    background-color: var(--bgeditor);
+    color: red;
+    text-align: left;
 }
+
 .EDITOR.function {
-  background-color: var(--bgsuccess);
+    background-color: var(--bgsuccess);
 }
 
 .OUTPUTEXAMPLE,
 .OUTPUT {
-  background-color: #b7b7b7;
-  color: #828282;
-  margin: 0;
-  padding: 0;
+    background-color: #b7b7b7;
+    color: #828282;
+    margin: 0;
+    padding: 0;
 }
 
 
-.TESTEXAMPLE{
-  background-color: #b6fff7;
-  border:solid blue 3px;
-  color: blue;
+.TESTEXAMPLE {
+    background-color: #b6fff7;
+    border: solid blue 3px;
+    color: blue;
 }
 
 .TEST {
-  background-color: var(--bginfo);
-  border:solid blue 3px;
-  color: blue;
+    background-color: var(--bginfo);
+    border: solid blue 3px;
+    color: blue;
 }
+
 .TEST.ERROR {
-  border:solid red 3px;
-  color: black;
+    border: solid red 3px;
+    color: black;
 }
 
 .RICHTEXT {
-  min-height:1em;
-  border:none;
+    min-height: 1em;
+    border: none;
 }
 
 
 .NOTE {
-   margin-left:25px;
-   margin-right:25px;
-   border-left:3px solid black;
-   padding-left:6px;
+    margin-left: 25px;
+    margin-right: 25px;
+    border-left: 3px solid black;
+    padding-left: 6px;
 }
 
 .ADDRESS {
@@ -324,173 +354,178 @@ pre {
 }
 
 
-.INFO  {
-  background-color: var(--bginfo);
+.INFO {
+    background-color: var(--bginfo);
 }
 
 .DIFFSAME,
 .USERSUCCESS,
 .SUCCESS,
 .OK {
-  background-color: var(--bgsuccess);
-  color: black;
+    background-color: var(--bgsuccess);
+    color: black;
 }
 
 .WARNING {
-  background-color:var(--bgwarning);
-  color:black;
+    background-color: var(--bgwarning);
+    color: black;
 }
 
 .DANGER {
-  background-color:var(--bgdanger)
+    background-color: var(--bgdanger)
 }
+
 .DIFFERENT,
 .USERERROR,
 .WRONG,
-.ERROR  {
-  background-color: var(--bgerror);
-  color: black;
+.ERROR {
+    background-color: var(--bgerror);
+    color: black;
 }
-
 
 
 .TRACE,
 .DEBUG {
-  font-size: 14px;
-  background-color: var(--bginfo);
-  border:solid blue 1px;
+    font-size: 14px;
+    background-color: var(--bginfo);
+    border: solid blue 1px;
 }
 
 
 .CODEINERROR {
-  font-family: courier, monospace;
-  font-size: 14px;
-  background-color: yellow;
-  border:solid yellow 1px;
+    font-family: courier, monospace;
+    font-size: 14px;
+    background-color: yellow;
+    border: solid yellow 1px;
 }
 
 .META {
-  color: red;
+    color: red;
 }
 
 .HELP,
 .INSPECT {
-  padding: 2px;
-  margin: 0 30px 0 0;
-  font-size: 11px;
+    padding: 2px;
+    margin: 0 30px 0 0;
+    font-size: 11px;
 }
+
 .HELP th,
 .HELP td,
 .INSPECT td,
 .INSPECT th {
-  vertical-align: top;
-  text-align: left;
+    vertical-align: top;
+    text-align: left;
 }
+
 .INSPECT legend,
 .HELP legend {
-  width:initial;
-  margin: 0;
-  padding: 0 4px;
-  font-size: 1em;
+    width: initial;
+    margin: 0;
+    padding: 0 4px;
+    font-size: 1em;
 }
 
 .INSPECT fieldset,
 .HELP fieldset {
-  border: 1px solid black;
+    border: 1px solid black;
 }
 
 .PARAMETER {
-  color:purple;
-  font-weight:bold;
+    color: purple;
+    font-weight: bold;
 }
 
 .INSPECTHTML {
-  padding: 0;
-  margin: 0;
-  color: #004129;
-  background-color: #00ffa2;
-  font-family: courier, monospace;
-  font-size: 14px;
+    padding: 0;
+    margin: 0;
+    color: #004129;
+    background-color: #00ffa2;
+    font-family: courier, monospace;
+    font-size: 14px;
 }
 
 
 .SMSTATE,
 .SMTRANSITION {
-  margin: 5px;
-  border:solid green 1px;
+    margin: 5px;
+    border: solid green 1px;
 }
+
 .SMCURRENTSTATE {
-  background-color: yellow;
+    background-color: yellow;
 }
 
 .CUT {
-  box-shadow:0 0 0.5em 10px orange inset;
+    box-shadow: 0 0 0.5em 10px orange inset;
 }
+
 .SELECTED.ELEMENT.DELETED *,
 .DELETED {
-  box-shadow:0 0 0.5em 10px red inset;
+    box-shadow: 0 0 0.5em 10px red inset;
 }
 
 .MARKED {
-  box-shadow:0 0 0.5em 10px LightSkyBlue inset;
+    box-shadow: 0 0 0.5em 10px LightSkyBlue inset;
 }
 
 .SECTION {
-  padding-left: 3px;
+    padding-left: 3px;
 }
 
 .SECTIONTITLE {
-  border:none;
+    border: none;
 }
 
 .TABLE {
-  padding:3px;
-  background-color: grey;
+    padding: 3px;
+    background-color: grey;
 }
 
 .ROW {
-  padding:2px;
-  background-color: green;
+    padding: 2px;
+    background-color: green;
 }
+
 td.RICHTEXT {
-  background-color: white;
+    background-color: white;
 }
 
 .FLEX {
-  display:flex;
+    display: flex;
 }
 
 .INDENT {
-  padding-left: 25px;
-  border-left: grey solid 1px;
+    padding-left: 25px;
+    border-left: grey solid 1px;
 }
 
 @media print {
-  .INDENT {
-    border:none;
-  }
+    .INDENT {
+        border: none;
+    }
 }
 
 .BOXLINK {
-  background-color: #E0E0E0;
-  color: blue;
-  cursor:pointer;
+    background-color: #E0E0E0;
+    color: blue;
+    cursor: pointer;
 }
 
 .BOX {
-  margin-left:30px;
-  border: 1px solid black;
-  background-color: #E0E0E0;
-  color: black;
+    margin-left: 30px;
+    border: 1px solid black;
+    background-color: #E0E0E0;
+    color: black;
 }
 
 .INVALIDLINK {
-  color:red;
+    color: red;
 }
 
 .HELPLINK {
-  color:blue;
-  cursor:pointer;
+    color: blue;
+    cursor: pointer;
 }
 
 .REF {
@@ -502,142 +537,168 @@ td.RICHTEXT {
 }
 
 .DIFF.EQUAL {
-  background-color: #8dff60;
+    background-color: #8dff60;
 }
+
 .DIFF.DEL {
-  background-color: #ffb848;
-  color: red;
+    background-color: #ffb848;
+    color: red;
 }
+
 .DIFF.ADD {
-  background-color: #ffb848;
-  color: green;
+    background-color: #ffb848;
+    color: green;
 }
 
 .INTERACTIVE,
 .SCENE {
-  background-color:cyan;
+    background-color: cyan;
 }
 
 .INTERACTIVE > [contenteditable=true] {
-  background-color: var(--bgeditor);
+    background-color: var(--bgeditor);
 }
 
 .SCENECONTAINER {
-  position: relative;
-  /*must have no border!! */
-  height:100%;
+    position: relative;
+    /*must have no border!! */
+    height: 100%;
 }
 
 .IELEMENT {
-  position:absolute;
+    position: absolute;
 }
 
 .IELEMENT.FOCUSED {
-  font-size: 2em;
+    font-size: 2em;
 }
 
 .IELEMENT.FOCUSED::before {
-  content:"focus:";
+    content: "focus:";
 }
 
 .CLOUD.WORD {
-  color:blue;
+    color: blue;
 }
 
 .PAGEBREAK {
-  color: grey;
-  background: #dbdbdb;
+    color: grey;
+    background: #dbdbdb;
 }
+
 .PAGEBREAK:before {
-  display:block;
-  color  :grey;
-  content:'page break';
+    display: block;
+    color: grey;
+    content: 'page break';
 }
 
 
 #tbContent {
-  border-left: none;
-  padding:0;
+    border-left: none;
+    padding: 0;
 }
 
 #menu {
-  position:fixed;
-  top:0;
-  right:0;
-  background-color: #dddcdc;
-  z-index:100;
-  font-size:12px;
-  max-width:50%;
+    position: fixed;
+    top: 0;
+    right: 0;
+    background-color: #dddcdc;
+    z-index: 100;
+    font-size: 12px;
+    max-width: 50%;
 }
 
 #menu .btn,
 #menu .input-group-text,
 #menu .custom-select {
-    font-size:1em;
+    font-size: 1em;
 }
-
 
 
 /** Paper sizes **/
-     .A3.landscape { width: 420mm }
-.A3, .A4.landscape { width: 297mm }
-.A4, .A5.landscape { width: 210mm }
-.A5                { width: 148mm }
+.A3.landscape {
+    width: 420mm
+}
 
-           .A3.landscape.sheet { height: 297mm }
-.A3.sheet, .A4.landscape.sheet { height: 210mm }
-.A4.sheet, .A5.landscape.sheet { height: 148mm }
-.A5.sheet                      { height: 104mm }
+.A3, .A4.landscape {
+    width: 297mm
+}
+
+.A4, .A5.landscape {
+    width: 210mm
+}
+
+.A5 {
+    width: 148mm
+}
+
+.A3.landscape.sheet {
+    height: 297mm
+}
+
+.A3.sheet, .A4.landscape.sheet {
+    height: 210mm
+}
+
+.A4.sheet, .A5.landscape.sheet {
+    height: 148mm
+}
+
+.A5.sheet {
+    height: 104mm
+}
 
 
 @media print {
-  .NO_PRINT,
-  .no_print {
-    display:none;
-  }
-  .PAGEBREAK,
-  .A3,
-  .A4,
-  .A5 {
-    page-break-before:always;
-    background-color:cyan;
-    color:black;
-  }
+    .NO_PRINT,
+    .no_print {
+        display: none;
+    }
 
-  .landscape {
-    transform: rotate(90deg);
-  }
-  
+    .PAGEBREAK,
+    .A3,
+    .A4,
+    .A5 {
+        page-break-before: always;
+        background-color: cyan;
+        color: black;
+    }
+
+    .landscape {
+        transform: rotate(90deg);
+    }
+
 }
 
-@page { 
-  margin-top:   15mm; 
-  margin-bottom:15mm;
+@page {
+    margin-top: 15mm;
+    margin-bottom: 15mm;
 }
 
 .sheet {
-  margin: 0;
-  overflow: hidden;
-  position: relative;
-  box-sizing: border-box;
-  page-break-after: always;
+    margin: 0;
+    overflow: hidden;
+    position: relative;
+    box-sizing: border-box;
+    page-break-after: always;
 }
 
 @media screen {
-  .A3,.A4,.A5 {
-    background: white;
-    color: black;
-    box-shadow: 0 .5mm 2mm rgba(0,0,0,.3);
-    margin-left:  5mm;
-    margin-right: 5mm;
-    margin-bottom:5mm;
-  }
-  .A4:before {
-    display:block;
-    padding:0;
-    color  :grey;
-    background: #e0e0e0;
-    content:'A4';
-  }
+    .A3, .A4, .A5 {
+        background: white;
+        color: black;
+        box-shadow: 0 .5mm 2mm rgba(0, 0, 0, .3);
+        margin-left: 5mm;
+        margin-right: 5mm;
+        margin-bottom: 5mm;
+    }
+
+    .A4:before {
+        display: block;
+        padding: 0;
+        color: grey;
+        background: #e0e0e0;
+        content: 'A4';
+    }
 }
 

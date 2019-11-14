@@ -526,7 +526,7 @@ tb.finalize = function () {
 };
 
 tb.run = function () {
-
+    if (tb.ui.inUserTriggeredAction) console.warn('run called inside a user triggered action: should be suppressed');
     // run either all CODE ELEMENT or the CODE ELEMENT from the first to the selected.element
     if (tb.autoRun) {
         tb.execAll();
