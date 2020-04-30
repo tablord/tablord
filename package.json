@@ -28,7 +28,7 @@
     "should": "^13.2.3"
   },
   "dependencies": {
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "jsdom": "^15.1.1",
     "moment": "^2.24.0",
     "moment-duration-format": "^2.3.2",
