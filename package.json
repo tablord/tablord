@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "jquery": "^3.4.1",
-    "jsdom": "^15.1.1",
+    "jsdom": "^16.5.0",
     "moment": "^2.24.0",
     "moment-duration-format": "^2.3.2",
     "numeral": "^2.0.6"
