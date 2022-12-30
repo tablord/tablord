@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/tablord/tablorde#readme",
   "devDependencies": {
-    "mocha": "^6.2.0",
+    "mocha": "^10.2.0",
     "test-runner": "^0.6.0",
     "browserify": "^16.5.0",
     "should": "^13.2.3"
